@@ -6,26 +6,52 @@
 # Configuration options for the bot. #
 #------------------------------------#
 
+# ------------------------
 # CONNECTION CONFIGURATION
 # ------------------------
+
 # Server address
-SERVER_ADDRESS = 'localhost'
+SERVER_ADDRESS = 'matthieugrieger.com'
+
 # Server port (64738 is the default)
 SERVER_PORT = '64738'
+
 # Username (this will be the username of the bot as well)
-SERVER_USERNAME = 
+SERVER_USERNAME = 'Music Bot'
+
 # Server password (leave blank if no password exists)
 SERVER_PASSWORD = ''
 
+
+# ---------------------
 # GENERAL CONFIGURATION
 # ---------------------
+
 # Default channel
 DEFAULT_CHANNEL = 'Bot Testing'
 
+# Debugging mode (True = on, False = off)
+DEBUG = False
+
+
+# ------------------
+# CHAT CONFIGURATION
+# ------------------
+
+# Enable/disable chat notifications
+SHOW_CHAT_NOTIFICATIONS = True
+
+# Enable/disable YouTube thumbnails (only has an effect if SHOW_CHAT_NOTIFICATIONS is True)
+SHOW_YT_THUMBNAILS = True
+
+
+# -------------------
 # AUDIO CONFIGURATION
 # -------------------
+
 # Bitrate
 BITRATE = 48000
+
 # Number of users that, if reached, will pause the music until it is started again by a user.
 # This is to prevent against YouTube audio downloads when nobody is listening.
-USER_SOUND_PAUSE_LIMIT = 1
+USER_SOUND_PAUSE_TARGET = 1

@@ -33,6 +33,9 @@ DEFAULT_CHANNEL = 'Bot Testing'
 # Debugging mode (True = on, False = off)
 DEBUG = False
 
+# Command prefix (this is the character that designates a command)
+COMMAND_PREFIX = '!'
+
 
 # ------------------
 # CHAT CONFIGURATION

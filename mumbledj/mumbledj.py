@@ -24,7 +24,7 @@ class MumbleDJ:
 		self.mumble.is_ready()
 		self.mumble.channels.find_by_name(DEFAULT_CHANNEL).move_in()
 		self.mumble.users.myself.mute()
-		self.stop_bot = False
+		self.kill_bot = False
 		
 		self.listen()
 	
@@ -68,19 +68,42 @@ class MumbleDJ:
 		
 	# Completely stops the bot if a person on the approved list of admins
 	# issues the stop command.
-	def stop_bot(self):
-		self.stop_bot = True
+	def kill_bot(self):
+		self.kill_bot = True
 		
 	# Parses a new message and checks for a command. If one exists, it will
 	# parse the command and its arguments (if they exist) and pass them along
 	# to the appropriate function.
 	def parse_message(self, message):
-		pass
+		if message[0] == COMMAND_PREFIX:
+			if ' ' in message:
+				command = message[1:message.find(' ')]
+			else:
+				command = message[1:]
+			
+			if command == 'start':
+				pass
+			elif command == 'play':
+				pass
+			elif command == 'pause':
+				pass
+			elif command == 'add':
+				pass
+			elif command == 'skip':
+				pass
+			elif command == 'volumeup':
+				pass
+			elif command == 'volumedown':
+				pass
+			elif command == 'move':
+				pass
+			elif command == 'kill':
+				pass
 		
 	# This is the main loop for the bot. It will listen for commands periodically and
 	# call the appropriate functions to deal with them.
 	def listen(self):
-		while self.mumble.is_alive() and not self.stop_bot:
+		while self.mumble.is_alive() and not self.kill_bot:
 			sleep(0.5)
 	
 	

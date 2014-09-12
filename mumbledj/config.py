@@ -14,7 +14,7 @@
 SERVER_ADDRESS = 'localhost'
 
 # Server port (64738 is the default)
-SERVER_PORT = '64738'
+SERVER_PORT = 64738
 
 # Username (this will be the username of the bot as well)
 SERVER_USERNAME = 'MumbleDJ'

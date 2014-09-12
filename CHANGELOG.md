@@ -6,6 +6,7 @@ MumbleDJ Changelog
 * Renamed all mentions of mumble-music-bot or musicbot to mumbledj.
 * Restructured project for easier imports.
 * Added .gitignore for pymumble.
+* Now successfully connects to Mumble servers.
 
 ### September 11, 2014
 * mumble-music-bot repository created.

@@ -8,6 +8,7 @@
 
 import pymumble
 from config import *
+from time import sleep
 
 class MumbleDJ:
 	# Since all the configuration is set in config.py, we don't really need to do anything here.
@@ -21,6 +22,9 @@ class MumbleDJ:
 		self.mumble.is_ready()
 		self.mumble.channels.find_by_name(DEFAULT_CHANNEL).move_in()
 		self.mumble.users.myself.mute()
+		self.stop_bot = False
+		
+		self.listen()
 	
 	# Starts to play the first song in the queue when called. If no songs exist in the queue, it will wait until
 	# a song is added.	
@@ -63,8 +67,18 @@ class MumbleDJ:
 	# Completely stops the bot if a person on the approved list of admins
 	# issues the stop command.
 	def stop_bot(self):
+		self.stop_bot = True
+		
+	# Parses command and its arguments (if they exist) and passes them along
+	# to the necessary methods.
+	def parse_command(self):
 		pass
 		
+	# This is the main loop for the bot. It will listen for commands periodically and
+	# call the appropriate functions to deal with them.
+	def listen(self):
+		while self.mumble.is_alive() and not self.stop_bot:
+			sleep(0.5)
 	
 	
 	

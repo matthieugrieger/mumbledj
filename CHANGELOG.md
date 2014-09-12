@@ -1,5 +1,11 @@
-Mumble Music Bot Changelog
-==========================
+MumbleDJ Changelog
+==================
+
+### September 12, 2014
+* mumble-music-bot repository renamed to mumbledj.
+* Renamed all mentions of mumble-music-bot or musicbot to mumbledj.
+* Restructured project for easier imports.
+* Added .gitignore for pymumble.
 
 ### September 11, 2014
 * mumble-music-bot repository created.

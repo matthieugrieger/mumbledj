@@ -7,6 +7,7 @@
 #--------------------------------------------------#
 
 import pymumble
+from pymumble.constants import *
 from config import *
 from time import sleep
 
@@ -18,6 +19,7 @@ class MumbleDJ:
 	# Connects to the Mumble server with the credentials specified upon object creation.	
 	def connect_to_server(self):
 		self.mumble = pymumble.Mumble(SERVER_ADDRESS, SERVER_PORT, SERVER_USERNAME, SERVER_PASSWORD, debug = DEBUG)
+		self.mumble.callbacks.set_callback(PYMUMBLE_CLBK_TEXTMESSAGERECEIVED, self.parse_message)
 		self.mumble.start()
 		self.mumble.is_ready()
 		self.mumble.channels.find_by_name(DEFAULT_CHANNEL).move_in()
@@ -69,9 +71,10 @@ class MumbleDJ:
 	def stop_bot(self):
 		self.stop_bot = True
 		
-	# Parses command and its arguments (if they exist) and passes them along
-	# to the necessary methods.
-	def parse_command(self):
+	# Parses a new message and checks for a command. If one exists, it will
+	# parse the command and its arguments (if they exist) and pass them along
+	# to the appropriate function.
+	def parse_message(self, message):
 		pass
 		
 	# This is the main loop for the bot. It will listen for commands periodically and

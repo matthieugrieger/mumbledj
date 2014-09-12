@@ -1,5 +1,5 @@
 #----------------------#
-#       MumbleDJ   	   #
+#       MumbleDJ       #
 #  By Matthieu Grieger #
 #----------------------#---------------------------#
 # mumbledj.py                                      #

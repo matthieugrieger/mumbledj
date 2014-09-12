@@ -42,6 +42,11 @@ class MumbleDJ:
 	# Sends a message to the chat when a new song starts playing.	
 	def announce_new_song(self):
 		pass
+	
+	# Skips the current song if more than 50% of the users in the channel vote to skip.
+	# The vote tracking will be handled elsewhere.	
+	def skip_song(self):
+		pass
 		
 	# Raises the volume by the increment decided by the user. 
 	def raise_volume(self, increment):

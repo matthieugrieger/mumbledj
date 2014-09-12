@@ -1,5 +1,5 @@
 #----------------------#
-#   Mumble Music Bot   #
+#       MumbleDJ       #
 #  By Matthieu Grieger #
 #----------------------#-------------------------------#
 # run_bot.py                                           #
@@ -7,7 +7,7 @@
 # execute with Python to start the bot.                #
 #------------------------------------------------------#
 
-#import MusicBot object here
+from mumbledj.mumbledj import MumbleDJ
 
-bot = MusicBot()
+bot = MumbleDJ()
 bot.connect_to_server()

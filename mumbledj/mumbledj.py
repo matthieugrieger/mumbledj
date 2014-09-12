@@ -1,14 +1,15 @@
 #----------------------#
-#   Mumble Music Bot   #
+#       MumbleDJ   	   #
 #  By Matthieu Grieger #
 #----------------------#---------------------------#
-# musicbot.py                                      #
-# Contains definitions of musicbot class & methods #
+# mumbledj.py                                      #
+# Contains definitions of MumbleDJ class & methods #
 #--------------------------------------------------#
-#import pymumble here
+
+import pymumble
 from config import *
 
-class MusicBot:
+class MumbleDJ:
 	# Since all the configuration is set in config.py, we don't really need to do anything here.
 	def __init__(self):
 		print('Starting up ' + SERVER_USERNAME + '...') 

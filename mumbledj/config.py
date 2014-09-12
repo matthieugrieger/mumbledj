@@ -1,5 +1,5 @@
 #----------------------#
-#   Mumble Music Bot   #
+#       MumbleDJ       #
 #  By Matthieu Grieger #
 #----------------------#-------------#
 # config.py                          #
@@ -11,13 +11,13 @@
 # ------------------------
 
 # Server address
-SERVER_ADDRESS = 'matthieugrieger.com'
+SERVER_ADDRESS = 'localhost'
 
 # Server port (64738 is the default)
 SERVER_PORT = '64738'
 
 # Username (this will be the username of the bot as well)
-SERVER_USERNAME = 'Music Bot'
+SERVER_USERNAME = 'MumbleDJ'
 
 # Server password (leave blank if no password exists)
 SERVER_PASSWORD = ''

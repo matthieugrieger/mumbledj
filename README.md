@@ -1,5 +1,5 @@
-Mumble Music Bot
-================
+MumbleDJ
+========
 A Mumble bot that plays music fetched from YouTube videos. There are ways to play music with a bot on Mumble already, but I wasn't really satisfied with them. Many of them require the Windows client to be opened along with other applications which is not ideal. My goal with this project is to make a Linux-friendly Mumble bot that can run on a webserver instead of a personal computer.
 
 ## Planned Features

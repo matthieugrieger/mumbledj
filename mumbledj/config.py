@@ -12,7 +12,7 @@
 
 # Server address
 # DEFAULT VALUE: 'localhost'
-SERVER_ADDRESS = 'localhost'
+SERVER_ADDRESS = 'matthieugrieger.com'
 
 # Server port
 # DEFAULT VALUE: 64738
@@ -45,58 +45,45 @@ DEBUG = False
 COMMAND_PREFIX = '!'
 
 
-# -------------------
-# ADMIN CONFIGURATION
-# -------------------
+# ---------------------
+# COMMAND CONFIGURATION
+# ---------------------
 
-# Enable/disable admin-only commands
+# Allow users to start music queue
 # DEFAULT VALUE: True
-ENABLE_ADMIN_ONLY_COMMANDS = True
+ALLOW_START = True
 
-# List of approved ADMINS. Add all usernames who should receive admin
-# privileges here.
-# NOTE: I recommend only adding admins who are registered users on your server.
-# Otherwise other people can use the username and get access to the admin commands.
-# EXAMPLE:
-# 	ADMINS = ['matthieu', 'matt']
-ADMINS = ['Matt', 'DrumZ']
-
-# Make start command admin-only
-# DEFAULT VALUE: False
-START_ADMIN_ONLY = False
-
-# Make play command admin-only
-# DEFAULT VALUE: False
-PLAY_ADMIN_ONLY = False
-
-# Make pause command admin-only
-# DEFAULT VALUE: False
-PAUSE_ADMIN_ONLY = False
-
-# Make add command admin-only
-# DEFAULT VALUE: False
-ADD_ADMIN_ONLY = False
-
-# Make skip command admin-only
-# DEFAULT VALUE: False
-SKIP_ADMIN_ONLY = False
-
-# Make volumeup command admin-only
+# Allow users to start music playback
 # DEFAULT VALUE: True
-VOLUMEUP_ADMIN_ONLY = True
+ALLOW_PLAY = True
 
-# Make volumedown command admin-only
+# Allow users to pause music playback
 # DEFAULT VALUE: True
-VOLUMEDOWN_ADMIN_ONLY = True
+ALLOW_PAUSE = True
 
-# Make move command admin-only
+# Allow users to add music to queue
 # DEFAULT VALUE: True
-MOVE_ADMIN_ONLY = True
+ALLOW_ADD = True
 
-# Make kill command admin-only (I really don't recommend changing this to False...)
+# Allow users to vote to skip tracks
 # DEFAULT VALUE: True
-KILL_ADMIN_ONLY = True
+ALLOW_SKIPS = True
 
+# Allow users to raise volume
+# DEFAULT VALUE: False
+ALLOW_VOLUMEUP = False
+
+# Allow users to lower volume
+# DEFAULT VALUE: False
+ALLOW_VOLUMEDOWN = False
+
+# Allow users to move bot to another channel
+# DEFAULT VALUE: False
+ALLOW_MOVE = False
+
+# Allow users to kill bot (this should rarely be used)
+# DEFAULT VALUE: False
+ALLOW_KILL = False
 
 # ---------------------
 # STORAGE CONFIGURATION

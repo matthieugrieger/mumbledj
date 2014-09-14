@@ -81,23 +81,23 @@ class MumbleDJ:
 			else:
 				command = message[1:]
 			
-			if command == 'start':
+			if command == 'start' and ALLOW_START:
 				pass
-			elif command == 'play':
+			elif command == 'play' and ALLOW_PLAY:
 				pass
-			elif command == 'pause':
+			elif command == 'pause' and ALLOW_PAUSE:
 				pass
-			elif command == 'add':
+			elif command == 'add' and ALLOW_ADD:
 				pass
-			elif command == 'skip':
+			elif command == 'skip' and ALLOW_SKIPS:
 				pass
-			elif command == 'volumeup':
+			elif command == 'volumeup' and ALLOW_VOLUMEUP:
 				pass
-			elif command == 'volumedown':
+			elif command == 'volumedown' and ALLOW_VOLUMEDOWN:
 				pass
-			elif command == 'move':
+			elif command == 'move' and ALLOW_MOVE:
 				pass
-			elif command == 'kill':
+			elif command == 'kill' and ALLOW_KILL:
 				pass
 		
 	# This is the main loop for the bot. It will listen for commands periodically and

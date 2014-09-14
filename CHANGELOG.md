@@ -1,5 +1,8 @@
 MumbleDJ Changelog
 ==================
+### September 13, 2014
+* Added song.py, a file that houses the Song class.
+* Added admin & storage options to config.py.
 
 ### September 12, 2014
 * mumble-music-bot repository renamed to mumbledj.

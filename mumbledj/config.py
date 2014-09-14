@@ -12,7 +12,7 @@
 
 # Server address
 # DEFAULT VALUE: 'localhost'
-SERVER_ADDRESS = 'matthieugrieger.com'
+SERVER_ADDRESS = 'localhost'
 
 # Server port
 # DEFAULT VALUE: 64738
@@ -96,6 +96,20 @@ MOVE_ADMIN_ONLY = True
 # Make kill command admin-only (I really don't recommend changing this to False...)
 # DEFAULT VALUE: True
 KILL_ADMIN_ONLY = True
+
+
+# ---------------------
+# STORAGE CONFIGURATION
+# ---------------------
+
+# Delete audio files after they have been played.
+# DEFAULT VALUE: True
+DELETE_AUDIO = True
+
+# Delete thumbnails after they have been used.
+# DEFAULT VALUE: True
+DELETE_THUMBNAILS = True
+
 
 # ------------------
 # CHAT CONFIGURATION

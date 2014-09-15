@@ -55,3 +55,39 @@ function parseCommand(message)
 		message.user:send("The command you have entered is not valid.")
 	end
 end
+
+function start()
+	return
+end
+
+function play()
+	return
+end
+
+function pause()
+	return
+end
+
+function add()
+	return
+end
+
+function skip()
+	return
+end
+
+function volumeup()
+	return
+end
+
+function volumedown()
+	return
+end
+
+function move()
+	return
+end
+
+function kill()
+	return
+end

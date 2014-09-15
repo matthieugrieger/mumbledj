@@ -26,7 +26,7 @@ end
 function parseCommand(message)
 	local command = ""
 	local argument = ""
-	if string.find(message.text, ' ') then
+	if string.find(message.text, " ") then
 		command = string.sub(message.text, 2, string.find(message.text, ' ') - 1)
 		argument = string.sub(message.text, string.find(message.text, ' ') + 1)
 	else
@@ -34,21 +34,85 @@ function parseCommand(message)
 	end
 	
 	if command == "play" then
-		print(message.user.name .. " has told the bot to start playing music.")
+		local has_permission = checkPermissions(config.ADMIN_PLAY, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has told the bot to start playing music.")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	elseif command == "pause" then
-		print(message.user.name .. " has told the bot to pause music playback.")
+		local has_permission = checkPermissions(config.ADMIN_PAUSE, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has told the bot to pause music playback.")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	elseif command == "add" then
-		print(message.user.name .. " has told the bot to add the following URL to the queue: " .. argument .. ".")
+		local has_permission = checkPermissions(config.ADMIN_ADD, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has told the bot to add the following URL to the queue: " .. argument .. ".")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	elseif command == "skip" then
-		print(message.user.name .. " has voted to skip the current song.")
+		local has_permission = checkPermissions(config.ADMIN_SKIP, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has voted to skip the current song.")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	elseif command == "volumeup" then
-		print(message.user.name .. " has told the bot to raise the playback volume.")
+		local has_permission = checkPermissions(config.ADMIN_VOLUMEUP, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has told the bot to raise the playback volume.")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	elseif command == "volumedown" then
-		print(message.user.name .. " has told the bot to lower the playback volume.")
+		local has_permission = checkPermissions(config.ADMIN_VOLUMEDOWN, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has told the bot to lower the playback volume.")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	elseif command == "move" then
-		print(message.user.name .. " has told the bot to move to the following channel: " .. argument .. ".")
+		local has_permission = checkPermissions(config.ADMIN_MOVE, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has told the bot to move to the following channel: " .. argument .. ".")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	elseif command == "kill" then
-		print(message.user.name .. " has told the bot to kill itself.")
+		local has_permission = checkPermissions(config.ADMIN_KILL, message.user.name)
+		
+		if has_permission then
+			if config.OUTPUT then 
+				print(message.user.name .. " has told the bot to kill itself.")
+			end
+		else
+			message.user:send(config.NO_PERMISSION_MSG)
+		end
 	else
 		message.user:send("The command you have entered is not valid.")
 	end
@@ -84,4 +148,22 @@ end
 
 function kill()
 	return
+end
+
+function checkPermissions(ADMIN_COMMAND, username)
+	if config.ENABLE_ADMINS and ADMIN_COMMAND then
+		return isAdmin(username)
+	end
+	
+	return true
+end
+
+function isAdmin(username)
+	for _,user in pairs(config.ADMINS) do
+		if user == username then
+			return true
+		end
+	end
+	
+	return false
 end

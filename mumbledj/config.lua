@@ -48,7 +48,7 @@ config.ENABLE_ADMINS = true
 -- commands.
 -- EXAMPLE:
 -- 	config.ADMINS = {"Matt", "Matthieu"}
-config.ADMINS = {}
+config.ADMINS = {"Blah"}
 
 -- Make play an admin command?
 -- DEFAULT VALUE: false
@@ -106,6 +106,14 @@ config.SHOW_NOTIFICATIONS = true
 -- Enable/disable YouTube thumbnails (true = on, false = off)
 -- DEFAULT VALUE: true
 config.SHOW_THUMBNAILS = true
+
+-------------------------
+-- MESSAGE CONFIGURATION
+-------------------------
+
+-- Message shown to users when they do not have permission to execute a command.
+-- DEFAULT VALUE: "You do not have permission to execute that command."
+config.NO_PERMISSION_MSG = "You do not have permission to execute that command."
 
 
 return config

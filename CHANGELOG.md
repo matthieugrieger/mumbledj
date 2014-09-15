@@ -1,5 +1,11 @@
 MumbleDJ Changelog
 ==================
+### September 14, 2014
+* Changed the base for the project from pymumble to piepan.
+* Entire codebase is now written in Lua instead of Python.
+* Re-implemented some of the config in config.lua.
+* Implemented code to connect the bot to the server and move it into the Bot Testing channel.
+
 ### September 13, 2014
 * Added song.py, a file that houses the Song class.
 * Added command & storage options to config.py.

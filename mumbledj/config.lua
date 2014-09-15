@@ -50,10 +50,6 @@ config.ENABLE_ADMINS = true
 -- 	config.ADMINS = {"Matt", "Matthieu"}
 config.ADMINS = {}
 
--- Make start an admin command?
--- DEFAULT VALUE: false
-config.ADMIN_START = false
-
 -- Make play an admin command?
 -- DEFAULT VALUE: false
 config.ADMIN_PLAY = false

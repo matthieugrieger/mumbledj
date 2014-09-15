@@ -33,9 +33,7 @@ function parseCommand(message)
 		command = string.sub(message.text, 2)
 	end
 	
-	if command == "start" then
-		print(message.user.name .. " has told the bot to start.")
-	elseif command == "play" then
+	if command == "play" then
 		print(message.user.name .. " has told the bot to start playing music.")
 	elseif command == "pause" then
 		print(message.user.name .. " has told the bot to pause music playback.")
@@ -54,10 +52,6 @@ function parseCommand(message)
 	else
 		message.user:send("The command you have entered is not valid.")
 	end
-end
-
-function start()
-	return
 end
 
 function play()

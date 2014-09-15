@@ -17,13 +17,41 @@ function piepan.onMessage(message)
 	if message.user == nil then
 		return
 	end
-	print(string.sub(message.text, 0, 1))
+
 	if string.sub(message.text, 0, 1) == config.COMMAND_PREFIX then
 		parseCommand(message)
-		print("Command has been found!")
 	end
 end
 
 function parseCommand(message)
-	return
+	local command = ""
+	local argument = ""
+	if string.find(message.text, ' ') then
+		command = string.sub(message.text, 2, string.find(message.text, ' ') - 1)
+		argument = string.sub(message.text, string.find(message.text, ' ') + 1)
+	else
+		command = string.sub(message.text, 2)
+	end
+	
+	if command == "start" then
+		print(message.user.name .. " has told the bot to start.")
+	elseif command == "play" then
+		print(message.user.name .. " has told the bot to start playing music.")
+	elseif command == "pause" then
+		print(message.user.name .. " has told the bot to pause music playback.")
+	elseif command == "add" then
+		print(message.user.name .. " has told the bot to add the following URL to the queue: " .. argument .. ".")
+	elseif command == "skip" then
+		print(message.user.name .. " has voted to skip the current song.")
+	elseif command == "volumeup" then
+		print(message.user.name .. " has told the bot to raise the playback volume.")
+	elseif command == "volumedown" then
+		print(message.user.name .. " has told the bot to lower the playback volume.")
+	elseif command == "move" then
+		print(message.user.name .. " has told the bot to move to the following channel: " .. argument .. ".")
+	elseif command == "kill" then
+		print(message.user.name .. " has told the bot to kill itself.")
+	else
+		message.user:send("The command you have entered is not valid.")
+	end
 end

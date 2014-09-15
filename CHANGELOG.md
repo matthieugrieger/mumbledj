@@ -1,5 +1,13 @@
 MumbleDJ Changelog
 ==================
+
+### September 15, 2014
+* Added command parsing.
+* Added placeholder functions for various commands.
+* Added admin, message, and other miscellaneous config options.
+* Removed start command.
+* Added a permissions/admin system.
+
 ### September 14, 2014
 * Changed the base for the project from pymumble to piepan.
 * Entire codebase is now written in Lua instead of Python.

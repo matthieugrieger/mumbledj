@@ -24,6 +24,15 @@ config.DEFAULT_CHANNEL = "Bot Testing"
 -- DEFAULT VALUE: "!"
 config.COMMAND_PREFIX = "!"
 
+-- Show status output in console?
+-- DEFAULT VALUE: true
+config.OUTPUT = true
+
+-- Number of users that, if reached, will pause the music until it is started again by a user.
+-- This is to prevent against YouTube audio downloads when nobody is listening.
+-- DEFAULT VALUE: 1
+config.USER_SOUND_PAUSE_TARGET = 1
+
 
 -----------------------
 -- ADMIN CONFIGURATION
@@ -76,5 +85,31 @@ config.ADMIN_MOVE = true
 -- Make kill an admin command?
 -- DEFAULT VALUE: true (I recommend never changing this to false)
 config.ADMIN_KILL = true
+
+
+-------------------------
+-- STORAGE CONFIGURATION
+-------------------------
+
+-- Delete audio files after they have been played?
+-- DEFAULT VALUE: true
+config.DELETE_AUDIO = true
+
+-- Delete thumbnails after they have been used?
+config.DELETE_THUMBNAILS = true
+
+
+----------------------
+-- CHAT CONFIGURATION
+----------------------
+
+-- Enable/disable chat notifications for new songs (true = on, false = off)
+-- DEFAULT VALUE: true
+config.SHOW_NOTIFICATIONS = true
+
+-- Enable/disable YouTube thumbnails (true = on, false = off)
+-- DEFAULT VALUE: true
+config.SHOW_THUMBNAILS = true
+
 
 return config

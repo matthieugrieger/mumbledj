@@ -99,6 +99,9 @@ function parseCommand(message)
 		if has_permission then
 			if config.OUTPUT then 
 				print(message.user.name .. " has told the bot to move to the following channel: " .. argument .. ".")
+				if not move(argument) then
+					message.user:send(config.CHANNEL_DOES_NOT_EXIST_MSG)
+				end
 			end
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
@@ -142,8 +145,15 @@ function volumedown()
 	return
 end
 
-function move()
-	return
+function move(chan)
+	local user = piepan.users["MumbleDJ"]
+	local channel = user.channel("../" .. chan)
+	if channel == nil then
+		return false
+	else
+		piepan.me:moveTo(channel)
+		return true
+	end
 end
 
 function kill()

@@ -48,7 +48,7 @@ config.ENABLE_ADMINS = true
 -- commands.
 -- EXAMPLE:
 -- 	config.ADMINS = {"Matt", "Matthieu"}
-config.ADMINS = {"Blah"}
+config.ADMINS = {"Matt"}
 
 -- Make play an admin command?
 -- DEFAULT VALUE: false
@@ -114,6 +114,10 @@ config.SHOW_THUMBNAILS = true
 -- Message shown to users when they do not have permission to execute a command.
 -- DEFAULT VALUE: "You do not have permission to execute that command."
 config.NO_PERMISSION_MSG = "You do not have permission to execute that command."
+
+-- Message shown to users when they try to move the bot to a non-existant channel.
+-- DEFAULT VALUE: "The channel you specified does not exist."
+config.CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 
 
 return config

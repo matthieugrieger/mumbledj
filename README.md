@@ -22,6 +22,16 @@ These are features that would be cool to have, but might not ever make it into t
 ## Setup
 This section will be updated when the project is near completion.
 
+## Dependencies
+* [OpenSSL](http://www.openssl.org/)
+* [Lua 5.2](http://www.lua.org/)
+* [libev](http://libev.schmorp.de/)
+* [protobuf-c](https://github.com/protobuf-c/protobuf-c)
+* [Ogg Vorbis](https://xiph.org/vorbis/)
+* [Opus](http://www.opus-codec.org/)
+* [Python 2.6 or above](https://www.python.org/)
+* [pafy](https://github.com/np1/pafy/)
+
 ## Author
 [Matthieu Grieger](http://matthieugrieger.com)
 
@@ -51,6 +61,6 @@ THE SOFTWARE.
 ```
 
 ## Thanks
-All those who contribute to [Mumble](https://github.com/mumble-voip/mumble).  
-[Tim Cooper](https://github.com/bontibon) for [piepan](https://github.com/layeh/piepan).
-[Pierre Chapuis](https://github.com/catwell) for [deque](https://github.com/catwell/cw-lua/tree/master/deque).
+* All those who contribute to [Mumble](https://github.com/mumble-voip/mumble).  
+* [Tim Cooper](https://github.com/bontibon) for [piepan](https://github.com/layeh/piepan).
+* [Pierre Chapuis](https://github.com/catwell) for [deque](https://github.com/catwell/cw-lua/tree/master/deque).

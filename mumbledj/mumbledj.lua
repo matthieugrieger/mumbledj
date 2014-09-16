@@ -108,8 +108,6 @@ function parseCommand(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	elseif command == "python" then
-		os.execute("python test.py")
 	else
 		message.user:send("The command you have entered is not valid.")
 	end

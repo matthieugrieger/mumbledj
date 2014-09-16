@@ -37,6 +37,10 @@ config.USER_SOUND_PAUSE_TARGET = 1
 -- DEFAULT VALUE: 0.25
 config.VOLUME = 0.25
 
+-- Ratio that must be met or exceeded to trigger a song skip.
+-- DEFAULT VALUE: 0.5
+config.SKIP_RATIO = 0.5
+
 
 -----------------------
 -- ADMIN CONFIGURATION
@@ -124,6 +128,18 @@ config.CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 -- DEFAULT VALUE: "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
 config.INVALID_URL_MSG = "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
 
+-- Message shown to users when they attempt to execute the play command when music is already playing.
+-- DEFAULT VALUE: "A music track is already playing!"
+config.MUSIC_PLAYING_MSG = "A music track is already playing!"
+
+-- Message shown to users when they attempt to use the stop command when no music is playing.
+-- DEFAULT VALUE: "There is no music playing at the moment."
+config.NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
+
+-- Message shown to users when they attempt to use the play command when there are no songs in the queue.
+-- DEFAULT VALUE: "There are no songs currently in the queue. Use " .. config.COMMAND_PREFIX .. "add to add a song to the queue."
+config.NO_SONGS_AVAILABLE = "There are no songs currently in the queue. Use " .. config.COMMAND_PREFIX .. "add to add a song to the queue."
+
 
 ----------------------
 -- HTML CONFIGURATION
@@ -147,6 +163,16 @@ config.NOW_PLAYING_HTML = [[
 -- Message shown to channel when a song is added to the queue by a user.
 config.SONG_ADDED_HTML = [[
 	<b>%s</b> has added "%s" to the queue.
+]]
+
+-- Message shown to channel when a song is resumed with the play command.
+config.SONG_PLAY_HTML = [[
+	<b>%s</b> resumed audio playback.
+]]
+
+-- Message shown to channel when a song is paused by a user.
+config.SONG_PAUSED_HTML = [[
+	<b>%s</b> has paused the song.
 ]]
 
 return config

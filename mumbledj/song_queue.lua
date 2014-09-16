@@ -7,6 +7,7 @@
 -- used for queueing up songs.                 --
 -------------------------------------------------
 local deque = require("deque")
+local config = require("config")
 
 local song_queue = deque.new()
 
@@ -25,12 +26,10 @@ function SongQueue.addSong(url, username)
 		local video_id = string.match(url, pattern)
 		if video_id ~= nil and string.len(video_id) < 20 then
 			print("YouTube URL is valid!")
-			piepan.Thread.new(getYoutubeInfo, youtubeInfoCompleted, {video_id, username})
-			return true
+			--piepan.Thread.new(getYoutubeInfo, youtubeInfoCompleted, {video_id, username})
+			getYoutubeInfo(video_id, username)
 		end
 	end
-	
-	return false
 end
 
 function getYoutubeInfo(id, username)
@@ -49,25 +48,30 @@ function getYoutubeInfo(id, username)
 		return
 	end
 	
-	return {
+	print("Finished getting info.")
+	youtubeInfoCompleted({
 		id = id,
 		title = name,
 		duration = string.format("%d:%02d", duration / 60, duration % 60),
 		thumbnail = thumbnail,
 		username = username
-	}
+	})
 end
 
 function youtubeInfoCompleted(info)
 	if info == nil then
-		return
+		return false
 	end
 	
-	song_queue.push_left(info)
+	song_queue:push_right(info)
 	
 	if song_queue:length() == 1 then
-		os.execute("python download_audio.py")
-		piepan.me.channel:play("song.ogg")
+		os.execute("python download_audio.py " .. info.id)
+		while not file_exists("song-converted.ogg") do
+			os.execute("sleep " .. tonumber(2))
+		end
+		print("we done here")
+		piepan.me.channel:play("song-converted.ogg", config.VOLUME, nextSong)
 	end
 	
 	if piepan.Audio:isPlaying() then
@@ -77,6 +81,8 @@ function youtubeInfoCompleted(info)
 		local message = string.format(config.SONG_ADDED_HTML, info.username, info.title)
 		piepan.me.channel:send(message)
 	end
+	
+	return true
 end
 
 function SongQueue.getNextSong(url)
@@ -85,6 +91,11 @@ end
 
 function SongQueue.getLength()
 	return song_queue:length()
+end
+
+function file_exists(file)
+	local f=io.open(file,"r")
+	if f~=nil then io.close(f) return true else return false end
 end
 
 return SongQueue

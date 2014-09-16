@@ -53,7 +53,7 @@ function getYoutubeInfo(id, username)
 		id = id,
 		title = name,
 		duration = string.format("%d:%02d", duration / 60, duration % 60),
-		thumbnail = thumbnail
+		thumbnail = thumbnail,
 		username = username
 	}
 end
@@ -81,6 +81,10 @@ end
 
 function SongQueue.getNextSong(url)
 	
+end
+
+function SongQueue.getLength()
+	return song_queue:length()
 end
 
 return SongQueue

@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### September 16, 2014
+* Removed volumeup/volumedown commands, replaced with just volume.
+* Added deque.lua (thanks Pierre Chapuis!).
+* Added song_queue.lua.
+
 ### September 15, 2014
 * Added command parsing.
 * Added placeholder functions for various commands.

@@ -4,7 +4,7 @@
 -------------------------
 
 local config = require("config")
-require "song_queue"
+local song_queue = require("song_queue")
 
 function piepan.onConnect()
 	print("MumbleDJ has connected to the server!")
@@ -40,6 +40,7 @@ function parseCommand(message)
 			if config.OUTPUT then 
 				print(message.user.name .. " has told the bot to start playing music.")
 			end
+			piepan.me.channel:play("song.ogg")
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
@@ -59,6 +60,9 @@ function parseCommand(message)
 		if has_permission then
 			if config.OUTPUT then 
 				print(message.user.name .. " has told the bot to add the following URL to the queue: " .. argument .. ".")
+				if not song_queue.addSong(argument) then
+					message.user:send(config.INVALID_URL_MSG)
+				end
 			end
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
@@ -73,25 +77,13 @@ function parseCommand(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	elseif command == "volumeup" then
-		local has_permission = checkPermissions(config.ADMIN_VOLUMEUP, message.user.name)
+	elseif command == "volume" then
+		local has_permission = checkPermissions(config.ADMIN_VOLUME, message.user.name)
 		
 		if has_permission then
-			if config.OUTPUT then 
-				print(message.user.name .. " has told the bot to raise the playback volume.")
+			if config.OUTPUT then
+				print(message.user.name .. " has changed the volume to the following: " .. argument .. ".")
 			end
-		else
-			message.user:send(config.NO_PERMISSION_MSG)
-		end
-	elseif command == "volumedown" then
-		local has_permission = checkPermissions(config.ADMIN_VOLUMEDOWN, message.user.name)
-		
-		if has_permission then
-			if config.OUTPUT then 
-				print(message.user.name .. " has told the bot to lower the playback volume.")
-			end
-		else
-			message.user:send(config.NO_PERMISSION_MSG)
 		end
 	elseif command == "move" then
 		local has_permission = checkPermissions(config.ADMIN_MOVE, message.user.name)
@@ -99,9 +91,9 @@ function parseCommand(message)
 		if has_permission then
 			if config.OUTPUT then 
 				print(message.user.name .. " has told the bot to move to the following channel: " .. argument .. ".")
-				if not move(argument) then
-					message.user:send(config.CHANNEL_DOES_NOT_EXIST_MSG)
-				end
+			end
+			if not move(argument) then
+				message.user:send(config.CHANNEL_DOES_NOT_EXIST_MSG)
 			end
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
@@ -116,32 +108,14 @@ function parseCommand(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	elseif command == "python" then
+		os.execute("python test.py")
 	else
 		message.user:send("The command you have entered is not valid.")
 	end
 end
 
-function play()
-	return
-end
-
-function pause()
-	return
-end
-
-function add()
-	return
-end
-
 function skip()
-	return
-end
-
-function volumeup()
-	return
-end
-
-function volumedown()
 	return
 end
 

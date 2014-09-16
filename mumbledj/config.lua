@@ -33,6 +33,10 @@ config.OUTPUT = true
 -- DEFAULT VALUE: 1
 config.USER_SOUND_PAUSE_TARGET = 1
 
+-- Default volume (1 being normal volume)
+-- DEFAULT VALUE: 0.25
+config.VOLUME = 0.25
+
 
 -----------------------
 -- ADMIN CONFIGURATION
@@ -66,13 +70,9 @@ config.ADMIN_ADD = false
 -- DEFAULT VALUE: false
 config.ADMIN_SKIP = false
 
--- Make volumeup an admin command?
+-- Make volume an admin command?
 -- DEFAULT VALUE: true
-config.ADMIN_VOLUMEUP = true
-
--- Make volumedown an admin command?
--- DEFAULT VALUE: true
-config.ADMIN_VOLUMEDOWN = true
+config.ADMIN_VOLUME = true
 
 -- Make move an admin command?
 -- DEFAULT VALUE: true
@@ -107,6 +107,7 @@ config.SHOW_NOTIFICATIONS = true
 -- DEFAULT VALUE: true
 config.SHOW_THUMBNAILS = true
 
+
 -------------------------
 -- MESSAGE CONFIGURATION
 -------------------------
@@ -119,5 +120,33 @@ config.NO_PERMISSION_MSG = "You do not have permission to execute that command."
 -- DEFAULT VALUE: "The channel you specified does not exist."
 config.CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 
+-- Message shown to users when they attempt to add an invalid URL to the queue.
+-- DEFAULT VALUE: "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
+config.INVALID_URL_MSG = "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
+
+
+----------------------
+-- HTML CONFIGURATION
+----------------------
+
+-- Message shown to channel when a new song starts playing.
+config.NOW_PLAYING_HTML = [[
+	<table>
+		<tr>
+			<td align="center"><img src="%s" width=150 /></td>
+		</tr>
+		<tr>
+			<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
+		</tr>
+		<tr>
+			<td align="center">Added by %s</td>
+		</tr>
+	</table>
+]]
+
+-- Message shown to channel when a song is added to the queue by a user.
+config.SONG_ADDED_HTML = [[
+	<b>%s</b> has added "%s" to the queue.
+]]
 
 return config

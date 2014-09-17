@@ -1,10 +1,15 @@
 MumbleDJ Changelog
 ==================
 
+### September 17, 2014
+* Removed USERNAME field from config.lua. It wasn't needed and introduced situations that may cause problems.
+* Fixed download_audio.py. It now seems to reliably download/encode audio. ffmpeg output has been silenced.
+
 ### September 16, 2014
 * Removed volumeup/volumedown commands, replaced with just volume.
 * Added deque.lua (thanks Pierre Chapuis!).
 * Added song_queue.lua.
+* Made significant progress toward a working song system.
 
 ### September 15, 2014
 * Added command parsing.

@@ -29,9 +29,17 @@ config.OUTPUT = true
 -- DEFAULT VALUE: 1
 config.USER_SOUND_PAUSE_TARGET = 1
 
--- Default volume (1 being normal volume)
--- DEFAULT VALUE: 0.25
-config.VOLUME = 0.25
+-- Default volume (256 being normal volume)
+-- DEFAULT VALUE: 32
+config.VOLUME = 32
+
+-- Lowest volume allowed
+-- DEFAULT VALUE: 16
+config.LOWEST_VOLUME = 16
+
+-- Highest volume allowed
+-- DEFAULT VALUE: 512
+config.HIGHEST_VOLUME = 512
 
 -- Ratio that must be met or exceeded to trigger a song skip.
 -- DEFAULT VALUE: 0.5
@@ -91,11 +99,6 @@ config.ADMIN_KILL = true
 -- DEFAULT VALUE: true
 config.SHOW_NOTIFICATIONS = true
 
--- Enable/disable YouTube thumbnails (true = on, false = off)
--- DEFAULT VALUE: true
-config.SHOW_THUMBNAILS = true
-
-
 -------------------------
 -- MESSAGE CONFIGURATION
 -------------------------
@@ -123,6 +126,14 @@ config.NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
 -- Message shown to users when they attempt to use the play command when there are no songs in the queue.
 -- DEFAULT VALUE: "There are no songs currently in the queue. Use " .. config.COMMAND_PREFIX .. "add to add a song to the queue."
 config.NO_SONGS_AVAILABLE = "There are no songs currently in the queue. Use " .. config.COMMAND_PREFIX .. "add to add a song to the queue."
+
+-- Message shown to users when they issue a command that requires an argument and one was not supplied.
+-- DEFAULT VALUE: "The command you issued requires an argument and you did not provide one. Make sure a space exists between the command and argument."
+config.NO_ARGUMENT = "The command you issued requires an argument and you did not provide one. Make sure a space exists between the command and the argument."
+
+-- Message shown to users when they try to change the volume to a value outside the volume range.
+-- DEFAULT VALUE: "The volume you tried to supply is not in the allowed volume range. The value must be between " .. config.LOWEST_VOLUME .. " and " .. config.HIGHEST_VOLUME .. "."
+config.NOT_IN_VOLUME_RANGE = "The volume you tried to supply is not in the allowed volume range. The value must be between " .. config.LOWEST_VOLUME .. " and " .. config.HIGHEST_VOLUME .. "."
 
 
 ----------------------

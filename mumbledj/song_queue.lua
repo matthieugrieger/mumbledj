@@ -26,7 +26,6 @@ function SongQueue.addSong(url, username)
 		local video_id = string.match(url, pattern)
 		if video_id ~= nil and string.len(video_id) < 20 then
 			print("YouTube URL is valid!")
-			--piepan.Thread.new(getYoutubeInfo, youtubeInfoCompleted, {video_id, username})
 			getYoutubeInfo(video_id, username)
 		end
 	end
@@ -66,12 +65,11 @@ function youtubeInfoCompleted(info)
 	song_queue:push_right(info)
 	
 	if song_queue:length() == 1 then
-		os.execute("python download_audio.py " .. info.id)
+		os.execute("python download_audio.py " .. info.id .. " " .. config.VOLUME)
 		while not file_exists("song-converted.ogg") do
 			os.execute("sleep " .. tonumber(2))
 		end
-		print("we done here")
-		piepan.me.channel:play("song-converted.ogg", config.VOLUME, nextSong)
+		piepan.me.channel:play("song-converted.ogg", nextSong)
 	end
 	
 	if piepan.Audio:isPlaying() then

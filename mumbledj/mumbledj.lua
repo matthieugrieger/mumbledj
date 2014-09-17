@@ -48,7 +48,7 @@ function parseCommand(message)
 				if piepan.Audio.isPlaying() then
 					message.user:send(config.MUSIC_PLAYING_MSG)
 				else
-					piepan.me.channel:play("song-converted.ogg", config.VOLUME, nextSong)
+					piepan.me.channel:play("song-converted.ogg", nextSong)
 			end
 		end
 			
@@ -104,8 +104,14 @@ function parseCommand(message)
 		if has_permission then
 			if config.OUTPUT then
 				print(message.user.name .. " has changed the volume to the following: " .. argument .. ".")
-				if 0.1 < argument < 2 then
-					config.VOLUME = argument
+				if argument ~= nil then
+					if config.LOWEST_VOLUME < argument < config.HIGHEST_VOLUME then
+						config.VOLUME = argument
+					else
+						message.user:send(config.NOT_IN_VOLUME_RANGE)
+					end
+				else
+					message.user:send(config.NO_ARGUMENT)
 				end
 			end
 		end

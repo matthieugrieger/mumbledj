@@ -9,8 +9,8 @@ local song_queue = require("song_queue")
 local skippers = {}
 
 function piepan.onConnect()
-	print("MumbleDJ has connected to the server!")
-	local user = piepan.users["MumbleDJ"]
+	print(piepan.me.name .. " has connected to the server!")
+	local user = piepan.users[piepan.me.name]
 	local channel = user.channel("Bot Testing")
 	piepan.me:moveTo(channel)
 end

@@ -12,10 +12,6 @@ local config = {}
 -- GENERAL CONFIGURATION
 -------------------------
 
--- Bot username
--- DEFAULT VALUE: "MumbleDJ"
-config.BOT_USERNAME = "MumbleDJ"
-
 -- Default channel
 -- DEFAULT VALUE: "Bot Testing"
 config.DEFAULT_CHANNEL = "Bot Testing"

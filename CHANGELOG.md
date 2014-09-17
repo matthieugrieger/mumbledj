@@ -4,6 +4,7 @@ MumbleDJ Changelog
 ### September 17, 2014
 * Removed USERNAME field from config.lua. It wasn't needed and introduced situations that may cause problems.
 * Fixed download_audio.py. It now seems to reliably download/encode audio. ffmpeg output has been silenced.
+* Volume is now set during encode by ffmpeg, since the volume option in piepan's play() does not seem to work.
 
 ### September 16, 2014
 * Removed volumeup/volumedown commands, replaced with just volume.

@@ -13,21 +13,27 @@ import pafy
 from sys import argv
 from os.path import isfile
 from os import remove, system
+from time import sleep
 
 url = argv[1]
 video = pafy.new(url)
 
-def encode_file(stream, downloaded, ratio, rate, eta):
-	if ratio == 1:
-		print('Encoding!')
-		system("ffmpeg -i song.ogg -ar 48000 -ac 1 song-converted.ogg -y")
-
 try:
-	video.oggstreams[0].download(filepath = "song.ogg", quiet = True, callback = encode_file)
-	if isfile(".video_fail"):
-		remove(".video_fail")
+	video.oggstreams[0].download(filepath = 'song.ogg', quiet = True)
+	if isfile('.video_fail'):
+		remove('.video_fail')
 except:
-	with open(".video_fail", "w+") as f:
+	with open('.video_fail', 'w+') as f:
 		f.close()
+		
+while isfile('song.ogg.temp'):
+	sleep(1)
+	
+system('ffmpeg -i song.ogg -ar 48000 -ac 1 -loglevel quiet song-converted.ogg -y')
+
+while not isfile("song-converted.ogg"):
+	sleep(1)
+
+remove('song.ogg')
 		
 

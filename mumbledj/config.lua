@@ -83,18 +83,6 @@ config.ADMIN_MOVE = true
 config.ADMIN_KILL = true
 
 
--------------------------
--- STORAGE CONFIGURATION
--------------------------
-
--- Delete audio files after they have been played?
--- DEFAULT VALUE: true
-config.DELETE_AUDIO = true
-
--- Delete thumbnails after they have been used?
-config.DELETE_THUMBNAILS = true
-
-
 ----------------------
 -- CHAT CONFIGURATION
 ----------------------

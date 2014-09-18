@@ -46,6 +46,39 @@ config.HIGHEST_VOLUME = 512
 config.SKIP_RATIO = 0.5
 
 
+-------------------------
+-- COMMAND CONFIGURATION
+-------------------------
+
+-- Alias used for play command.
+-- DEFAULT VALUE: "play"
+config.PLAY_ALIAS = "play"
+
+-- Alias used for pause command.
+-- DEFAULT VALUE: "pause"
+config.PAUSE_ALIAS = "pause"
+
+-- Alias used for add command.
+-- DEFAULT VALUE: "add"
+config.ADD_ALIAS = "add"
+
+-- Alias used for skip command.
+-- DEFAULT VALUE: "skip"
+config.SKIP_ALIAS = "skip"
+
+-- Alias used for volume command.
+-- DEFAULT VALUE: "volume"
+config.VOLUME_ALIAS = "volume"
+
+-- Alias used for move command.
+-- DEFAULT VALUE: "move"
+config.MOVE_ALIAS = "move"
+
+-- Alias used for kill command.
+-- DEFAULT VALUE: "kill"
+config.KILL_ALIAS = "kill"
+
+
 -----------------------
 -- ADMIN CONFIGURATION
 -----------------------
@@ -104,35 +137,27 @@ config.SHOW_NOTIFICATIONS = true
 -------------------------
 
 -- Message shown to users when they do not have permission to execute a command.
--- DEFAULT VALUE: "You do not have permission to execute that command."
 config.NO_PERMISSION_MSG = "You do not have permission to execute that command."
 
 -- Message shown to users when they try to move the bot to a non-existant channel.
--- DEFAULT VALUE: "The channel you specified does not exist."
 config.CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 
 -- Message shown to users when they attempt to add an invalid URL to the queue.
--- DEFAULT VALUE: "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
 config.INVALID_URL_MSG = "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
 
 -- Message shown to users when they attempt to execute the play command when music is already playing.
--- DEFAULT VALUE: "A music track is already playing!"
 config.MUSIC_PLAYING_MSG = "A music track is already playing!"
 
 -- Message shown to users when they attempt to use the stop command when no music is playing.
--- DEFAULT VALUE: "There is no music playing at the moment."
 config.NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
 
 -- Message shown to users when they attempt to use the play command when there are no songs in the queue.
--- DEFAULT VALUE: "There are no songs currently in the queue. Use " .. config.COMMAND_PREFIX .. "add to add a song to the queue."
 config.NO_SONGS_AVAILABLE = "There are no songs currently in the queue. Use " .. config.COMMAND_PREFIX .. "add to add a song to the queue."
 
 -- Message shown to users when they issue a command that requires an argument and one was not supplied.
--- DEFAULT VALUE: "The command you issued requires an argument and you did not provide one. Make sure a space exists between the command and argument."
 config.NO_ARGUMENT = "The command you issued requires an argument and you did not provide one. Make sure a space exists between the command and the argument."
 
 -- Message shown to users when they try to change the volume to a value outside the volume range.
--- DEFAULT VALUE: "The volume you tried to supply is not in the allowed volume range. The value must be between " .. config.LOWEST_VOLUME .. " and " .. config.HIGHEST_VOLUME .. "."
 config.NOT_IN_VOLUME_RANGE = "The volume you tried to supply is not in the allowed volume range. The value must be between " .. config.LOWEST_VOLUME .. " and " .. config.HIGHEST_VOLUME .. "."
 
 
@@ -168,6 +193,16 @@ config.SONG_PLAY_HTML = [[
 -- Message shown to channel when a song is paused by a user.
 config.SONG_PAUSED_HTML = [[
 	<b>%s</b> has paused the song.
+]]
+
+-- Message shown to channel when a user votes to skip a song.
+config.USER_SKIP_HTML = [[
+	<b>%s</b> has voted to skip this song.
+]]
+
+-- Message shown to channel when a song has been skipped.
+config.SONG_SKIPPED_HTML = [[
+	The number of votes required for a skip has been met. <b>Skipping song!</b>
 ]]
 
 return config

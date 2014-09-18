@@ -10,9 +10,11 @@ local deque = require("deque")
 local config = require("config")
 
 local song_queue = deque.new()
+local skippers = {}
 
 SongQueue = {}
 
+-- Begins the process of adding a new song to the song queue.
 function SongQueue.add_song(url, username)
 	local patterns = {
 		"https?://www%.youtube%.com/watch%?v=([%d%a_%-]+)",
@@ -32,6 +34,7 @@ function SongQueue.add_song(url, username)
 	end
 end
 
+-- Retrieves the metadata for the specified YouTube video via the gdata API.
 function get_youtube_info(id, username)
 	if id == nil then
 		return false
@@ -57,6 +60,8 @@ function get_youtube_info(id, username)
 	})
 end
 
+-- Notifies the channel that a song has been added to the queue, and plays the
+-- song if it is the first one in the queue.
 function youtube_info_completed(info)
 	if info == nil then
 		return false
@@ -74,7 +79,9 @@ function youtube_info_completed(info)
 	return true
 end
 
+-- Deletes the old song and begins the process of retrieving a new one.
 function SongQueue.get_next_song()
+	SongQueue.reset_skips()
 	if file_exists("song-converted.ogg") then
 		os.remove("song-converted.ogg")
 	end
@@ -84,6 +91,7 @@ function SongQueue.get_next_song()
 	end
 end
 
+-- Downloads/encodes the audio file and then begins to play it.
 function start_song(info)
 	os.execute("python download_audio.py " .. info.id .. " " .. config.VOLUME)
 	while not file_exists("song-converted.ogg") do
@@ -104,10 +112,44 @@ function start_song(info)
 	return false
 end
 
+-- Adds the username of a user who requested a skip. If their name is
+-- already in the list nothing will happen.
+function SongQueue.add_skip(username)
+	local already_skipped = false
+	for name,_ in pairs(skippers) do
+		if name == username then
+			already_skipped = true
+		end
+	end
+	if not already_skipped then
+		table.insert(skippers, username)
+		return true
+	end
+	return false
+end
+
+-- Counts the number of users who would like to skip the current song and
+-- returns it.
+function SongQueue.count_skippers()
+	local skipper_count = 0
+	for name,_ in pairs(skippers) do
+		skipper_count = skipper_count + 1
+	end
+	return skipper_count
+end
+
+-- Resets the list of users who would like to skip a song. Called during a
+-- transition between songs.
+function SongQueue.reset_skips()
+	skippers = {}
+end
+
+-- Retrieves the length of the song queue and returns it.
 function SongQueue.get_length()
 	return song_queue:length()
 end
 
+-- Checks if a file exists.
 function file_exists(file)
 	local f=io.open(file,"r")
 	if f~=nil then io.close(f) return true else return false end

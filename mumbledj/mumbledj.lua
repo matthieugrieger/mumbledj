@@ -1,14 +1,16 @@
 -------------------------
 --      MumbleDJ       --
 -- By Matthieu Grieger --
--------------------------
+------------------------------------------------------------------
+-- mumbledj.lua                                                 --
+-- The main file which defines most of MumbleDJ's behavior. All --
+-- commands are found here, and most of their implementation.   --
+------------------------------------------------------------------
 
 local config = require("config")
 local song_queue = require("song_queue")
 
--- NOTE: Skippers will need to be fixed since all the song-related stuff is being moved to song_queue.lua
-local skippers = {}
-
+-- Connects to Mumble server.
 function piepan.onConnect()
 	print(piepan.me.name .. " has connected to the server!")
 	local user = piepan.users[piepan.me.name]
@@ -16,6 +18,7 @@ function piepan.onConnect()
 	piepan.me:moveTo(channel)
 end
 
+-- Function that is called when a new message is posted to the channel.
 function piepan.onMessage(message)
 	if message.user == nil then
 		return
@@ -26,6 +29,8 @@ function piepan.onMessage(message)
 	end
 end
 
+-- Parses commands and its arguments (if they exist), and calls the appropriate
+-- functions for doing the requested task.
 function parse_command(message)
 	local command = ""
 	local argument = ""
@@ -36,7 +41,7 @@ function parse_command(message)
 		command = string.sub(message.text, 2)
 	end
 	
-	if command == "play" then
+	if command == config.PLAY_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_PLAY, message.user.name)
 		
 		if has_permission then
@@ -56,7 +61,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	elseif command == "pause" then
+	elseif command == config.PAUSE_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_PAUSE, message.user.name)
 		
 		if has_permission then
@@ -73,7 +78,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	elseif command == "add" then
+	elseif command == config.ADD_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_ADD, message.user.name)
 		
 		if has_permission then
@@ -86,7 +91,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	elseif command == "skip" then
+	elseif command == config.SKIP_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_SKIP, message.user.name)
 		
 		if has_permission then
@@ -98,7 +103,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	elseif command == "volume" then
+	elseif command == config.VOLUME_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_VOLUME, message.user.name)
 		
 		if has_permission then
@@ -115,7 +120,7 @@ function parse_command(message)
 				end
 			end
 		end
-	elseif command == "move" then
+	elseif command == config.MOVE_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_MOVE, message.user.name)
 		
 		if has_permission then
@@ -128,7 +133,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	elseif command == "kill" then
+	elseif command == config.KILL_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_KILL, message.user.name)
 		
 		if has_permission then
@@ -139,45 +144,38 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	elseif command == "musicplaying" then
+		if piepan.Audio.isPlaying() then
+			message.user:send("Music is currently playing.")
+		else
+			message.user:send("Music is not currently playing.")
+		end
 	else
 		message.user:send("The command you have entered is not valid.")
 	end
 end
 
+-- Handles a skip request through the use of helper functions found within
+-- song_queue.lua. Once done processing, it will compare the skip ratio with
+-- the one defined in the settings and decide whether to skip the current song
+-- or not.
 function skip(username)
-	local user_count = 0
-	local skipper_count = 0
-	local already_skipped = false
-	for name,_ in pairs(piepan.users) do
-		user_count = user_count + 1
-	end
-	
-	user_count = user_count - 1 -- So that we do not count the bot.
-	
-	for name,_ in pairs(skippers) do
-		if name == username then
-			already_skipped = true
-		end
-		skipper_count = skipper_count + 1
-	end
-	
-	if not already_skipped then
-		table.insert(skippers, username)
-		skipper_count = skipper_count + 1
-		local skip_ratio = skipper_count / user_count
+	if song_queue:add_skip(username) then
+		local skip_ratio = song_queue:count_skippers() / count_users()
 		if skip_ratio > config.SKIP_RATIO then
-			piepan.me.channel:send("The number of votes required for a skip has been met. Skipping song!")
+			piepan.me.channel:send(config.SONG_SKIPPED_HTML)
 			next_song()
 		else
-			piepan.me.channel:send("<b>" .. username .. "</b> has voted to skip this song.")
-		end
+			piepan.me.channel:send(string.format(config.USER_SKIP_HTML, username))
 	else
 		message.user:send("You have already voted to skip this song.")
 	end
 end
 
+-- Moves the bot to the channel specified by the "chan" argument.
+-- NOTE: This only supports moving to a sibling channel at the moment.
 function move(chan)
-	local user = piepan.users["MumbleDJ"]
+	local user = piepan.users[piepan.me.name]
 	local channel = user.channel("../" .. chan)
 	if channel == nil then
 		return false
@@ -187,6 +185,7 @@ function move(chan)
 	end
 end
 
+-- Performs functions that allow the bot to safely exit.
 function kill()
 	os.remove("song.ogg")
 	os.remove("song-converted.ogg")
@@ -194,6 +193,8 @@ function kill()
 	os.exit(0)
 end
 
+-- Checks the permissions of a user against the config to see if they are
+-- allowed to execute a certain command.
 function check_permissions(ADMIN_COMMAND, username)
 	if config.ENABLE_ADMINS and ADMIN_COMMAND then
 		return is_admin(username)
@@ -202,6 +203,7 @@ function check_permissions(ADMIN_COMMAND, username)
 	return true
 end
 
+-- Checks if a user is an admin, as specified in config.lua.
 function is_admin(username)
 	for _,user in pairs(config.ADMINS) do
 		if user == username then
@@ -212,8 +214,9 @@ function is_admin(username)
 	return false
 end
 
+-- Switches to the next song.
 function next_song()
-	skippers = {}
+	song_queue:reset_skips()
 	if song_queue:get_length() ~= 0 then
 		local success = song_queue:get_next_song()
 		if not success then
@@ -222,7 +225,17 @@ function next_song()
 	end
 end
 
+-- Checks if a file exists.
 function file_exists(file)
 	local f=io.open(file,"r")
 	if f~=nil then io.close(f) return true else return false end
+end
+
+-- Returns the number of users in the Mumble server.
+function count_users()
+	local user_count = -1 -- Set to -1 to account for the bot
+	for name,_ in pairs(piepan.users) do
+		user_count = user_count + 1
+	end
+	return user_count
 end

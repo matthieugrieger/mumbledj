@@ -1,6 +1,12 @@
 MumbleDJ Changelog
 ==================
 
+### September 18, 2014
+* Added command alias options to config.
+* Moved most of the skip-related code to song_queue.lua.
+* Commented more thoroughly the code, mostly pointing out what each function does.
+* Made more progress toward a working song queue. It only seems to play the first song in the queue at the moment.
+
 ### September 17, 2014
 * Removed USERNAME field from config.lua. It wasn't needed and introduced situations that may cause problems.
 * Fixed download_audio.py. It now seems to reliably download/encode audio. ffmpeg output has been silenced.

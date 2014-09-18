@@ -41,6 +41,7 @@ function parse_command(message)
 		command = string.sub(message.text, 2)
 	end
 	
+	-- Play command
 	if command == config.PLAY_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_PLAY, message.user.name)
 		
@@ -61,6 +62,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	-- Pause command
 	elseif command == config.PAUSE_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_PAUSE, message.user.name)
 		
@@ -78,6 +80,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	-- Add command
 	elseif command == config.ADD_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_ADD, message.user.name)
 		
@@ -91,6 +94,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	-- Skip command
 	elseif command == config.SKIP_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_SKIP, message.user.name)
 		
@@ -103,6 +107,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	-- Volume command
 	elseif command == config.VOLUME_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_VOLUME, message.user.name)
 		
@@ -120,6 +125,7 @@ function parse_command(message)
 				end
 			end
 		end
+	-- Move command
 	elseif command == config.MOVE_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_MOVE, message.user.name)
 		
@@ -133,6 +139,7 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	-- Kill command
 	elseif command == config.KILL_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_KILL, message.user.name)
 		
@@ -144,6 +151,8 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
+	-- This is just where I put commands for testing. These will most likely be removed
+	-- in the "final" version.
 	elseif command == "musicplaying" then
 		if piepan.Audio.isPlaying() then
 			message.user:send("Music is currently playing.")

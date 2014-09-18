@@ -176,6 +176,7 @@ function skip(username)
 			next_song()
 		else
 			piepan.me.channel:send(string.format(config.USER_SKIP_HTML, username))
+		end
 	else
 		message.user:send("You have already voted to skip this song.")
 	end

@@ -1,6 +1,12 @@
 MumbleDJ Changelog
 ==================
 
+### September 23, 2014
+* Bot now seems to be working!
+* Skipping songs works now.
+* Second audio track now plays directly after the first one.
+* Silenced ffmpeg output again.
+
 ### September 18, 2014
 * Added command alias options to config.
 * Moved most of the skip-related code to song_queue.lua.

@@ -98,6 +98,9 @@ function start_song(info)
 		os.execute("sleep " .. tonumber(2))
 	end
 	if not file_exists(".video_fail") then
+		if piepan.Audio:isPlaying() then
+			piepan.Audio:stop()
+		end
 		piepan.me.channel:play("song-converted.ogg", SongQueue.get_next_song)
 	else
 		return false

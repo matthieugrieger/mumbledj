@@ -173,6 +173,7 @@ function skip(username)
 		local skip_ratio = song_queue:count_skippers() / count_users()
 		if skip_ratio > config.SKIP_RATIO then
 			piepan.me.channel:send(config.SONG_SKIPPED_HTML)
+			piepan.Audio:stop()
 			next_song()
 		else
 			piepan.me.channel:send(string.format(config.USER_SKIP_HTML, username))

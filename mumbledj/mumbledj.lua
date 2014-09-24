@@ -14,7 +14,7 @@ local song_queue = require("song_queue")
 function piepan.onConnect()
 	print(piepan.me.name .. " has connected to the server!")
 	local user = piepan.users[piepan.me.name]
-	local channel = user.channel("Bot Testing")
+	local channel = user.channel(config.DEFAULT_CHANNEL)
 	piepan.me:moveTo(channel)
 end
 

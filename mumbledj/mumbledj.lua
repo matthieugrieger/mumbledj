@@ -49,7 +49,7 @@ function parse_command(message)
 			if config.OUTPUT then 
 				print(message.user.name .. " has told the bot to start playing music.")
 			end
-			if song_queue.getLength() == 0 then
+			if song_queue.get_length() == 0 then
 				message.user:send(config.NO_SONGS_AVAILABLE)
 			else
 				if piepan.Audio.isPlaying() then

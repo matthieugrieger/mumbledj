@@ -31,6 +31,9 @@ This section will be updated when the project is near completion.
 * [Opus](http://www.opus-codec.org/)
 * [Python 2.6 or above](https://www.python.org/)
 * [pafy](https://github.com/np1/pafy/)
+* [piepan](https://github.com/layeh/piepan)
+* [Jansson](http://www.digip.org/jansson/)
+* [jshon](http://kmkeen.com/jshon/)
 
 ## Author
 [Matthieu Grieger](http://matthieugrieger.com)

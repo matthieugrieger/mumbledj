@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### September 25, 2014
+* Forced ffmpeg to use libvorbis codec.
+
 ### September 23, 2014
 * Bot now seems to be working!
 * Skipping songs works now.

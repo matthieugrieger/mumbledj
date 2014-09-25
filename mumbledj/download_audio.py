@@ -30,7 +30,7 @@ except:
 while isfile('song.ogg.temp'):
 	sleep(1)
 	
-system('ffmpeg -i song.ogg -ar 48000 -ac 1 -loglevel quiet -vol ' + str(volume) + ' song-converted.ogg -y')
+system('ffmpeg -i song.ogg -codec:a libvorbis -ar 48000 -ac 1 -loglevel quiet -vol ' + str(volume) + ' song-converted.ogg -y')
 
 while not isfile('song-converted.ogg') and not isfile(".video_fail"):
 	sleep(1)

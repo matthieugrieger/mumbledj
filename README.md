@@ -4,12 +4,12 @@ A Mumble bot that plays music fetched from YouTube videos. There are ways to pla
 
 ## Planned Features
 These are features that I would like to complete before I consider the project "finished."
-* Play YouTube audio through Mumble to be heard by others.
-* Commands for adding/queueing YouTube audio by linking to the URL.
-* Current song updates in the chat.
-* Commands to play, pause, and raise/lower volume.
-* Commands to allow users to move the bot from one channel to another.
-* Admin commands to completely shut down the bot and perform other admin actions.
+* Play YouTube audio through Mumble to be heard by others. (**Done**)
+* Commands for adding/queueing YouTube audio by linking to the URL. (**Done**)
+* Current song updates in the chat. (**Done**)
+* Command to raise/lower volume. (**Done**)
+* Commands to allow users to move the bot from one channel to another. (**Done**)
+* Admin commands to completely shut down the bot and perform other admin actions. (**Done**)
 * Automatically turn on/off music when a certain number of users are inside the channel.
 
 ## Hopeful Features

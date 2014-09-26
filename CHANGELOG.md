@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### September 26, 2014
+* Removed play and pause commands. There were issues with these commands, and they both serve functions that can be done within Mumble per-user.
+* Removed all play and pause configuration options from config.lua.
+
 ### September 25, 2014
 * Forced ffmpeg to use libvorbis codec.
 

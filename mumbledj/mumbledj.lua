@@ -41,47 +41,8 @@ function parse_command(message)
 		command = string.sub(message.text, 2)
 	end
 	
-	-- Play command
-	if command == config.PLAY_ALIAS then
-		local has_permission = check_permissions(config.ADMIN_PLAY, message.user.name)
-		
-		if has_permission then
-			if config.OUTPUT then 
-				print(message.user.name .. " has told the bot to start playing music.")
-			end
-			if song_queue.get_length() == 0 then
-				message.user:send(config.NO_SONGS_AVAILABLE)
-			else
-				if piepan.Audio.isPlaying() then
-					message.user:send(config.MUSIC_PLAYING_MSG)
-				else
-					piepan.me.channel:play("song-converted.ogg", SongQueue.get_next_song)
-			end
-		end
-			
-		else
-			message.user:send(config.NO_PERMISSION_MSG)
-		end
-	-- Pause command
-	elseif command == config.PAUSE_ALIAS then
-		local has_permission = check_permissions(config.ADMIN_PAUSE, message.user.name)
-		
-		if has_permission then
-			if config.OUTPUT then 
-				print(message.user.name .. " has told the bot to pause music playback.")
-			end
-			
-			if piepan.Audio.isPlaying() then
-				piepan.me.channel:send(string.format(config.SONG_PAUSED_HTML, message.user.name))
-				piepan.Audio.stop()
-			else
-				message.user:send(config.NO_MUSIC_PLAYING_MSG)
-			end
-		else
-			message.user:send(config.NO_PERMISSION_MSG)
-		end
 	-- Add command
-	elseif command == config.ADD_ALIAS then
+	if command == config.ADD_ALIAS then
 		local has_permission = check_permissions(config.ADMIN_ADD, message.user.name)
 		
 		if has_permission then
@@ -151,14 +112,6 @@ function parse_command(message)
 		else
 			message.user:send(config.NO_PERMISSION_MSG)
 		end
-	-- This is just where I put commands for testing. These will most likely be removed
-	-- in the "final" version.
-	elseif command == "musicplaying" then
-		if piepan.Audio.isPlaying() then
-			message.user:send("Music is currently playing.")
-		else
-			message.user:send("Music is not currently playing.")
-		end
 	else
 		message.user:send("The command you have entered is not valid.")
 	end
@@ -201,6 +154,7 @@ function kill()
 	os.remove("song.ogg")
 	os.remove("song-converted.ogg")
 	os.remove(".video_fail")
+	piepan.disconnect()
 	os.exit(0)
 end
 

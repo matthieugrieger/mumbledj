@@ -50,14 +50,6 @@ config.SKIP_RATIO = 0.5
 -- COMMAND CONFIGURATION
 -------------------------
 
--- Alias used for play command.
--- DEFAULT VALUE: "play"
-config.PLAY_ALIAS = "play"
-
--- Alias used for pause command.
--- DEFAULT VALUE: "pause"
-config.PAUSE_ALIAS = "pause"
-
 -- Alias used for add command.
 -- DEFAULT VALUE: "add"
 config.ADD_ALIAS = "add"
@@ -94,14 +86,6 @@ config.ENABLE_ADMINS = true
 -- EXAMPLE:
 -- 	config.ADMINS = {"Matt", "Matthieu"}
 config.ADMINS = {"Matt"}
-
--- Make play an admin command?
--- DEFAULT VALUE: false
-config.ADMIN_PLAY = false
-
--- Make pause an admin command?
--- DEFAULT VALUE: false
-config.ADMIN_PAUSE = false
 
 -- Make add an admin command?
 -- DEFAULT VALUE: false
@@ -145,14 +129,8 @@ config.CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 -- Message shown to users when they attempt to add an invalid URL to the queue.
 config.INVALID_URL_MSG = "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
 
--- Message shown to users when they attempt to execute the play command when music is already playing.
-config.MUSIC_PLAYING_MSG = "A music track is already playing!"
-
 -- Message shown to users when they attempt to use the stop command when no music is playing.
 config.NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
-
--- Message shown to users when they attempt to use the play command when there are no songs in the queue.
-config.NO_SONGS_AVAILABLE = "There are no songs currently in the queue. Use " .. config.COMMAND_PREFIX .. "add to add a song to the queue."
 
 -- Message shown to users when they issue a command that requires an argument and one was not supplied.
 config.NO_ARGUMENT = "The command you issued requires an argument and you did not provide one. Make sure a space exists between the command and the argument."
@@ -183,16 +161,6 @@ config.NOW_PLAYING_HTML = [[
 -- Message shown to channel when a song is added to the queue by a user.
 config.SONG_ADDED_HTML = [[
 	<b>%s</b> has added "%s" to the queue.
-]]
-
--- Message shown to channel when a song is resumed with the play command.
-config.SONG_PLAY_HTML = [[
-	<b>%s</b> resumed audio playback.
-]]
-
--- Message shown to channel when a song is paused by a user.
-config.SONG_PAUSED_HTML = [[
-	<b>%s</b> has paused the song.
 ]]
 
 -- Message shown to channel when a user votes to skip a song.

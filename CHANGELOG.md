@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### September 30, 2014
+* Fixed skips not working correctly.
+* Fixed a crash related to private messages.
+
 ### September 26, 2014
 * Removed play and pause commands. There were issues with these commands, and they both serve functions that can be done within Mumble per-user.
 * Removed all play and pause configuration options from config.lua.

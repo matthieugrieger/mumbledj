@@ -119,7 +119,7 @@ end
 -- already in the list nothing will happen.
 function SongQueue.add_skip(username)
 	local already_skipped = false
-	for name,_ in pairs(skippers) do
+	for _,name in pairs(skippers) do
 		if name == username then
 			already_skipped = true
 		end

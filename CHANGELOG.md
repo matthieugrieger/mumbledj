@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### October 7, 2014
+* Made user skip message show even when the target number of skips has been reached.
+
 ### September 30, 2014
 * Fixed skips not working correctly.
 * Fixed a crash related to private messages.

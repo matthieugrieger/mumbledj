@@ -3,6 +3,7 @@ MumbleDJ Changelog
 
 ### October 7, 2014
 * Made user skip message show even when the target number of skips has been reached.
+* Made "Music" the default Mumble channel.
 
 ### September 30, 2014
 * Fixed skips not working correctly.

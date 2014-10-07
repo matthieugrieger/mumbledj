@@ -13,8 +13,8 @@ local config = {}
 -------------------------
 
 -- Default channel
--- DEFAULT VALUE: "Bot Testing"
-config.DEFAULT_CHANNEL = "Bot Testing"
+-- DEFAULT VALUE: "Music"
+config.DEFAULT_CHANNEL = "Music"
 
 -- Command prefix
 -- DEFAULT VALUE: "!"

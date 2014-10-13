@@ -20,7 +20,7 @@ These are features that would be cool to have, but might not ever make it into t
 * Statistics tracking.
 
 ## Setup
-This section will be updated when the project is near completion.
+Since the setup process is a bit extensive, the setup guide can be found in [SETUP.md](https://github.com/matthieugrieger/mumbledj/blob/master/SETUP.md).
 
 ## Dependencies
 * [OpenSSL](http://www.openssl.org/)

@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### October 13, 2014
+* Added `SETUP.md` which contains a guide on how to configure MumbleDJ and install its dependencies.
+
 ### October 7, 2014
 * Made user skip message show even when the target number of skips has been reached.
 * Made "Music" the default Mumble channel.

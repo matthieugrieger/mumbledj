@@ -73,7 +73,7 @@ $ make clean
 $ nano Makefile
 ```
 
-Replace the first like of the `Makefile` with the following:
+Replace the first line of the `Makefile` with the following:
 
 ```
 CFLAGS = `pkg-config --libs --cflags libssl lua5.2 libprotobuf-c opus vorbis vorbisfile` -lev -pthread

@@ -65,7 +65,7 @@ $ make
 
 Then `cp` the `piepan` executable into your bot's directory or `/usr/local/bin`.
 
-**NOTE:** If your system cannot find `lua` on your system and complains of `pkg-config` stuff, try the following "fix":
+**NOTE:** If your system cannot find `lua` and complains of `pkg-config` stuff, try the following "fix":
 
 ```
 $ cd piepan

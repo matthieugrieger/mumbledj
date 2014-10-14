@@ -3,6 +3,8 @@ MumbleDJ Changelog
 
 ### October 13, 2014
 * Added `SETUP.md` which contains a guide on how to configure MumbleDJ and install its dependencies.
+* Deleted song_queue.lua and moved all contents to mumbledj.lua. In the end this will make the script simpler.
+* Fixed song skipping.
 
 ### October 7, 2014
 * Made user skip message show even when the target number of skips has been reached.

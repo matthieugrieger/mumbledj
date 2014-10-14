@@ -8,7 +8,8 @@
 ------------------------------------------------------------------
 
 local config = require("config")
-local song_queue = require("song_queue")
+--local song_queue = require("song_queue")
+local deque = require("deque")
 
 -- Connects to Mumble server.
 function piepan.onConnect()
@@ -47,8 +48,8 @@ function parse_command(message)
 		
 		if has_permission then
 			if config.OUTPUT then 
-				print(message.user.name .. " has told the bot to add the following URL to the queue: " .. argument .. ".")
-				if not song_queue.add_song(argument, message.user.name) then
+				print(message.user.name .. " has added a song to the queue.")
+				if not add_song(argument, message.user.name) then
 					message.user:send(config.INVALID_URL_MSG)
 				end
 			end
@@ -122,10 +123,13 @@ end
 -- the one defined in the settings and decide whether to skip the current song
 -- or not.
 function skip(username)
-	if song_queue:add_skip(username) then
-		local skip_ratio = song_queue:count_skippers() / count_users()
+	print("Starting skip process...")
+	if add_skip(username) then
+		print("Calculating skip ratio...")
+		local skip_ratio = count_skippers() / count_users()
 		piepan.me.channel:send(string.format(config.USER_SKIP_HTML, username))
 		if skip_ratio > config.SKIP_RATIO then
+			print("Song has received enough skip votes to warrant a skip.")
 			piepan.me.channel:send(config.SONG_SKIPPED_HTML)
 			piepan.Audio:stop()
 			next_song()
@@ -178,9 +182,9 @@ end
 
 -- Switches to the next song.
 function next_song()
-	song_queue:reset_skips()
-	if song_queue:get_length() ~= 0 then
-		local success = song_queue:get_next_song()
+	reset_skips()
+	if get_length() ~= 0 then
+		local success = get_next_song()
 		if not success then
 			piepan.me.channel:send("An error occurred while preparing the next track. Skipping...")
 		end
@@ -200,4 +204,156 @@ function count_users()
 		user_count = user_count + 1
 	end
 	return user_count
+end
+
+-------------------------------------------------
+-- Song Queue Stuff                            --
+-- Contains the definition of the song queue   --
+-- used for queueing up songs.                 --
+-------------------------------------------------
+
+local song_queue = deque.new()
+local skippers = {}
+
+-- Begins the process of adding a new song to the song queue.
+function add_song(url, username)
+	local patterns = {
+		"https?://www%.youtube%.com/watch%?v=([%d%a_%-]+)",
+		"https?://youtube%.com/watch%?v=([%d%a_%-]+)",
+		"https?://youtu.be/([%d%a_%-]+)",
+		"https?://youtube.com/v/([%d%a_%-]+)",
+		"https?://www.youtube.com/v/([%d%a_%-]+)"
+	}
+	
+	for _,pattern in ipairs(patterns) do
+		local video_id = string.match(url, pattern)
+		if video_id ~= nil and string.len(video_id) < 20 then
+			return get_youtube_info(video_id, username)
+		else
+			return false
+		end
+	end
+end
+
+-- Retrieves the metadata for the specified YouTube video via the gdata API.
+function get_youtube_info(id, username)
+	if id == nil then
+		return false
+	end
+	local cmd = [[
+		wget -q -O - 'http://gdata.youtube.com/feeds/api/videos/%s?v=2&alt=jsonc' |
+		jshon -Q -e data -e title -u -p -e duration -u -p -e thumbnail -e hqDefault -u
+	]]
+	local jshon = io.popen(string.format(cmd, id))
+	local name = jshon:read()
+	local duration = jshon:read()
+	local thumbnail = jshon:read()
+	if name == nil or duration == nil then
+		return false
+	end
+	
+	return youtube_info_completed({
+		id = id,
+		title = name,
+		duration = string.format("%d:%02d", duration / 60, duration % 60),
+		thumbnail = thumbnail,
+		username = username
+	})
+end
+
+-- Notifies the channel that a song has been added to the queue, and plays the
+-- song if it is the first one in the queue.
+function youtube_info_completed(info)
+	if info == nil then
+		return false
+	end
+	
+	song_queue:push_right(info)
+	
+	local message = string.format(config.SONG_ADDED_HTML, info.username, info.title)
+	piepan.me.channel:send(message)
+	
+	if not piepan.Audio.isPlaying() then
+		return get_next_song()
+	end
+	
+	return true
+end
+
+-- Deletes the old song and begins the process of retrieving a new one.
+function get_next_song()
+	reset_skips()
+	if file_exists("song-converted.ogg") then
+		os.remove("song-converted.ogg")
+	end
+	if song_queue:length() ~= 0 then
+		local next_song = song_queue:pop_left()
+		return start_song(next_song)
+	end
+end
+
+-- Downloads/encodes the audio file and then begins to play it.
+function start_song(info)
+	os.execute("python download_audio.py " .. info.id .. " " .. config.VOLUME)
+	while not file_exists("song-converted.ogg") do
+		os.execute("sleep " .. tonumber(2))
+	end
+	if not file_exists(".video_fail") then
+		if piepan.Audio:isPlaying() then
+			piepan.Audio:stop()
+		end
+		piepan.me.channel:play("song-converted.ogg", get_next_song)
+	else
+		return false
+	end
+	
+	if piepan.Audio:isPlaying() then
+		local message = string.format(config.NOW_PLAYING_HTML, info.thumbnail, info.id, info.title, info.duration, info.username)
+		piepan.me.channel:send(message)
+		return true
+	end
+	
+	return false
+end
+
+-- Adds the username of a user who requested a skip. If their name is
+-- already in the list nothing will happen.
+function add_skip(username)
+	local already_skipped = false
+	print(username .. " is attempting to skip a song.")
+	for _,name in pairs(skippers) do
+		if name == username then
+			print(username .. " has already skipped the song.")
+			already_skipped = true
+		end
+	end
+	if not already_skipped then
+		print(username .. " has not already skipped the song. Adding...")
+		table.insert(skippers, username)
+		return true
+	end
+	print(username .. " has already skipped. Returning false...")
+	return false
+end
+
+-- Counts the number of users who would like to skip the current song and
+-- returns it.
+function count_skippers()
+	local skipper_count = 0
+	for name,_ in pairs(skippers) do
+		skipper_count = skipper_count + 1
+	end
+	print(tostring(skipper_count) .. " people have voted to skip the current song.")
+	return skipper_count
+end
+
+-- Resets the list of users who would like to skip a song. Called during a
+-- transition between songs.
+function reset_skips()
+	skippers = {}
+end
+
+-- Retrieves the length of the song queue and returns it.
+function get_length()
+	return song_queue:length()
 end

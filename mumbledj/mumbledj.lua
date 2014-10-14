@@ -123,13 +123,10 @@ end
 -- the one defined in the settings and decide whether to skip the current song
 -- or not.
 function skip(username)
-	print("Starting skip process...")
 	if add_skip(username) then
-		print("Calculating skip ratio...")
 		local skip_ratio = count_skippers() / count_users()
 		piepan.me.channel:send(string.format(config.USER_SKIP_HTML, username))
 		if skip_ratio > config.SKIP_RATIO then
-			print("Song has received enough skip votes to warrant a skip.")
 			piepan.me.channel:send(config.SONG_SKIPPED_HTML)
 			piepan.Audio:stop()
 			next_song()
@@ -320,19 +317,16 @@ end
 -- already in the list nothing will happen.
 function add_skip(username)
 	local already_skipped = false
-	print(username .. " is attempting to skip a song.")
 	for _,name in pairs(skippers) do
 		if name == username then
-			print(username .. " has already skipped the song.")
 			already_skipped = true
 		end
 	end
 	if not already_skipped then
-		print(username .. " has not already skipped the song. Adding...")
 		table.insert(skippers, username)
 		return true
 	end
-	print(username .. " has already skipped. Returning false...")
+
 	return false
 end
 
@@ -343,7 +337,7 @@ function count_skippers()
 	for name,_ in pairs(skippers) do
 		skipper_count = skipper_count + 1
 	end
-	print(tostring(skipper_count) .. " people have voted to skip the current song.")
+
 	return skipper_count
 end
 

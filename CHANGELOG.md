@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### October 18, 2014
+* Fixed a crash when an error occurs during the audio downloading & encoding process.
+
 ### October 13, 2014
 * Added `SETUP.md` which contains a guide on how to configure MumbleDJ and install its dependencies.
 * Deleted song_queue.lua and moved all contents to mumbledj.lua. In the end this will make the script simpler.

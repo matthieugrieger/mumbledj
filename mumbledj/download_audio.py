@@ -29,11 +29,17 @@ except:
 		
 while isfile('song.ogg.temp'):
 	sleep(1)
-	
-system('ffmpeg -i song.ogg -codec:a libvorbis -ar 48000 -ac 1 -loglevel quiet -vol ' + str(volume) + ' song-converted.ogg -y')
 
-while not isfile('song-converted.ogg') and not isfile(".video_fail"):
-	sleep(1)
+if isfile('song.ogg'):
+	system('ffmpeg -i song.ogg -codec:a libvorbis -ar 48000 -ac 1 -loglevel quiet -vol ' + str(volume) + ' song-converted.ogg -y')
+else:
+	with open('.video_fail', 'w+') as f:
+		f.close()
 
-remove('song.ogg')
+if not isfile('.video_fail'):
+	while not isfile('song-converted.ogg'):
+		sleep(1)
+
+if isfile('song.ogg'):
+	remove('song.ogg')
 

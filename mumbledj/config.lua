@@ -127,7 +127,7 @@ config.NO_PERMISSION_MSG = "You do not have permission to execute that command."
 config.CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 
 -- Message shown to users when they attempt to add an invalid URL to the queue.
-config.INVALID_URL_MSG = "The URL you submitted does not match the required format. Please submit a valid YouTube URL."
+config.INVALID_URL_MSG = "The URL you submitted does not match the required format. Either you did not provide a YouTube URL, or an error occurred during the downloading & encoding process."
 
 -- Message shown to users when they attempt to use the stop command when no music is playing.
 config.NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."

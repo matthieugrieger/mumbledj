@@ -292,10 +292,10 @@ end
 -- Downloads/encodes the audio file and then begins to play it.
 function start_song(info)
 	os.execute("python download_audio.py " .. info.id .. " " .. config.VOLUME)
-	while not file_exists("song-converted.ogg") do
-		os.execute("sleep " .. tonumber(2))
-	end
 	if not file_exists(".video_fail") then
+		while not file_exists("song-converted.ogg") do
+			os.execute("sleep " .. tonumber(2))
+		end
 		if piepan.Audio:isPlaying() then
 			piepan.Audio:stop()
 		end

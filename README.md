@@ -34,6 +34,7 @@ Since the setup process is a bit extensive, the setup guide can be found in [SET
 * [piepan](https://github.com/layeh/piepan)
 * [Jansson](http://www.digip.org/jansson/)
 * [jshon](http://kmkeen.com/jshon/)
+* [ffmpeg](https://www.ffmpeg.org/)
 
 ## Author
 [Matthieu Grieger](http://matthieugrieger.com)

@@ -16,6 +16,10 @@ function piepan.onConnect()
 	print(piepan.me.name .. " has connected to the server!")
 	local user = piepan.users[piepan.me.name]
 	local channel = user.channel(config.DEFAULT_CHANNEL)
+	if channel == nil then
+		print("The channel '" .. config.DEFAULT_CHANNEL .. "' does not exist. Moving bot to root of server...")
+		channel = piepan.channels[0]
+	end
 	piepan.me:moveTo(channel)
 end
 

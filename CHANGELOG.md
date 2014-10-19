@@ -3,6 +3,8 @@ MumbleDJ Changelog
 
 ### October 18, 2014
 * Fixed a crash when an error occurs during the audio downloading & encoding process.
+* Fixed a crash that occurs when the bot tries to join a default channel that does not exist. If the default channel does not exist, the bot will just move itself 
+to the root of the server instead.
 
 ### October 13, 2014
 * Added `SETUP.md` which contains a guide on how to configure MumbleDJ and install its dependencies.

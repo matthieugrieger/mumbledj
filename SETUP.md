@@ -44,7 +44,7 @@ You have now (hopefully) successfully installed `protobuf` and `protobuf-c`. Now
 $ wget http://www.digip.org/jansson/releases/jansson-2.7.tar.gz
 $ tar xzf jansson-2.7.tar.gz
 $ rm jansson-2.7.tar.gz
-$ cd jansson-2.7.tar.gz
+$ cd jansson-2.7
 $ ./configure && make && sudo make install && cd ..
 $ wget http://kmkeen.com/jshon/jshon.tar.gz
 $ tar xzf jshon.tar.gz

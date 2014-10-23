@@ -31,6 +31,7 @@ $ ./configure && make && sudo make install && cd ..
 $ wget https://github.com/protobuf-c/protobuf-c/releases/download/v1.0.2/protobuf-c-1.0.2.tar.gz
 $ tar xzf protobuf-c-1.0.2.tar.gz
 $ cd protobuf-c-1.0.2
+$ sudo ldconfig
 $ ./configure && make && sudo make install && cd ..
 ```
 

@@ -5,13 +5,24 @@ This setup guide is written for installation on an Ubuntu-based system. If I eve
 **NOTE:** This installation guide is written from memory so if there is something wrong, please let me know!
 
 ## Installing Dependencies
-This is the bulk of the setup process. Most of the dependencies can be installed with the following `apt-get` commands:
+This is the bulk of the setup process. Most of the dependencies can be installed as follows for each distro:
+
+### Ubuntu
 
 ```
 $ sudo add-apt-repository ppa:mc3man/trusty-media
 $ sudo apt-get update
 $ sudo apt-get install protobuf-c-compiler libprotobuf-c0-dev lua5.2 liblua5.2-dev libvorbis-dev libssl-dev libev-dev python-pip ffmpeg libopusfile-dev git
 ```
+
+### Debian
+
+```
+$ sudo apt-get update
+$ sudo apt-get install protobuf-c-compiler libprotobuf-c0-dev lua5.2 liblua5.2-dev libvorbis-dev libssl-dev libev-dev python-pip ffmpeg libopus-dev
+```
+
+**The rest of these instructions are distro-independent. Do these on either Ubuntu or Debian.**
 
 Then just install the python module `pafy` with `pip`:
 

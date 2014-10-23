@@ -10,7 +10,7 @@ This is the bulk of the setup process. Most of the dependencies can be installed
 ```
 $ sudo add-apt-repository ppa:mc3man/trusty-media
 $ sudo apt-get update
-$ sudo apt-get install protobuf-c-compiler libprotobuf-c0-dev lua5.2 liblua5.2-dev libvorbis-dev libssl-dev libev-dev python-pip ffmpeg
+$ sudo apt-get install protobuf-c-compiler libprotobuf-c0-dev lua5.2 liblua5.2-dev libvorbis-dev libssl-dev libev-dev python-pip ffmpeg libopusfile-dev
 ```
 
 Then just install the python module `pafy` with `pip`:

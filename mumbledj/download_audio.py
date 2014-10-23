@@ -31,7 +31,7 @@ while isfile('song.ogg.temp'):
 	sleep(1)
 
 if isfile('song.ogg'):
-	system('ffmpeg -i song.ogg -codec:a libvorbis -ar 48000 -ac 1 -loglevel quiet -vol ' + str(volume) + ' song-converted.ogg -y')
+	system('ffmpeg -i song.ogg -acodec libvorbis -ar 48000 -ac 1 -loglevel quiet -vol ' + str(volume) + ' song-converted.ogg -y')
 else:
 	with open('.video_fail', 'w+') as f:
 		f.close()

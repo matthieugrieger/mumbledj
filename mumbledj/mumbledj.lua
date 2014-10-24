@@ -80,8 +80,9 @@ function parse_command(message)
 			if config.OUTPUT then
 				print(message.user.name .. " has changed the volume to the following: " .. argument .. ".")
 				if argument ~= nil then
-					if config.LOWEST_VOLUME < tonumber(argument) < config.HIGHEST_VOLUME then
+					if config.LOWEST_VOLUME <= tonumber(argument) and tonumber(argument) <= config.HIGHEST_VOLUME then
 						config.VOLUME = tonumber(argument)
+						message.user:send(config.VOLUME_SUCCESS)
 					else
 						message.user:send(config.NOT_IN_VOLUME_RANGE)
 					end
@@ -294,7 +295,7 @@ end
 
 -- Downloads/encodes the audio file and then begins to play it.
 function start_song(info)
-	os.execute("python download_audio.py " .. info.id .. " " .. config.VOLUME)
+	os.execute("python download_audio.py " .. info.id)
 	if not file_exists(".video_fail") then
 		while not file_exists("song-converted.ogg") do
 			os.execute("sleep " .. tonumber(2))
@@ -302,7 +303,7 @@ function start_song(info)
 		if piepan.Audio:isPlaying() then
 			piepan.Audio:stop()
 		end
-		piepan.me.channel:play("song-converted.ogg", get_next_song)
+		piepan.me.channel:play({filename="song-converted.ogg", volume=config.VOLUME}, get_next_song)
 	else
 		return false
 	end

@@ -24,17 +24,17 @@ config.COMMAND_PREFIX = "!"
 -- DEFAULT VALUE: true
 config.OUTPUT = true
 
--- Default volume (256 being normal volume)
--- DEFAULT VALUE: 32
-config.VOLUME = 32
+-- Default volume (1 being normal volume)
+-- DEFAULT VALUE: 0.5
+config.VOLUME = 0.5
 
 -- Lowest volume allowed
--- DEFAULT VALUE: 16
-config.LOWEST_VOLUME = 16
+-- DEFAULT VALUE: 0.01
+config.LOWEST_VOLUME = 0.01
 
 -- Highest volume allowed
--- DEFAULT VALUE: 512
-config.HIGHEST_VOLUME = 512
+-- DEFAULT VALUE: 1.5
+config.HIGHEST_VOLUME = 1.5
 
 -- Ratio that must be met or exceeded to trigger a song skip.
 -- DEFAULT VALUE: 0.5
@@ -80,7 +80,7 @@ config.ENABLE_ADMINS = true
 -- commands.
 -- EXAMPLE:
 -- 	config.ADMINS = {"Matt", "Matthieu"}
-config.ADMINS = {"Matt"}
+config.ADMINS = {"Matt", "DrumZ"}
 
 -- Make add an admin command?
 -- DEFAULT VALUE: false
@@ -132,6 +132,9 @@ config.NO_ARGUMENT = "The command you issued requires an argument and you did no
 
 -- Message shown to users when they try to change the volume to a value outside the volume range.
 config.NOT_IN_VOLUME_RANGE = "The volume you tried to supply is not in the allowed volume range. The value must be between " .. config.LOWEST_VOLUME .. " and " .. config.HIGHEST_VOLUME .. "."
+
+-- Message shown to users when they successfully change the volume.
+config.VOLUME_SUCCESS = "You have successfully changed the volume to the following: " .. config.VOLUME .. "."
 
 
 ----------------------

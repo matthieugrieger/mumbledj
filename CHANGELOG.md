@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### October 24, 2014
+* Switched volume change method. The volume is now changed directly through `piepan` instead of `ffmpeg`.
+* Fixed another bug with volume changing.
+
 ### October 23, 2014
 * Fixed a bug that would not allow audio encoding to complete successfully while on Debian.
 * Fixed a stupid typo that broke the `!volume` command.

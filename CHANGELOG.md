@@ -1,6 +1,12 @@
 MumbleDJ Changelog
 ==================
 
+### October 23, 2014
+* Fixed a bug that would not allow audio encoding to complete successfully while on Debian.
+* Fixed a stupid typo that broke the `!volume` command.
+* Updated `SETUP.md` with instructions on installing MumbleDJ on Debian.
+* Added missing commands in `SETUP.md`.
+
 ### October 18, 2014
 * Fixed a crash when an error occurs during the audio downloading & encoding process.
 * Fixed a crash that occurs when the bot tries to join a default channel that does not exist. If the default channel does not exist, the bot will just move itself 

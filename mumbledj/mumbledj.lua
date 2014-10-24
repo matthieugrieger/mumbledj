@@ -81,8 +81,8 @@ function parse_command(message)
 			if config.OUTPUT then
 				print(message.user.name .. " has changed the volume to the following: " .. argument .. ".")
 				if argument ~= nil then
-					if config.LOWEST_VOLUME < argument < config.HIGHEST_VOLUME then
-						config.VOLUME = argument
+					if config.LOWEST_VOLUME < tonumber(argument) < config.HIGHEST_VOLUME then
+						config.VOLUME = tonumber(argument)
 					else
 						message.user:send(config.NOT_IN_VOLUME_RANGE)
 					end

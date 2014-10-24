@@ -24,11 +24,6 @@ config.COMMAND_PREFIX = "!"
 -- DEFAULT VALUE: true
 config.OUTPUT = true
 
--- Number of users that, if reached, will pause the music until it is started again by a user.
--- This is to prevent against YouTube audio downloads when nobody is listening.
--- DEFAULT VALUE: 1
-config.USER_SOUND_PAUSE_TARGET = 1
-
 -- Default volume (256 being normal volume)
 -- DEFAULT VALUE: 32
 config.VOLUME = 32

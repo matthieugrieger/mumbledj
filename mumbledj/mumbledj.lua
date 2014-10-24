@@ -8,7 +8,6 @@
 ------------------------------------------------------------------
 
 local config = require("config")
---local song_queue = require("song_queue")
 local deque = require("deque")
 
 -- Connects to Mumble server.

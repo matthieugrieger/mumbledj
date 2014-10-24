@@ -80,7 +80,7 @@ config.ENABLE_ADMINS = true
 -- commands.
 -- EXAMPLE:
 -- 	config.ADMINS = {"Matt", "Matthieu"}
-config.ADMINS = {"Matt", "DrumZ"}
+config.ADMINS = {"Matt", "Matthieu"}
 
 -- Make add an admin command?
 -- DEFAULT VALUE: false

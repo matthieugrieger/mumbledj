@@ -1,6 +1,5 @@
 MumbleDJ Setup Guide
 ====================
-This setup guide is written for installation on an Ubuntu-based system. If I ever get the time I may also write a setup guide for Fedora and Arch Linux as I have gotten them to work on those distros as well.
 
 **NOTE:** This installation guide is written from memory so if there is something wrong, please let me know!
 

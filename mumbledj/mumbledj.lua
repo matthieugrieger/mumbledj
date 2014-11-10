@@ -82,7 +82,7 @@ function parse_command(message)
 				if argument ~= nil then
 					if config.LOWEST_VOLUME <= tonumber(argument) and tonumber(argument) <= config.HIGHEST_VOLUME then
 						config.VOLUME = tonumber(argument)
-						message.user:send(config.VOLUME_SUCCESS)
+						message.user:send(string.format(config.VOLUME_SUCCESS, argument))
 					else
 						message.user:send(config.NOT_IN_VOLUME_RANGE)
 					end

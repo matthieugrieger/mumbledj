@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### November 9, 2014
+* Fixed volume changed message showing wrong value.
+
 ### October 24, 2014
 * Switched volume change method. The volume is now changed directly through `piepan` instead of `ffmpeg`.
 * Fixed another bug with volume changing.

@@ -134,7 +134,7 @@ config.NO_ARGUMENT = "The command you issued requires an argument and you did no
 config.NOT_IN_VOLUME_RANGE = "The volume you tried to supply is not in the allowed volume range. The value must be between " .. config.LOWEST_VOLUME .. " and " .. config.HIGHEST_VOLUME .. "."
 
 -- Message shown to users when they successfully change the volume.
-config.VOLUME_SUCCESS = "You have successfully changed the volume to the following: " .. config.VOLUME .. "."
+config.VOLUME_SUCCESS = "You have successfully changed the volume to the following: %s."
 
 
 ----------------------

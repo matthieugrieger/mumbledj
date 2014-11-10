@@ -2,8 +2,6 @@ MumbleDJ
 ========
 A Mumble bot that plays music fetched from YouTube videos. There are ways to play music with a bot on Mumble already, but I wasn't really satisfied with them. Many of them require the Windows client to be opened along with other applications which is not ideal. My goal with this project is to make a Linux-friendly Mumble bot that can run on a webserver instead of a personal computer.
 
-**NOTE:** I am still dealing with some instability issues with regards to the audio playback. If MumbleDJ does not start playing your song within around 30 seconds, just restart the bot. I'm working on a fix.
-
 ## Setup
 Since the setup process is a bit extensive, the setup guide can be found in [SETUP.md](https://github.com/matthieugrieger/mumbledj/blob/master/SETUP.md).
 

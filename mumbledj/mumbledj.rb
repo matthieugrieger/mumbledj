@@ -8,13 +8,12 @@ class MumbleDJ
 
   # Initializes a new instance of MumbleDJ. The parameters are as follows:
   # username: Desired username of the Mumble bot
-  # cert: Path to certificate file (if needed)
   # server_address: IP address/web address of Mumble server to connect to
   # server_port: Port number of Mumble server (generally 64738)
   # default_channel: The channel you would like the bot to connect to by
   #   default. If the channel does not exist, the bot will connect to
   #   the root channel of the server instead.
-  def initialize(username, server_address, server_port=64738, default_channel="", password="", cert="")
+  def initialize(username, server_address, server_port=64738, default_channel="", password="")
     @username = username
     @password = password
     @cert = cert
@@ -25,9 +24,7 @@ class MumbleDJ
     Mumble.configure do |conf|
       conf.sample_rate = 48000
       conf.bitrate = 32000
-      if @cert != ""
-        conf.ssl_cert_opts[:cert_dir] = File.expand_path(@cert)
-      end
+      conf.ssl_cert_opts[:cert_dir] = File.expand_path("certs")
     end
   end
   

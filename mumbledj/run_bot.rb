@@ -5,7 +5,7 @@
 require_relative "mumbledj"
 require 'thread'
 
-bot = MumbleDJ.new(username="MumbleDJTest", server_address="matthieugrieger.com") 
+bot = MumbleDJ.new(username="MumbleDJ", server_address="localhost") 
 bot.connect
 
 begin

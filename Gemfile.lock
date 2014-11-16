@@ -1,0 +1,40 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (4.1.7)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
+    ffi (1.9.6)
+    hashie (3.3.1)
+    i18n (0.6.11)
+    json (1.8.1)
+    libspotify (12.1.51.4)
+    minitest (5.4.3)
+    mumble-ruby (1.1.2)
+      activesupport
+      hashie
+      opus-ruby
+      ruby_protobuf
+      wavefile
+    opus-ruby (1.0.1)
+      ffi
+    performer (1.0.1)
+    ruby_protobuf (0.4.11)
+    spotify (12.6.0)
+      ffi (~> 1.0, >= 1.0.11)
+      libspotify (~> 12.1.51)
+      performer (~> 1.0)
+    thread_safe (0.3.4)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    wavefile (0.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  mumble-ruby
+  spotify

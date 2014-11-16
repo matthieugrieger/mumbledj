@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### November 15, 2014
+* Created "v2" branch for Ruby rewrite.
+
 ### November 9, 2014
 * Fixed volume changed message showing wrong value.
 

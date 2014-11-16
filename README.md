@@ -1,23 +1,6 @@
 MumbleDJ
 ========
-A Mumble bot that plays music fetched from YouTube videos. There are ways to play music with a bot on Mumble already, but I wasn't really satisfied with them. Many of them require the Windows client to be opened along with other applications which is not ideal. My goal with this project is to make a Linux-friendly Mumble bot that can run on a webserver instead of a personal computer.
-
-## Setup
-Since the setup process is a bit extensive, the setup guide can be found in [SETUP.md](https://github.com/matthieugrieger/mumbledj/blob/master/SETUP.md).
-
-## Dependencies
-* [OpenSSL](http://www.openssl.org/)
-* [Lua 5.2](http://www.lua.org/)
-* [libev](http://libev.schmorp.de/)
-* [protobuf-c](https://github.com/protobuf-c/protobuf-c)
-* [Ogg Vorbis](https://xiph.org/vorbis/)
-* [Opus](http://www.opus-codec.org/)
-* [Python 2.6 or above](https://www.python.org/)
-* [pafy](https://github.com/np1/pafy/)
-* [piepan](https://github.com/layeh/piepan)
-* [Jansson](http://www.digip.org/jansson/)
-* [jshon](http://kmkeen.com/jshon/)
-* [ffmpeg](https://www.ffmpeg.org/)
+A Mumble bot that plays music fetched from YouTube videos. I have decided to experiment with rewriting the bot in Ruby using [mumble-ruby](https://github.com/perrym5/mumble-ruby). I am hoping this will cut down on the dependency list, make it easier to develop in the future, and allow for some extra functionality that wasn't previously possible.
 
 ## Author
 [Matthieu Grieger](http://matthieugrieger.com)

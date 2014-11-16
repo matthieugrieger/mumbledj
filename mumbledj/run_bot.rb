@@ -1,3 +1,7 @@
+# MumbleDJ
+# By Matthieu Grieger
+# run_bot.rb
+
 require_relative "mumbledj"
 require 'thread'
 

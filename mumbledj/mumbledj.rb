@@ -1,7 +1,9 @@
 # MumbleDJ v2
 # By Matthieu Grieger
+# mumbledj.rb
 
 require "mumble-ruby"
+require_relative "config"
 
 # Class that defines MumbleDJ behavior.
 class MumbleDJ
@@ -51,8 +53,14 @@ class MumbleDJ
   # Sets various callbacks that can be triggered during the connection.
   def set_callbacks
     @client.on_text_message do |message|
-      # TODO: Call message parser here
+      self.parse_message(message)
     end
+  end
+  
+  # Parses messages looking for commands, and calls the appropriate
+  # methods to complete each requested command.
+  def parse_message(message)
+    
   end
   
   # Safely disconnects the bot from the server.

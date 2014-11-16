@@ -15,10 +15,9 @@ class MumbleDJ
   # default_channel: The channel you would like the bot to connect to by
   #   default. If the channel does not exist, the bot will connect to
   #   the root channel of the server instead.
-  def initialize(username, server_address, server_port=64738, default_channel="", password="")
+  def initialize(username, server_address, server_port, default_channel, password)
     @username = username
     @password = password
-    @cert = cert
     @server_address = server_address
     @server_port = server_port
     @default_channel = default_channel
@@ -53,14 +52,66 @@ class MumbleDJ
   # Sets various callbacks that can be triggered during the connection.
   def set_callbacks
     @client.on_text_message do |message|
-      self.parse_message(message)
+      parse_message(message)
     end
   end
   
   # Parses messages looking for commands, and calls the appropriate
   # methods to complete each requested command.
   def parse_message(message)
-    
+	@sender = @client.users[message.actor].name
+    if message.message[0] == COMMAND_PREFIX
+      if message.message.count(" ") != 0
+        @command = message.message[1..(message.message.index(" ") - 1)]
+        @argument = message.message[(message.message.index(" ") + 1)..-1]
+      else
+        @command = message.message[1..-1]
+      end
+      
+      case @command
+        when ADD_ALIAS
+          if has_permission?(ADMIN_ADD, @sender)
+            if OUTPUT_ENABLED
+              puts("#{@sender} has added a song to the queue.")
+            end
+            if song_add_successful?(@argument, @sender)
+              @client.text_channel("#(@sender} has added a song to the queue.")
+            else
+              @client.text_user(@sender, "The URL you provided was not valid.")
+            end
+          end
+        when SKIP_ALIAS
+          puts("Skip command request.")
+        when VOLUME_ALIAS
+          puts("Volume command request.")
+        when MOVE_ALIAS
+          if has_permission?(ADMIN_MOVE, @sender)
+            begin
+              @client.join_channel(@argument)
+            rescue Mumble::ChannelNotFound
+              @client.text_user(@sender, "The channel you provided does not exist.")
+            end
+          end
+        when KILL_ALIAS
+          puts("Kill command request.")
+        else
+          puts("The command you have entered is not valid.")
+      end
+    end
+  end
+  
+  # Checks message sender against ADMINS array to verify if they have
+  # permission to use a specific command.
+  def has_permission?(admin_command, sender)
+    if ENABLE_ADMINS and admin_command
+      return ADMINS.include?(sender)
+    end
+  end
+  
+  # Attempts to add the requested song to the queue, returns true if the
+  # song was successfully queued, false otherwise.
+  def song_add_successful?(song_url, sender)
+  
   end
   
   # Safely disconnects the bot from the server.

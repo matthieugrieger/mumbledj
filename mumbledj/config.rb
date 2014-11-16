@@ -2,13 +2,35 @@
 # By Matthieu Grieger
 # config.rb
 
+
+# ------------------------
+# CONNECTION CONFIGURATION
+# ------------------------
+
+# Bot username
+# DEFAULT VALUE: "MumbleDJ"
+BOT_USERNAME = "MumbleDJTest"
+
+# Password to join Mumble server
+# DEFAULT VALUE: "" (leave it as this value if no password is required)
+MUMBLE_PASSWORD = ""
+
+# Server address
+# DEFAULT VALUE: "localhost"
+MUMBLE_SERVER_ADDRESS = "matthieugrieger.com"
+
+# Server port number
+# DEFAULT VALUE: 64738
+MUMBLE_SERVER_PORT = 64738
+
+
 # ---------------------
 # GENERAL CONFIGURATION
 # ---------------------
 
 # Default channel
 # DEFAULT VALUE: "Music"
-DEFAULT_CHANNEL = "Music"
+DEFAULT_CHANNEL = "Bot Testing"
 
 # Command prefix
 # DEFAULT VALUE: "!"

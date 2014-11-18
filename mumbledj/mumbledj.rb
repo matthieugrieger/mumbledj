@@ -4,6 +4,7 @@
 
 require "mumble-ruby"
 require_relative "config"
+require_relative "song_queue"
 
 # Class that defines MumbleDJ behavior.
 class MumbleDJ
@@ -21,6 +22,7 @@ class MumbleDJ
     @server_address = server_address
     @server_port = server_port
     @default_channel = default_channel
+    @song_queue = SongQueue.new
     
     Mumble.configure do |conf|
       conf.sample_rate = 48000
@@ -79,9 +81,18 @@ class MumbleDJ
             else
               @client.text_user(@sender, "The URL you provided was not valid.")
             end
+          else
+            @client.text_user(@sender, NO_PERMISSION_MSG)
           end
         when SKIP_ALIAS
-          puts("Skip command request.")
+          if has_permission?(ADMIN_SKIP, @sender)
+            if OUTPUT_ENABLED
+              puts("#{@sender} has voted to skip the current song.")
+            end
+            @song_queue.get_current_song.add_skip(@sender)
+          else
+            @client.text_user(@sender, NO_PERMISSION_MSG)
+          end
         when VOLUME_ALIAS
           puts("Volume command request.")
         when MOVE_ALIAS
@@ -91,11 +102,18 @@ class MumbleDJ
             rescue Mumble::ChannelNotFound
               @client.text_user(@sender, "The channel you provided does not exist.")
             end
+          else
+            @client.text_user(@sender, NO_PERMISSION_MSG)
           end
+        # This one doesn't work for some reason. Gotta do some testing.
         when KILL_ALIAS
-          puts("Kill command request.")
+          if has_permission?(ADMIN_KILL, @sender)
+            disconnect
+          else
+            @client.text_user(@sender, NO_PERMISSION_MSG)
+          end
         else
-          puts("The command you have entered is not valid.")
+          @client.text_user(@sender, INVALID_COMMAND_MSG)
       end
     end
   end
@@ -106,12 +124,6 @@ class MumbleDJ
     if ENABLE_ADMINS and admin_command
       return ADMINS.include?(sender)
     end
-  end
-  
-  # Attempts to add the requested song to the queue, returns true if the
-  # song was successfully queued, false otherwise.
-  def song_add_successful?(song_url, sender)
-  
   end
   
   # Safely disconnects the bot from the server.

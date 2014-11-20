@@ -52,12 +52,12 @@ class MumbleDJ
     end
   end
   
-  # Sets various callbacks that can be triggered during the connection.
-  def set_callbacks
-    @client.on_text_message do |message|
-      parse_message(message)
-    end
+  # Safely disconnects the bot from the server.
+  def disconnect
+    @client.disconnect
   end
+  
+  private
   
   # Parses messages looking for commands, and calls the appropriate
   # methods to complete each requested command.
@@ -74,35 +74,25 @@ class MumbleDJ
       case @command
         when ADD_ALIAS
           if has_permission?(ADMIN_ADD, @sender)
-            if OUTPUT_ENABLED
-              puts("#{@sender} has added a song to the queue.")
-            end
-            if song_add_successful?(@argument, @sender)
-              @client.text_channel(@client.me.current_channel.name, "<b>#{@sender}</b> has added a song to the queue.")
-            else
-              @client.text_user(@sender, "The URL you provided was not valid.")
-            end
+            add(@sender, @argument)
           else
             @client.text_user(@sender, NO_PERMISSION_MSG)
           end
         when SKIP_ALIAS
           if has_permission?(ADMIN_SKIP, @sender)
-            if OUTPUT_ENABLED
-              puts("#{@sender} has voted to skip the current song.")
-            end
-            @song_queue.get_current_song.add_skip(@sender)
+            skip(@sender)
           else
             @client.text_user(@sender, NO_PERMISSION_MSG)
           end
         when VOLUME_ALIAS
-          puts("Volume command request.")
+          if has_permission?(ADMIN_VOLUME, @sender)
+            volume(@sender, @argument)
+          else
+            @client.text_user(@sender, NO_PERMISSION_MSG)
+          end
         when MOVE_ALIAS
           if has_permission?(ADMIN_MOVE, @sender)
-            begin
-              @client.join_channel(@argument)
-            rescue Mumble::ChannelNotFound
-              @client.text_user(@sender, "The channel you provided does not exist.")
-            end
+            move(@sender, @argument)
           else
             @client.text_user(@sender, NO_PERMISSION_MSG)
           end
@@ -124,6 +114,13 @@ class MumbleDJ
     end
   end
   
+  # Sets various callbacks that can be triggered during the connection.
+  def set_callbacks
+    @client.on_text_message do |message|
+      parse_message(message)
+    end
+  end
+  
   # Checks message sender against ADMINS array to verify if they have
   # permission to use a specific command.
   def has_permission?(admin_command, sender)
@@ -132,8 +129,33 @@ class MumbleDJ
     end
   end
   
-  # Safely disconnects the bot from the server.
-  def disconnect
-    @client.disconnect
+  def add(sender, url)
+    if OUTPUT_ENABLED
+      puts("#{@sender} has added a song to the queue.")
+    end
+    if song_add_successful?(url, @sender)
+      @client.text_channel(@client.me.current_channel.name, "<b>#{@sender}</b> has added a song to the queue.")
+    else
+      @client.text_user(@sender, "The URL you provided was not valid.")
+    end
+  end
+  
+  def skip(sender)
+    if OUTPUT_ENABLED
+      puts("#{@sender} has voted to skip the current song.")
+    end
+    @song_queue.get_current_song.add_skip(@sender)
+  end
+  
+  def volume(sender, vol)
+  
+  end
+  
+  def move(sender, channel)
+    begin
+      @client.join_channel(channel)
+    rescue Mumble::ChannelNotFound
+      @client.text_user(sender, "The channel you provided does not exist.")
+    end
   end
 end

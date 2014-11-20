@@ -13,7 +13,7 @@ BOT_USERNAME = "MumbleDJTest"
 
 # Password to join Mumble server
 # DEFAULT VALUE: "" (leave it as this value if no password is required)
-MUMBLE_PASSWORD = ""
+MUMBLE_PASSWORD = ENV['MUMBLE_PW']
 
 # Server address
 # DEFAULT VALUE: "localhost"
@@ -77,9 +77,13 @@ VOLUME_ALIAS = "volume"
 # DEFAULT VALUE: "move"
 MOVE_ALIAS = "move"
 
-# Alias used for kill command
-# DEFAULT VALUE: "kill"
-KILL_ALIAS = "kill"
+# Alias used for mute command
+# DEFAULT VALUE: "mute"
+MUTE_ALIAS = "mute"
+
+# Alias used for unmute command
+# DEFAULT VALUE: "unmute"
+UNMUTE_ALIAS = "unmute"
 
 
 # -------------------
@@ -112,8 +116,12 @@ ADMIN_VOLUME = true
 # DEFAULT VALUE: true
 ADMIN_MOVE = true
 
-# Make kill an admin command?
-# DEFAULT VALUE: true (I recommend never changing this to false)
-ADMIN_KILL = true
+# Make mute an admin command?
+# DEFAULT VALUE: true
+ADMIN_MUTE = true
+
+# Make unmute an admin command?
+# DEFAULT VALUE: true
+ADMIN_UNMUTE = true
 
 

@@ -16,6 +16,7 @@ class MumbleDJ
   # default_channel: The channel you would like the bot to connect to by
   #   default. If the channel does not exist, the bot will connect to
   #   the root channel of the server instead.
+  # password: Password to join a password-protected server
   def initialize(username, server_address, server_port, default_channel, password)
     @username = username
     @password = password
@@ -77,7 +78,7 @@ class MumbleDJ
               puts("#{@sender} has added a song to the queue.")
             end
             if song_add_successful?(@argument, @sender)
-              @client.text_channel("#(@sender} has added a song to the queue.")
+              @client.text_channel(@client.me.current_channel.name, "<b>#{@sender}</b> has added a song to the queue.")
             else
               @client.text_user(@sender, "The URL you provided was not valid.")
             end
@@ -105,10 +106,15 @@ class MumbleDJ
           else
             @client.text_user(@sender, NO_PERMISSION_MSG)
           end
-        # This one doesn't work for some reason. Gotta do some testing.
-        when KILL_ALIAS
-          if has_permission?(ADMIN_KILL, @sender)
-            disconnect
+        when MUTE_ALIAS
+          if has_permission?(ADMIN_MUTE, @sender)
+            @client.me.mute
+          else
+            @client.text_user(@sender, NO_PERMISSION_MSG)
+          end
+        when UNMUTE_ALIAS
+          if has_permission?(ADMIN_UNMUTE, @sender)
+            @client.me.mute(false)
           else
             @client.text_user(@sender, NO_PERMISSION_MSG)
           end

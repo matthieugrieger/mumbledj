@@ -32,5 +32,5 @@ THE SOFTWARE.
 
 ## Thanks
 * All those who contribute to [Mumble](https://github.com/mumble-voip/mumble).  
-* [Tim Cooper](https://github.com/bontibon) for [piepan](https://github.com/layeh/piepan).
-* [Pierre Chapuis](https://github.com/catwell) for [deque](https://github.com/catwell/cw-lua/tree/master/deque).
+* [perrym5](https://github.com/perrym5) for [mumble-ruby](https://github.com/perrym5/mumble-ruby).
+* [Kim Burgestrand](https://github.com/Burgestrand) for [libspotify Ruby bindings](https://github.com/Burgestrand/spotify).

@@ -15,7 +15,7 @@ class SongQueue
   
   # Checks if song already exists in the queue, and adds it if it doesn't
   # already exist.
-  def add_song(url, submitter)
+  def add_song?(url, submitter)
     # TODO: Determine which kind of URL is given (probably using regex),
     # and instantiate the correct Song object.
     # Example for a YouTube URL given below.
@@ -26,10 +26,11 @@ class SongQueue
     else
       @queue.each do |song|
         if song.url == url
-          song = YouTubeSong.new(url, submitter)
-          @queue.push(song)
+          return false
         end
       end
+      song = YouTubeSong.new(url, submitter)
+      @queue.push(song)
     end
   end
   

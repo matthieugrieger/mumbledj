@@ -42,7 +42,7 @@ class MumbleDJ
       end
     end
     
-    self.set_callbacks
+    set_callbacks
     
     @client.connect
     @client.on_connected do
@@ -131,20 +131,28 @@ class MumbleDJ
   
   def add(sender, url)
     if OUTPUT_ENABLED
-      puts("#{@sender} has added a song to the queue.")
+      puts("#{sender} has added a song to the queue.")
     end
-    if song_add_successful?(url, @sender)
-      @client.text_channel(@client.me.current_channel.name, "<b>#{@sender}</b> has added a song to the queue.")
+    if song_add_successful?(url, sender)
+      @client.text_channel(@client.me.current_channel.name, "<b>#{sender}</b> has added a song to the queue.")
     else
-      @client.text_user(@sender, "The URL you provided was not valid.")
+      @client.text_user(sender, "The URL you provided was not valid.")
     end
   end
   
   def skip(sender)
     if OUTPUT_ENABLED
-      puts("#{@sender} has voted to skip the current song.")
+      puts("#{sender} has voted to skip the current song.")
     end
-    @song_queue.get_current_song.add_skip(@sender)
+    if @song_queue.get_current_song.add_skip?(sender)
+      @client.text_channel(@client.me.current_channel.name, "<b>#{sender}</b> has voted to skip the current song.")
+      if @song_queue.get_current_song.skip_now?(@client.me.current_channel.users.count - 1)
+        @client.text_channel(@client.me.current_channel.name, "Number of required skip votes has been met. Skipping song!")
+        @song_queue.get_current_song.skip
+      end
+    else
+      @client.text_user(sender, "You have already voted to skip this song.")
+    end
   end
   
   def volume(sender, vol)

@@ -16,8 +16,19 @@ class Song
   end
   
   # Adds a skipper to the skips array for the current song.
-  def add_skip(username)
-    
+  def add_skip?(username)
+    if not @skips.include?(username)
+      @skips << username
+      return true
+    else
+      return false
+    end
+  end
+  
+  # Determines if a skip should occur. Returns true if a skip is needed,
+  # false otherwise.
+  def skip_now?(total_users)
+    return (total_users / @skips.count) >= SKIP_RATIO
   end
 end
 

@@ -7,6 +7,8 @@ require_relative "song"
 # A specialized SongQueue class that handles queueing/unqueueing songs
 # and other actions.
 class SongQueue
+
+  attr_reader :queue
   
   # Initializes a new song queue.
   def initialize
@@ -16,12 +18,20 @@ class SongQueue
   # Checks if song already exists in the queue, and adds it if it doesn't
   # already exist.
   def add_song?(url, submitter)
-    # TODO: Determine which kind of URL is given (probably using regex),
-    # and instantiate the correct Song object.
-    # Example for a YouTube URL given below.
+    youtube_regex = /(https?:\/\/www\.youtube\.com\/watch\?v=([\d\a_\-]+))
+                    |(https?:\/\/youtube\.com\/watch\?v=([\d\a_\-]+))
+                    |(https?:\/\/youtu\.be\/([\d\a_\-]+))
+                    |(https?:\/\/youtube\.com\/v\/([\d\a_\-]+))
+                    |(https?:\/\/www\.youtube\.com\/v\/([\d\a_\-]+))/x
+    
+    if youtube_regex.match(url)
+      audio_type = "youtube"
+    end
     
     if @queue.empty?
-      song = YouTubeSong.new(url, submitter)
+      if audio_type == "youtube"
+        song = YouTubeSong.new(url, submitter)
+      end
       @queue.push(song)
     else
       @queue.each do |song|
@@ -29,7 +39,9 @@ class SongQueue
           return false
         end
       end
-      song = YouTubeSong.new(url, submitter)
+      if audio_type == "youtube"
+        song = YouTubeSong.new(url, submitter)
+      end
       @queue.push(song)
     end
   end

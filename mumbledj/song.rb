@@ -33,6 +33,8 @@ class Song
 end
 
 class YouTubeSong < Song
+
+  attr_reader :url, :submitter, :song_title, :song_duration, :song_thumbnail_url
   
   # Initializes the YouTubeSong object and retrieves the song title,
   # duration, and thumbnail URL from the YouTube API.
@@ -44,5 +46,10 @@ class YouTubeSong < Song
     @song_title = ""
     @song_duration = ""
     @song_thumbnail_url = ""
+  end
+  
+  # Downloads the audio for the YouTube video and returns the filename.
+  def download_audio
+  
   end
 end

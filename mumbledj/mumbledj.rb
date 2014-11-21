@@ -9,6 +9,8 @@ require_relative "song_queue"
 # Class that defines MumbleDJ behavior.
 class MumbleDJ
 
+  attr_reader :username, :server_address, :server_port, :default_channel
+
   # Initializes a new instance of MumbleDJ. The parameters are as follows:
   # username: Desired username of the Mumble bot
   # server_address: IP address/web address of Mumble server to connect to
@@ -126,6 +128,8 @@ class MumbleDJ
   def has_permission?(admin_command, sender)
     if ENABLE_ADMINS and admin_command
       return ADMINS.include?(sender)
+    else
+      return true
     end
   end
   
@@ -133,7 +137,7 @@ class MumbleDJ
     if OUTPUT_ENABLED
       puts("#{sender} has added a song to the queue.")
     end
-    if song_add_successful?(url, sender)
+    if @song_queue.add_song?(url, sender)
       @client.text_channel(@client.me.current_channel.name, "<b>#{sender}</b> has added a song to the queue.")
     else
       @client.text_user(sender, "The URL you provided was not valid.")

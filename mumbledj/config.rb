@@ -124,4 +124,29 @@ ADMIN_MUTE = true
 # DEFAULT VALUE: true
 ADMIN_UNMUTE = true
 
+# ---------------------
+# MESSAGE CONFIGURATION
+# ---------------------
+
+# Message shown to users when they do not have permission to execute a command.
+NO_PERMISSION_MSG = "You do not have permission to execute that command."
+
+# Message shown to users when they try to move the bot to a non-existant channel.
+CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
+
+# Message shown to users when they attempt to add an invalid URL to the queue.
+INVALID_URL_MSG = "The URL you submitted does not match the required format."
+
+# Message shown to users when they attempt to use the stop command when no music is playing.
+NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
+
+# Message shown to users when they issue a command that requires an argument and one was not supplied.
+NO_ARGUMENT_MSG = "The command you issued requires an argument and you did not provide one. Make sure a space exists between the command and the argument."
+
+# Message shown to users when they try to change the volume to a value outside the volume range.
+NOT_IN_VOLUME_RANGE_MSG = "The volume you tried to supply is not in the allowed volume range. The value must be between #{LOWEST_VOLUME} and #{HIGHEST_VOLUME}."
+
+# Message shown to users when they successfully change the volume.
+VOLUME_SUCCESS_MSG = "You have successfully changed the volume to the following: %s."
+
 

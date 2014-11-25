@@ -140,7 +140,7 @@ class MumbleDJ
     if @song_queue.add_song?(url, sender)
       @client.text_channel(@client.me.current_channel.name, "<b>#{sender}</b> has added a song to the queue.")
     else
-      @client.text_user(sender, "The URL you provided was not valid.")
+      @client.text_user(sender, INVALID_URL_MSG)
     end
   end
   
@@ -151,11 +151,11 @@ class MumbleDJ
     if @song_queue.get_current_song.add_skip?(sender)
       @client.text_channel(@client.me.current_channel.name, "<b>#{sender}</b> has voted to skip the current song.")
       if @song_queue.get_current_song.skip_now?(@client.me.current_channel.users.count - 1)
-        @client.text_channel(@client.me.current_channel.name, "Number of required skip votes has been met. Skipping song!")
+        @client.text_channel(@client.me.current_channel.name, SKIP_SUCCESS_MSG)
         @song_queue.get_current_song.skip
       end
     else
-      @client.text_user(sender, "You have already voted to skip this song.")
+      @client.text_user(sender, ALREADY_SKIPPED_MSG)
     end
   end
   
@@ -167,7 +167,7 @@ class MumbleDJ
     begin
       @client.join_channel(channel)
     rescue Mumble::ChannelNotFound
-      @client.text_user(sender, "The channel you provided does not exist.")
+      @client.text_user(sender, CHANNEL_DOES_NOT_EXIST_MSG)
     end
   end
 end

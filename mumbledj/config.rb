@@ -124,9 +124,10 @@ ADMIN_MUTE = true
 # DEFAULT VALUE: true
 ADMIN_UNMUTE = true
 
-# ---------------------
+
+#----------------------
 # MESSAGE CONFIGURATION
-# ---------------------
+#----------------------
 
 # Message shown to users when they do not have permission to execute a command.
 NO_PERMISSION_MSG = "You do not have permission to execute that command."
@@ -149,4 +150,8 @@ NOT_IN_VOLUME_RANGE_MSG = "The volume you tried to supply is not in the allowed 
 # Message shown to users when they successfully change the volume.
 VOLUME_SUCCESS_MSG = "You have successfully changed the volume to the following: %s."
 
+# Message shown to users when they try to skip a song they have already skipped.
+ALREADY_SKIPPED_MSG = "You have already voted to skip this song."
 
+# Message shown to users when the required number of votes to trigger a skip has been met.
+SKIP_SUCCESS_MSG = "Number of required skip votes has been met. Skipping song!"

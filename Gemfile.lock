@@ -12,16 +12,26 @@ GEM
     i18n (0.6.11)
     json (1.8.1)
     libspotify (12.1.51.4)
+    mime-types (2.4.3)
+    mini_portile (0.6.1)
     minitest (5.4.3)
+    multi_json (1.10.1)
     mumble-ruby (1.1.2)
       activesupport
       hashie
       opus-ruby
       ruby_protobuf
       wavefile
+    netrc (0.8.0)
+    nokogiri (1.6.4.1)
+      mini_portile (~> 0.6.0)
     opus-ruby (1.0.1)
       ffi
     performer (1.0.1)
+    progressbar (0.21.0)
+    rest-client (1.7.2)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     ruby_protobuf (0.4.11)
     spotify (12.6.0)
       ffi (~> 1.0, >= 1.0.11)
@@ -30,6 +40,11 @@ GEM
     thread_safe (0.3.4)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    viddl-rb (1.0.8)
+      multi_json (~> 1.10.0)
+      nokogiri (~> 1.6.0)
+      progressbar (~> 0.21)
+      rest-client
     wavefile (0.6.0)
 
 PLATFORMS
@@ -38,3 +53,4 @@ PLATFORMS
 DEPENDENCIES
   mumble-ruby
   spotify
+  viddl-rb

@@ -34,4 +34,4 @@ THE SOFTWARE.
 * All those who contribute to [Mumble](https://github.com/mumble-voip/mumble).  
 * [perrym5](https://github.com/perrym5) for [mumble-ruby](https://github.com/perrym5/mumble-ruby).
 * [Kim Burgestrand](https://github.com/Burgestrand) for [libspotify Ruby bindings](https://github.com/Burgestrand/spotify).
-* [Marc Seeger](https://github.com/rb2k) for [viddl-rb](https://github.com/rb2k/viddl-rb).
+* [Ricardo Garcia](https://github.com/rg3) for [youtube-dl](https://github.com/rg3/youtube-dl).

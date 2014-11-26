@@ -3,6 +3,7 @@
 # mumbledj.rb
 
 require "mumble-ruby"
+require "mkfifo"
 require_relative "config"
 require_relative "song_queue"
 
@@ -110,6 +111,11 @@ class MumbleDJ
           else
             @client.text_user(@sender, NO_PERMISSION_MSG)
           end
+        when 'test'
+          File.mkfifo('/tmp/audio_stream.fifo')
+          `youtube-dl --output audio --write-info-json --quiet --format bestaudio https://www.youtube.com/watch?v=5xfEr2Oxdys`
+          spawn 'ffmpeg -y -i audio -f s16le -acodec pcm_s16le -ar 24000 -loglevel quiet /tmp/audio_stream.fifo'
+          @client.player.stream_named_pipe('/tmp/audio_stream.fifo')
         else
           @client.text_user(@sender, INVALID_COMMAND_MSG)
       end

@@ -13,6 +13,7 @@ GEM
     json (1.8.1)
     libspotify (12.1.51.4)
     minitest (5.4.3)
+    mkfifo (0.0.1)
     mumble-ruby (1.1.2)
       activesupport
       hashie
@@ -36,5 +37,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  mkfifo
   mumble-ruby
   spotify

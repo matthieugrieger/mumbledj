@@ -2,6 +2,8 @@
 # By Matthieu Grieger
 # song.rb
 
+require_relative "config"
+
 # Base Song class that defines default behavior for any kind of song.
 class Song
 

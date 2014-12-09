@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### December 8, 2014
+* Switched from Ruby to Go, using `gumble` instead of `mumble-ruby` now.
+
 ### November 15, 2014
 * Created "v2" branch for Ruby rewrite.
 

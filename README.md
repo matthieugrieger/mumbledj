@@ -1,6 +1,8 @@
 MumbleDJ
 ========
-A Mumble bot that plays music fetched from YouTube videos. I have decided to experiment with rewriting the bot in Ruby using [mumble-ruby](https://github.com/perrym5/mumble-ruby). I am hoping this will cut down on the dependency list, make it easier to develop in the future, and allow for some extra functionality that wasn't previously possible.
+A Mumble bot that plays music fetched from YouTube videos. I have decided to experiment with rewriting the bot in Go using [gumble](https://github.com/layeh/gumble). I am hoping this will cut down on the dependency list, make it easier to develop in the future, and allow for some extra functionality that wasn't previously possible.
+
+And yes, I know that technically this is v3. The Ruby implementation had problems with high CPU usage and choppy audio which I couldn't seem to figure out.
 
 ## Author
 [Matthieu Grieger](http://matthieugrieger.com)
@@ -32,6 +34,5 @@ THE SOFTWARE.
 
 ## Thanks
 * All those who contribute to [Mumble](https://github.com/mumble-voip/mumble).  
-* [perrym5](https://github.com/perrym5) for [mumble-ruby](https://github.com/perrym5/mumble-ruby).
-* [Kim Burgestrand](https://github.com/Burgestrand) for [libspotify Ruby bindings](https://github.com/Burgestrand/spotify).
+* [Tim Cooper](https://github.com/bontibon) for [gumble](https://github.com/layeh/gumble).
 * [Ricardo Garcia](https://github.com/rg3) for [youtube-dl](https://github.com/rg3/youtube-dl).

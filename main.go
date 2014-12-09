@@ -15,7 +15,7 @@ import (
 
 // MumbleDJ type declaration
 type MumbleDJ struct {
-	serverAddress	string
+	serverAddress		string
 	serverPort		int
 	username		string
 	password		string

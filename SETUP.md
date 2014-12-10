@@ -67,9 +67,12 @@ Cool, we now have the necessary dependencies installed to compile `piepan`. We w
 
 ### piepan
 
+**NOTE:** MumbleDJ currently uses an old version of `piepan`, so cloning the git repository is not possible anymore. I am in the process of updating MumbleDJ to `gumble`, the Go implementation of `piepan`. The changes have been reflected below.
+
 ```
 $ sudo ldconfig
-$ git clone https://github.com/layeh/piepan.git
+$ wget https://github.com/layeh/piepan/archive/v0.3.1.tar.gz
+$ tar xzf piepan-0.3.1.tar.gz
 $ cd piepan
 $ make
 ```

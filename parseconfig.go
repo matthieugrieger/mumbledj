@@ -9,6 +9,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"github.com/BurntSushi/toml"
 )
 
@@ -54,9 +56,16 @@ type permissionsConfig struct {
 }
 
 func loadConfiguration() (config, error) {
-	var conf config
-	if _, err := toml.Decode("config.toml", &conf); err != nil {
-		return conf, errors.New("Configuration load failed.")
+	file, err := ioutil.ReadFile("config.toml")
+	if err != nil {
+		panic(err)
+	} else {
+		fileString := string(file)
+		var conf config
+		if _, err := toml.Decode(fileString, &conf); err != nil {
+			return conf, errors.New("Configuration load failed.")
+		}
+		return conf, nil
 	}
-	return conf, nil
+	
 }

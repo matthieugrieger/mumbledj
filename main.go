@@ -31,6 +31,8 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	dj.conf, err = loadConfiguration()
 	if err == nil {
 		fmt.Println("Configuration successfully loaded!")
+	} else {
+		panic(err)
 	}
 }
 

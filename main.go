@@ -21,10 +21,17 @@ type mumbledj struct {
 	client *gumble.Client
 	keepAlive chan bool
 	defaultChannel string
+	conf config
 }
 
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	dj.client.Self().Move(dj.client.Channels().Find(dj.defaultChannel))
+	
+	var err error
+	dj.conf, err = loadConfiguration()
+	if err == nil {
+		fmt.Println("Configuration successfully loaded!")
+	}
 }
 
 func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
@@ -32,7 +39,13 @@ func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
 }
 
 func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
-	fmt.Println(e.Message)
+	if e.Message[0] == '!' {
+		parseCommand(e.Sender.Name(), e.Message[1:])
+	}
+}
+
+var dj = mumbledj {
+	keepAlive: make(chan bool),
 }
 
 func main() {
@@ -43,10 +56,6 @@ func main() {
 	flag.StringVar(&password, "password", "", "password for Mumble server (if needed)")
 	flag.StringVar(&channel, "channel", "", "default channel for MumbleDJ")
 	flag.Parse()
-	
-	dj := mumbledj {
-		keepAlive: make(chan bool),
-	}
 	
 	dj.client = gumble.NewClient(&dj.config)
 	dj.config = gumble.Config{

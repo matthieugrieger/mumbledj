@@ -1,0 +1,103 @@
+# MumbleDJ
+# By Matthieu Grieger
+# config.toml
+# Copyright (c) 2014 Matthieu Grieger (MIT License)
+
+title = "MumbleDJ Configuration"
+
+[general]
+
+# Default channel
+# DEFAULT VALUE: "Music"
+default_channel = "Bot Testing"
+
+# Command prefix
+# DEFAULT VALUE: "!"
+command_prefix = "!"
+
+# Ratio that must be met or exceeded to trigger a song skip
+# DEFAULT VALUE: 0.5
+skip_ratio = 0.5
+
+
+[volume]
+
+# Default volume
+# DEFAULT VALUE: 0.2
+default_volume = 0.2
+
+# Lowest volume allowed
+# DEFAULT VALUE: 0.01
+lowest_volume = 0.01
+
+# Highest volume allowed
+# DEFAULT VALUE: 0.8
+highest_volume = 0.8
+
+ 
+[command-aliases]
+
+# Alias used for add command
+# DEFAULT VALUE: "add"
+add_alias = "add"
+
+# Alias used for skip command
+# DEFAULT VALUE: "skip"
+skip_alias = "skip"
+
+# Alias used for admin skip command
+# DEFAULT VALUE: "forceskip"
+admin_skip_alias = "forceskip"
+
+# Alias used for volume command
+# DEFAULT VALUE: "volume"
+volume_alias = "volume"
+
+# Alias used for move command
+# DEFAULT VALUE: "move"
+move_alias = "move"
+
+# Alias used for reload command
+# DEFAULT VALUE: "reload"
+reload_alias = "reload"
+
+# Alias used for kill command
+# DEFAULT VALUE: "kill"
+kill_alias = "kill"
+
+
+[permissions]
+
+# Enable admins
+# DEFAULT VALUE: true
+enable_admins = true
+
+# List of admins
+# NOTE: I recommend only giving users admin privileges if they are registered
+# on the server. Otherwise people can just take their username and issue admin
+# commands.
+admins = ["Matt"]
+
+# Make add an admin command?
+# DEFAULT VALUE: false
+admin_add = false
+
+# Make skip an admin command?
+# DEFAULT VALUE: false
+admin_skip = false
+
+# Make volume an admin command?
+# DEFAULT VALUE: false
+admin_volume = false
+
+# Make move an admin command?
+# DEFAULT VALUE: true
+admin_move = true
+
+# Make reload an admin command?
+# DEFAULT VALUE: true
+admin_reload = true
+
+# Make kill an admin command?
+# DEFAULT VALUE: true (I recommend never changing this to false)
+admin_kill = true

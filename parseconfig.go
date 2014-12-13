@@ -9,12 +9,10 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"github.com/BurntSushi/toml"
 )
 
-type config struct {
+type djConfig struct {
 	title string
 	general generalConfig
 	volume volumeConfig
@@ -55,17 +53,10 @@ type permissionsConfig struct {
 	adminKill bool `toml:"admin_kill"`
 }
 
-func loadConfiguration() (config, error) {
-	file, err := ioutil.ReadFile("config.toml")
-	if err != nil {
-		panic(err)
-	} else {
-		fileString := string(file)
-		var conf config
-		if _, err := toml.Decode(fileString, &conf); err != nil {
-			return conf, errors.New("Configuration load failed.")
-		}
-		return conf, nil
+func loadConfiguration() (djConfig, error) {
+	var conf djConfig
+	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
+		return conf, errors.New("Configuration load failed.")
 	}
-	
+	return conf, nil
 }

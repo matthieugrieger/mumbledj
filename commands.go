@@ -59,6 +59,8 @@ func parseCommand(username, command string) {
 			if success {
 				fmt.Println("Kill successful!")
 			}
+		case "test":
+			fmt.Printf("Title: %s\n", dj.conf.title)
 	}
 }
 

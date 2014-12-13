@@ -21,7 +21,7 @@ type mumbledj struct {
 	client *gumble.Client
 	keepAlive chan bool
 	defaultChannel string
-	conf config
+	conf djConfig
 }
 
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {

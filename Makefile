@@ -6,11 +6,6 @@ mumbledj: main.go commands.go parseconfig.go strings.go
 clean:
 		rm -f mumbledj
 		
-create_dirs:
-		mkdir ~/.mumbledj
-		mkdir ~/.mumbledj/config
-		mkdir ~/.mumbledj/songs
-		
 install:
 		sudo cp -f mumbledj /usr/local/bin/mumbledj
 		mkdir -p ~/.mumbledj/config

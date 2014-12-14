@@ -7,10 +7,6 @@ title = "MumbleDJ Configuration"
 
 [general]
 
-# Default channel
-# DEFAULT VALUE: "Music"
-default_channel = "Bot Testing"
-
 # Command prefix
 # DEFAULT VALUE: "!"
 command_prefix = "!"

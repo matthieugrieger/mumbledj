@@ -10,7 +10,7 @@ install:
 		sudo cp -f mumbledj /usr/local/bin/mumbledj
 		mkdir -p ~/.mumbledj/config
 		mkdir -p ~/.mumbledj/songs
-		-mv ~/.mumbledj/config/config.toml ~/.mumbledj/config/config_backup.toml
+		if [ -a ~/.mumbledj/config/config.toml ]; then mv ~/.mumbledj/config/config.toml ~/.mumbledj/config/config_backup.toml; fi;
 		cp -u config.toml ~/.mumbledj/config/config.toml
 			
 install_deps:

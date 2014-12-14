@@ -21,7 +21,6 @@ type djConfig struct {
 }
 
 type generalConfig struct {
-	defaultChannel string `toml:"default_channel"`
 	commandPrefix string `toml:"command_prefix"`
 	skipRatio float32 `toml:"skip_ratio"`
 }
@@ -55,7 +54,7 @@ type permissionsConfig struct {
 
 func loadConfiguration() (djConfig, error) {
 	var conf djConfig
-	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
+	if _, err := toml.DecodeFile("~/.mumbledj/config/config.toml", &conf); err != nil {
 		return conf, errors.New("Configuration load failed.")
 	}
 	return conf, nil

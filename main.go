@@ -11,7 +11,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/layeh/gumble/gumble"
-	//"github.com/layeh/gumble/gumble_ffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
 )
 
@@ -21,14 +20,17 @@ type mumbledj struct {
 	client *gumble.Client
 	keepAlive chan bool
 	defaultChannel string
-	conf djConfig
+	conf DjConfig
 }
 
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
-	dj.client.Self().Move(dj.client.Channels().Find(dj.defaultChannel))
+	if dj.client.Channels().Find(dj.defaultChannel) != nil {
+		dj.client.Self().Move(dj.client.Channels().Find(dj.defaultChannel))
+	} else {
+		fmt.Println("No channel specified, moving to root...")
+	}
 	
-	var err error
-	dj.conf, err = loadConfiguration()
+	err := loadConfiguration()
 	if err == nil {
 		fmt.Println("Configuration successfully loaded!")
 	} else {

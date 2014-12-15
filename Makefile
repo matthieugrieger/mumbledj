@@ -7,14 +7,14 @@ clean:
 	rm -f mumbledj
 		
 install:
-	sudo cp -f mumbledj /usr/local/bin/mumbledj
 	mkdir -p ~/.mumbledj/config
 	mkdir -p ~/.mumbledj/songs
-	if [ -a ~/.mumbledj/config/config.toml ]; then mv ~/.mumbledj/config/config.toml ~/.mumbledj/config/config_backup.toml; fi;
-	cp -u config.toml ~/.mumbledj/config/config.toml
-			
+	if [ -a ~/.mumbledj/config/mumbledj.gcfg ]; then mv ~/.mumbledj/config/mumbledj.gcfg ~/.mumbledj/config/mumbledj_backup.gcfg; fi;
+	cp -u mumbledj.gcfg ~/.mumbledj/config/mumbledj.gcfg
+	sudo cp -f mumbledj /usr/local/bin/mumbledj
+	
 install_deps:
 	go get -u github.com/layeh/gumble/gumble
 	go get -u github.com/layeh/gumble/gumbleutil
 	go get -u github.com/layeh/gumble/gumble_ffmpeg
-	go get -u github.com/BurntSushi/toml
+	go get -u code.google.com/p/gcfg

@@ -8,54 +8,40 @@
 package main
 
 import (
-	"errors"
-	"github.com/BurntSushi/toml"
+	"code.google.com/p/gcfg"
 )
 
-type djConfig struct {
-	title string
-	general generalConfig
-	volume volumeConfig
-	aliases aliasConfig `toml:"command-aliases"`
-	permissions permissionsConfig
-}
-
-type generalConfig struct {
-	commandPrefix string `toml:"command_prefix"`
-	skipRatio float32 `toml:"skip_ratio"`
-}
-
-type volumeConfig struct {
-	defaultVolume float32 `toml:"default_volume"`
-	lowestVolume float32 `toml:"lowest_volume"`
-	highestVolume float32 `toml:"highest_volume"`
-}
-
-type aliasConfig struct {
-	addAlias string `toml:"add_alias"`
-	skipAlias string `toml:"skip_alias"`
-	adminSkipAlias string `toml:"admin_skip_alias"`
-	volumeAlias string `toml:"volume_alias"`
-	moveAlias string `toml:"move_alias"`
-	reloadAlias string `toml:"reload_alias"`
-	killAlias string `toml:"kill_alias"`
-}
-
-type permissionsConfig struct {
-	adminsEnabled bool `toml:"enable_admins"`
-	adminList []string `toml:"admins"`
-	adminAdd bool `toml:"admin_add"`
-	adminSkip bool `toml:"admin_skip"`
-	adminVolume bool `toml:"admin_volume"`
-	adminMove bool `toml:"admin_move"`
-	adminReload bool `toml:"admin_reload"`
-	adminKill bool `toml:"admin_kill"`
-}
-
-func loadConfiguration() (djConfig, error) {
-	var conf djConfig
-	if _, err := toml.DecodeFile("~/.mumbledj/config/config.toml", &conf); err != nil {
-		return conf, errors.New("Configuration load failed.")
+type DjConfig struct {
+	General struct {
+		CommandPrefix string
+		SkipRatio float32
 	}
-	return conf, nil
+	Volume struct {
+		DefaultVolume float32
+		LowestVolume float32
+		HighestVolume float32
+	}
+	Aliases struct {
+		AddAlias string
+		SkipAlias string
+		AdminSkipAlias string
+		VolumeAlias string
+		MoveAlias string
+		ReloadAlias string
+		KillAlias string
+	}
+	Permissions struct {
+		AdminsEnabled bool
+		Admins []string
+		AdminAdd bool
+		AdminSkip bool
+		AdminVolume bool
+		AdminMove bool
+		AdminReload bool
+		AdminKill bool
+	}
+}
+
+func loadConfiguration() (error) {
+	return gcfg.ReadFileInto(&dj.conf, "mumbledj.gcfg")
 }

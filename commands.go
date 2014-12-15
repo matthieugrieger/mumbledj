@@ -23,72 +23,60 @@ func parseCommand(username, command string) {
 	}
 	
 	switch com {
-		case "add":
+		case dj.conf.Aliases.AddAlias:
 			success := add(username, argument)
 			if success {
 				fmt.Println("Add successful!")
 			}
-		case "skip":
+		case dj.conf.Aliases.SkipAlias:
 			success := skip(username, false)
 			if success {
 				fmt.Println("Skip successful!")
 			}
-		case "forceskip":
+		case dj.conf.Aliases.AdminSkipAlias:
 			success := skip(username, true)
 			if success {
 				fmt.Println("Forceskip successful!")
 			}
-		case "volume":
+		case dj.conf.Aliases.VolumeAlias:
 			success := volume(username, argument)
 			if success {
 				fmt.Println("Volume change successful!")
 			}
-		case "move":
+		case dj.conf.Aliases.MoveAlias:
 			success := move(username, argument)
 			if success {
 				fmt.Println("Move successful!")
 			}
-		case "reload":
-			conf, err := loadConfiguration()
+		case dj.conf.Aliases.ReloadAlias:
+			err := loadConfiguration()
 			if err == nil {
-				dj.conf = conf
 				fmt.Println("Reload successful!")
 			}
-		case "kill":
+		case dj.conf.Aliases.KillAlias:
 			success := kill(username)
 			if success {
 				fmt.Println("Kill successful!")
 			}
-		case "test":
-			fmt.Printf("Title: %s\n", dj.conf.title)
 	}
 }
 
 func add(user, url string) bool {
-	fmt.Println("Add requested!")
 	return true
 }
 
 func skip(user string, admin bool) bool {
-	if admin {
-		fmt.Println("Admin skip requested!")
-	} else {
-		fmt.Println("Skip requested!")
-	}
 	return true
 }
 
 func volume(user, value string) bool {
-	fmt.Println("Volume change requested!")
 	return true
 }
 
 func move(user, channel string) bool {
-	fmt.Println("Move requested!")
 	return true
 }
 
 func kill(user string) bool {
-	fmt.Println("Kill requested!")
 	return true
 }

@@ -3,97 +3,100 @@
 # config.toml
 # Copyright (c) 2014 Matthieu Grieger (MIT License)
 
-title = "MumbleDJ Configuration"
-
-[general]
+[General]
 
 # Command prefix
 # DEFAULT VALUE: "!"
-command_prefix = "!"
+CommandPrefix = "!"
 
 # Ratio that must be met or exceeded to trigger a song skip
 # DEFAULT VALUE: 0.5
-skip_ratio = 0.5
+SkipRatio = 0.5
 
 
-[volume]
+[Volume]
 
 # Default volume
 # DEFAULT VALUE: 0.2
-default_volume = 0.2
+DefaultVolume = 0.2
 
 # Lowest volume allowed
 # DEFAULT VALUE: 0.01
-lowest_volume = 0.01
+LowestVolume = 0.01
 
 # Highest volume allowed
 # DEFAULT VALUE: 0.8
-highest_volume = 0.8
+HighestVolume = 0.8
 
  
-[command-aliases]
+[Aliases]
 
 # Alias used for add command
 # DEFAULT VALUE: "add"
-add_alias = "add"
+AddAlias = "add"
 
 # Alias used for skip command
 # DEFAULT VALUE: "skip"
-skip_alias = "skip"
+SkipAlias = "skip"
 
 # Alias used for admin skip command
 # DEFAULT VALUE: "forceskip"
-admin_skip_alias = "forceskip"
+AdminSkipAlias = "forceskip"
 
 # Alias used for volume command
 # DEFAULT VALUE: "volume"
-volume_alias = "volume"
+VolumeAlias = "volume"
 
 # Alias used for move command
 # DEFAULT VALUE: "move"
-move_alias = "move"
+MoveAlias = "move"
 
 # Alias used for reload command
 # DEFAULT VALUE: "reload"
-reload_alias = "reload"
+ReloadAlias = "reload"
 
 # Alias used for kill command
 # DEFAULT VALUE: "kill"
-kill_alias = "kill"
+KillAlias = "kill"
 
 
-[permissions]
+[Permissions]
 
 # Enable admins
 # DEFAULT VALUE: true
-enable_admins = true
+AdminsEnabled = true
 
 # List of admins
 # NOTE: I recommend only giving users admin privileges if they are registered
 # on the server. Otherwise people can just take their username and issue admin
 # commands.
-admins = ["Matt"]
+# SYNTAX: In order to specify multiple admins, repeat the Admins="username"
+# line of code. Each line has one username, and an unlimited amount of usernames may
+# be entered in this matter. This is shown below with these default values:
+# Admins = "Matt"
+# Admins = "Matthieu"
+Admins = "Matt"
 
 # Make add an admin command?
 # DEFAULT VALUE: false
-admin_add = false
+AdminAdd = false
 
 # Make skip an admin command?
 # DEFAULT VALUE: false
-admin_skip = false
+AdminSkip = false
 
 # Make volume an admin command?
 # DEFAULT VALUE: false
-admin_volume = false
+AdminVolume = false
 
 # Make move an admin command?
 # DEFAULT VALUE: true
-admin_move = true
+AdminMove = true
 
 # Make reload an admin command?
 # DEFAULT VALUE: true
-admin_reload = true
+AdminReload = true
 
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)
-admin_kill = true
+AdminKill = true

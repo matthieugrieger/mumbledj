@@ -36,5 +36,4 @@ THE SOFTWARE.
 * All those who contribute to [Mumble](https://github.com/mumble-voip/mumble).  
 * [Tim Cooper](https://github.com/bontibon) for [gumble](https://github.com/layeh/gumble).
 * [Ricardo Garcia](https://github.com/rg3) for [youtube-dl](https://github.com/rg3/youtube-dl).
-* [Tom Preston-Werner](https://github.com/mojombo) for [TOML](https://github.com/toml-lang/toml).
-* [Andrew Gallant](https://github.com/BurntSushi) for [TOML Golang parser](https://github.com/BurntSushi/toml).
+* [ScalingData](https://github.com/scalingdata) for [gcfg](https://github.com/scalingdata/gcfg).

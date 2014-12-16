@@ -9,17 +9,17 @@ package main
 
 import (
 	//"github.com/layeh/gumble/gumble_ffmpeg"
-	"os/exec"
 	"fmt"
+	"os/exec"
 )
 
 type Song struct {
-	submitter string
-	title string
-	youtubeId string
-	duration string
+	submitter    string
+	title        string
+	youtubeId    string
+	duration     string
 	thumbnailUrl string
-	skippers []string
+	skippers     []string
 }
 
 func NewSong(user, id string) *Song {
@@ -48,7 +48,7 @@ func (s *Song) Delete() bool {
 }
 
 func (s *Song) AddSkip(username string) bool {
-	for _,user := range s.skippers {
+	for _, user := range s.skippers {
 		if username == user {
 			return false
 		}
@@ -58,7 +58,7 @@ func (s *Song) AddSkip(username string) bool {
 }
 
 func (s *Song) RemoveSkip(username string) bool {
-	for i,user := range s.skippers {
+	for i, user := range s.skippers {
 		if username == user {
 			s.skippers = append(s.skippers[:i], s.skippers[i+1:]...)
 			return true
@@ -67,3 +67,6 @@ func (s *Song) RemoveSkip(username string) bool {
 	return false
 }
 
+func (s *Song) SkipReached(channelUsers int) bool {
+	return false
+}

@@ -16,11 +16,12 @@ import (
 
 // MumbleDJ type declaration
 type mumbledj struct {
-	config gumble.Config
-	client *gumble.Client
-	keepAlive chan bool
+	config         gumble.Config
+	client         *gumble.Client
+	keepAlive      chan bool
 	defaultChannel string
-	conf DjConfig
+	conf           DjConfig
+	queue          SongQueue
 }
 
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
@@ -29,7 +30,7 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	} else {
 		fmt.Println("No channel specified, moving to root...")
 	}
-	
+
 	err := loadConfiguration()
 	if err == nil {
 		fmt.Println("Configuration successfully loaded!")
@@ -44,11 +45,24 @@ func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
 
 func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 	if e.Message[0] == '!' {
-		parseCommand(e.Sender.Name(), e.Message[1:])
+		parseCommand(e.Sender, e.Sender.Name(), e.Message[1:])
 	}
 }
 
-var dj = mumbledj {
+func (dj *mumbledj) HasPermission(username string, command bool) bool {
+	if dj.conf.Permissions.AdminsEnabled && command {
+		for _, adminName := range dj.conf.Permissions.Admins {
+			if username == adminName {
+				return true
+			}
+		}
+		return false
+	} else {
+		return true
+	}
+}
+
+var dj = mumbledj{
 	keepAlive: make(chan bool),
 }
 
@@ -60,28 +74,27 @@ func main() {
 	flag.StringVar(&password, "password", "", "password for Mumble server (if needed)")
 	flag.StringVar(&channel, "channel", "", "default channel for MumbleDJ")
 	flag.Parse()
-	
+
 	dj.client = gumble.NewClient(&dj.config)
 	dj.config = gumble.Config{
 		Username: username,
 		Password: password,
-		Address: address + ":" + port,
+		Address:  address + ":" + port,
 	}
 	dj.defaultChannel = channel
-	
+
 	dj.client.Attach(gumbleutil.Listener{
-		Connect: dj.OnConnect,
-		Disconnect: dj.OnDisconnect,
+		Connect:     dj.OnConnect,
+		Disconnect:  dj.OnDisconnect,
 		TextMessage: dj.OnTextMessage,
 	})
-	
+
 	// IMPORTANT NOTE: This will be changed later once released. Not really safe at the
 	// moment.
 	dj.config.TLSConfig.InsecureSkipVerify = true
 	if err := dj.client.Connect(); err != nil {
 		panic(err)
 	}
-	
+
 	<-dj.keepAlive
 }
-

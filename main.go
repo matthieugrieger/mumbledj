@@ -21,14 +21,14 @@ type mumbledj struct {
 	keepAlive      chan bool
 	defaultChannel string
 	conf           DjConfig
-	queue          SongQueue
+	queue          *SongQueue
 }
 
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	if dj.client.Channels().Find(dj.defaultChannel) != nil {
 		dj.client.Self().Move(dj.client.Channels().Find(dj.defaultChannel))
 	} else {
-		fmt.Println("No channel specified, moving to root...")
+		fmt.Println("Channel doesn't exist, moving to root channel...")
 	}
 
 	err := loadConfiguration()
@@ -37,6 +37,7 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	} else {
 		panic(err)
 	}
+	dj.queue = NewSongQueue()
 }
 
 func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
@@ -64,15 +65,18 @@ func (dj *mumbledj) HasPermission(username string, command bool) bool {
 
 var dj = mumbledj{
 	keepAlive: make(chan bool),
+	queue:     NewSongQueue(),
 }
 
 func main() {
-	var address, port, username, password, channel string
+	var address, port, username, password, channel, debug string
+
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
 	flag.StringVar(&username, "username", "MumbleDJ", "username of MumbleDJ on server")
 	flag.StringVar(&password, "password", "", "password for Mumble server (if needed)")
 	flag.StringVar(&channel, "channel", "", "default channel for MumbleDJ")
+	flag.StringVar(&debug, "debug", "false", "toggle debug messages")
 	flag.Parse()
 
 	dj.client = gumble.NewClient(&dj.config)

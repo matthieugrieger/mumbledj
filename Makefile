@@ -18,3 +18,5 @@ install_deps:
 	go get -u github.com/layeh/gumble/gumbleutil
 	go get -u github.com/layeh/gumble/gumble_ffmpeg
 	go get -u code.google.com/p/gcfg
+	go get -u github.com/kennygrant/sanitize
+	go get -u github.com/jmoiron/jsonq

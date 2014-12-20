@@ -69,7 +69,7 @@ var dj = mumbledj{
 }
 
 func main() {
-	var address, port, username, password, channel, debug string
+	var address, port, username, password, channel string
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")

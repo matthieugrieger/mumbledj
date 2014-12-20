@@ -76,7 +76,6 @@ func main() {
 	flag.StringVar(&username, "username", "MumbleDJ", "username of MumbleDJ on server")
 	flag.StringVar(&password, "password", "", "password for Mumble server (if needed)")
 	flag.StringVar(&channel, "channel", "root", "default channel for MumbleDJ")
-	flag.StringVar(&debug, "debug", "false", "toggle debug messages")
 	flag.Parse()
 
 	dj.client = gumble.NewClient(&dj.config)

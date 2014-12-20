@@ -33,11 +33,9 @@ func parseCommand(user *gumble.User, username, command string) {
 			if argument == "" {
 				user.Send(NO_ARGUMENT_MSG)
 			} else {
-				success := add(username, argument)
+				success, songTitle := add(username, argument)
 				if success {
-					fmt.Println("Add successful!")
-					// TODO: Replace this message with a more informative one.
-					dj.client.Self().Channel().Send(fmt.Sprintf("%s has added a song to the queue.", username), false)
+					dj.client.Self().Channel().Send(fmt.Sprintf(SONG_ADDED_HTML, username, songTitle), false)
 				} else {
 					user.Send(INVALID_URL_MSG)
 				}
@@ -117,7 +115,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 }
 
-func add(user, url string) bool {
+func add(user, url string) (bool, string) {
 	youtubePatterns := []string{
 		`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)`,
 		`https?:\/\/youtube\.com\/watch\?v=([\w-]+)`,
@@ -140,13 +138,14 @@ func add(user, url string) bool {
 	if matchFound {
 		urlMatch := strings.Split(url, "=")
 		shortUrl := urlMatch[1]
-		if dj.queue.AddSong(NewSong(user, shortUrl)) {
-			return true
+		newSong := NewSong(user, shortUrl)
+		if dj.queue.AddSong(newSong) {
+			return true, newSong.title
 		} else {
-			return false
+			return false, ""
 		}
 	} else {
-		return false
+		return false, ""
 	}
 }
 

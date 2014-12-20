@@ -52,7 +52,7 @@ const NOW_PLAYING_HTML = `
 
 // Message shown to channel when a song is added to the queue by a user.
 const SONG_ADDED_HTML = `
-	<b>%s</b> has voted to skip this song.
+	<b>%s</b> has added "%s" to the queue.
 `
 
 // Message shown to channel when a song has been skipped.
@@ -63,4 +63,9 @@ const SONG_SKIPPED_HTML = `
 // Message shown to users when they ask for the current volume (volume command without argument)
 const CUR_VOLUME_HTML = `
 	The current volume is <b>%g</b>.
+`
+
+// Message shown to users when another user votes to skip the current song.
+const SKIP_ADDED_HTML = `
+	<b>%s</b> has voted to skip the current song.
 `

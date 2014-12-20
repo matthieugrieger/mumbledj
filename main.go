@@ -28,7 +28,7 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	if dj.client.Channels().Find(dj.defaultChannel) != nil {
 		dj.client.Self().Move(dj.client.Channels().Find(dj.defaultChannel))
 	} else {
-		fmt.Println("Channel doesn't exist, moving to root channel...")
+		fmt.Println("Channel doesn't exist, staying in root channel...")
 	}
 
 	err := loadConfiguration()
@@ -75,7 +75,7 @@ func main() {
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
 	flag.StringVar(&username, "username", "MumbleDJ", "username of MumbleDJ on server")
 	flag.StringVar(&password, "password", "", "password for Mumble server (if needed)")
-	flag.StringVar(&channel, "channel", "", "default channel for MumbleDJ")
+	flag.StringVar(&channel, "channel", "root", "default channel for MumbleDJ")
 	flag.StringVar(&debug, "debug", "false", "toggle debug messages")
 	flag.Parse()
 

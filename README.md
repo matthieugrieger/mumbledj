@@ -5,7 +5,7 @@ A Mumble bot that plays music fetched from YouTube videos. I have decided to exp
 And yes, I know that technically this is v3. The Ruby implementation had problems with high CPU usage and choppy audio which I couldn't seem to figure out.
 
 ## USAGE
-#####`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root`  
+`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root`  
 All parameters are optional, the example above shows the default values for each field.
 
 ## INSTALLATION

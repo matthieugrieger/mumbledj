@@ -1,7 +1,7 @@
 MumbleDJ Changelog
 ==================
 
-### December 27, 2014 [`v2.0.0`]
+### December 27, 2014 -- `v2.0.0`
 * Reached feature parity with old version of MumbleDJ.
 * Bot is now written completely in Golang instead of Lua and Python.
 * Stability improved in many areas.

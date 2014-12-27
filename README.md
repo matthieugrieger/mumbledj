@@ -8,6 +8,30 @@ A Mumble bot that plays music fetched from YouTube videos.
 `$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root`  
 All parameters are optional, the example above shows the default values for each field.
 
+## COMMANDS
+These are all of the chat commands currently supported by MumbleDJ. All command names and command prefixes may be changed in `mumbledj.gcfg`. All fields surrounded by `<>` indicate fields that *must* be supplied to the bot for the command to execute. All fields surrounded by `<>?` are optional fields.
+
+####`!add <youtube_url>`
+Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately.
+
+####`!skip`
+Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song.
+
+####`!forceskip`
+An admin command that forces a song skip.
+
+####`!volume <desired_volume>?`
+Either outputs the current volume or changes the current volume. If `desired_volume` is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to `desired_volume` if it is within the allowed volume range.
+
+####`!move <channel>`
+Moves MumbleDJ into `channel` if it exists.
+
+####`!reload`
+Reloads `mumbledj.gcfg` to retrieve updated configuration settings.
+
+####`!kill`
+Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory.
+
 ## INSTALLATION
 Installation for v2 of MumbleDJ is much easier than it was before, due to the reduced dependency list and a `Makefile` which automates some of the process.  
 

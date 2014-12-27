@@ -1,6 +1,16 @@
 MumbleDJ Changelog
 ==================
 
+### December 27, 2014 [`v2.0.0`]
+* Reached feature parity with old version of MumbleDJ.
+* Bot is now written completely in Golang instead of Lua and Python.
+* Stability improved in many areas.
+* Audio quality is slightly better due to using higher bitrate m4a files instead of Ogg Vorbis.
+* All YouTube URLs should be supported now.
+* Added an admin skip command that allows an admin to force skip a song.
+* Added `mumbledj.gcfg`, where all configuration options are now stored.
+* Added a reload command, used to reload the configuration when a change is made.
+
 ### December 8, 2014
 * Switched from Ruby to Go, using `gumble` instead of `mumble-ruby` now.
 

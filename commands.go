@@ -18,6 +18,8 @@ import (
 	"strings"
 )
 
+// Called on text message event. Checks the message for a command string, and processes it accordingly if
+// it contains a command.
 func parseCommand(user *gumble.User, username, command string) {
 	var com, argument string
 	if strings.Contains(command, " ") {
@@ -30,6 +32,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 
 	switch com {
+	// Add command
 	case dj.conf.Aliases.AddAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAdd) {
 			if argument == "" {
@@ -52,6 +55,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Skip command
 	case dj.conf.Aliases.SkipAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminSkip) {
 			if err := skip(username, false); err == nil {
@@ -60,6 +64,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Forceskip command
 	case dj.conf.Aliases.AdminSkipAlias:
 		if dj.HasPermission(username, true) {
 			if err := skip(username, true); err == nil {
@@ -68,6 +73,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Volume command
 	case dj.conf.Aliases.VolumeAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminVolume) {
 			if argument == "" {
@@ -82,6 +88,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Move command
 	case dj.conf.Aliases.MoveAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminMove) {
 			if argument == "" {
@@ -96,6 +103,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Reload command
 	case dj.conf.Aliases.ReloadAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminReload) {
 			err := loadConfiguration()
@@ -107,6 +115,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Kill command
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
 			if err := kill(); err == nil {
@@ -123,6 +132,8 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 }
 
+// Performs add functionality. Checks input URL for YouTube format, and adds
+// the URL to the queue if the format matches.
 func add(user, url string) (string, error) {
 	youtubePatterns := []string{
 		`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)`,
@@ -156,6 +167,8 @@ func add(user, url string) (string, error) {
 	}
 }
 
+// Performs skip functionality. Adds a skip to the skippers slice for the current song, and then
+// evaluates if a skip should be performed. Both skip and forceskip are implemented here.
 func skip(user string, admin bool) error {
 	if err := dj.currentSong.AddSkip(user); err == nil {
 		if dj.currentSong.SkipReached(len(dj.client.Self().Channel().Users())) || admin {
@@ -173,6 +186,9 @@ func skip(user string, admin bool) error {
 	}
 }
 
+// Performs volume functionality. Checks input value against LowestVolume and HighestVolume from
+// config to determine if the volume should be applied. If in the correct range, the new volume
+// is applied and is immediately in effect.
 func volume(user, value string) error {
 	if parsedVolume, err := strconv.ParseFloat(value, 32); err == nil {
 		newVolume := float32(parsedVolume)
@@ -187,6 +203,8 @@ func volume(user, value string) error {
 	}
 }
 
+// Performs move functionality. Determines if the supplied channel is valid and moves the bot
+// to the channel if it is.
 func move(channel string) error {
 	if dj.client.Channels().Find(channel) != nil {
 		dj.client.Self().Move(dj.client.Channels().Find(channel))
@@ -196,6 +214,8 @@ func move(channel string) error {
 	}
 }
 
+// Performs kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any
+// excess m4a files. The bot then safely disconnects from the server.
 func kill() error {
 	songsDir := fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir)
 	if err := os.RemoveAll(songsDir); err != nil {

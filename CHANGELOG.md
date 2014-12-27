@@ -1,7 +1,7 @@
 MumbleDJ Changelog
 ==================
 
-### December 27, 2014 -- `v2.0.0`
+### December 27, 2014 -- `v2.0.0, v2.1.0`
 * Reached feature parity with old version of MumbleDJ.
 * Bot is now written completely in Golang instead of Lua and Python.
 * Now uses [`gumble`](https://github.com/layeh/gumble) for interacting with Mumble instead of [`piepan`](https://github.com/layeh/piepan).
@@ -12,6 +12,7 @@ MumbleDJ Changelog
 * Added `mumbledj.gcfg`, where all configuration options are now stored.
 * Added a reload command, used to reload the configuration when a change is made.
 * Implemented volume control. Now changes volume while audio is playing!
+* Code is now more thoroughly commented.
 
 ### December 8, 2014
 * Switched from Ruby to Go, using `gumble` instead of `mumble-ruby` now.

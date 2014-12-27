@@ -19,6 +19,7 @@ import (
 	"strings"
 )
 
+// Song type declaration.
 type Song struct {
 	submitter    string
 	title        string
@@ -28,6 +29,8 @@ type Song struct {
 	skippers     []string
 }
 
+// Returns a new Song type. Before returning the new type, the song's metadata is collected
+// via the YouTube Gdata API.
 func NewSong(user, id string) *Song {
 	jsonUrl := fmt.Sprintf("http://gdata.youtube.com/feeds/api/videos/%s?v=2&alt=jsonc", id)
 	jsonString := ""
@@ -59,6 +62,7 @@ func NewSong(user, id string) *Song {
 	return song
 }
 
+// Downloads the song via youtube-dl. All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *Song) Download() error {
 	cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s.m4a`, s.youtubeId), "--format", "m4a", s.youtubeId)
 	if err := cmd.Run(); err == nil {
@@ -68,11 +72,14 @@ func (s *Song) Download() error {
 	}
 }
 
+// Plays the song. Once the song is playing, a notification is displayed in a text message that features the video thumbnail, URL, title,
+// duration, and submitter.
 func (s *Song) Play() {
 	dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId))
 	dj.client.Self().Channel().Send(fmt.Sprintf(NOW_PLAYING_HTML, s.thumbnailUrl, s.youtubeId, s.title, s.duration, s.submitter), false)
 }
 
+// Deletes the song from ~/.mumbledj/songs.
 func (s *Song) Delete() error {
 	filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId)
 	if _, err := os.Stat(filePath); err == nil {
@@ -86,6 +93,8 @@ func (s *Song) Delete() error {
 	}
 }
 
+// Adds a skip to the skippers slice. If the user is already in the slice AddSkip() returns
+// an error and does not add a duplicate skip.
 func (s *Song) AddSkip(username string) error {
 	for _, user := range s.skippers {
 		if username == user {
@@ -96,6 +105,8 @@ func (s *Song) AddSkip(username string) error {
 	return nil
 }
 
+// Removes a skip from the skippers slice. If username is not in the slice, an error is
+// returned.
 func (s *Song) RemoveSkip(username string) error {
 	for i, user := range s.skippers {
 		if username == user {
@@ -106,6 +117,9 @@ func (s *Song) RemoveSkip(username string) error {
 	return errors.New("This user has not skipped the song.")
 }
 
+// Calculates current skip ratio based on number of users within MumbleDJ's channel and the
+// amount of values in the skippers slice. If the value is greater than or equal to the skip ratio
+// defined in mumbledj.gcfg, the function returns true. Returns false otherwise.
 func (s *Song) SkipReached(channelUsers int) bool {
 	if float32(len(s.skippers))/float32(channelUsers) >= dj.conf.General.SkipRatio {
 		return true

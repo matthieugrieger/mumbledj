@@ -29,11 +29,14 @@ type mumbledj struct {
 	homeDir        string
 }
 
+// OnConnect event. First moves MumbleDJ into the default channel specified
+// via commandline args, and moves to root channel if the channel does not exist. The current
+// user's homedir path is stored, configuration is loaded, and the audio stream is set up.
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	if dj.client.Channels().Find(dj.defaultChannel) != nil {
 		dj.client.Self().Move(dj.client.Channels().Find(dj.defaultChannel))
 	} else {
-		fmt.Println("Channel doesn't exist, staying in root channel...")
+		fmt.Println("Channel doesn't exist or one was not provided, staying in root channel...")
 	}
 
 	if currentUser, err := user.Current(); err == nil {
@@ -55,16 +58,21 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	}
 }
 
+// OnDisconnect event. Terminates MumbleDJ thread.
 func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
 	dj.keepAlive <- true
 }
 
+// OnTextMessage event. Checks for command prefix, and calls parseCommand if it exists. Ignores
+// the incoming message otherwise.
 func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
-	if e.Message[0] == '!' {
+	if e.Message[0] == dj.conf.General.CommandPrefix {
 		parseCommand(e.Sender, e.Sender.Name(), e.Message[1:])
 	}
 }
 
+// Checks if username has the permissions to execute a command. Permissions are specified in
+// mumbledj.gcfg.
 func (dj *mumbledj) HasPermission(username string, command bool) bool {
 	if dj.conf.Permissions.AdminsEnabled && command {
 		for _, adminName := range dj.conf.Permissions.Admins {
@@ -78,6 +86,8 @@ func (dj *mumbledj) HasPermission(username string, command bool) bool {
 	}
 }
 
+// OnSongFinished event. Deletes song that just finished playing, then queues, downloads, and plays
+// the next song if it exists.
 func (dj *mumbledj) OnSongFinished() {
 	if err := dj.currentSong.Delete(); err == nil {
 		if dj.queue.Len() != 0 {
@@ -95,11 +105,14 @@ func (dj *mumbledj) OnSongFinished() {
 	}
 }
 
+// dj variable declaration. This is done outside of main() to allow global use.
 var dj = mumbledj{
 	keepAlive: make(chan bool),
 	queue:     NewSongQueue(),
 }
 
+// Main function, but only really performs startup tasks. Grabs and parses commandline
+// args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
 	var address, port, username, password, channel string
 

@@ -13,6 +13,7 @@ import (
 	"fmt"
 )
 
+// Golang struct representation of mumbledj.gcfg file structure for parsing.
 type DjConfig struct {
 	General struct {
 		CommandPrefix string
@@ -44,6 +45,7 @@ type DjConfig struct {
 	}
 }
 
+// Loads mumbledj.gcfg into dj.conf, a variable of type DjConfig.
 func loadConfiguration() error {
 	if gcfg.ReadFileInto(&dj.conf, fmt.Sprintf("%s/.mumbledj/config/mumbledj.gcfg", dj.homeDir)) == nil {
 		return nil

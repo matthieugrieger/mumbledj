@@ -66,7 +66,7 @@ func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
 // OnTextMessage event. Checks for command prefix, and calls parseCommand if it exists. Ignores
 // the incoming message otherwise.
 func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
-	if e.Message[0] == dj.conf.General.CommandPrefix {
+	if e.Message[0] == dj.conf.General.CommandPrefix[0] {
 		parseCommand(e.Sender, e.Sender.Name(), e.Message[1:])
 	}
 }

@@ -18,9 +18,11 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 
 **2)** Install [`ffmpeg`](https://www.ffmpeg.org/) if it is not already installed on your system.
 
-**3)** Clone the `MumbleDJ` repository.
+**3)** Install [`youtube-dl`](https://github.com/rg3/youtube-dl#installation).
 
-**4)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 
+**4)** Clone the `MumbleDJ` repository.
+
+**5)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 
 ```
 $ make install_deps
 $ make

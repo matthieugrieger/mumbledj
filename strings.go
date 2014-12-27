@@ -29,11 +29,14 @@ const NO_ARGUMENT_MSG = "The command you issued requires an argument and you did
 // Message shown to users when they try to change the volume to a value outside the volume range.
 const NOT_IN_VOLUME_RANGE_MSG = "Out of range. The volume must be between %g and %g."
 
-// Message shown to users when they successfully change the volume.
-const VOLUME_SUCCESS_MSG = "You have successfully changed the volume to the following: %g."
-
 // Message shown to user when a successful configuration reload finishes.
 const CONFIG_RELOAD_SUCCESS_MSG = "The configuration has been successfully reloaded."
+
+// Message shown to user when an admin skips a song.
+const ADMIN_SONG_SKIP_MSG = "An admin has decided to skip the current song."
+
+// Message shown to user when the kill command errors.
+const KILL_ERROR_MSG = "An error occurred while attempting to kill the bot."
 
 // Message shown to a channel when a new song starts playing.
 const NOW_PLAYING_HTML = `
@@ -68,4 +71,9 @@ const CUR_VOLUME_HTML = `
 // Message shown to users when another user votes to skip the current song.
 const SKIP_ADDED_HTML = `
 	<b>%s</b> has voted to skip the current song.
+`
+
+// Message shown to users when they successfully change the volume.
+const VOLUME_SUCCESS_HTML = `
+	<b>%s</b> has changed the volume to <b>%s</b>.
 `

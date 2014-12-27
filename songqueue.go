@@ -7,6 +7,10 @@
 
 package main
 
+import (
+	"errors"
+)
+
 type SongQueue struct {
 	queue *Queue
 }
@@ -17,21 +21,20 @@ func NewSongQueue() *SongQueue {
 	}
 }
 
-func (q *SongQueue) AddSong(s *Song) bool {
+func (q *SongQueue) AddSong(s *Song) error {
 	beforeLen := q.queue.Len()
 	q.queue.Push(s)
 	if q.queue.Len() == beforeLen+1 {
-		return true
+		return nil
 	} else {
-		return false
+		return errors.New("Could not add Song to the SongQueue.")
 	}
-	return true
 }
 
 func (q *SongQueue) NextSong() *Song {
 	return q.queue.Poll().(*Song)
 }
 
-func (q *SongQueue) CurrentSong() *Song {
-	return q.queue.Peek().(*Song)
+func (q *SongQueue) Len() int {
+	return q.queue.Len()
 }

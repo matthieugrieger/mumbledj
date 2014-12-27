@@ -11,7 +11,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/layeh/gumble/gumble"
+	"github.com/layeh/gumble/gumble_ffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
+	"os/user"
 )
 
 // MumbleDJ type declaration
@@ -22,6 +24,9 @@ type mumbledj struct {
 	defaultChannel string
 	conf           DjConfig
 	queue          *SongQueue
+	currentSong    *Song
+	audioStream    *gumble_ffmpeg.Stream
+	homeDir        string
 }
 
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
@@ -31,13 +36,22 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 		fmt.Println("Channel doesn't exist, staying in root channel...")
 	}
 
-	err := loadConfiguration()
-	if err == nil {
+	if currentUser, err := user.Current(); err == nil {
+		dj.homeDir = currentUser.HomeDir
+	}
+
+	if err := loadConfiguration(); err == nil {
 		fmt.Println("Configuration successfully loaded!")
 	} else {
 		panic(err)
 	}
-	dj.queue = NewSongQueue()
+
+	if audioStream, err := gumble_ffmpeg.New(dj.client); err == nil {
+		dj.audioStream = audioStream
+		dj.audioStream.Done = dj.OnSongFinished
+	} else {
+		panic(err)
+	}
 }
 
 func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
@@ -60,6 +74,23 @@ func (dj *mumbledj) HasPermission(username string, command bool) bool {
 		return false
 	} else {
 		return true
+	}
+}
+
+func (dj *mumbledj) OnSongFinished() {
+	if err := dj.currentSong.Delete(); err == nil {
+		if dj.queue.Len() != 0 {
+			dj.currentSong = dj.queue.NextSong()
+			if dj.currentSong != nil {
+				if err := dj.currentSong.Download(); err == nil {
+					dj.currentSong.Play()
+				} else {
+					panic(err)
+				}
+			}
+		}
+	} else {
+		panic(err)
 	}
 }
 

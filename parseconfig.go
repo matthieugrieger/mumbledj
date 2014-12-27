@@ -11,7 +11,6 @@ import (
 	"code.google.com/p/gcfg"
 	"errors"
 	"fmt"
-	"os/user"
 )
 
 type DjConfig struct {
@@ -46,9 +45,8 @@ type DjConfig struct {
 }
 
 func loadConfiguration() error {
-	usr, err := user.Current()
-	if err == nil {
-		return gcfg.ReadFileInto(&dj.conf, fmt.Sprintf("%s/.mumbledj/config/mumbledj.gcfg", usr.HomeDir))
+	if gcfg.ReadFileInto(&dj.conf, fmt.Sprintf("%s/.mumbledj/config/mumbledj.gcfg", dj.homeDir)) == nil {
+		return nil
 	} else {
 		return errors.New("Configuration load failed.")
 	}

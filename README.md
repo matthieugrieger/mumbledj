@@ -1,8 +1,8 @@
 MumbleDJ
 ========
-A Mumble bot that plays music fetched from YouTube videos. I have decided to experiment with rewriting the bot in Go using [gumble](https://github.com/layeh/gumble). I am hoping this will cut down on the dependency list, make it easier to develop in the future, and allow for some extra functionality that wasn't previously possible.
+A Mumble bot that plays music fetched from YouTube videos.
 
-And yes, I know that technically this is v3. The Ruby implementation had problems with high CPU usage and choppy audio which I couldn't seem to figure out.
+**IMPORTANT NOTE:** If you were using the Lua version of MumbleDJ previously, you will need to follow the installation guide once more to install new dependencies.
 
 ## USAGE
 `$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root`  
@@ -20,7 +20,7 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 
 **3)** Install [`youtube-dl`](https://github.com/rg3/youtube-dl#installation).
 
-**4)** Clone the `MumbleDJ` repository.
+**4)** Clone the `MumbleDJ` repository or [download the latest release](https://github.com/matthieugrieger/mumbledj/releases).
 
 **5)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 
 ```

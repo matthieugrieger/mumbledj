@@ -11,6 +11,7 @@ MumbleDJ Changelog
 * Added an admin skip command that allows an admin to force skip a song.
 * Added `mumbledj.gcfg`, where all configuration options are now stored.
 * Added a reload command, used to reload the configuration when a change is made.
+* Implemented volume control. Now changes volume while audio is playing!
 
 ### December 8, 2014
 * Switched from Ruby to Go, using `gumble` instead of `mumble-ruby` now.

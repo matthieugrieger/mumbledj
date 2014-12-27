@@ -71,12 +71,12 @@ func parseCommand(user *gumble.User, username, command string) {
 	case dj.conf.Aliases.VolumeAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminVolume) {
 			if argument == "" {
-				dj.client.Self().Channel().Send(fmt.Sprintf(CUR_VOLUME_HTML, dj.conf.Volume.DefaultVolume), false)
+				dj.client.Self().Channel().Send(fmt.Sprintf(CUR_VOLUME_HTML, dj.audioStream.Volume()), false)
 			} else {
 				if err := volume(username, argument); err == nil {
 					dj.client.Self().Channel().Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, username, argument), false)
 				} else {
-					user.Send(NOT_IN_VOLUME_RANGE_MSG)
+					user.Send(fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 				}
 			}
 		} else {
@@ -177,7 +177,7 @@ func volume(user, value string) error {
 	if parsedVolume, err := strconv.ParseFloat(value, 32); err == nil {
 		newVolume := float32(parsedVolume)
 		if newVolume >= dj.conf.Volume.LowestVolume && newVolume <= dj.conf.Volume.HighestVolume {
-			dj.conf.Volume.DefaultVolume = newVolume
+			dj.audioStream.SetVolume(newVolume)
 			return nil
 		} else {
 			return errors.New("The volume supplied was not in the allowed range.")

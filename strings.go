@@ -27,7 +27,7 @@ const NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
 const NO_ARGUMENT_MSG = "The command you issued requires an argument and you did not provide one."
 
 // Message shown to users when they try to change the volume to a value outside the volume range.
-const NOT_IN_VOLUME_RANGE_MSG = "Out of range. The volume must be between %g and %g."
+const NOT_IN_VOLUME_RANGE_MSG = "Out of range. The volume must be between %f and %f."
 
 // Message shown to user when a successful configuration reload finishes.
 const CONFIG_RELOAD_SUCCESS_MSG = "The configuration has been successfully reloaded."
@@ -65,7 +65,7 @@ const SONG_SKIPPED_HTML = `
 
 // Message shown to users when they ask for the current volume (volume command without argument)
 const CUR_VOLUME_HTML = `
-	The current volume is <b>%g</b>.
+	The current volume is <b>%f</b>.
 `
 
 // Message shown to users when another user votes to skip the current song.

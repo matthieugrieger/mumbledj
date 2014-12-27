@@ -49,6 +49,7 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	if audioStream, err := gumble_ffmpeg.New(dj.client); err == nil {
 		dj.audioStream = audioStream
 		dj.audioStream.Done = dj.OnSongFinished
+		dj.audioStream.SetVolume(dj.conf.Volume.DefaultVolume)
 	} else {
 		panic(err)
 	}

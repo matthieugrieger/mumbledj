@@ -4,6 +4,7 @@ MumbleDJ Changelog
 ### December 27, 2014 -- `v2.0.0`
 * Reached feature parity with old version of MumbleDJ.
 * Bot is now written completely in Golang instead of Lua and Python.
+* Now uses [`gumble`](https://github.com/layeh/gumble) for interacting with Mumble instead of [`piepan`](https://github.com/layeh/piepan).
 * Stability improved in many areas.
 * Audio quality is slightly better due to using higher bitrate m4a files instead of Ogg Vorbis.
 * All YouTube URLs should be supported now.

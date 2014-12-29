@@ -179,7 +179,7 @@ func skip(user string, admin bool) error {
 				return errors.New("An error occurred while stopping the current song.")
 			}
 		} else {
-			return errors.New("Not enough skips have been reached to skip the song.")
+			return nil
 		}
 	} else {
 		return errors.New("An error occurred while adding a skip to the current song.")

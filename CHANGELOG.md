@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### December 29, 2014 -- `v2.1.2`
+* Fixed skip messages not being displayed in chat.
+
 ### December 27, 2014 -- `v2.0.0, v2.1.0, v2.1.1`
 * Reached feature parity with old version of MumbleDJ.
 * Bot is now written completely in Golang instead of Lua and Python.

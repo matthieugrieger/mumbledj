@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### December 30, 2014 -- `v2.1.3`
+* Fixed YouTube URL parsing not working for some forms of YouTube URLs.
+* Now recovers more gracefully if an audio download fails. Instead of panicking, the bot will send a message to the user who added the URL, telling them the audio download failed.
+
 ### December 29, 2014 -- `v2.1.2`
 * Fixed skip messages not being displayed in chat.
 

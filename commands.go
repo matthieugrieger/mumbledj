@@ -143,19 +143,19 @@ func add(user, url string) (string, error) {
 		`https?:\/\/www.youtube.com\/v\/([\w-]+)`,
 	}
 	matchFound := false
+	shortUrl := ""
 
 	for _, pattern := range youtubePatterns {
 		if re, err := regexp.Compile(pattern); err == nil {
 			if re.MatchString(url) {
 				matchFound = true
+				shortUrl = re.FindStringSubmatch(url)[1]
 				break
 			}
 		}
 	}
 
 	if matchFound {
-		urlMatch := strings.Split(url, "=")
-		shortUrl := urlMatch[1]
 		newSong := NewSong(user, shortUrl)
 		if err := dj.queue.AddSong(newSong); err == nil {
 			return newSong.title, nil

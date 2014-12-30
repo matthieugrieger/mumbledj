@@ -38,6 +38,9 @@ const ADMIN_SONG_SKIP_MSG = "An admin has decided to skip the current song."
 // Message shown to user when the kill command errors.
 const KILL_ERROR_MSG = "An error occurred while attempting to kill the bot."
 
+// Message shown to users when the audio for a video could not be downloaded.
+const AUDIO_FAIL_MSG = "The audio download for this video failed. YouTube has likely not generated the audio files for this video yet."
+
 // Message shown to a channel when a new song starts playing.
 const NOW_PLAYING_HTML = `
 	<table>

@@ -45,7 +45,8 @@ func parseCommand(user *gumble.User, username, command string) {
 						if err := dj.currentSong.Download(); err == nil {
 							dj.currentSong.Play()
 						} else {
-							panic(err)
+							user.Send(AUDIO_FAIL_MSG)
+							dj.currentSong.Delete()
 						}
 					}
 				} else {

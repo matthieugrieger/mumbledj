@@ -96,6 +96,8 @@ func (dj *mumbledj) OnSongFinished() {
 				if err := dj.currentSong.Download(); err == nil {
 					dj.currentSong.Play()
 				} else {
+					username := dj.currentSong.submitter
+					user := dj.client.Self().Channel().Users().Find(username)
 					user.Send(AUDIO_FAIL_MSG)
 					dj.currentSong.Delete()
 				}

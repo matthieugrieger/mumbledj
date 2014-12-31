@@ -90,6 +90,5 @@ THE SOFTWARE.
 * [Tim Cooper](https://github.com/bontibon) for [gumble](https://github.com/layeh/gumble).
 * [Ricardo Garcia](https://github.com/rg3) for [youtube-dl](https://github.com/rg3/youtube-dl).
 * [ScalingData](https://github.com/scalingdata) for [gcfg](https://github.com/scalingdata/gcfg).
-* [Hicham Bouabdallah](https://github.com/hishboy) for [Golang queue implementation](https://github.com/hishboy/gocommons/blob/master/lang/queue.go).
 * [kennygrant](https://github.com/kennygrant) for [sanitize](https://github.com/kennygrant/sanitize).
 * [Jason Moiron](https://github.com/jmoiron) for [jsonq](https://github.com/jmoiron/jsonq).

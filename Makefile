@@ -1,6 +1,6 @@
 all: mumbledj
 
-mumbledj: main.go commands.go parseconfig.go strings.go queue.go song.go songqueue.go
+mumbledj: main.go commands.go parseconfig.go strings.go song.go playlist.go songqueue.go
 	go build .
 		
 clean:

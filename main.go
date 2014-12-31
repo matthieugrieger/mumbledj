@@ -96,7 +96,8 @@ func (dj *mumbledj) OnSongFinished() {
 				if err := dj.currentSong.Download(); err == nil {
 					dj.currentSong.Play()
 				} else {
-					panic(err)
+					user.Send(AUDIO_FAIL_MSG)
+					dj.currentSong.Delete()
 				}
 			}
 		}

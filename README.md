@@ -33,9 +33,10 @@ Reloads `mumbledj.gcfg` to retrieve updated configuration settings.
 Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory.
 
 ## INSTALLATION
-Installation for v2 of MumbleDJ is much easier than it was before, due to the reduced dependency list and a `Makefile` which automates some of the process.  
+Installation for v2 of MumbleDJ is much easier than it was before, due to the reduced dependency list and a `Makefile` which automates some of the process.
 
 **NOTE:** This bot was designed for use on Linux machines. If you wish to run the bot on another OS, it will require tweaking and is not something I will be able to help with.
+**NOTE #2:** Your Mumble server MUST be using the Opus audio codec, not CELT. Audio will not play if your server uses CELT.
 
 **SETUP GUIDE**  
 **1)** Install and correctly configure [`Go`](https://golang.org/) (1.3 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.

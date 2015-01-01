@@ -99,7 +99,7 @@ func (dj *mumbledj) OnSongFinished() {
 					username := dj.currentSong.submitter
 					user := dj.client.Self().Channel().Users().Find(username)
 					user.Send(AUDIO_FAIL_MSG)
-					dj.currentSong.Delete()
+					dj.OnSongFinished()
 				}
 			}
 		}

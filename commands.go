@@ -22,8 +22,8 @@ import (
 // it contains a command.
 func parseCommand(user *gumble.User, username, command string) {
 	var com, argument string
-	if strings.Contains(command, " ") {
-		sanitizedCommand := sanitize.HTML(command)
+	sanitizedCommand := sanitize.HTML(command)
+	if strings.Contains(sanitizedCommand, " ") {
 		parsedCommand := strings.Split(sanitizedCommand, " ")
 		com, argument = parsedCommand[0], parsedCommand[1]
 	} else {
@@ -42,14 +42,28 @@ func parseCommand(user *gumble.User, username, command string) {
 	// Skip command
 	case dj.conf.Aliases.SkipAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminSkip) {
-			skip(username, false)
+			skip(user, username, false, false)
+		} else {
+			user.Send(NO_PERMISSION_MSG)
+		}
+	// Skip playlist command
+	case dj.conf.Aliases.SkipPlaylistAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
+			skip(user, username, false, true)
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
 	// Forceskip command
 	case dj.conf.Aliases.AdminSkipAlias:
 		if dj.HasPermission(username, true) {
-			skip(username, true)
+			skip(user, username, true, false)
+		} else {
+			user.Send(NO_PERMISSION_MSG)
+		}
+	// Playlist forceskip command
+	case dj.conf.Aliases.AdminSkipPlaylistAlias:
+		if dj.HasPermission(username, true) {
+			skip(user, username, true, true)
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
@@ -114,45 +128,93 @@ func add(user *gumble.User, username, url string) {
 
 		if matchFound {
 			newSong := NewSong(username, shortUrl)
-			if err := dj.queue.AddSong(newSong); err == nil {
+			if err := dj.queue.AddItem(newSong); err == nil {
 				dj.client.Self().Channel().Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
 				if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-					dj.currentSong = dj.queue.NextSong()
-					if err := dj.currentSong.Download(); err == nil {
-						dj.currentSong.Play()
+					if err := dj.queue.CurrentItem().(*Song).Download(); err == nil {
+						dj.queue.CurrentItem().(*Song).Play()
 					} else {
 						user.Send(AUDIO_FAIL_MSG)
-						dj.currentSong.Delete()
+						dj.queue.CurrentItem().(*Song).Delete()
 					}
 				}
-			} else {
-				panic(errors.New("Could not add the Song to the queue."))
 			}
 		} else {
-			user.Send(INVALID_URL_MSG)
+			// Check to see if we have a playlist URL instead.
+			youtubePlaylistPattern := `https?:\/\/www\.youtube\.com\/playlist\?list=(\w+)`
+			if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
+				if re.MatchString(url) {
+					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
+						shortUrl = re.FindStringSubmatch(url)[1]
+						newPlaylist := NewPlaylist(username, shortUrl)
+						if dj.queue.AddItem(newPlaylist); err == nil {
+							dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
+							if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
+								if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
+									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
+								} else {
+									user.Send(AUDIO_FAIL_MSG)
+									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
+								}
+							}
+						}
+					} else {
+						user.Send(NO_PLAYLIST_PERMISSION_MSG)
+					}
+				} else {
+					user.Send(INVALID_URL_MSG)
+				}
+			}
 		}
 	}
 }
 
 // Performs skip functionality. Adds a skip to the skippers slice for the current song, and then
 // evaluates if a skip should be performed. Both skip and forceskip are implemented here.
-func skip(user string, admin bool) {
-	if err := dj.currentSong.AddSkip(user); err == nil {
-		if admin {
-			dj.client.Self().Channel().Send(ADMIN_SONG_SKIP_MSG, false)
-		} else {
-			dj.client.Self().Channel().Send(fmt.Sprintf(SKIP_ADDED_HTML, user), false)
-		}
-		if dj.currentSong.SkipReached(len(dj.client.Self().Channel().Users())) || admin {
-			dj.client.Self().Channel().Send(SONG_SKIPPED_HTML, false)
-			if err := dj.audioStream.Stop(); err == nil {
-				dj.OnSongFinished()
+func skip(user *gumble.User, username string, admin, playlistSkip bool) {
+	if playlistSkip {
+		if dj.queue.CurrentItem().ItemType() == "playlist" {
+			if err := dj.queue.CurrentItem().AddSkip(username); err == nil {
+				if admin {
+					dj.client.Self().Channel().Send(ADMIN_PLAYLIST_SKIP_MSG, false)
+				} else {
+					dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_SKIP_ADDED_HTML, username), false)
+				}
+				if dj.queue.CurrentItem().SkipReached(len(dj.client.Self().Channel().Users())) || admin {
+					dj.queue.CurrentItem().(*Playlist).skipped = true
+					dj.client.Self().Channel().Send(PLAYLIST_SKIPPED_HTML, false)
+					if err := dj.audioStream.Stop(); err != nil {
+						panic(errors.New("An error occurred while stopping the current song."))
+					}
+				}
 			} else {
-				panic(errors.New("An error occurred while stopping the current song."))
+				panic(errors.New("An error occurred while adding a skip to the current playlist."))
 			}
+		} else {
+			user.Send(NO_PLAYLIST_PLAYING_MSG)
 		}
 	} else {
-		panic(errors.New("An error occurred while adding a skip to the current song."))
+		var currentItem QueueItem
+		if dj.queue.CurrentItem().ItemType() == "playlist" {
+			currentItem = dj.queue.CurrentItem().(*Playlist).songs.CurrentItem()
+		} else {
+			currentItem = dj.queue.CurrentItem()
+		}
+		if err := currentItem.AddSkip(username); err == nil {
+			if admin {
+				dj.client.Self().Channel().Send(ADMIN_SONG_SKIP_MSG, false)
+			} else {
+				dj.client.Self().Channel().Send(fmt.Sprintf(SKIP_ADDED_HTML, username), false)
+			}
+			if currentItem.SkipReached(len(dj.client.Self().Channel().Users())) || admin {
+				dj.client.Self().Channel().Send(SONG_SKIPPED_HTML, false)
+				if err := dj.audioStream.Stop(); err != nil {
+					panic(errors.New("An error occurred while stopping the current song."))
+				}
+			}
+		} else {
+			panic(errors.New("An error occurred while adding a skip to the current song."))
+		}
 	}
 }
 

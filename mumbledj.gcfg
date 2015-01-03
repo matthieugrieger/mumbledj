@@ -13,6 +13,10 @@ CommandPrefix = "!"
 # DEFAULT VALUE: 0.5
 SkipRatio = 0.5
 
+# Ratio that must be met or exceeded to trigger a playlist skip
+# DEFAULT VALUE: 0.5
+PlaylistSkipRatio = 0.5
+
 
 [Volume]
 
@@ -38,6 +42,10 @@ AddAlias = "add"
 # Alias used for skip command
 # DEFAULT VALUE: "skip"
 SkipAlias = "skip"
+
+# Alias used for playlist skip command
+# DEFAULT VALUE: "skipplaylist"
+SkipPlaylistAlias = "skipplaylist"
 
 # Alias used for admin skip command
 # DEFAULT VALUE: "forceskip"
@@ -78,6 +86,10 @@ Admins = "Matt"
 # Make add an admin command?
 # DEFAULT VALUE: false
 AdminAdd = false
+
+# Make playlist adds an admin only action?
+# DEFAULT VALUE: false
+AdminAddPlaylists = false
 
 # Make skip an admin command?
 # DEFAULT VALUE: false

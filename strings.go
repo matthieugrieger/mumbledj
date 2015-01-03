@@ -10,6 +10,9 @@ package main
 // Message shown to users when they do not have permission to execute a command.
 const NO_PERMISSION_MSG = "You do not have permission to execute that command."
 
+// Message shown to users when they try to add a playlist to the queue and do not have permission to do so.
+const NO_PLAYLIST_PERMISSION_MSG = "You do not have permission to add playlists to the queue."
+
 // Message shown to users when they try to execute a command that doesn't exist.
 const COMMAND_DOESNT_EXIST_MSG = "The command you entered does not exist."
 
@@ -23,6 +26,9 @@ const INVALID_URL_MSG = "The URL you submitted does not match the required forma
 // no song is playing.
 const NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
 
+// Message shown to users when they attempt to skip a playlist when there is no playlist playing.
+const NO_PLAYLIST_PLAYING_MSG = "There is no playlist playing at the moment."
+
 // Message shown to users when they issue a command that requires an argument and one was not supplied.
 const NO_ARGUMENT_MSG = "The command you issued requires an argument and you did not provide one."
 
@@ -32,11 +38,11 @@ const NOT_IN_VOLUME_RANGE_MSG = "Out of range. The volume must be between %f and
 // Message shown to user when a successful configuration reload finishes.
 const CONFIG_RELOAD_SUCCESS_MSG = "The configuration has been successfully reloaded."
 
-// Message shown to user when an admin skips a song.
+// Message shown to users when an admin skips a song.
 const ADMIN_SONG_SKIP_MSG = "An admin has decided to skip the current song."
 
-// Message shown to user when the kill command errors.
-const KILL_ERROR_MSG = "An error occurred while attempting to kill the bot."
+// Message shown to users when an admin skips a playlist.
+const ADMIN_PLAYLIST_SKIP_MSG = "An admin has decided to skip the current playlist."
 
 // Message shown to users when the audio for a video could not be downloaded.
 const AUDIO_FAIL_MSG = "The audio download for this video failed. YouTube has likely not generated the audio files for this video yet."
@@ -61,14 +67,24 @@ const SONG_ADDED_HTML = `
 	<b>%s</b> has added "%s" to the queue.
 `
 
+// Message shown to channel when a playlist is added to the queue by a user.
+const PLAYLIST_ADDED_HTML = `
+	<b>%s</b> has added the playlist "%s" to the queue.
+`
+
 // Message shown to channel when a song has been skipped.
 const SONG_SKIPPED_HTML = `
 	The number of votes required for a skip has been met. <b>Skipping song!</b>
 `
 
+// Message shown to channel when a playlist has been skipped.
+const PLAYLIST_SKIPPED_HTML = `
+	The number of votes required for a skip has been met. <b>Skipping playlist!</b>
+`
+
 // Message shown to users when they ask for the current volume (volume command without argument)
 const CUR_VOLUME_HTML = `
-	The current volume is <b>%f</b>.
+	The current volume is <b>%.2f</b>.
 `
 
 // Message shown to users when another user votes to skip the current song.
@@ -76,7 +92,12 @@ const SKIP_ADDED_HTML = `
 	<b>%s</b> has voted to skip the current song.
 `
 
+// Message shown to users when another user votes to skip the current playlist.
+const PLAYLIST_SKIP_ADDED_HTML = `
+	<b>%s</b> has voted to skip the current playlist.
+`
+
 // Message shown to users when they successfully change the volume.
 const VOLUME_SUCCESS_HTML = `
-	<b>%s</b> has changed the volume to <b>%s</b>.
+	<b>%s</b> has changed the volume to <b>%.2f</b>.
 `

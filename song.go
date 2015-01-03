@@ -24,8 +24,10 @@ type Song struct {
 	submitter    string
 	title        string
 	youtubeId    string
+	playlistId   string
 	duration     string
 	thumbnailUrl string
+	itemType     string
 	skippers     []string
 }
 
@@ -56,8 +58,10 @@ func NewSong(user, id string) *Song {
 		submitter:    user,
 		title:        videoTitle,
 		youtubeId:    id,
+		playlistId:   "",
 		duration:     videoDuration,
 		thumbnailUrl: videoThumbnail,
+		itemType:     "song",
 	}
 	return song
 }
@@ -126,4 +130,9 @@ func (s *Song) SkipReached(channelUsers int) bool {
 	} else {
 		return false
 	}
+}
+
+// Returns "song" as the item type. Used for differentiating Songs from Playlists.
+func (s *Song) ItemType() string {
+	return "song"
 }

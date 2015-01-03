@@ -16,8 +16,9 @@ import (
 // Golang struct representation of mumbledj.gcfg file structure for parsing.
 type DjConfig struct {
 	General struct {
-		CommandPrefix string
-		SkipRatio     float32
+		CommandPrefix     string
+		SkipRatio         float32
+		PlaylistSkipRatio float32
 	}
 	Volume struct {
 		DefaultVolume float32
@@ -25,23 +26,26 @@ type DjConfig struct {
 		HighestVolume float32
 	}
 	Aliases struct {
-		AddAlias       string
-		SkipAlias      string
-		AdminSkipAlias string
-		VolumeAlias    string
-		MoveAlias      string
-		ReloadAlias    string
-		KillAlias      string
+		AddAlias               string
+		SkipAlias              string
+		SkipPlaylistAlias      string
+		AdminSkipAlias         string
+		AdminSkipPlaylistAlias string
+		VolumeAlias            string
+		MoveAlias              string
+		ReloadAlias            string
+		KillAlias              string
 	}
 	Permissions struct {
-		AdminsEnabled bool
-		Admins        []string
-		AdminAdd      bool
-		AdminSkip     bool
-		AdminVolume   bool
-		AdminMove     bool
-		AdminReload   bool
-		AdminKill     bool
+		AdminsEnabled     bool
+		Admins            []string
+		AdminAdd          bool
+		AdminAddPlaylists bool
+		AdminSkip         bool
+		AdminVolume       bool
+		AdminMove         bool
+		AdminReload       bool
+		AdminKill         bool
 	}
 }
 

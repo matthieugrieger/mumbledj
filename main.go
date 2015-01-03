@@ -24,7 +24,6 @@ type mumbledj struct {
 	defaultChannel string
 	conf           DjConfig
 	queue          *SongQueue
-	currentSong    *Song
 	audioStream    *gumble_ffmpeg.Stream
 	homeDir        string
 }
@@ -51,7 +50,7 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 
 	if audioStream, err := gumble_ffmpeg.New(dj.client); err == nil {
 		dj.audioStream = audioStream
-		dj.audioStream.Done = dj.OnSongFinished
+		dj.audioStream.Done = dj.queue.OnItemFinished
 		dj.audioStream.SetVolume(dj.conf.Volume.DefaultVolume)
 	} else {
 		panic(err)
@@ -83,28 +82,6 @@ func (dj *mumbledj) HasPermission(username string, command bool) bool {
 		return false
 	} else {
 		return true
-	}
-}
-
-// OnSongFinished event. Deletes song that just finished playing, then queues, downloads, and plays
-// the next song if it exists.
-func (dj *mumbledj) OnSongFinished() {
-	if err := dj.currentSong.Delete(); err == nil {
-		if dj.queue.Len() != 0 {
-			dj.currentSong = dj.queue.NextSong()
-			if dj.currentSong != nil {
-				if err := dj.currentSong.Download(); err == nil {
-					dj.currentSong.Play()
-				} else {
-					username := dj.currentSong.submitter
-					user := dj.client.Self().Channel().Users().Find(username)
-					user.Send(AUDIO_FAIL_MSG)
-					dj.OnSongFinished()
-				}
-			}
-		}
-	} else {
-		panic(err)
 	}
 }
 

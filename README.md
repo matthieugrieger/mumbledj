@@ -18,8 +18,14 @@ however, that if a YouTube playlist contains over 25 videos only the first 25 vi
 ####`!skip`
 Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song.
 
+####`!skipplaylist`
+Submits a vote to skip the current playlist. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist.
+
 ####`!forceskip`
 An admin command that forces a song skip.
+
+####`!forceskipplaylist`
+An admin command that forces a playlist skip.
 
 ####`!volume <desired_volume>?`
 Either outputs the current volume or changes the current volume. If `desired_volume` is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to `desired_volume` if it is within the allowed volume range.

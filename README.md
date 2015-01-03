@@ -11,8 +11,9 @@ All parameters are optional, the example above shows the default values for each
 ## COMMANDS
 These are all of the chat commands currently supported by MumbleDJ. All command names and command prefixes may be changed in `mumbledj.gcfg`. All fields surrounded by `<>` indicate fields that *must* be supplied to the bot for the command to execute. All fields surrounded by `<>?` are optional fields.
 
-####`!add <youtube_url>`
-Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately.
+####`!add <youtube_video_url OR youtube_playlist_url>`
+Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. YouTube playlists may also be added using this command. Please note, 
+however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue.
 
 ####`!skip`
 Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song.

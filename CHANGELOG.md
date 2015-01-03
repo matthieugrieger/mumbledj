@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### January 3, 2015 -- `v2.2.0`
+* Added ability to add YouTube playlists to the queue. Note that the max size of a playlist is 25 songs, anything larger will only use the first 25 songs in the playlist.
+* Fixed a crash while attempting to add URLs to the queue.
+* Re-made the song queue using my own "queue-like" structure using slices.
+
 ### December 30, 2014 -- `v2.1.3`
 * Fixed YouTube URL parsing not working for some forms of YouTube URLs.
 * Now recovers more gracefully if an audio download fails. Instead of panicking, the bot will send a message to the user who added the URL, telling them the audio download failed.

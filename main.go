@@ -116,6 +116,7 @@ func main() {
 		Disconnect:  dj.OnDisconnect,
 		TextMessage: dj.OnTextMessage,
 	})
+	dj.client.Attach(gumbleutil.AutoBitrate)
 
 	// IMPORTANT NOTE: This will be changed later once released. Not really safe at the
 	// moment.

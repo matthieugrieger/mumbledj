@@ -1,10 +1,12 @@
 MumbleDJ Changelog
 ==================
 
-### January 5, 2015 -- `v2.2.1`
+### January 5, 2015 -- `v2.2.1, v2.2.2`
 * Attached `gumbleutil.AutoBitrate` EventListener to client. This should hopefully fix the issues with audio cutting in and out.
 * Moved dependency installation to default `make` command to better enforce new updates.
 * Added `make build` to `Makefile` to allow previous functionality of the default `make` command.
+* Hopefully fixed a situation that would cause the song queue to stop working.
+* Added `!reset` command. Use this to reset the song queue.
 
 ### January 3, 2015 -- `v2.2.0`
 * Added ability to add YouTube playlists to the queue. Note that the max size of a playlist is 25 songs, anything larger will only use the first 25 songs in the playlist.

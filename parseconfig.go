@@ -34,6 +34,7 @@ type DjConfig struct {
 		VolumeAlias            string
 		MoveAlias              string
 		ReloadAlias            string
+		ResetAlias             string
 		KillAlias              string
 	}
 	Permissions struct {
@@ -45,6 +46,7 @@ type DjConfig struct {
 		AdminVolume       bool
 		AdminMove         bool
 		AdminReload       bool
+		AdminReset        bool
 		AdminKill         bool
 	}
 }

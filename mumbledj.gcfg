@@ -63,6 +63,10 @@ MoveAlias = "move"
 # DEFAULT VALUE: "reload"
 ReloadAlias = "reload"
 
+# Alias used for queue reset command
+# DEFAULT VALUE: "reset"
+ResetAlias = "reset"
+
 # Alias used for kill command
 # DEFAULT VALUE: "kill"
 KillAlias = "kill"
@@ -106,6 +110,10 @@ AdminMove = true
 # Make reload an admin command?
 # DEFAULT VALUE: true
 AdminReload = true
+
+# Make reset an admin command?
+# DEFAULT VALUE: true
+AdminReset = true
 
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)

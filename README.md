@@ -36,6 +36,9 @@ Moves MumbleDJ into `channel` if it exists.
 ####`!reload`
 Reloads `mumbledj.gcfg` to retrieve updated configuration settings.
 
+####`!reset`
+Resets the song queue.
+
 ####`!kill`
 Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory.
 

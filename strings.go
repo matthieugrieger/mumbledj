@@ -101,3 +101,8 @@ const PLAYLIST_SKIP_ADDED_HTML = `
 const VOLUME_SUCCESS_HTML = `
 	<b>%s</b> has changed the volume to <b>%.2f</b>.
 `
+
+// Message shown to users when a user successfully resets the SongQueue.
+const QUEUE_RESET_HTML = `
+	<b>%s</b> has cleared the song queue.
+`

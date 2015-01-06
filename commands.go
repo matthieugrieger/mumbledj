@@ -88,6 +88,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Reset command
+	case dj.conf.Aliases.ResetAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminReset) {
+			reset(username)
+		} else {
+			user.Send(NO_PERMISSION_MSG)
+		}
 	// Kill command
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
@@ -262,16 +269,26 @@ func reload(user *gumble.User) {
 	}
 }
 
+// Performs reset functionality. Clears the song queue, stops playing audio, and deletes all
+// remaining songs in the ~/.mumbledj/songs directory.
+func reset(username string) {
+	dj.queue.queue = dj.queue.queue[:0]
+	if err := dj.audioStream.Stop(); err == nil {
+		if err := deleteSongs(); err == nil {
+			dj.client.Self().Channel().Send(fmt.Sprintf(QUEUE_RESET_HTML, username), false)
+		} else {
+			panic(err)
+		}
+	} else {
+		panic(err)
+	}
+}
+
 // Performs kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any
 // excess m4a files. The bot then safely disconnects from the server.
 func kill() {
-	songsDir := fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir)
-	if err := os.RemoveAll(songsDir); err != nil {
-		panic(errors.New("An error occurred while deleting the audio files."))
-	} else {
-		if err := os.Mkdir(songsDir, 0777); err != nil {
-			panic(errors.New("An error occurred while recreating the songs directory."))
-		}
+	if err := deleteSongs(); err != nil {
+		panic(err)
 	}
 	if err := dj.client.Disconnect(); err == nil {
 		fmt.Println("Kill successful. Goodbye!")
@@ -279,4 +296,18 @@ func kill() {
 	} else {
 		panic(errors.New("An error occurred while disconnecting from the server."))
 	}
+}
+
+// Deletes songs from ~/.mumbledj/songs.
+func deleteSongs() error {
+	songsDir := fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir)
+	if err := os.RemoveAll(songsDir); err != nil {
+		return errors.New("An error occurred while deleting the audio files.")
+	} else {
+		if err := os.Mkdir(songsDir, 0777); err != nil {
+			return errors.New("An error occurred while recreating the songs directory.")
+		}
+		return nil
+	}
+	return nil
 }

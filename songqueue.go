@@ -60,61 +60,65 @@ func (q *SongQueue) Len() int {
 
 // OnItemFinished event. Deletes item that just finished playing, then queues the next item.
 func (q *SongQueue) OnItemFinished() {
-	if q.CurrentItem().ItemType() == "playlist" {
-		if err := q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete(); err == nil {
-			if q.CurrentItem().(*Playlist).skipped == true {
+	if q.Len() != 0 {
+		if q.CurrentItem().ItemType() == "playlist" {
+			if err := q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete(); err == nil {
+				if q.CurrentItem().(*Playlist).skipped == true {
+					if q.Len() > 1 {
+						q.NextItem()
+						q.PrepareAndPlayNextItem()
+					} else {
+						q.queue = q.queue[:0]
+					}
+				} else if q.CurrentItem().(*Playlist).songs.Len() > 1 {
+					q.CurrentItem().(*Playlist).songs.NextItem()
+					q.PrepareAndPlayNextItem()
+				} else {
+					if q.Len() > 1 {
+						q.NextItem()
+						q.PrepareAndPlayNextItem()
+					} else {
+						q.queue = q.queue[:0]
+					}
+				}
+			} else {
+				panic(err)
+			}
+		} else {
+			if err := q.CurrentItem().(*Song).Delete(); err == nil {
 				if q.Len() > 1 {
 					q.NextItem()
 					q.PrepareAndPlayNextItem()
 				} else {
 					q.queue = q.queue[:0]
 				}
-			} else if q.CurrentItem().(*Playlist).songs.Len() > 1 {
-				q.CurrentItem().(*Playlist).songs.NextItem()
-				q.PrepareAndPlayNextItem()
 			} else {
-				if q.Len() > 1 {
-					q.NextItem()
-					q.PrepareAndPlayNextItem()
-				} else {
-					q.queue = q.queue[:0]
-				}
+				panic(err)
 			}
-		} else {
-			panic(err)
-		}
-	} else {
-		if err := q.CurrentItem().(*Song).Delete(); err == nil {
-			if q.Len() > 1 {
-				q.NextItem()
-				q.PrepareAndPlayNextItem()
-			} else {
-				q.queue = q.queue[:0]
-			}
-		} else {
-			panic(err)
 		}
 	}
 }
 
 func (q *SongQueue) PrepareAndPlayNextItem() {
-	if q.CurrentItem().ItemType() == "playlist" {
-		if err := q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
-			q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
+	if q.Len() != 0 {
+		if q.CurrentItem().ItemType() == "playlist" {
+			if err := q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
+				q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
+			} else {
+				username := q.CurrentItem().(*Playlist).submitter
+				user := dj.client.Self().Channel().Users().Find(username)
+				user.Send(AUDIO_FAIL_MSG)
+				q.OnItemFinished()
+			}
 		} else {
-			username := q.CurrentItem().(*Playlist).submitter
-			user := dj.client.Self().Channel().Users().Find(username)
-			user.Send(AUDIO_FAIL_MSG)
-			q.OnItemFinished()
-		}
-	} else {
-		if err := q.CurrentItem().(*Song).Download(); err == nil {
-			q.CurrentItem().(*Song).Play()
-		} else {
-			username := q.CurrentItem().(*Song).submitter
-			user := dj.client.Self().Channel().Users().Find(username)
-			user.Send(AUDIO_FAIL_MSG)
-			q.OnItemFinished()
+			if err := q.CurrentItem().(*Song).Download(); err == nil {
+				q.CurrentItem().(*Song).Play()
+			} else {
+				username := q.CurrentItem().(*Song).submitter
+				user := dj.client.Self().Channel().Users().Find(username)
+				user.Send(AUDIO_FAIL_MSG)
+				q.OnItemFinished()
+			}
 		}
 	}
 }

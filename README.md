@@ -56,7 +56,6 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 
 **5)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 
 ```
-$ make install_deps
 $ make
 $ make install
 ```

@@ -67,7 +67,7 @@ func (q *SongQueue) OnItemFinished() {
 					q.NextItem()
 					q.PrepareAndPlayNextItem()
 				} else {
-					q.queue = q.queue[1:]
+					q.queue = q.queue[:0]
 				}
 			} else if q.CurrentItem().(*Playlist).songs.Len() > 1 {
 				q.CurrentItem().(*Playlist).songs.NextItem()
@@ -76,6 +76,8 @@ func (q *SongQueue) OnItemFinished() {
 				if q.Len() > 1 {
 					q.NextItem()
 					q.PrepareAndPlayNextItem()
+				} else {
+					q.queue = q.queue[:0]
 				}
 			}
 		} else {
@@ -86,6 +88,8 @@ func (q *SongQueue) OnItemFinished() {
 			if q.Len() > 1 {
 				q.NextItem()
 				q.PrepareAndPlayNextItem()
+			} else {
+				q.queue = q.queue[:0]
 			}
 		} else {
 			panic(err)

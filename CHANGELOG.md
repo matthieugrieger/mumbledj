@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 7, 2015 -- `v2.2.3`
+* Fixed a crash caused by entering a skip request when no song is currently playing.
+
 ### January 5, 2015 -- `v2.2.1, v2.2.2`
 * Attached `gumbleutil.AutoBitrate` EventListener to client. This should hopefully fix the issues with audio cutting in and out.
 * Moved dependency installation to default `make` command to better enforce new updates.

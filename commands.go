@@ -195,8 +195,6 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 							panic(errors.New("An error occurred while stopping the current song."))
 						}
 					}
-				} else {
-					panic(errors.New("An error occurred while adding a skip to the current playlist."))
 				}
 			} else {
 				user.Send(NO_PLAYLIST_PLAYING_MSG)
@@ -220,8 +218,6 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 						panic(errors.New("An error occurred while stopping the current song."))
 					}
 				}
-			} else {
-				panic(errors.New("An error occurred while adding a skip to the current song."))
 			}
 		}
 	} else {

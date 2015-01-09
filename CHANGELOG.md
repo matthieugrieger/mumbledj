@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 8, 2015 -- `v2.2.4`
+* Fixed a crash caused by a user trying to skip the same song more than once.
+
 ### January 7, 2015 -- `v2.2.3`
 * Fixed a crash caused by entering a skip request when no song is currently playing.
 

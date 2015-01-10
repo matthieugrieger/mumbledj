@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### January 10, 2015 -- `v2.2.6`
+* Fixed type mismatch error when building MumbleDJ.
+* Added traversal function to SongQueue.
+* Added !numsongs command, which outputs how many songs are currently in the SongQueue.
+
 ### January 9, 2015 -- `v2.2.5`
 * Fixed some YouTube playlist URLs crashing the bot and not retrieving metadata correctly.
 

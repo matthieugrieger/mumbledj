@@ -106,3 +106,8 @@ const VOLUME_SUCCESS_HTML = `
 const QUEUE_RESET_HTML = `
 	<b>%s</b> has cleared the song queue.
 `
+
+// Message shown to users when a user asks how many songs are in the queue.
+const NUM_SONGS_HTML = `
+	There are currently <b>%d</b> song(s) in the queue.
+`

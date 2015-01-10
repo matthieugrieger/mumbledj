@@ -95,6 +95,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Numsongs command
+	case dj.conf.Aliases.NumSongsAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminNumSongs) {
+			numSongs()
+		} else {
+			user.Send(NO_PERMISSION_MSG)
+		}
 	// Kill command
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
@@ -282,6 +289,17 @@ func reset(username string) {
 	} else {
 		panic(err)
 	}
+}
+
+// Performs numsongs functionality. Uses the SongQueue traversal function to traverse the
+// queue with a function call that increments a counter. Once finished, the bot outputs
+// the number of songs in the queue to chat.
+func numSongs() {
+	songCount := 0
+	dj.queue.Traverse(func(i int, item QueueItem) {
+		songCount += 1
+	})
+	dj.client.Self().Channel().Send(fmt.Sprintf(NUM_SONGS_HTML, songCount), false)
 }
 
 // Performs kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any

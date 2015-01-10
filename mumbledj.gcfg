@@ -67,6 +67,10 @@ ReloadAlias = "reload"
 # DEFAULT VALUE: "reset"
 ResetAlias = "reset"
 
+# Alias used for numsongs command
+# DEFAULT VALUE: "numsongs"
+NumSongsAlias = "numsongs"
+
 # Alias used for kill command
 # DEFAULT VALUE: "kill"
 KillAlias = "kill"
@@ -114,6 +118,10 @@ AdminReload = true
 # Make reset an admin command?
 # DEFAULT VALUE: true
 AdminReset = true
+
+# Make numsongs an admin command?
+# DEFAULT VALUE: false
+AdminNumSongs = false
 
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)

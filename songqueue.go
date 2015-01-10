@@ -58,6 +58,21 @@ func (q *SongQueue) Len() int {
 	return len(q.queue)
 }
 
+// A traversal function for SongQueue. Allows a visit function to be passed in which performs
+// the specified action on each queue item. Traverses all individual songs, and all songs
+// within playlists.
+func (q *SongQueue) Traverse(visit func(i int, item QueueItem)) {
+	for iQueue, queueItem := range q.queue {
+		if queueItem.ItemType() == "playlist" {
+			for iPlaylist, playlistItem := range q.queue[iQueue].(*Playlist).songs.queue {
+				visit(iPlaylist, playlistItem)
+			}
+		} else {
+			visit(iQueue, queueItem)
+		}
+	}
+}
+
 // OnItemFinished event. Deletes item that just finished playing, then queues the next item.
 func (q *SongQueue) OnItemFinished() {
 	if q.Len() != 0 {

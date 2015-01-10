@@ -35,6 +35,7 @@ type DjConfig struct {
 		MoveAlias              string
 		ReloadAlias            string
 		ResetAlias             string
+		NumSongsAlias          string
 		KillAlias              string
 	}
 	Permissions struct {
@@ -47,6 +48,7 @@ type DjConfig struct {
 		AdminMove         bool
 		AdminReload       bool
 		AdminReset        bool
+		AdminNumSongs     bool
 		AdminKill         bool
 	}
 }

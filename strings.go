@@ -88,6 +88,7 @@ const HELP_MSG = `
 	<p><b>!help</b> - Displays this help.</p>
 	<p><b>!add </b>- Adds songs to queue.</p>
 	<p><b>!skip</b> - Casts a vote to skip the current song</p>
+	<p><b>!numsongs</b> - Shows how many songs are in queue.</p>
 	<p> <b>!skipplaylist</b> - Casts a vote to skip over the current playlist.</p>
 	<p style="-qt-paragraph-type:empty"><br/></p>
 	<p><b>Admin Commands:</b></p>

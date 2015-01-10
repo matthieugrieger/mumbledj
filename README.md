@@ -27,6 +27,9 @@ An admin command that forces a song skip.
 ####`!forceskipplaylist`
 An admin command that forces a playlist skip.
 
+####`!help`
+Displays a this list of commands for you in Mumble chat.
+
 ####`!volume <desired_volume>?`
 Either outputs the current volume or changes the current volume. If `desired_volume` is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to `desired_volume` if it is within the allowed volume range.
 

@@ -39,6 +39,9 @@ Reloads `mumbledj.gcfg` to retrieve updated configuration settings.
 ####`!reset`
 Resets the song queue.
 
+####`!numsongs`
+Outputs the number of songs in the queue in chat. Individual songs and songs within playlists are both counted.
+
 ####`!kill`
 Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory.
 

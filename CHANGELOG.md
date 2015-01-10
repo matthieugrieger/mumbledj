@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 9, 2015 -- `v2.2.5`
+* Fixed some YouTube playlist URLs crashing the bot and not retrieving metadata correctly.
+
 ### January 8, 2015 -- `v2.2.4`
 * Fixed a crash caused by a user trying to skip the same song more than once.
 

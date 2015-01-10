@@ -148,20 +148,22 @@ func add(user *gumble.User, username, url string) {
 			}
 		} else {
 			// Check to see if we have a playlist URL instead.
-			youtubePlaylistPattern := `https?:\/\/www\.youtube\.com\/playlist\?list=(\w+)`
+			youtubePlaylistPattern := `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
 			if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
 				if re.MatchString(url) {
 					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
 						shortUrl = re.FindStringSubmatch(url)[1]
-						newPlaylist := NewPlaylist(username, shortUrl)
-						if dj.queue.AddItem(newPlaylist); err == nil {
-							dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
-							if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-								if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
-									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
-								} else {
-									user.Send(AUDIO_FAIL_MSG)
-									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
+						if shortUrl != nil {
+							newPlaylist := NewPlaylist(username, shortUrl)
+							if dj.queue.AddItem(newPlaylist); err == nil {
+								dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
+								if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
+									if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
+										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
+									} else {
+										user.Send(AUDIO_FAIL_MSG)
+										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
+									}
 								}
 							}
 						}

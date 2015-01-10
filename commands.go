@@ -153,17 +153,15 @@ func add(user *gumble.User, username, url string) {
 				if re.MatchString(url) {
 					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
 						shortUrl = re.FindStringSubmatch(url)[1]
-						if shortUrl != nil {
-							newPlaylist := NewPlaylist(username, shortUrl)
-							if dj.queue.AddItem(newPlaylist); err == nil {
-								dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
-								if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-									if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
-										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
-									} else {
-										user.Send(AUDIO_FAIL_MSG)
-										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
-									}
+						newPlaylist := NewPlaylist(username, shortUrl)
+						if dj.queue.AddItem(newPlaylist); err == nil {
+							dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
+							if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
+								if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
+									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
+								} else {
+									user.Send(AUDIO_FAIL_MSG)
+									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
 								}
 							}
 						}

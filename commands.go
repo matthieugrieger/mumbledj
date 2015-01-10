@@ -67,6 +67,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Help command
+	case dj.conf.Aliases.HelpAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminHelp) {
+			help(user)
+		} else {
+			user.Send(NO_PERMISSION_MSG)
+		}
 	// Volume command
 	case dj.conf.Aliases.VolumeAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminVolume) {
@@ -230,6 +237,11 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 	} else {
 		user.Send(NO_MUSIC_PLAYING_MSG)
 	}
+}
+
+//Preforms help functionality. Displays a list of valid commands.
+func help(user *gumble.User) {
+	user.Send(HELP_MSG)
 }
 
 // Performs volume functionality. Checks input value against LowestVolume and HighestVolume from

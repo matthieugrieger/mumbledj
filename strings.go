@@ -82,6 +82,23 @@ const PLAYLIST_SKIPPED_HTML = `
 	The number of votes required for a skip has been met. <b>Skipping playlist!</b>
 `
 
+// Message shown to display bot help commands.
+const HELP_MSG = `
+	<b>User Commands:</b>
+	<p><b>!help</b> - Displays this help.</p>
+	<p><b>!add </b>- Adds songs to queue.</p>
+	<p><b>!skip</b> - Casts a vote to skip the current song</p>
+	<p> <b>!skipplaylist</b> - Casts a vote to skip over the current playlist.</p>
+	<p style="-qt-paragraph-type:empty"><br/></p>
+	<p><b>Admin Commands:</b></p>
+	<p><b>!reset</b> - An admin command that resets the song queue. </p>
+	<p><b>!forceskip</b> - An admin command that forces a song skip. </p>
+	<p><b>!forceskipplaylist</b> - An admin command that forces a playlist skip. </p>
+	<p><b>!move </b>- Moves MumbleDJ into channel if it exists.</p>
+	<p><b>!reload</b> - Reloads mumbledj.gcfg configuration settings.</p>
+	<p><b>!kill</b> - Safely cleans the bot environment and disconnects from the server.</p>
+`
+
 // Message shown to users when they ask for the current volume (volume command without argument)
 const CUR_VOLUME_HTML = `
 	The current volume is <b>%.2f</b>.

@@ -31,6 +31,7 @@ type DjConfig struct {
 		SkipPlaylistAlias      string
 		AdminSkipAlias         string
 		AdminSkipPlaylistAlias string
+		HelpAlias              string
 		VolumeAlias            string
 		MoveAlias              string
 		ReloadAlias            string
@@ -44,6 +45,7 @@ type DjConfig struct {
 		AdminAdd          bool
 		AdminAddPlaylists bool
 		AdminSkip         bool
+		AdminHelp         bool
 		AdminVolume       bool
 		AdminMove         bool
 		AdminReload       bool

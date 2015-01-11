@@ -51,6 +51,10 @@ SkipPlaylistAlias = "skipplaylist"
 # DEFAULT VALUE: "forceskip"
 AdminSkipAlias = "forceskip"
 
+# Alias used for help command
+# DEFAULT VALUE: "help"
+HelpAlias = "help"
+
 # Alias used for volume command
 # DEFAULT VALUE: "volume"
 VolumeAlias = "volume"
@@ -102,6 +106,10 @@ AdminAddPlaylists = false
 # Make skip an admin command?
 # DEFAULT VALUE: false
 AdminSkip = false
+
+# Make help an admin command?
+# DEFAULT VALUE: false
+AdminHelp = false
 
 # Make volume an admin command?
 # DEFAULT VALUE: false

@@ -82,8 +82,8 @@ const PLAYLIST_SKIPPED_HTML = `
 	The number of votes required for a skip has been met. <b>Skipping playlist!</b>
 `
 
-// Message shown to display bot help commands.
-const HELP_MSG = `
+// Message shown to display bot commands.
+const HELP_HTML = `<br/>
 	<b>User Commands:</b>
 	<p><b>!help</b> - Displays this help.</p>
 	<p><b>!add </b>- Adds songs to queue.</p>

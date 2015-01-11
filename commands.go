@@ -239,9 +239,9 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 	}
 }
 
-//Preforms help functionality. Displays a list of valid commands.
+// Performs help functionality. Displays a list of valid commands.
 func help(user *gumble.User) {
-	user.Send(HELP_MSG)
+	user.Send(HELP_HTML)
 }
 
 // Performs volume functionality. Checks input value against LowestVolume and HighestVolume from

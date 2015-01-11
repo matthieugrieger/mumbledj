@@ -1,7 +1,7 @@
 MumbleDJ Changelog
 ==================
 
-### January 10, 2015 -- `v2.2.6`
+### January 10, 2015 -- `v2.2.6, v2.2.7`
 * Fixed type mismatch error when building MumbleDJ.
 * Added traversal function to SongQueue.
 * Added !numsongs command, which outputs how many songs are currently in the SongQueue.

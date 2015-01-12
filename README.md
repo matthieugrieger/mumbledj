@@ -9,44 +9,25 @@ A Mumble bot that plays music fetched from YouTube videos.
 All parameters are optional, the example above shows the default values for each field.
 
 ## COMMANDS
-These are all of the chat commands currently supported by MumbleDJ. All command names and command prefixes may be changed in `mumbledj.gcfg`. All fields surrounded by `<>` indicate fields that *must* be supplied to the bot for the command to execute. All fields surrounded by `<>?` are optional fields.
+These are all of the chat commands currently supported by MumbleDJ. All command names and command prefixes may be changed in `mumbledj.gcfg`.
 
-####`!add <youtube_video_url OR youtube_playlist_url>`
-Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. YouTube playlists may also be added using this command. Please note, 
-however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue.
+Command | Description | Arguments | Admin | Example
+--------|-------------|-----------|-------|--------
+**add** | Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. YouTube playlists may also be added using this command. Please note, however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue. | youtube_video_url OR youtube_playlist_url | No | `!add https://www.youtube.com/watch?v=5xfEr2Oxdys`
+**skip**| Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song. | None | No | `!skip`
+**skipplaylist** | Submits a vote to skip the current playlist. Once the skip ratio target (specified in mumbledj.gcfg) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist. | None | No | `!skipplaylist`
+**forceskip** | An admin command that forces a song skip. | None | Yes | `!forceskip`
+**forceskipplaylist** | An admin command that forces a playlist skip. | None | Yes | `!forceskipplaylist`
+**help** | Displays this list of commands in Mumble chat. | None | No | `!help`
+**volume** | Either outputs the current volume or changes the current volume. If desired volume is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to desired volume if it is within the allowed volume range. | None OR desired volume | No | `!volume 0.5`, `!volume`
+**move** | Moves MumbleDJ into channel if it exists. | Channel | `!move Music`
+**reload** | Reloads `mumbledj.gcfg` to retrieve updated configuration settings. | None | Yes | `!reload`
+**reset** | Stops all audio and resets the song queue. | None | Yes | `!reset`
+**numsongs** | Outputs the number of songs in the queue in chat. Individual songs and songs within playlists are both counted. | None | No | `!numsongs`
+**kill** | Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory. | None | Yes | `!kill`
 
-####`!skip`
-Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song.
 
-####`!skipplaylist`
-Submits a vote to skip the current playlist. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist.
 
-####`!forceskip`
-An admin command that forces a song skip.
-
-####`!forceskipplaylist`
-An admin command that forces a playlist skip.
-
-####`!help`
-Displays this list of commands in Mumble chat.
-
-####`!volume <desired_volume>?`
-Either outputs the current volume or changes the current volume. If `desired_volume` is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to `desired_volume` if it is within the allowed volume range.
-
-####`!move <channel>`
-Moves MumbleDJ into `channel` if it exists.
-
-####`!reload`
-Reloads `mumbledj.gcfg` to retrieve updated configuration settings.
-
-####`!reset`
-Resets the song queue.
-
-####`!numsongs`
-Outputs the number of songs in the queue in chat. Individual songs and songs within playlists are both counted.
-
-####`!kill`
-Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory.
 
 ## INSTALLATION
 Installation for v2 of MumbleDJ is much easier than it was before, due to the reduced dependency list and a `Makefile` which automates some of the process.

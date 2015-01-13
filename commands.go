@@ -109,6 +109,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
+	// Nextsong command
+	case dj.conf.Aliases.NextSongAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminNextSong) {
+			nextSong(user)
+		} else {
+			user.Send(NO_PERMISSION_MSG)
+		}
 	// Kill command
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
@@ -312,6 +319,17 @@ func numSongs() {
 		songCount += 1
 	})
 	dj.client.Self().Channel().Send(fmt.Sprintf(NUM_SONGS_HTML, songCount), false)
+}
+
+// Performs nextsong functionality. Uses the SongQueue PeekNext function to peek at the next
+// item if it exists. The user will then be sent a message containing the title and submitter
+// of the next item if it exists.
+func nextSong(user *gumble.User) {
+	if title, submitter, err := dj.queue.PeekNext(); err != nil {
+		user.Send(NO_SONG_NEXT_MSG)
+	} else {
+		user.Send(fmt.Sprintf(NEXT_SONG_HTML, title, submitter))
+	}
 }
 
 // Performs kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any

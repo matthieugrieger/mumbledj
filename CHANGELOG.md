@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 12, 2015 -- `v2.2.8`
+* Added !nextsong command, which outputs some information about the next song in the queue if it exists.
+
 ### January 10, 2015 -- `v2.2.6, v2.2.7`
 * Fixed type mismatch error when building MumbleDJ.
 * Added traversal function to SongQueue.

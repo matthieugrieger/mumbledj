@@ -29,6 +29,9 @@ const NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
 // Message shown to users when they attempt to skip a playlist when there is no playlist playing.
 const NO_PLAYLIST_PLAYING_MSG = "There is no playlist playing at the moment."
 
+// Message shown to users when they attempt to use the nextsong command when there is no song coming up.
+const NO_SONG_NEXT_MSG = "There are no songs queued at the moment."
+
 // Message shown to users when they issue a command that requires an argument and one was not supplied.
 const NO_ARGUMENT_MSG = "The command you issued requires an argument and you did not provide one."
 
@@ -128,4 +131,9 @@ const QUEUE_RESET_HTML = `
 // Message shown to users when a user asks how many songs are in the queue.
 const NUM_SONGS_HTML = `
 	There are currently <b>%d</b> song(s) in the queue.
+`
+
+// Message shown to users when they issue the nextsong command.
+const NEXT_SONG_HTML = `
+	The next song in the queue is "%s", added by <b>%s</b>.
 `

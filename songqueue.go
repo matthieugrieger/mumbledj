@@ -53,6 +53,27 @@ func (q *SongQueue) NextItem() {
 	q.queue = q.queue[1:]
 }
 
+// Peeks at the next item and returns the title, submitter, and error status.
+func (q *SongQueue) PeekNext() (string, string, error) {
+	var title, submitter string
+	if q.Len() > 1 {
+		if q.queue[1].ItemType == "playlist" {
+			title = q.queue[1].(*Playlist).songs.queue[0].(*Song).title
+			submitter = q.queue[1].(*Playlist).submitter
+		} else {
+			title = q.queue[1].(*Song).title
+			submitter = q.queue[1].(*Song).submitter
+		}
+		return title, submitter, nil
+	} else if q.CurrentItem().ItemType == "playlist" {
+		title = q.CurrentItem().(*Playlist).songs.queue[1].(*Song).title
+		submitter = q.CurrentItem().(*Playlist).submitter
+		return title, submitter, nil
+	} else {
+		return "", "", errors.New("There is no item next in the queue.")
+	}
+}
+
 // Returns the length of the SongQueue.
 func (q *SongQueue) Len() int {
 	return len(q.queue)

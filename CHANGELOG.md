@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 14, 2015 -- `v2.2.9`
+* Set AudioEncoder Application to `gopus.Audio` instead of `gopus.Voice` for hopefully better sound quality.
+
 ### January 12, 2015 -- `v2.2.8`
 * Added !nextsong command, which outputs some information about the next song in the queue if it exists.
 

@@ -10,6 +10,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/layeh/gopus"
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
@@ -55,6 +56,8 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	} else {
 		panic(err)
 	}
+
+	dj.client.AudioEncoder().SetApplication(gopus.Audio)
 }
 
 // OnDisconnect event. Terminates MumbleDJ thread.

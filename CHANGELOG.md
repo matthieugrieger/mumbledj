@@ -1,7 +1,7 @@
 MumbleDJ Changelog
 ==================
 
-### January 14, 2015 -- `v2.2.9, v.2.2.10`
+### January 14, 2015 -- `v2.2.9, v2.2.10`
 * Set AudioEncoder Application to `gopus.Audio` instead of `gopus.Voice` for hopefully better sound quality.
 * Added some commands to the !help string that were missing.
 

@@ -89,10 +89,12 @@ const PLAYLIST_SKIPPED_HTML = `
 const HELP_HTML = `<br/>
 	<b>User Commands:</b>
 	<p><b>!help</b> - Displays this help.</p>
-	<p><b>!add </b>- Adds songs to queue.</p>
+	<p><b>!add</b> - Adds songs to queue.</p>
+	<p><b>!volume</b> - Either tells you the current volume or sets it to a new volume.</p>
 	<p><b>!skip</b> - Casts a vote to skip the current song</p>
-	<p><b>!numsongs</b> - Shows how many songs are in queue.</p>
 	<p> <b>!skipplaylist</b> - Casts a vote to skip over the current playlist.</p>
+	<p><b>!numsongs</b> - Shows how many songs are in queue.</p>
+	<p><b>!nextsong</b> - Shows the title and submitter of the next queue item if it exists.</p>
 	<p style="-qt-paragraph-type:empty"><br/></p>
 	<p><b>Admin Commands:</b></p>
 	<p><b>!reset</b> - An admin command that resets the song queue. </p>

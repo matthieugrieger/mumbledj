@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 19, 2015 -- `v2.2.11`
+* Fixed not being able to use the move command with channels with spaces in their name.
+
 ### January 14, 2015 -- `v2.2.9, v2.2.10`
 * Set AudioEncoder Application to `gopus.Audio` instead of `gopus.Voice` for hopefully better sound quality.
 * Added some commands to the !help string that were missing.

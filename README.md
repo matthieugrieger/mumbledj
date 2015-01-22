@@ -9,7 +9,7 @@ A Mumble bot that plays music fetched from YouTube videos.
 All parameters are optional, the example above shows the default values for each field.
 
 ## COMMANDS
-These are all of the chat commands currently supported by MumbleDJ. All command names and command prefixes may be changed in `mumbledj.gcfg`.
+These are all of the chat commands currently supported by MumbleDJ. All command names and command prefixes may be changed in `~/.mumbledj/config/mumbledj.gcfg`.
 
 Command | Description | Arguments | Admin | Example
 --------|-------------|-----------|-------|--------

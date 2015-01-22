@@ -2,8 +2,6 @@ MumbleDJ
 ========
 A Mumble bot that plays music fetched from YouTube videos.
 
-**IMPORTANT NOTE:** If you were using the Lua version of MumbleDJ previously, you will need to follow the installation guide once more to install new dependencies.
-
 ## USAGE
 `$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root`  
 All parameters are optional, the example above shows the default values for each field.

@@ -36,7 +36,7 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 **NOTE:** This bot was designed for use on Linux machines. If you wish to run the bot on another OS, it will require tweaking and is not something I will be able to help with.  
 **NOTE #2:** Your Mumble server MUST be using the Opus audio codec, not CELT. Audio will not play if your server uses CELT.
 
-**SETUP GUIDE**  
+###SETUP GUIDE  
 **1)** Install and correctly configure [`Go`](https://golang.org/) (1.3 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.
 
 **2)** Install [`ffmpeg`](https://www.ffmpeg.org/) and [`mercurial`](http://mercurial.selenic.com/) if they are not already installed on your system. Also be sure that you have [`opus`](http://www.opus-codec.org/) and its development headers installed on your system.
@@ -54,6 +54,19 @@ $ make install
 **5)** Edit `~/.mumbledj/config/mumbledj.gcfg` to your liking. This file will be overwritten if the config file structure is changed in a commit, but a backup is always stored at `~/.mumbledj/config/mumbledj_backup.gcfg`.
 
 **6)** Execute the command shown at the top of this `README` document with your credentials, and the bot should be up and running!
+
+**Recommended, but not required:** Set `opusthreshold=0` in `/etc/mumble-server.ini` or `/etc/murmur.ini`. This will force the server to always use the Opus audio codec, which is the only codec that MumbleDJ supports.
+
+###UPDATE GUIDE
+**1)** `git pull` or [download the latest release](https://github.com/matthieugrieger/mumbledj/releases).
+
+**2)** Issue the following commands within your updated MumbleDJ directory:
+```
+$ make clean
+$ make
+$ make install
+```
+**NOTE**: It is *very* important that you use `make` instead of `make build` when updating MumbleDJ as the first option will grab the latest updates from MumbleDJ's dependencies.
 
 ## AUTHOR
 [Matthieu Grieger](http://matthieugrieger.com)

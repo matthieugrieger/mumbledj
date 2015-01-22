@@ -68,6 +68,8 @@ $ make install
 ```
 **NOTE**: It is *very* important that you use `make` instead of `make build` when updating MumbleDJ as the first option will grab the latest updates from MumbleDJ's dependencies.
 
+**3)** Check to make sure your configuration in `~/.mumbledj/config/mumbledj.gcfg` is the same as before. If it is back to the default, a backup should have been created at `~/.mumbledj/config/mumbledj_backup.gcfg` so you can copy the values back over.
+
 ## AUTHOR
 [Matthieu Grieger](http://matthieugrieger.com)
 

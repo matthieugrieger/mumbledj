@@ -39,7 +39,7 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 
 **2)** Install [`ffmpeg`](https://www.ffmpeg.org/) and [`mercurial`](http://mercurial.selenic.com/) if they are not already installed on your system. Also be sure that you have [`opus`](http://www.opus-codec.org/) and its development headers installed on your system.
 
-**3)** Install [`youtube-dl`](https://github.com/rg3/youtube-dl#installation).
+**3)** Install [`youtube-dl`](https://github.com/rg3/youtube-dl#installation). It is recommended to install `youtube-dl` through the method described on the linked GitHub page, rather than installing through a distribution repository. This ensures that you get the most up-to-date version of `youtube-dl`.
 
 **4)** Clone the `MumbleDJ` repository or [download the latest release](https://github.com/matthieugrieger/mumbledj/releases).
 

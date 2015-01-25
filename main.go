@@ -77,11 +77,13 @@ func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 // the current status of the users on the server.
 func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 	if e.Type.Has(gumble.UserChangeDisconnected) {
-		if dj.queue.CurrentItem().ItemType() == "playlist" {
-			dj.queue.CurrentItem().(*Playlist).RemoveSkip(e.User.Name())
-			dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).RemoveSkip(e.User.Name())
-		} else {
-			dj.queue.CurrentItem().(*Song).RemoveSkip(e.User.Name())
+		if dj.audioStream.IsPlaying() {
+			if dj.queue.CurrentItem().ItemType() == "playlist" {
+				dj.queue.CurrentItem().(*Playlist).RemoveSkip(e.User.Name())
+				dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).RemoveSkip(e.User.Name())
+			} else {
+				dj.queue.CurrentItem().(*Song).RemoveSkip(e.User.Name())
+			}
 		}
 	}
 }

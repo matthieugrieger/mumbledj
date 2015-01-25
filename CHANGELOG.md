@@ -1,9 +1,10 @@
 MumbleDJ Changelog
 ==================
 
-### January 25, 2015 -- `v2.3.0`
+### January 25, 2015 -- `v2.3.0, v2.3.1`
 * Added !currentsong command, which displays information about the song currently playing.
 * MumbleDJ now removes disconnected users from skiplists for playlists and songs within the SongQueue.
+* Fixed crash when a user disconnects when no song is playing.
 
 ### January 19, 2015 -- `v2.2.11`
 * Fixed not being able to use the move command with channels with spaces in their name.

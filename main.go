@@ -73,6 +73,19 @@ func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 	}
 }
 
+// OnUserChange event. Checks UserChange type, and adjusts items such as skiplists to reflect
+// the current status of the users on the server.
+func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
+	if e.Type.Has(gumble.UserChangeDisconnected) {
+		if dj.queue.CurrentItem().ItemType() == "playlist" {
+			dj.queue.CurrentItem().(*Playlist).RemoveSkip(e.User.Name())
+			dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).RemoveSkip(e.User.Name())
+		} else {
+			dj.queue.CurrentItem().(*Song).RemoveSkip(e.User.Name())
+		}
+	}
+}
+
 // Checks if username has the permissions to execute a command. Permissions are specified in
 // mumbledj.gcfg.
 func (dj *mumbledj) HasPermission(username string, command bool) bool {
@@ -118,6 +131,7 @@ func main() {
 		Connect:     dj.OnConnect,
 		Disconnect:  dj.OnDisconnect,
 		TextMessage: dj.OnTextMessage,
+		UserChange:  dj.OnUserChange,
 	})
 	dj.client.Attach(gumbleutil.AutoBitrate)
 

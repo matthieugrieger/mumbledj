@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 25, 2015 -- `v2.3.0`
+* Added !currentsong command, which displays information about the song currently playing.
+
 ### January 19, 2015 -- `v2.2.11`
 * Fixed not being able to use the move command with channels with spaces in their name.
 

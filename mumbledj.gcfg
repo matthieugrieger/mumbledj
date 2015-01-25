@@ -79,6 +79,10 @@ NumSongsAlias = "numsongs"
 # DEFAULT VALUE: "nextsong"
 NextSongAlias = "nextsong"
 
+# Alias used for the currentsong command
+# DEFAULT VALUE: "currentsong"
+CurrentSongAlias = "currentsong"
+
 # Alias used for kill command
 # DEFAULT VALUE: "kill"
 KillAlias = "kill"
@@ -138,6 +142,10 @@ AdminNumSongs = false
 # Make nextsong an admin command?
 # DEFAULT VALUE: false
 AdminNextSong = false
+
+# Make currentsong an admin command?
+# DEFAULT VALUE: false
+AdminCurrentSong = false
 
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)

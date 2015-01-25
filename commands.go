@@ -25,7 +25,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	sanitizedCommand := sanitize.HTML(command)
 	if strings.Contains(sanitizedCommand, " ") {
 		index := strings.Index(sanitizedCommand, " ")
-		com, argument = sanitizedCommand[0:index], sanitizedCommand[(index + 1):]
+		com, argument = sanitizedCommand[0:index], sanitizedCommand[(index+1):]
 	} else {
 		com = command
 		argument = ""
@@ -113,6 +113,13 @@ func parseCommand(user *gumble.User, username, command string) {
 	case dj.conf.Aliases.NextSongAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminNextSong) {
 			nextSong(user)
+		} else {
+			user.Send(NO_PERMISSION_MSG)
+		}
+	// Currentsong command
+	case dj.conf.Aliases.CurrentSongAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminCurrentSong) {
+			currentSong(user)
 		} else {
 			user.Send(NO_PERMISSION_MSG)
 		}
@@ -329,6 +336,22 @@ func nextSong(user *gumble.User) {
 		user.Send(NO_SONG_NEXT_MSG)
 	} else {
 		user.Send(fmt.Sprintf(NEXT_SONG_HTML, title, submitter))
+	}
+}
+
+// Performs currentsong functionality. Sends the user who submitted the currentsong command
+// information about the song currently playing.
+func currentSong(user *gumble.User) {
+	if dj.audioStream.IsPlaying() {
+		var currentItem *Song
+		if dj.queue.CurrentItem().ItemType() == "playlist" {
+			currentItem = dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song)
+		} else {
+			currentItem = dj.queue.CurrentItem().(*Song)
+		}
+		user.Send(fmt.Sprintf(CURRENT_SONG_HTML, currentItem.title, currentItem.submitter))
+	} else {
+		user.Send(NO_MUSIC_PLAYING_MSG)
 	}
 }
 

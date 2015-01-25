@@ -38,6 +38,7 @@ type DjConfig struct {
 		ResetAlias             string
 		NumSongsAlias          string
 		NextSongAlias          string
+		CurrentSongAlias       string
 		KillAlias              string
 	}
 	Permissions struct {
@@ -53,6 +54,7 @@ type DjConfig struct {
 		AdminReset        bool
 		AdminNumSongs     bool
 		AdminNextSong     bool
+		AdminCurrentSong  bool
 		AdminKill         bool
 	}
 }

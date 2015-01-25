@@ -95,6 +95,7 @@ const HELP_HTML = `<br/>
 	<p> <b>!skipplaylist</b> - Casts a vote to skip over the current playlist.</p>
 	<p><b>!numsongs</b> - Shows how many songs are in queue.</p>
 	<p><b>!nextsong</b> - Shows the title and submitter of the next queue item if it exists.</p>
+	<p><b>!currentsong</b> - Shows the title and submitter of the song currently playing.</p>
 	<p style="-qt-paragraph-type:empty"><br/></p>
 	<p><b>Admin Commands:</b></p>
 	<p><b>!reset</b> - An admin command that resets the song queue. </p>
@@ -138,4 +139,9 @@ const NUM_SONGS_HTML = `
 // Message shown to users when they issue the nextsong command.
 const NEXT_SONG_HTML = `
 	The next song in the queue is "%s", added by <b>%s</b>.
+`
+
+// Message shown to users when they issue the currentsong command.
+const CURRENT_SONG_HTML = `
+	The song currently playing is "%s", added by <b>%s</b>.
 `

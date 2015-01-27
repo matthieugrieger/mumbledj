@@ -332,10 +332,10 @@ func numSongs() {
 // item if it exists. The user will then be sent a message containing the title and submitter
 // of the next item if it exists.
 func nextSong(user *gumble.User) {
-	if title, submitter, err := dj.queue.PeekNext(); err != nil {
+	if song, err := dj.queue.PeekNext(); err != nil {
 		user.Send(NO_SONG_NEXT_MSG)
 	} else {
-		user.Send(fmt.Sprintf(NEXT_SONG_HTML, title, submitter))
+		user.Send(fmt.Sprintf(NEXT_SONG_HTML, song.title, song.submitter))
 	}
 }
 

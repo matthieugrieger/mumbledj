@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 26, 2015 -- `v2.3.2`
+* Fixed !nextsong showing incorrect information about the next song in the queue.
+
 ### January 25, 2015 -- `v2.3.0, v2.3.1`
 * Added !currentsong command, which displays information about the song currently playing.
 * MumbleDJ now removes disconnected users from skiplists for playlists and songs within the SongQueue.

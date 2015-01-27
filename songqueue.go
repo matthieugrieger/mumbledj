@@ -53,26 +53,22 @@ func (q *SongQueue) NextItem() {
 	q.queue = q.queue[1:]
 }
 
-// Peeks at the next item and returns the title, submitter, and error status.
-func (q *SongQueue) PeekNext() (string, string, error) {
-	var title, submitter string
-	if q.Len() > 1 {
-		if q.queue[1].ItemType() == "playlist" {
-			title = q.queue[1].(*Playlist).songs.queue[0].(*Song).title
-			submitter = q.queue[1].(*Playlist).submitter
+// Peeks at the next Song and returns it.
+func (q *SongQueue) PeekNext() (*Song, error) {
+	if q.Len() != 0 {
+		if q.CurrentItem().ItemType() == "playlist" {
+			return q.CurrentItem().(*Playlist).songs.queue[1].(*Song), nil
+		} else if q.Len() > 1 {
+			if q.queue[1].ItemType() == "playlist" {
+				return q.queue[1].(*Playlist).songs.queue[0].(*Song), nil
+			} else {
+				return q.queue[1].(*Song), nil
+			}
 		} else {
-			title = q.queue[1].(*Song).title
-			submitter = q.queue[1].(*Song).submitter
+			return nil, errors.New("There is no song coming up next.")
 		}
-		return title, submitter, nil
-	} else if q.Len() == 0 {
-		return "", "", errors.New("There is no item next in the queue.")
-	} else if q.CurrentItem().ItemType() == "playlist" {
-		title = q.CurrentItem().(*Playlist).songs.queue[1].(*Song).title
-		submitter = q.CurrentItem().(*Playlist).submitter
-		return title, submitter, nil
 	} else {
-		return "", "", errors.New("There is no item next in the queue.")
+		return nil, errors.New("There are no items in the queue.")
 	}
 }
 

@@ -19,6 +19,7 @@ type DjConfig struct {
 		CommandPrefix     string
 		SkipRatio         float32
 		PlaylistSkipRatio float32
+		PlaylistMaxSongs  int
 	}
 	Volume struct {
 		DefaultVolume float32

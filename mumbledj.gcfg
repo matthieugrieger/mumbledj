@@ -17,6 +17,8 @@ SkipRatio = 0.5
 # DEFAULT VALUE: 0.5
 PlaylistSkipRatio = 0.5
 
+#Max songs from a playlist
+PlaylistMaxSongs = 25
 
 [Volume]
 

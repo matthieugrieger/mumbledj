@@ -32,7 +32,7 @@ type Playlist struct {
 // via the YouTube Gdata API.
 func NewPlaylist(user, id string) *Playlist {
 	queue := NewSongQueue()
-	jsonUrl := fmt.Sprintf("http://gdata.youtube.com/feeds/api/playlists/%s?v=2&alt=jsonc&maxresults=25", id)
+	jsonUrl := fmt.Sprintf("http://gdata.youtube.com/feeds/api/playlists/%s?v=2&alt=jsonc", id)
 	jsonString := ""
 
 	if response, err := http.Get(jsonUrl); err == nil {
@@ -49,8 +49,8 @@ func NewPlaylist(user, id string) *Playlist {
 
 	playlistTitle, _ := jq.String("data", "title")
 	playlistItems, _ := jq.Int("data", "totalItems")
-	if playlistItems > 25 {
-		playlistItems = 25
+	if playlistItems > dj.conf.General.PlaylistMaxSongs {
+		playlistItems = dj.conf.General.PlaylistMaxSongs
 	}
 
 	for i := 0; i < playlistItems; i++ {

@@ -103,6 +103,14 @@ func (dj *mumbledj) HasPermission(username string, command bool) bool {
 	}
 }
 
+// Sends a private message to a user. Essentially just checks if a user is still in the server
+// before sending them the message.
+func (dj *mumbledj) SendPrivateMessage(user *gumble.User, message string) {
+	if targetUser := dj.client.Self().Channel().Users().Find(user.Name()); targetUser != nil {
+		targetUser.Send(message)
+	}
+}
+
 // dj variable declaration. This is done outside of main() to allow global use.
 var dj = mumbledj{
 	keepAlive: make(chan bool),

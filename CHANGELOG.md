@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 30, 2015 -- `v2.3.3`
+* Fixed private messages crashing the bot when the target user switches channels or disconnects.
+
 ### January 26, 2015 -- `v2.3.2`
 * Fixed !nextsong showing incorrect information about the next song in the queue.
 

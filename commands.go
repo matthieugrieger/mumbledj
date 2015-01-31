@@ -37,101 +37,101 @@ func parseCommand(user *gumble.User, username, command string) {
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAdd) {
 			add(user, username, argument)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Skip command
 	case dj.conf.Aliases.SkipAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminSkip) {
 			skip(user, username, false, false)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Skip playlist command
 	case dj.conf.Aliases.SkipPlaylistAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
 			skip(user, username, false, true)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Forceskip command
 	case dj.conf.Aliases.AdminSkipAlias:
 		if dj.HasPermission(username, true) {
 			skip(user, username, true, false)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Playlist forceskip command
 	case dj.conf.Aliases.AdminSkipPlaylistAlias:
 		if dj.HasPermission(username, true) {
 			skip(user, username, true, true)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Help command
 	case dj.conf.Aliases.HelpAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminHelp) {
 			help(user)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Volume command
 	case dj.conf.Aliases.VolumeAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminVolume) {
 			volume(user, username, argument)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Move command
 	case dj.conf.Aliases.MoveAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminMove) {
 			move(user, argument)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Reload command
 	case dj.conf.Aliases.ReloadAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminReload) {
 			reload(user)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Reset command
 	case dj.conf.Aliases.ResetAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminReset) {
 			reset(username)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Numsongs command
 	case dj.conf.Aliases.NumSongsAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminNumSongs) {
 			numSongs()
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Nextsong command
 	case dj.conf.Aliases.NextSongAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminNextSong) {
 			nextSong(user)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Currentsong command
 	case dj.conf.Aliases.CurrentSongAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminCurrentSong) {
 			currentSong(user)
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Kill command
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
 			kill()
 		} else {
-			user.Send(NO_PERMISSION_MSG)
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	default:
-		user.Send(COMMAND_DOESNT_EXIST_MSG)
+		dj.SendPrivateMessage(user, COMMAND_DOESNT_EXIST_MSG)
 	}
 }
 
@@ -139,7 +139,7 @@ func parseCommand(user *gumble.User, username, command string) {
 // the URL to the queue if the format matches.
 func add(user *gumble.User, username, url string) {
 	if url == "" {
-		user.Send(NO_ARGUMENT_MSG)
+		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
 		youtubePatterns := []string{
 			`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)`,
@@ -169,7 +169,7 @@ func add(user *gumble.User, username, url string) {
 					if err := dj.queue.CurrentItem().(*Song).Download(); err == nil {
 						dj.queue.CurrentItem().(*Song).Play()
 					} else {
-						user.Send(AUDIO_FAIL_MSG)
+						dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
 						dj.queue.CurrentItem().(*Song).Delete()
 					}
 				}
@@ -188,16 +188,16 @@ func add(user *gumble.User, username, url string) {
 								if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
 									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
 								} else {
-									user.Send(AUDIO_FAIL_MSG)
+									dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
 									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
 								}
 							}
 						}
 					} else {
-						user.Send(NO_PLAYLIST_PERMISSION_MSG)
+						dj.SendPrivateMessage(user, NO_PLAYLIST_PERMISSION_MSG)
 					}
 				} else {
-					user.Send(INVALID_URL_MSG)
+					dj.SendPrivateMessage(user, INVALID_URL_MSG)
 				}
 			}
 		}
@@ -225,7 +225,7 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 					}
 				}
 			} else {
-				user.Send(NO_PLAYLIST_PLAYING_MSG)
+				dj.SendPrivateMessage(user, NO_PLAYLIST_PLAYING_MSG)
 			}
 		} else {
 			var currentItem QueueItem
@@ -249,13 +249,13 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 			}
 		}
 	} else {
-		user.Send(NO_MUSIC_PLAYING_MSG)
+		dj.SendPrivateMessage(user, NO_MUSIC_PLAYING_MSG)
 	}
 }
 
 // Performs help functionality. Displays a list of valid commands.
 func help(user *gumble.User) {
-	user.Send(HELP_HTML)
+	dj.SendPrivateMessage(user, HELP_HTML)
 }
 
 // Performs volume functionality. Checks input value against LowestVolume and HighestVolume from
@@ -271,10 +271,10 @@ func volume(user *gumble.User, username, value string) {
 				dj.audioStream.SetVolume(newVolume)
 				dj.client.Self().Channel().Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, username, dj.audioStream.Volume()), false)
 			} else {
-				user.Send(fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
+				dj.SendPrivateMessage(user, fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 			}
 		} else {
-			user.Send(fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
+			dj.SendPrivateMessage(user, fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 		}
 	}
 }
@@ -283,12 +283,12 @@ func volume(user *gumble.User, username, value string) {
 // to the channel if it is.
 func move(user *gumble.User, channel string) {
 	if channel == "" {
-		user.Send(NO_ARGUMENT_MSG)
+		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
 		if dj.client.Channels().Find(channel) != nil {
 			dj.client.Self().Move(dj.client.Channels().Find(channel))
 		} else {
-			user.Send(CHANNEL_DOES_NOT_EXIST_MSG)
+			dj.SendPrivateMessage(user, CHANNEL_DOES_NOT_EXIST_MSG)
 		}
 	}
 }
@@ -296,9 +296,7 @@ func move(user *gumble.User, channel string) {
 // Performs reload functionality. Tells command submitter if the reload completed successfully.
 func reload(user *gumble.User) {
 	if err := loadConfiguration(); err == nil {
-		user.Send(CONFIG_RELOAD_SUCCESS_MSG)
-	} else {
-		panic(err)
+		dj.SendPrivateMessage(user, CONFIG_RELOAD_SUCCESS_MSG)
 	}
 }
 
@@ -333,9 +331,9 @@ func numSongs() {
 // of the next item if it exists.
 func nextSong(user *gumble.User) {
 	if song, err := dj.queue.PeekNext(); err != nil {
-		user.Send(NO_SONG_NEXT_MSG)
+		dj.SendPrivateMessage(user, NO_SONG_NEXT_MSG)
 	} else {
-		user.Send(fmt.Sprintf(NEXT_SONG_HTML, song.title, song.submitter))
+		dj.SendPrivateMessage(user, fmt.Sprintf(NEXT_SONG_HTML, song.title, song.submitter))
 	}
 }
 
@@ -349,9 +347,9 @@ func currentSong(user *gumble.User) {
 		} else {
 			currentItem = dj.queue.CurrentItem().(*Song)
 		}
-		user.Send(fmt.Sprintf(CURRENT_SONG_HTML, currentItem.title, currentItem.submitter))
+		dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_HTML, currentItem.title, currentItem.submitter))
 	} else {
-		user.Send(NO_MUSIC_PLAYING_MSG)
+		dj.SendPrivateMessage(user, NO_MUSIC_PLAYING_MSG)
 	}
 }
 

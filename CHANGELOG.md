@@ -5,6 +5,7 @@ MumbleDJ Changelog
 * Added panic on audio play fail for debugging purposes.
 * Fixed '!' being recognized as '!skipplaylist'.
 * Fixed !reset crash when there is no audio playing.
+* Fixed newlines after YouTube URL messing up !add commands.
 
 ### January 30, 2015 -- `v2.3.3`
 * Fixed private messages crashing the bot when the target user switches channels or disconnects.

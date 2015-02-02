@@ -22,7 +22,8 @@ import (
 // it contains a command.
 func parseCommand(user *gumble.User, username, command string) {
 	var com, argument string
-	sanitizedCommand := sanitize.HTML(command)
+	newlineSplit := strings.Split(command, "<br />")
+	sanitizedCommand := sanitize.HTML(newlineSplit[0])
 	if strings.Contains(sanitizedCommand, " ") {
 		index := strings.Index(sanitizedCommand, " ")
 		com, argument = sanitizedCommand[0:index], sanitizedCommand[(index+1):]

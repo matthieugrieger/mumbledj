@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### February 2, 2015 -- `v2.3.4`
+* Added panic on audio play fail for debugging purposes.
+
 ### January 30, 2015 -- `v2.3.3`
 * Fixed private messages crashing the bot when the target user switches channels or disconnects.
 

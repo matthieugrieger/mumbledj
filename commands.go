@@ -304,12 +304,13 @@ func reload(user *gumble.User) {
 // remaining songs in the ~/.mumbledj/songs directory.
 func reset(username string) {
 	dj.queue.queue = dj.queue.queue[:0]
-	if err := dj.audioStream.Stop(); err == nil {
-		if err := deleteSongs(); err == nil {
-			dj.client.Self().Channel().Send(fmt.Sprintf(QUEUE_RESET_HTML, username), false)
-		} else {
+	if dj.audioStream.IsPlaying() {
+		if err := dj.audioStream.Stop(); err != nil {
 			panic(err)
 		}
+	}
+	if err := deleteSongs(); err == nil {
+		dj.client.Self().Channel().Send(fmt.Sprintf(QUEUE_RESET_HTML, username), false)
 	} else {
 		panic(err)
 	}

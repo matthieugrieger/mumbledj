@@ -30,15 +30,19 @@ type Playlist struct {
 
 // Returns a new Playlist type. Before returning the new type, the playlist's metadata is collected
 // via the YouTube Gdata API.
-func NewPlaylist(user, id string) *Playlist {
+func NewPlaylist(user, id string) (*Playlist, error) {
 	queue := NewSongQueue()
 	jsonUrl := fmt.Sprintf("http://gdata.youtube.com/feeds/api/playlists/%s?v=2&alt=jsonc&maxresults=25", id)
 	jsonString := ""
 
 	if response, err := http.Get(jsonUrl); err == nil {
 		defer response.Body.Close()
-		if body, err := ioutil.ReadAll(response.Body); err == nil {
-			jsonString = string(body)
+		if response.StatusCode != 400 {
+			if body, err := ioutil.ReadAll(response.Body); err == nil {
+				jsonString = string(body)
+			}
+		} else {
+			return nil, errors.New("Invalid YouTube ID supplied.")
 		}
 	}
 
@@ -78,7 +82,7 @@ func NewPlaylist(user, id string) *Playlist {
 		submitter: user,
 		skipped:   false,
 	}
-	return playlist
+	return playlist, nil
 }
 
 // Adds a skip to the skippers slice. If the user is already in the slice AddSkip() returns

@@ -6,6 +6,7 @@ MumbleDJ Changelog
 * Fixed '!' being recognized as '!skipplaylist'.
 * Fixed !reset crash when there is no audio playing.
 * Fixed newlines after YouTube URL messing up !add commands.
+* Fixed empty song/playlist entry being added upon !add with invalid YouTube ID.
 
 ### January 30, 2015 -- `v2.3.3`
 * Fixed private messages crashing the bot when the target user switches channels or disconnects.

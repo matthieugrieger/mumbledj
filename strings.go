@@ -50,6 +50,9 @@ const ADMIN_PLAYLIST_SKIP_MSG = "An admin has decided to skip the current playli
 // Message shown to users when the audio for a video could not be downloaded.
 const AUDIO_FAIL_MSG = "The audio download for this video failed. YouTube has likely not generated the audio files for this video yet. Skipping to the next song!"
 
+// Message shown to users when they supply a YouTube URL that does not contain a valid ID.
+const INVALID_YOUTUBE_ID_MSG = "The YouTube URL you supplied did not contain a valid YouTube ID."
+
 // Message shown to a channel when a new song starts playing.
 const NOW_PLAYING_HTML = `
 	<table>

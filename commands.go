@@ -163,17 +163,20 @@ func add(user *gumble.User, username, url string) {
 		}
 
 		if matchFound {
-			newSong := NewSong(username, shortUrl)
-			if err := dj.queue.AddItem(newSong); err == nil {
-				dj.client.Self().Channel().Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
-				if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-					if err := dj.queue.CurrentItem().(*Song).Download(); err == nil {
-						dj.queue.CurrentItem().(*Song).Play()
-					} else {
-						dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-						dj.queue.CurrentItem().(*Song).Delete()
+			if newSong, err := NewSong(username, shortUrl); err == nil {
+				if err := dj.queue.AddItem(newSong); err == nil {
+					dj.client.Self().Channel().Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
+					if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
+						if err := dj.queue.CurrentItem().(*Song).Download(); err == nil {
+							dj.queue.CurrentItem().(*Song).Play()
+						} else {
+							dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
+							dj.queue.CurrentItem().(*Song).Delete()
+						}
 					}
 				}
+			} else {
+				dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
 			}
 		} else {
 			// Check to see if we have a playlist URL instead.
@@ -182,17 +185,20 @@ func add(user *gumble.User, username, url string) {
 				if re.MatchString(url) {
 					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
 						shortUrl = re.FindStringSubmatch(url)[1]
-						newPlaylist := NewPlaylist(username, shortUrl)
-						if dj.queue.AddItem(newPlaylist); err == nil {
-							dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
-							if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-								if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
-									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
-								} else {
-									dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-									dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
+						if newPlaylist, err := NewPlaylist(username, shortUrl); err == nil {
+							if dj.queue.AddItem(newPlaylist); err == nil {
+								dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
+								if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
+									if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
+										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
+									} else {
+										dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
+										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
+									}
 								}
 							}
+						} else {
+							dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
 						}
 					} else {
 						dj.SendPrivateMessage(user, NO_PLAYLIST_PERMISSION_MSG)

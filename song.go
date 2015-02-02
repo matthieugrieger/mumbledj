@@ -33,14 +33,18 @@ type Song struct {
 
 // Returns a new Song type. Before returning the new type, the song's metadata is collected
 // via the YouTube Gdata API.
-func NewSong(user, id string) *Song {
+func NewSong(user, id string) (*Song, error) {
 	jsonUrl := fmt.Sprintf("http://gdata.youtube.com/feeds/api/videos/%s?v=2&alt=jsonc", id)
 	jsonString := ""
 
 	if response, err := http.Get(jsonUrl); err == nil {
 		defer response.Body.Close()
-		if body, err := ioutil.ReadAll(response.Body); err == nil {
-			jsonString = string(body)
+		if response.StatusCode != 400 {
+			if body, err := ioutil.ReadAll(response.Body); err == nil {
+				jsonString = string(body)
+			}
+		} else {
+			return nil, errors.New("Invalid YouTube ID supplied.")
 		}
 	}
 
@@ -63,7 +67,7 @@ func NewSong(user, id string) *Song {
 		thumbnailUrl: videoThumbnail,
 		itemType:     "song",
 	}
-	return song
+	return song, nil
 }
 
 // Downloads the song via youtube-dl. All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.

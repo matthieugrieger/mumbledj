@@ -1,7 +1,7 @@
 MumbleDJ Changelog
 ==================
 
-### February 2, 2015 -- `v2.3.4, v2.3.5`
+### February 2, 2015 -- `v2.3.4, v2.3.5, v2.3.6`
 * Added panic on audio play fail for debugging purposes.
 * Fixed '!' being recognized as '!skipplaylist'.
 * Fixed !reset crash when there is no audio playing.

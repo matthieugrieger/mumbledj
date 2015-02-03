@@ -8,6 +8,8 @@ MumbleDJ Changelog
 * Fixed newlines after YouTube URL messing up !add commands.
 * Fixed empty song/playlist entry being added upon !add with invalid YouTube ID.
 * Fixed go build issues.
+* Added `goop` dependency management. Make sure you have `openal` installed, or it won't work right!
+* Fixed crash on invalid playlist URL.
 
 ### January 30, 2015 -- `v2.3.3`
 * Fixed private messages crashing the bot when the target user switches channels or disconnects.

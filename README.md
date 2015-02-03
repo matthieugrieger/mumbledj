@@ -45,17 +45,18 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 
 **4)** If you wish to install MumbleDJ without any further root privileges, make sure that `~/bin` exists and is added to your `$PATH`. If this step is not done, the `Makefile` will place the MumbleDJ binary in `/usr/local/bin` instead, which requires root privileges.
 
-**4)** Clone the `MumbleDJ` repository or [download the latest release](https://github.com/matthieugrieger/mumbledj/releases).
+**5)** Clone the `MumbleDJ` repository or [download the latest release](https://github.com/matthieugrieger/mumbledj/releases).
 
-**5)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 
+**6)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 
 ```
 $ make
 $ make install
 ```
 
-**5)** Edit `~/.mumbledj/config/mumbledj.gcfg` to your liking. This file will be overwritten if the config file structure is changed in a commit, but a backup is always stored at `~/.mumbledj/config/mumbledj_backup.gcfg`.
+**7)** Edit `~/.mumbledj/config/mumbledj.gcfg` to your liking. This file will be overwritten if the config file structure is changed in a commit, but a backup is always stored at 
+`~/.mumbledj/config/mumbledj_backup.gcfg`.
 
-**6)** Execute the command shown at the top of this `README` document with your credentials, and the bot should be up and running!
+**8)** Execute the command shown at the top of this `README` document with your credentials, and the bot should be up and running!
 
 **Recommended, but not required:** Set `opusthreshold=0` in `/etc/mumble-server.ini` or `/etc/murmur.ini`. This will force the server to always use the Opus audio codec, which is the only codec that MumbleDJ supports.
 

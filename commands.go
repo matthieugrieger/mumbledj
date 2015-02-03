@@ -270,13 +270,13 @@ func help(user *gumble.User) {
 // is applied and is immediately in effect.
 func volume(user *gumble.User, username, value string) {
 	if value == "" {
-		dj.client.Self().Channel().Send(fmt.Sprintf(CUR_VOLUME_HTML, dj.audioStream.Volume()), false)
+		dj.client.Self().Channel().Send(fmt.Sprintf(CUR_VOLUME_HTML, dj.audioStream.Volume), false)
 	} else {
 		if parsedVolume, err := strconv.ParseFloat(value, 32); err == nil {
 			newVolume := float32(parsedVolume)
 			if newVolume >= dj.conf.Volume.LowestVolume && newVolume <= dj.conf.Volume.HighestVolume {
-				dj.audioStream.SetVolume(newVolume)
-				dj.client.Self().Channel().Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, username, dj.audioStream.Volume()), false)
+				dj.audioStream.Volume = newVolume
+				dj.client.Self().Channel().Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, username, dj.audioStream.Volume), false)
 			} else {
 				dj.SendPrivateMessage(user, fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 			}

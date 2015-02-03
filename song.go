@@ -83,7 +83,7 @@ func (s *Song) Download() error {
 // Plays the song. Once the song is playing, a notification is displayed in a text message that features the video thumbnail, URL, title,
 // duration, and submitter.
 func (s *Song) Play() {
-	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId)); err != nil {
+	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId), dj.queue.OnItemFinished); err != nil {
 		panic(err)
 	} else {
 		dj.client.Self().Channel().Send(fmt.Sprintf(NOW_PLAYING_HTML, s.thumbnailUrl, s.youtubeId, s.title, s.duration, s.submitter), false)

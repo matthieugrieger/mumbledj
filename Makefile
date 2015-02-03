@@ -1,13 +1,9 @@
 all: mumbledj
 
 mumbledj: main.go commands.go parseconfig.go strings.go song.go playlist.go songqueue.go
-	go get -u github.com/layeh/gumble/gumble
-	go get -u github.com/layeh/gumble/gumbleutil
-	go get -u github.com/layeh/gumble/gumble_ffmpeg
-	go get -u code.google.com/p/gcfg
-	go get -u github.com/kennygrant/sanitize
-	go get -u github.com/jmoiron/jsonq
-	go build .
+	go get github.com/nitrous-io/goop
+	goop update
+	goop go build .
 		
 clean:
 	rm -f mumbledj
@@ -20,5 +16,5 @@ install:
 	sudo cp -f mumbledj /usr/local/bin/mumbledj
 
 build:
-	go build .
+	goop go build .
 	

@@ -38,7 +38,8 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 ###SETUP GUIDE  
 **1)** Install and correctly configure [`Go`](https://golang.org/) (1.3 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.
 
-**2)** Install [`ffmpeg`](https://www.ffmpeg.org/) and [`mercurial`](http://mercurial.selenic.com/) if they are not already installed on your system. Also be sure that you have [`opus`](http://www.opus-codec.org/) and its development headers installed on your system.
+**2)** Install [`ffmpeg`](https://www.ffmpeg.org/) and [`mercurial`](http://mercurial.selenic.com/) if they are not already installed on your system. Also be sure that you have 
+[`opus`](http://www.opus-codec.org/) and its development headers installed on your system, as well as `openal` (check your distributions repo for the package name).
 
 **3)** Install [`youtube-dl`](https://github.com/rg3/youtube-dl#installation). It is recommended to install `youtube-dl` through the method described on the linked GitHub page, rather than installing through a distribution repository. This ensures that you get the most up-to-date version of `youtube-dl`.
 
@@ -104,3 +105,4 @@ THE SOFTWARE.
 * [ScalingData](https://github.com/scalingdata) for [gcfg](https://github.com/scalingdata/gcfg).
 * [kennygrant](https://github.com/kennygrant) for [sanitize](https://github.com/kennygrant/sanitize).
 * [Jason Moiron](https://github.com/jmoiron) for [jsonq](https://github.com/jmoiron/jsonq).
+* [Nitrous.IO](https://github.com/nitrous-io) for [goop](https://github.com/nitrous-io/goop).

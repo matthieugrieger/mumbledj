@@ -37,13 +37,15 @@ func NewPlaylist(user, id string) (*Playlist, error) {
 
 	if response, err := http.Get(jsonUrl); err == nil {
 		defer response.Body.Close()
-		if response.StatusCode != 400 {
+		if response.StatusCode != 400 && response.StatusCode != 404 {
 			if body, err := ioutil.ReadAll(response.Body); err == nil {
 				jsonString = string(body)
 			}
 		} else {
 			return nil, errors.New("Invalid YouTube ID supplied.")
 		}
+	} else {
+		return nil, errors.New("An error occurred while receiving HTTP GET request.")
 	}
 
 	jsonData := map[string]interface{}{}

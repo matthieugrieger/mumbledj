@@ -13,7 +13,7 @@ install:
 	mkdir -p ~/.mumbledj/songs
 	if [ -a ~/.mumbledj/config/mumbledj.gcfg ]; then mv ~/.mumbledj/config/mumbledj.gcfg ~/.mumbledj/config/mumbledj_backup.gcfg; fi;
 	cp -u mumbledj.gcfg ~/.mumbledj/config/mumbledj.gcfg
-	sudo cp -f mumbledj /usr/local/bin/mumbledj
+	if [ -d ~/bin ]; then cp -f mumbledj ~/bin/mumbledj; else sudo cp -f mumbledj /usr/local/bin/mumbledj; fi;
 
 build:
 	goop go build .

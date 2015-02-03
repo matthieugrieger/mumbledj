@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### February 3, 2015 -- `v2.4.1`
+* Made it possible to place MumbleDJ binary in `~/bin` instead of `/usr/local/bin` if the folder exists.
+
 ### February 2, 2015 -- `v2.3.4, v2.3.5, v2.3.6, v2.3.7, v2.4.0`
 * Added panic on audio play fail for debugging purposes.
 * Fixed '!' being recognized as '!skipplaylist'.

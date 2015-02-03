@@ -43,6 +43,8 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 
 **3)** Install [`youtube-dl`](https://github.com/rg3/youtube-dl#installation). It is recommended to install `youtube-dl` through the method described on the linked GitHub page, rather than installing through a distribution repository. This ensures that you get the most up-to-date version of `youtube-dl`.
 
+**4)** If you wish to install MumbleDJ without any further root privileges, make sure that `~/bin` exists and is added to your `$PATH`. If this step is not done, the `Makefile` will place the MumbleDJ binary in `/usr/local/bin` instead, which requires root privileges.
+
 **4)** Clone the `MumbleDJ` repository or [download the latest release](https://github.com/matthieugrieger/mumbledj/releases).
 
 **5)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 

@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### February 7, 2015 -- `v2.4.2`
+* Updated `gumble` and `gumbleutil` dependencies.
+* Removed `sanitize` dependency.
+
 ### February 3, 2015 -- `v2.4.1`
 * Made it possible to place MumbleDJ binary in `~/bin` instead of `/usr/local/bin` if the folder exists.
 

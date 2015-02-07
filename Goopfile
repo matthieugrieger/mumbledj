@@ -1,6 +1,5 @@
-github.com/layeh/gumble/gumble #57ba99917661ae6aa18179446af468349e04edfd
-github.com/layeh/gumble/gumbleutil #5f5bc3e4a15e84c70d22f36c8189151e6606b622
+github.com/layeh/gumble/gumble #313707b6f7c2699602dbd07e244ad2768d25b581
 github.com/layeh/gumble/gumble_ffmpeg #ed900e422315c00121362676dd51aa0506ee18c0
+github.com/layeh/gumble/gumbleutil #313707b6f7c2699602dbd07e244ad2768d25b581
 code.google.com/p/gcfg #c2d3050044d0
-github.com/kennygrant/sanitize #8537026bec4fbc794c27e1a1c07029541122706a
 github.com/jmoiron/jsonq #7c27c8eb9f6831555a4209f6a7d579159e766a3c

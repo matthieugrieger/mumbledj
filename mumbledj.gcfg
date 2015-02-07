@@ -83,6 +83,10 @@ NextSongAlias = "nextsong"
 # DEFAULT VALUE: "currentsong"
 CurrentSongAlias = "currentsong"
 
+# Alias used for the setcomment command
+# DEFAULT VALUE: "setcomment"
+SetCommentAlias = "setcomment"
+
 # Alias used for kill command
 # DEFAULT VALUE: "kill"
 KillAlias = "kill"
@@ -146,6 +150,10 @@ AdminNextSong = false
 # Make currentsong an admin command?
 # DEFAULT VALUE: false
 AdminCurrentSong = false
+
+# Make setcomment an admin command?
+# DEFAULT VALUE: true
+AdminSetComment = true
 
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)

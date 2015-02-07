@@ -53,6 +53,9 @@ const AUDIO_FAIL_MSG = "The audio download for this video failed. YouTube has li
 // Message shown to users when they supply a YouTube URL that does not contain a valid ID.
 const INVALID_YOUTUBE_ID_MSG = "The YouTube URL you supplied did not contain a valid YouTube ID."
 
+// Message shown to user when they successfully update the bot's comment.
+const COMMENT_UPDATED_MSG = "The comment for the bot has successfully been updated."
+
 // Message shown to a channel when a new song starts playing.
 const NOW_PLAYING_HTML = `
 	<table>
@@ -106,6 +109,7 @@ const HELP_HTML = `<br/>
 	<p><b>!forceskipplaylist</b> - An admin command that forces a playlist skip. </p>
 	<p><b>!move </b>- Moves MumbleDJ into channel if it exists.</p>
 	<p><b>!reload</b> - Reloads mumbledj.gcfg configuration settings.</p>
+	<p><b>!setcomment</b> - Sets the comment for the bot.</p>
 	<p><b>!kill</b> - Safely cleans the bot environment and disconnects from the server.</p>
 `
 

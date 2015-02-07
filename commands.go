@@ -123,6 +123,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+	// Setcomment command
+	case dj.conf.Aliases.SetCommentAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminSetComment) {
+			setComment(user, argument)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
 	// Kill command
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
@@ -358,6 +365,12 @@ func currentSong(user *gumble.User) {
 	} else {
 		dj.SendPrivateMessage(user, NO_MUSIC_PLAYING_MSG)
 	}
+}
+
+// Performs setcomment functionality. Sets the bot's comment to whatever text is supplied in the argument.
+func setComment(user *gumble.User, comment string) {
+	dj.client.Self().SetComment(comment)
+	dj.SendPrivateMessage(user, COMMENT_UPDATED_MSG)
 }
 
 // Performs kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any

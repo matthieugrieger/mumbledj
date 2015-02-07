@@ -10,7 +10,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/kennygrant/sanitize"
 	"github.com/layeh/gumble/gumble"
 	"os"
 	"regexp"
@@ -22,11 +21,11 @@ import (
 // it contains a command.
 func parseCommand(user *gumble.User, username, command string) {
 	var com, argument string
-	newlineSplit := strings.Split(command, "<br />")
-	sanitizedCommand := sanitize.HTML(newlineSplit[0])
-	if strings.Contains(sanitizedCommand, " ") {
-		index := strings.Index(sanitizedCommand, " ")
-		com, argument = sanitizedCommand[0:index], sanitizedCommand[(index+1):]
+	split := strings.Split(command, "\n")
+	splitString := split[0]
+	if strings.Contains(splitString, " ") {
+		index := strings.Index(splitString, " ")
+		com, argument = splitString[0:index], splitString[(index+1):]
 	} else {
 		com = command
 		argument = ""

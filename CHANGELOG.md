@@ -5,6 +5,7 @@ MumbleDJ Changelog
 * Updated `gumble` and `gumbleutil` dependencies.
 * Removed `sanitize` dependency.
 * Reworked `Makefile` slightly.
+* Now uses `gumbleutil.PlainText` for removing HTML tags instead of `sanitize`.
 
 ### February 3, 2015 -- `v2.4.1`
 * Made it possible to place MumbleDJ binary in `~/bin` instead of `/usr/local/bin` if the folder exists.

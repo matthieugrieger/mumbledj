@@ -2,7 +2,8 @@ all: mumbledj
 
 mumbledj: main.go commands.go parseconfig.go strings.go song.go playlist.go songqueue.go
 	go get github.com/nitrous-io/goop
-	goop update
+	rm -rf Goopfile.lock
+	goop install
 	goop go build .
 		
 clean:

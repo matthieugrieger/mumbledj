@@ -15,6 +15,7 @@ import (
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
+	"os"
 	"os/user"
 )
 
@@ -163,7 +164,8 @@ func main() {
 	// moment.
 	dj.config.TLSConfig.InsecureSkipVerify = true
 	if err := dj.client.Connect(); err != nil {
-		panic(err)
+		fmt.Printf("Could not connect to Mumble server at %s:%s.\n", address, port)
+		os.Exit(1)
 	}
 
 	<-dj.keepAlive

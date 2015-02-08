@@ -9,6 +9,7 @@ MumbleDJ Changelog
 * Added `!setcomment` which allows admin users to set the comment for the bot.
 * Made "Now Playing" notification and `!currentsong` show the playlist title of the song if it is included in a playlist.
 * Added ability to connect to Mumble server using a PEM cert/key pair. Use the commandline flags `cert` and `key` to make use of this.
+* Added an easier to read error message upon unsuccessful connection to server.
 
 ### February 3, 2015 -- `v2.4.1`
 * Made it possible to place MumbleDJ binary in `~/bin` instead of `/usr/local/bin` if the folder exists.

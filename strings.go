@@ -71,6 +71,24 @@ const NOW_PLAYING_HTML = `
 	</table>
 `
 
+// Message shown to channel when a new song in a playlist starts playing.
+const NOW_PLAYING_PLAYLIST_HTML = `
+	<table>
+		<tr>
+			<td align="center"><img src="%s" width=150 /></td>
+		</tr>
+		<tr>
+			<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
+		</tr>
+		<tr>
+			<td align="center">Added by %s</td>
+		</tr>
+		<tr>
+			<td align="center">From playlist "%s"</td>
+		</tr>
+	</table>
+`
+
 // Message shown to channel when a song is added to the queue by a user.
 const SONG_ADDED_HTML = `
 	<b>%s</b> has added "%s" to the queue.
@@ -151,4 +169,10 @@ const NEXT_SONG_HTML = `
 // Message shown to users when they issue the currentsong command.
 const CURRENT_SONG_HTML = `
 	The song currently playing is "%s", added by <b>%s</b>.
+`
+
+// Message shown to users when the currentsong command is issued when a song from a
+// playlist is playing.
+const CURRENT_SONG_PLAYLIST_HTML = `
+	The song currently playing is "%s", added <b>%s</b> from the playlist "%s".
 `

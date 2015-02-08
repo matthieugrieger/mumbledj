@@ -361,7 +361,12 @@ func currentSong(user *gumble.User) {
 		} else {
 			currentItem = dj.queue.CurrentItem().(*Song)
 		}
-		dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_HTML, currentItem.title, currentItem.submitter))
+		if currentItem.playlistTitle == "" {
+			dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_HTML, currentItem.title, currentItem.submitter))
+		} else {
+			dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_PLAYLIST_HTML, currentItem.title,
+				currentItem.submitter, currentItem.playlistTitle))
+		}
 	} else {
 		dj.SendPrivateMessage(user, NO_MUSIC_PLAYING_MSG)
 	}

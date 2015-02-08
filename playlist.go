@@ -67,12 +67,13 @@ func NewPlaylist(user, id string) (*Playlist, error) {
 		duration, _ := jq.Int("data", "items", index, "video", "duration")
 		songDuration := fmt.Sprintf("%d:%02d", duration/60, duration%60)
 		newSong := &Song{
-			submitter:    user,
-			title:        songTitle,
-			youtubeId:    songId,
-			playlistId:   id,
-			duration:     songDuration,
-			thumbnailUrl: songThumbnail,
+			submitter:     user,
+			title:         songTitle,
+			playlistTitle: playlistTitle,
+			youtubeId:     songId,
+			playlistId:    id,
+			duration:      songDuration,
+			thumbnailUrl:  songThumbnail,
 		}
 		queue.AddItem(newSong)
 	}

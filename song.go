@@ -21,14 +21,15 @@ import (
 
 // Song type declaration.
 type Song struct {
-	submitter    string
-	title        string
-	youtubeId    string
-	playlistId   string
-	duration     string
-	thumbnailUrl string
-	itemType     string
-	skippers     []string
+	submitter     string
+	title         string
+	playlistTitle string
+	youtubeId     string
+	playlistId    string
+	duration      string
+	thumbnailUrl  string
+	itemType      string
+	skippers      []string
 }
 
 // Returns a new Song type. Before returning the new type, the song's metadata is collected
@@ -61,13 +62,14 @@ func NewSong(user, id string) (*Song, error) {
 	videoDuration := fmt.Sprintf("%d:%02d", duration/60, duration%60)
 
 	song := &Song{
-		submitter:    user,
-		title:        videoTitle,
-		youtubeId:    id,
-		playlistId:   "",
-		duration:     videoDuration,
-		thumbnailUrl: videoThumbnail,
-		itemType:     "song",
+		submitter:     user,
+		title:         videoTitle,
+		playlistTitle: "",
+		youtubeId:     id,
+		playlistId:    "",
+		duration:      videoDuration,
+		thumbnailUrl:  videoThumbnail,
+		itemType:      "song",
 	}
 	return song, nil
 }
@@ -88,7 +90,13 @@ func (s *Song) Play() {
 	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId), dj.queue.OnItemFinished); err != nil {
 		panic(err)
 	} else {
-		dj.client.Self().Channel().Send(fmt.Sprintf(NOW_PLAYING_HTML, s.thumbnailUrl, s.youtubeId, s.title, s.duration, s.submitter), false)
+		if s.playlistTitle == "" {
+			dj.client.Self().Channel().Send(fmt.Sprintf(NOW_PLAYING_HTML, s.thumbnailUrl, s.youtubeId, s.title, 
+				s.duration, s.submitter), false)
+		} else {
+			dj.client.Self().Channel().Send(fmt.Sprintf(NOW_PLAYING_PLAYLIST_HTML, s.thumbnailUrl, s.youtubeId,
+				s.title, s.duration, s.submitter, s.playlistTitle), false)
+		}
 	}
 }
 

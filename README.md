@@ -3,7 +3,7 @@ MumbleDJ
 A Mumble bot that plays music fetched from YouTube videos.
 
 ## USAGE
-`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root`  
+`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root -cert="" -key=""`
 All parameters are optional, the example above shows the default values for each field.
 
 ## COMMANDS

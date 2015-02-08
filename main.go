@@ -8,6 +8,7 @@
 package main
 
 import (
+ 	"crypto/tls"
 	"flag"
 	"fmt"
 	"github.com/layeh/gopus"
@@ -120,13 +121,15 @@ var dj = mumbledj{
 // Main function, but only really performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
-	var address, port, username, password, channel string
+	var address, port, username, password, channel, pemCert, pemKey string
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
 	flag.StringVar(&username, "username", "MumbleDJ", "username of MumbleDJ on server")
 	flag.StringVar(&password, "password", "", "password for Mumble server (if needed)")
 	flag.StringVar(&channel, "channel", "root", "default channel for MumbleDJ")
+	flag.StringVar(&pemCert, "cert", "", "path to user PEM certificate for MumbleDJ")
+	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
 	flag.Parse()
 
 	dj.client = gumble.NewClient(&dj.config)
@@ -135,6 +138,17 @@ func main() {
 		Password: password,
 		Address:  address + ":" + port,
 	}
+	if pemCert != "" {
+		if pemKey == "" {
+			pemKey = pemCert
+		}
+		if certificate, err := tls.LoadX509KeyPair(pemCert, pemKey); err != nil {
+			panic(err)
+		} else {
+			dj.config.TLSConfig.Certificates = append(dj.config.TLSConfig.Certificates, certificate)
+		}
+	}
+
 	dj.defaultChannel = channel
 
 	dj.client.Attach(gumbleutil.Listener{

@@ -72,8 +72,10 @@ func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
 // the incoming message otherwise.
 func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 	plainMessage := gumbleutil.PlainText(&e.TextMessage)
-	if plainMessage[0] == dj.conf.General.CommandPrefix[0] && plainMessage != dj.conf.General.CommandPrefix {
-		parseCommand(e.Sender, e.Sender.Name(), plainMessage[1:])
+	if len(plainMessage) != 0 {
+		if plainMessage[0] == dj.conf.General.CommandPrefix[0] && plainMessage != dj.conf.General.CommandPrefix {
+			parseCommand(e.Sender, e.Sender.Name(), plainMessage[1:])
+		}
 	}
 }
 

@@ -8,7 +8,7 @@
 package main
 
 import (
- 	"crypto/tls"
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"github.com/layeh/gopus"
@@ -59,6 +59,8 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	}
 
 	dj.client.AudioEncoder().SetApplication(gopus.Audio)
+
+	dj.client.Self().SetComment(dj.conf.General.DefaultComment)
 }
 
 // OnDisconnect event. Terminates MumbleDJ thread.

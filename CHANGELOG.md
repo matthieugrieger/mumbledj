@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### February 9, 2015 -- `v2.4.3`
+* Added configuration option in `mumbledj.gcfg` for default bot comment.
+
 ### February 7, 2015 -- `v2.4.2`
 * Updated `gumble` and `gumbleutil` dependencies.
 * Removed `sanitize` dependency.

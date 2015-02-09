@@ -17,6 +17,11 @@ SkipRatio = 0.5
 # DEFAULT VALUE: 0.5
 PlaylistSkipRatio = 0.5
 
+# Default comment to be applied to bot.
+# DEFAULT VALUE: "Hello! I am a bot. Type !help for a list of commands."
+# NOTE: If you do not want a comment by default, set the variable equal to an empty string ("").
+DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
+
 
 [Volume]
 

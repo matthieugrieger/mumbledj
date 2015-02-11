@@ -139,14 +139,14 @@ func (q *SongQueue) PrepareAndPlayNextItem() {
 			if err := q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
 				q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
 			} else {
-				dj.client.Self().Channel().Send(AUDIO_FAIL_MSG, false)
+				dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
 				q.OnItemFinished()
 			}
 		} else {
 			if err := q.CurrentItem().(*Song).Download(); err == nil {
 				q.CurrentItem().(*Song).Play()
 			} else {
-				dj.client.Self().Channel().Send(AUDIO_FAIL_MSG, false)
+				dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
 				q.OnItemFinished()
 			}
 		}

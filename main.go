@@ -35,8 +35,8 @@ type mumbledj struct {
 // via commandline args, and moves to root channel if the channel does not exist. The current
 // user's homedir path is stored, configuration is loaded, and the audio stream is set up.
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
-	if dj.client.Channels().Find(dj.defaultChannel) != nil {
-		dj.client.Self().Move(dj.client.Channels().Find(dj.defaultChannel))
+	if dj.client.Channels.Find(dj.defaultChannel) != nil {
+		dj.client.Self.Move(dj.client.Channels.Find(dj.defaultChannel))
 	} else {
 		fmt.Println("Channel doesn't exist or one was not provided, staying in root channel...")
 	}
@@ -58,9 +58,9 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 		panic(err)
 	}
 
-	dj.client.AudioEncoder().SetApplication(gopus.Audio)
+	dj.client.AudioEncoder.SetApplication(gopus.Audio)
 
-	dj.client.Self().SetComment(dj.conf.General.DefaultComment)
+	dj.client.Self.SetComment(dj.conf.General.DefaultComment)
 }
 
 // OnDisconnect event. Terminates MumbleDJ thread.
@@ -74,7 +74,7 @@ func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 	plainMessage := gumbleutil.PlainText(&e.TextMessage)
 	if len(plainMessage) != 0 {
 		if plainMessage[0] == dj.conf.General.CommandPrefix[0] && plainMessage != dj.conf.General.CommandPrefix {
-			parseCommand(e.Sender, e.Sender.Name(), plainMessage[1:])
+			parseCommand(e.Sender, e.Sender.Name, plainMessage[1:])
 		}
 	}
 }
@@ -85,10 +85,10 @@ func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 	if e.Type.Has(gumble.UserChangeDisconnected) {
 		if dj.audioStream.IsPlaying() {
 			if dj.queue.CurrentItem().ItemType() == "playlist" {
-				dj.queue.CurrentItem().(*Playlist).RemoveSkip(e.User.Name())
-				dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).RemoveSkip(e.User.Name())
+				dj.queue.CurrentItem().(*Playlist).RemoveSkip(e.User.Name)
+				dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).RemoveSkip(e.User.Name)
 			} else {
-				dj.queue.CurrentItem().(*Song).RemoveSkip(e.User.Name())
+				dj.queue.CurrentItem().(*Song).RemoveSkip(e.User.Name)
 			}
 		}
 	}
@@ -112,7 +112,7 @@ func (dj *mumbledj) HasPermission(username string, command bool) bool {
 // Sends a private message to a user. Essentially just checks if a user is still in the server
 // before sending them the message.
 func (dj *mumbledj) SendPrivateMessage(user *gumble.User, message string) {
-	if targetUser := dj.client.Self().Channel().Users().Find(user.Name()); targetUser != nil {
+	if targetUser := dj.client.Self.Channel.Users.Find(user.Name); targetUser != nil {
 		targetUser.Send(message)
 	}
 }

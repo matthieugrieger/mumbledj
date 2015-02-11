@@ -91,10 +91,10 @@ func (s *Song) Play() {
 		panic(err)
 	} else {
 		if s.playlistTitle == "" {
-			dj.client.Self().Channel().Send(fmt.Sprintf(NOW_PLAYING_HTML, s.thumbnailUrl, s.youtubeId, s.title, 
+			dj.client.Self.Channel.Send(fmt.Sprintf(NOW_PLAYING_HTML, s.thumbnailUrl, s.youtubeId, s.title,
 				s.duration, s.submitter), false)
 		} else {
-			dj.client.Self().Channel().Send(fmt.Sprintf(NOW_PLAYING_PLAYLIST_HTML, s.thumbnailUrl, s.youtubeId,
+			dj.client.Self.Channel.Send(fmt.Sprintf(NOW_PLAYING_PLAYLIST_HTML, s.thumbnailUrl, s.youtubeId,
 				s.title, s.duration, s.submitter, s.playlistTitle), false)
 		}
 	}

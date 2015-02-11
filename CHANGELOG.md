@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### February 11, 2015 -- `v2.4.4`
+* Updated dependencies and fixed code to match `gumble` API changes.
+
 ### February 9, 2015 -- `v2.4.3`
 * Added configuration option in `mumbledj.gcfg` for default bot comment.
 * Fixed text messages only containing images crashing the bot.

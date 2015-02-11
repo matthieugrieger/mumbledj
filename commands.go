@@ -171,7 +171,7 @@ func add(user *gumble.User, username, url string) {
 		if matchFound {
 			if newSong, err := NewSong(username, shortUrl); err == nil {
 				if err := dj.queue.AddItem(newSong); err == nil {
-					dj.client.Self().Channel().Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
+					dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
 					if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
 						if err := dj.queue.CurrentItem().(*Song).Download(); err == nil {
 							dj.queue.CurrentItem().(*Song).Play()
@@ -193,7 +193,7 @@ func add(user *gumble.User, username, url string) {
 						shortUrl = re.FindStringSubmatch(url)[1]
 						if newPlaylist, err := NewPlaylist(username, shortUrl); err == nil {
 							if dj.queue.AddItem(newPlaylist); err == nil {
-								dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
+								dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
 								if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
 									if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
 										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
@@ -225,13 +225,13 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 			if dj.queue.CurrentItem().ItemType() == "playlist" {
 				if err := dj.queue.CurrentItem().AddSkip(username); err == nil {
 					if admin {
-						dj.client.Self().Channel().Send(ADMIN_PLAYLIST_SKIP_MSG, false)
+						dj.client.Self.Channel.Send(ADMIN_PLAYLIST_SKIP_MSG, false)
 					} else {
-						dj.client.Self().Channel().Send(fmt.Sprintf(PLAYLIST_SKIP_ADDED_HTML, username), false)
+						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SKIP_ADDED_HTML, username), false)
 					}
-					if dj.queue.CurrentItem().SkipReached(len(dj.client.Self().Channel().Users())) || admin {
+					if dj.queue.CurrentItem().SkipReached(len(dj.client.Self.Channel.Users)) || admin {
 						dj.queue.CurrentItem().(*Playlist).skipped = true
-						dj.client.Self().Channel().Send(PLAYLIST_SKIPPED_HTML, false)
+						dj.client.Self.Channel.Send(PLAYLIST_SKIPPED_HTML, false)
 						if err := dj.audioStream.Stop(); err != nil {
 							panic(errors.New("An error occurred while stopping the current song."))
 						}
@@ -249,12 +249,12 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 			}
 			if err := currentItem.AddSkip(username); err == nil {
 				if admin {
-					dj.client.Self().Channel().Send(ADMIN_SONG_SKIP_MSG, false)
+					dj.client.Self.Channel.Send(ADMIN_SONG_SKIP_MSG, false)
 				} else {
-					dj.client.Self().Channel().Send(fmt.Sprintf(SKIP_ADDED_HTML, username), false)
+					dj.client.Self.Channel.Send(fmt.Sprintf(SKIP_ADDED_HTML, username), false)
 				}
-				if currentItem.SkipReached(len(dj.client.Self().Channel().Users())) || admin {
-					dj.client.Self().Channel().Send(SONG_SKIPPED_HTML, false)
+				if currentItem.SkipReached(len(dj.client.Self.Channel.Users)) || admin {
+					dj.client.Self.Channel.Send(SONG_SKIPPED_HTML, false)
 					if err := dj.audioStream.Stop(); err != nil {
 						panic(errors.New("An error occurred while stopping the current song."))
 					}
@@ -276,13 +276,13 @@ func help(user *gumble.User) {
 // is applied and is immediately in effect.
 func volume(user *gumble.User, username, value string) {
 	if value == "" {
-		dj.client.Self().Channel().Send(fmt.Sprintf(CUR_VOLUME_HTML, dj.audioStream.Volume), false)
+		dj.client.Self.Channel.Send(fmt.Sprintf(CUR_VOLUME_HTML, dj.audioStream.Volume), false)
 	} else {
 		if parsedVolume, err := strconv.ParseFloat(value, 32); err == nil {
 			newVolume := float32(parsedVolume)
 			if newVolume >= dj.conf.Volume.LowestVolume && newVolume <= dj.conf.Volume.HighestVolume {
 				dj.audioStream.Volume = newVolume
-				dj.client.Self().Channel().Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, username, dj.audioStream.Volume), false)
+				dj.client.Self.Channel.Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, username, dj.audioStream.Volume), false)
 			} else {
 				dj.SendPrivateMessage(user, fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 			}
@@ -298,8 +298,8 @@ func move(user *gumble.User, channel string) {
 	if channel == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
-		if dj.client.Channels().Find(channel) != nil {
-			dj.client.Self().Move(dj.client.Channels().Find(channel))
+		if dj.client.Channels.Find(channel) != nil {
+			dj.client.Self.Move(dj.client.Channels.Find(channel))
 		} else {
 			dj.SendPrivateMessage(user, CHANNEL_DOES_NOT_EXIST_MSG)
 		}
@@ -323,7 +323,7 @@ func reset(username string) {
 		}
 	}
 	if err := deleteSongs(); err == nil {
-		dj.client.Self().Channel().Send(fmt.Sprintf(QUEUE_RESET_HTML, username), false)
+		dj.client.Self.Channel.Send(fmt.Sprintf(QUEUE_RESET_HTML, username), false)
 	} else {
 		panic(err)
 	}
@@ -337,7 +337,7 @@ func numSongs() {
 	dj.queue.Traverse(func(i int, item QueueItem) {
 		songCount += 1
 	})
-	dj.client.Self().Channel().Send(fmt.Sprintf(NUM_SONGS_HTML, songCount), false)
+	dj.client.Self.Channel.Send(fmt.Sprintf(NUM_SONGS_HTML, songCount), false)
 }
 
 // Performs nextsong functionality. Uses the SongQueue PeekNext function to peek at the next
@@ -374,7 +374,7 @@ func currentSong(user *gumble.User) {
 
 // Performs setcomment functionality. Sets the bot's comment to whatever text is supplied in the argument.
 func setComment(user *gumble.User, comment string) {
-	dj.client.Self().SetComment(comment)
+	dj.client.Self.SetComment(comment)
 	dj.SendPrivateMessage(user, COMMENT_UPDATED_MSG)
 }
 

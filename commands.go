@@ -169,15 +169,15 @@ func add(user *gumble.User, username, url string) {
 		}
 
 		if matchFound {
-			if newSong, err := NewSong(username, shortUrl); err == nil {
-				if err := dj.queue.AddItem(newSong); err == nil {
+			if newSong, err := NewSong(username, shortUrl, nil); err == nil {
+				if err := dj.queue.AddSong(newSong); err == nil {
 					dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
 					if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-						if err := dj.queue.CurrentItem().(*Song).Download(); err == nil {
-							dj.queue.CurrentItem().(*Song).Play()
+						if err := dj.queue.CurrentSong().Download(); err == nil {
+							dj.queue.CurrentSong().Play()
 						} else {
 							dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-							dj.queue.CurrentItem().(*Song).Delete()
+							dj.queue.CurrentSong().Delete()
 						}
 					}
 				}
@@ -191,16 +191,15 @@ func add(user *gumble.User, username, url string) {
 				if re.MatchString(url) {
 					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
 						shortUrl = re.FindStringSubmatch(url)[1]
+						oldLength := dj.queue.Len()
 						if newPlaylist, err := NewPlaylist(username, shortUrl); err == nil {
-							if dj.queue.AddItem(newPlaylist); err == nil {
-								dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
-								if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-									if err := dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
-										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
-									} else {
-										dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-										dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete()
-									}
+							dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
+							if oldLength == 0 && !dj.audioStream.IsPlaying() {
+								if err := dj.queue.CurrentSong().Download(); err == nil {
+									dj.queue.CurrentSong().Play()
+								} else {
+									dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
+									dj.queue.CurrentSong().Delete()
 								}
 							}
 						} else {
@@ -222,15 +221,28 @@ func add(user *gumble.User, username, url string) {
 func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 	if dj.audioStream.IsPlaying() {
 		if playlistSkip {
-			if dj.queue.CurrentItem().ItemType() == "playlist" {
-				if err := dj.queue.CurrentItem().AddSkip(username); err == nil {
+			if dj.queue.CurrentSong().playlist != nil {
+				if err := dj.queue.CurrentSong().playlist.AddSkip(username); err == nil {
 					if admin {
 						dj.client.Self.Channel.Send(ADMIN_PLAYLIST_SKIP_MSG, false)
 					} else {
 						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SKIP_ADDED_HTML, username), false)
 					}
-					if dj.queue.CurrentItem().SkipReached(len(dj.client.Self.Channel.Users)) || admin {
-						dj.queue.CurrentItem().(*Playlist).skipped = true
+					if dj.queue.CurrentSong().playlist.SkipReached(len(dj.client.Self.Channel.Users)) || admin {
+						id := dj.queue.CurrentSong().playlist.id
+						dj.queue.CurrentSong().playlist.DeleteSkippers()
+						for i := 0; i < len(dj.queue.queue); i++ {
+							if dj.queue.queue[i].playlist != nil {
+								if dj.queue.queue[i].playlist.id == id {
+									dj.queue.queue = append(dj.queue.queue[:i], dj.queue.queue[i+1:]...)
+									i--
+								}
+							}
+						}
+						if dj.queue.Len() != 0 {
+							// Set dontSkip to true to avoid audioStream.Stop() callback skipping the new first song.
+							dj.queue.CurrentSong().dontSkip = true
+						}
 						dj.client.Self.Channel.Send(PLAYLIST_SKIPPED_HTML, false)
 						if err := dj.audioStream.Stop(); err != nil {
 							panic(errors.New("An error occurred while stopping the current song."))
@@ -241,19 +253,13 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 				dj.SendPrivateMessage(user, NO_PLAYLIST_PLAYING_MSG)
 			}
 		} else {
-			var currentItem QueueItem
-			if dj.queue.CurrentItem().ItemType() == "playlist" {
-				currentItem = dj.queue.CurrentItem().(*Playlist).songs.CurrentItem()
-			} else {
-				currentItem = dj.queue.CurrentItem()
-			}
-			if err := currentItem.AddSkip(username); err == nil {
+			if err := dj.queue.CurrentSong().AddSkip(username); err == nil {
 				if admin {
 					dj.client.Self.Channel.Send(ADMIN_SONG_SKIP_MSG, false)
 				} else {
 					dj.client.Self.Channel.Send(fmt.Sprintf(SKIP_ADDED_HTML, username), false)
 				}
-				if currentItem.SkipReached(len(dj.client.Self.Channel.Users)) || admin {
+				if dj.queue.CurrentSong().SkipReached(len(dj.client.Self.Channel.Users)) || admin {
 					dj.client.Self.Channel.Send(SONG_SKIPPED_HTML, false)
 					if err := dj.audioStream.Stop(); err != nil {
 						panic(errors.New("An error occurred while stopping the current song."))
@@ -334,7 +340,7 @@ func reset(username string) {
 // the number of songs in the queue to chat.
 func numSongs() {
 	songCount := 0
-	dj.queue.Traverse(func(i int, item QueueItem) {
+	dj.queue.Traverse(func(i int, song *Song) {
 		songCount += 1
 	})
 	dj.client.Self.Channel.Send(fmt.Sprintf(NUM_SONGS_HTML, songCount), false)
@@ -355,17 +361,11 @@ func nextSong(user *gumble.User) {
 // information about the song currently playing.
 func currentSong(user *gumble.User) {
 	if dj.audioStream.IsPlaying() {
-		var currentItem *Song
-		if dj.queue.CurrentItem().ItemType() == "playlist" {
-			currentItem = dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song)
+		if dj.queue.CurrentSong().playlist == nil {
+			dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_HTML, dj.queue.CurrentSong().title, dj.queue.CurrentSong().submitter))
 		} else {
-			currentItem = dj.queue.CurrentItem().(*Song)
-		}
-		if currentItem.playlistTitle == "" {
-			dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_HTML, currentItem.title, currentItem.submitter))
-		} else {
-			dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_PLAYLIST_HTML, currentItem.title,
-				currentItem.submitter, currentItem.playlistTitle))
+			dj.SendPrivateMessage(user, fmt.Sprintf(CURRENT_SONG_PLAYLIST_HTML, dj.queue.CurrentSong().title,
+				dj.queue.CurrentSong().submitter, dj.queue.CurrentSong().playlist.title))
 		}
 	} else {
 		dj.SendPrivateMessage(user, NO_MUSIC_PLAYING_MSG)

@@ -11,64 +11,54 @@ import (
 	"errors"
 )
 
-// QueueItem type declaration. QueueItem is an interface that groups together Song and Playlist
-// types in a queue.
-type QueueItem interface {
-	AddSkip(string) error
-	RemoveSkip(string) error
-	SkipReached(int) bool
-	ItemType() string
-}
-
-// SongQueue type declaration. Serves as a wrapper around the queue structure defined in queue.go.
+// SongQueue type declaration.
 type SongQueue struct {
-	queue []QueueItem
+	queue []*Song
 }
 
 // Initializes a new queue and returns the new SongQueue.
 func NewSongQueue() *SongQueue {
 	return &SongQueue{
-		queue: make([]QueueItem, 0),
+		queue: make([]*Song, 0),
 	}
 }
 
-// Adds an item to the SongQueue.
-func (q *SongQueue) AddItem(i QueueItem) error {
+// Adds a Song to the SongQueue.
+func (q *SongQueue) AddSong(s *Song) error {
 	beforeLen := q.Len()
-	q.queue = append(q.queue, i)
+	q.queue = append(q.queue, s)
 	if len(q.queue) == beforeLen+1 {
 		return nil
 	} else {
-		return errors.New("Could not add QueueItem to the SongQueue.")
+		return errors.New("Could not add Song to the SongQueue.")
 	}
 }
 
-// Returns the current QueueItem.
-func (q *SongQueue) CurrentItem() QueueItem {
+// Returns the current Song.
+func (q *SongQueue) CurrentSong() *Song {
 	return q.queue[0]
 }
 
-// Moves to the next item in SongQueue. NextItem() removes the first value in the queue.
-func (q *SongQueue) NextItem() {
+// Moves to the next Song in SongQueue. NextSong() removes the first Song in the queue.
+func (q *SongQueue) NextSong() {
+	if q.CurrentSong().playlist != nil {
+		if s, err := q.PeekNext(); err == nil {
+			if q.CurrentSong().playlist.id != s.playlist.id {
+				q.CurrentSong().playlist.DeleteSkippers()
+			}
+		} else {
+			q.CurrentSong().playlist.DeleteSkippers()
+		}
+	}
 	q.queue = q.queue[1:]
 }
 
 // Peeks at the next Song and returns it.
 func (q *SongQueue) PeekNext() (*Song, error) {
-	if q.Len() != 0 {
-		if q.CurrentItem().ItemType() == "playlist" {
-			return q.CurrentItem().(*Playlist).songs.queue[1].(*Song), nil
-		} else if q.Len() > 1 {
-			if q.queue[1].ItemType() == "playlist" {
-				return q.queue[1].(*Playlist).songs.queue[0].(*Song), nil
-			} else {
-				return q.queue[1].(*Song), nil
-			}
-		} else {
-			return nil, errors.New("There is no song coming up next.")
-		}
+	if q.Len() > 1 {
+		return q.queue[1], nil
 	} else {
-		return nil, errors.New("There are no items in the queue.")
+		return nil, errors.New("There isn't a Song coming up next.")
 	}
 }
 
@@ -78,77 +68,35 @@ func (q *SongQueue) Len() int {
 }
 
 // A traversal function for SongQueue. Allows a visit function to be passed in which performs
-// the specified action on each queue item. Traverses all individual songs, and all songs
-// within playlists.
-func (q *SongQueue) Traverse(visit func(i int, item QueueItem)) {
-	for iQueue, queueItem := range q.queue {
-		if queueItem.ItemType() == "playlist" {
-			for iPlaylist, playlistItem := range q.queue[iQueue].(*Playlist).songs.queue {
-				visit(iPlaylist, playlistItem)
-			}
-		} else {
-			visit(iQueue, queueItem)
-		}
+// the specified action on each queue item.
+func (q *SongQueue) Traverse(visit func(i int, s *Song)) {
+	for sQueue, queueSong := range q.queue {
+		visit(sQueue, queueSong)
 	}
 }
 
-// OnItemFinished event. Deletes item that just finished playing, then queues the next item.
-func (q *SongQueue) OnItemFinished() {
+// OnSongFinished event. Deletes Song that just finished playing, then queues the next Song (if exists).
+func (q *SongQueue) OnSongFinished() {
 	if q.Len() != 0 {
-		if q.CurrentItem().ItemType() == "playlist" {
-			if err := q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Delete(); err == nil {
-				if q.CurrentItem().(*Playlist).skipped == true {
-					if q.Len() > 1 {
-						q.NextItem()
-						q.PrepareAndPlayNextItem()
-					} else {
-						q.queue = q.queue[:0]
-					}
-				} else if q.CurrentItem().(*Playlist).songs.Len() > 1 {
-					q.CurrentItem().(*Playlist).songs.NextItem()
-					q.PrepareAndPlayNextItem()
-				} else {
-					if q.Len() > 1 {
-						q.NextItem()
-						q.PrepareAndPlayNextItem()
-					} else {
-						q.queue = q.queue[:0]
-					}
-				}
-			} else {
-				panic(err)
-			}
+		if dj.queue.CurrentSong().dontSkip == true {
+			dj.queue.CurrentSong().dontSkip = false
+			q.PrepareAndPlayNextSong()
 		} else {
-			if err := q.CurrentItem().(*Song).Delete(); err == nil {
-				if q.Len() > 1 {
-					q.NextItem()
-					q.PrepareAndPlayNextItem()
-				} else {
-					q.queue = q.queue[:0]
-				}
-			} else {
-				panic(err)
+			q.NextSong()
+			if q.Len() != 0 {
+				q.PrepareAndPlayNextSong()
 			}
 		}
 	}
 }
 
-func (q *SongQueue) PrepareAndPlayNextItem() {
-	if q.Len() != 0 {
-		if q.CurrentItem().ItemType() == "playlist" {
-			if err := q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Download(); err == nil {
-				q.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).Play()
-			} else {
-				dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
-				q.OnItemFinished()
-			}
-		} else {
-			if err := q.CurrentItem().(*Song).Download(); err == nil {
-				q.CurrentItem().(*Song).Play()
-			} else {
-				dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
-				q.OnItemFinished()
-			}
-		}
+// Prepares next song and plays it if the download succeeds. Otherwise the function will print an error message
+// to the channel and skip to the next song.
+func (q *SongQueue) PrepareAndPlayNextSong() {
+	if err := q.CurrentSong().Download(); err == nil {
+		q.CurrentSong().Play()
+	} else {
+		dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
+		q.OnSongFinished()
 	}
 }

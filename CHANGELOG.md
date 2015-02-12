@@ -1,8 +1,9 @@
 MumbleDJ Changelog
 ==================
 
-### February 11, 2015 -- `v2.4.4`
+### February 11, 2015 -- `v2.5.0`
 * Updated dependencies and fixed code to match `gumble` API changes.
+* Greatly simplified the song queue data structure. Some new bugs could potentially have arisen. Let me know if you find any!
 
 ### February 9, 2015 -- `v2.4.3`
 * Added configuration option in `mumbledj.gcfg` for default bot comment.

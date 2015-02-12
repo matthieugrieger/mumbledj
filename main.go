@@ -29,6 +29,7 @@ type mumbledj struct {
 	queue          *SongQueue
 	audioStream    *gumble_ffmpeg.Stream
 	homeDir        string
+	playlistSkips  map[string][]string
 }
 
 // OnConnect event. First moves MumbleDJ into the default channel specified
@@ -84,12 +85,10 @@ func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 	if e.Type.Has(gumble.UserChangeDisconnected) {
 		if dj.audioStream.IsPlaying() {
-			if dj.queue.CurrentItem().ItemType() == "playlist" {
-				dj.queue.CurrentItem().(*Playlist).RemoveSkip(e.User.Name)
-				dj.queue.CurrentItem().(*Playlist).songs.CurrentItem().(*Song).RemoveSkip(e.User.Name)
-			} else {
-				dj.queue.CurrentItem().(*Song).RemoveSkip(e.User.Name)
+			if dj.queue.CurrentSong().playlist != nil {
+				dj.queue.CurrentSong().playlist.RemoveSkip(e.User.Name)
 			}
+			dj.queue.CurrentSong().RemoveSkip(e.User.Name)
 		}
 	}
 }
@@ -119,8 +118,9 @@ func (dj *mumbledj) SendPrivateMessage(user *gumble.User, message string) {
 
 // dj variable declaration. This is done outside of main() to allow global use.
 var dj = mumbledj{
-	keepAlive: make(chan bool),
-	queue:     NewSongQueue(),
+	keepAlive:     make(chan bool),
+	queue:         NewSongQueue(),
+	playlistSkips: make(map[string][]string),
 }
 
 // Main function, but only really performs startup tasks. Grabs and parses commandline

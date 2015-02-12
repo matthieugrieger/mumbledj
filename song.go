@@ -21,20 +21,19 @@ import (
 
 // Song type declaration.
 type Song struct {
-	submitter     string
-	title         string
-	playlistTitle string
-	youtubeId     string
-	playlistId    string
-	duration      string
-	thumbnailUrl  string
-	itemType      string
-	skippers      []string
+	submitter    string
+	title        string
+	youtubeId    string
+	duration     string
+	thumbnailUrl string
+	skippers     []string
+	playlist     *Playlist
+	dontSkip     bool
 }
 
 // Returns a new Song type. Before returning the new type, the song's metadata is collected
 // via the YouTube Gdata API.
-func NewSong(user, id string) (*Song, error) {
+func NewSong(user, id string, playlist *Playlist) (*Song, error) {
 	jsonUrl := fmt.Sprintf("http://gdata.youtube.com/feeds/api/videos/%s?v=2&alt=jsonc", id)
 	jsonString := ""
 
@@ -62,14 +61,13 @@ func NewSong(user, id string) (*Song, error) {
 	videoDuration := fmt.Sprintf("%d:%02d", duration/60, duration%60)
 
 	song := &Song{
-		submitter:     user,
-		title:         videoTitle,
-		playlistTitle: "",
-		youtubeId:     id,
-		playlistId:    "",
-		duration:      videoDuration,
-		thumbnailUrl:  videoThumbnail,
-		itemType:      "song",
+		submitter:    user,
+		title:        videoTitle,
+		youtubeId:    id,
+		duration:     videoDuration,
+		thumbnailUrl: videoThumbnail,
+		playlist:     playlist,
+		dontSkip:     false,
 	}
 	return song, nil
 }
@@ -87,15 +85,15 @@ func (s *Song) Download() error {
 // Plays the song. Once the song is playing, a notification is displayed in a text message that features the video thumbnail, URL, title,
 // duration, and submitter.
 func (s *Song) Play() {
-	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId), dj.queue.OnItemFinished); err != nil {
+	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId), dj.queue.OnSongFinished); err != nil {
 		panic(err)
 	} else {
-		if s.playlistTitle == "" {
+		if s.playlist == nil {
 			dj.client.Self.Channel.Send(fmt.Sprintf(NOW_PLAYING_HTML, s.thumbnailUrl, s.youtubeId, s.title,
 				s.duration, s.submitter), false)
 		} else {
 			dj.client.Self.Channel.Send(fmt.Sprintf(NOW_PLAYING_PLAYLIST_HTML, s.thumbnailUrl, s.youtubeId,
-				s.title, s.duration, s.submitter, s.playlistTitle), false)
+				s.title, s.duration, s.submitter, s.playlist.title), false)
 		}
 	}
 }
@@ -147,9 +145,4 @@ func (s *Song) SkipReached(channelUsers int) bool {
 	} else {
 		return false
 	}
-}
-
-// Returns "song" as the item type. Used for differentiating Songs from Playlists.
-func (s *Song) ItemType() string {
-	return "song"
 }

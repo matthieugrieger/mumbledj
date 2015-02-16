@@ -20,6 +20,7 @@ type DjConfig struct {
 		SkipRatio         float32
 		PlaylistSkipRatio float32
 		DefaultComment    string
+		MaxSongDuration   int
 	}
 	Cache struct {
 		Enabled     bool

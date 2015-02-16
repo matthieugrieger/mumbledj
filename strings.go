@@ -22,6 +22,9 @@ const CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 // Message shown to users when they attempt to add an invalid URL to the queue.
 const INVALID_URL_MSG = "The URL you submitted does not match the required format."
 
+// Message shown to users when they attempt to add a video that's too long
+const VIDEO_TOO_LONG_MSG = "The video you submitted exceeds the duration allowed by the server."
+
 // Message shown to users when they attempt to perform an action on a song when
 // no song is playing.
 const NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."

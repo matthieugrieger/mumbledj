@@ -56,6 +56,15 @@ const INVALID_YOUTUBE_ID_MSG = "The YouTube URL you supplied did not contain a v
 // Message shown to user when they successfully update the bot's comment.
 const COMMENT_UPDATED_MSG = "The comment for the bot has successfully been updated."
 
+// Message shown to user when they request to see the number of songs cached on disk.
+const NUM_CACHED_MSG = "There are currently %d songs cached on disk."
+
+// Message shown to user when they request to see the total size of the cache.
+const CACHE_SIZE_MSG = "The cache is currently %g MB in size."
+
+// Message shown to user when they attempt to issue a cache-related command when caching is not enabled.
+const CACHE_NOT_ENABLED_MSG = "The cache is not currently enabled."
+
 // Message shown to a channel when a new song starts playing.
 const NOW_PLAYING_HTML = `
 	<table>
@@ -128,6 +137,8 @@ const HELP_HTML = `<br/>
 	<p><b>!move </b>- Moves MumbleDJ into channel if it exists.</p>
 	<p><b>!reload</b> - Reloads mumbledj.gcfg configuration settings.</p>
 	<p><b>!setcomment</b> - Sets the comment for the bot.</p>
+	<p><b>!numcached</b></p> - Outputs the number of songs cached on disk.</p>
+	<p><b>!cachesize</b></p> - Outputs the total file size of the cache in MB.</p>
 	<p><b>!kill</b> - Safely cleans the bot environment and disconnects from the server.</p>
 `
 

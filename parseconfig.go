@@ -21,6 +21,11 @@ type DjConfig struct {
 		PlaylistSkipRatio float32
 		DefaultComment    string
 	}
+	Cache struct {
+		Enabled     bool
+		MaximumSize int64
+		ExpireTime  float64
+	}
 	Volume struct {
 		DefaultVolume float32
 		LowestVolume  float32
@@ -41,6 +46,8 @@ type DjConfig struct {
 		NextSongAlias          string
 		CurrentSongAlias       string
 		SetCommentAlias        string
+		NumCachedAlias         string
+		CacheSizeAlias         string
 		KillAlias              string
 	}
 	Permissions struct {
@@ -58,6 +65,8 @@ type DjConfig struct {
 		AdminNextSong     bool
 		AdminCurrentSong  bool
 		AdminSetComment   bool
+		AdminNumCached    bool
+		AdminCacheSize    bool
 		AdminKill         bool
 	}
 }

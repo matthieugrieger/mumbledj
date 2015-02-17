@@ -23,6 +23,21 @@ PlaylistSkipRatio = 0.5
 DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
 
 
+[Cache]
+
+# Cache songs as they are downloaded?
+# DEFAULT VALUE: false
+Enabled = false
+
+# Maximum total file size of cache directory (in MB)
+# DEFAULT VALUE: 512
+MaximumSize = 512
+
+# Period of time that should elapse before a song is cleared from the cache (in hours)
+# DEFAULT VALUE: 24
+ExpireTime = 24
+
+
 [Volume]
 
 # Default volume
@@ -92,6 +107,14 @@ CurrentSongAlias = "currentsong"
 # DEFAULT VALUE: "setcomment"
 SetCommentAlias = "setcomment"
 
+# Alias used for numcached command
+# DEFAULT VALUE: "numcached"
+NumCachedAlias = "numcached"
+
+# Alias used for cachesize command
+# DEFAULT VALUE: "cachesize"
+CacheSizeAlias = "cachesize"
+
 # Alias used for kill command
 # DEFAULT VALUE: "kill"
 KillAlias = "kill"
@@ -159,6 +182,14 @@ AdminCurrentSong = false
 # Make setcomment an admin command?
 # DEFAULT VALUE: true
 AdminSetComment = true
+
+# Make numcached an admin command?
+# DEFAULT VALUE: true
+AdminNumCached = true
+
+# Make cachesize an admin command?
+# DEFAULT VALUE: true
+AdminCacheSize = true
 
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)

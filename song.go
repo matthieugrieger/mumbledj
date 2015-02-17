@@ -72,13 +72,21 @@ func NewSong(user, id string, playlist *Playlist) (*Song, error) {
 	return song, nil
 }
 
-// Downloads the song via youtube-dl. All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
+// Downloads the song via youtube-dl if it does not already exist on disk.
+// All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *Song) Download() error {
-	cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s.m4a`, s.youtubeId), "--format", "m4a", s.youtubeId)
-	if err := cmd.Run(); err == nil {
-		return nil
+	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId)); os.IsNotExist(err) {
+		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s.m4a`, s.youtubeId), "--format", "m4a", s.youtubeId)
+		if err := cmd.Run(); err == nil {
+			if dj.conf.Cache.Enabled {
+				dj.cache.CheckMaximumDirectorySize()
+			}
+			return nil
+		} else {
+			return errors.New("Song download failed.")
+		}
 	} else {
-		return errors.New("Song download failed.")
+		return nil
 	}
 }
 
@@ -98,14 +106,18 @@ func (s *Song) Play() {
 	}
 }
 
-// Deletes the song from ~/.mumbledj/songs.
+// Deletes the song from ~/.mumbledj/songs if the cache is disabled.
 func (s *Song) Delete() error {
-	filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId)
-	if _, err := os.Stat(filePath); err == nil {
-		if err := os.Remove(filePath); err == nil {
-			return nil
+	if dj.conf.Cache.Enabled == false {
+		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId)
+		if _, err := os.Stat(filePath); err == nil {
+			if err := os.Remove(filePath); err == nil {
+				return nil
+			} else {
+				return errors.New("Error occurred while deleting audio file.")
+			}
 		} else {
-			return errors.New("Error occurred while deleting audio file.")
+			return nil
 		}
 	} else {
 		return nil

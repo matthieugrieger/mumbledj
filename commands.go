@@ -130,6 +130,20 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+	// Numcached command
+	case dj.conf.Aliases.NumCachedAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminNumCached) {
+			numCached(user)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+	// Cachesize command
+	case dj.conf.Aliases.CacheSizeAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminCacheSize) {
+			cacheSize(user)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
 	// Kill command
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
@@ -376,6 +390,26 @@ func currentSong(user *gumble.User) {
 func setComment(user *gumble.User, comment string) {
 	dj.client.Self.SetComment(comment)
 	dj.SendPrivateMessage(user, COMMENT_UPDATED_MSG)
+}
+
+// Performs numcached functionality. Displays the number of songs currently cached on disk at ~/.mumbledj/songs.
+func numCached(user *gumble.User) {
+	if dj.conf.Cache.Enabled {
+		dj.cache.Update()
+		dj.SendPrivateMessage(user, fmt.Sprintf(NUM_CACHED_MSG, dj.cache.NumSongs))
+	} else {
+		dj.SendPrivateMessage(user, CACHE_NOT_ENABLED_MSG)
+	}
+}
+
+// Performs cachesize functionality. Displays the total file size of the cached audio files.
+func cacheSize(user *gumble.User) {
+	if dj.conf.Cache.Enabled {
+		dj.cache.Update()
+		dj.SendPrivateMessage(user, fmt.Sprintf(CACHE_SIZE_MSG, float64(dj.cache.TotalFileSize/1048576)))
+	} else {
+		dj.SendPrivateMessage(user, CACHE_NOT_ENABLED_MSG)
+	}
 }
 
 // Performs kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any

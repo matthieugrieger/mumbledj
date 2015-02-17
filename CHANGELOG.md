@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### February 17, 2015 -- `v2.6.0`
+* Added caching system to MumbleDJ.
+* Added configuration variables in `mumbledj.gcfg` for caching related settings (please note that caching is off by default).
+* Added `!numcached` and `!cachesize` commands for admins.
+
 ### February 12, 2015 -- `v2.5.0`
 * Updated dependencies and fixed code to match `gumble` API changes.
 * Greatly simplified the song queue data structure. Some new bugs could potentially have arisen. Let me know if you find any!

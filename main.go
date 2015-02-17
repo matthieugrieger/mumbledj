@@ -30,6 +30,7 @@ type mumbledj struct {
 	audioStream    *gumble_ffmpeg.Stream
 	homeDir        string
 	playlistSkips  map[string][]string
+	cache          *SongCache
 }
 
 // OnConnect event. First moves MumbleDJ into the default channel specified
@@ -62,6 +63,11 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	dj.client.AudioEncoder.SetApplication(gopus.Audio)
 
 	dj.client.Self.SetComment(dj.conf.General.DefaultComment)
+
+	if dj.conf.Cache.Enabled {
+		dj.cache.Update()
+		go dj.cache.ClearExpired()
+	}
 }
 
 // OnDisconnect event. Terminates MumbleDJ thread.
@@ -121,6 +127,7 @@ var dj = mumbledj{
 	keepAlive:     make(chan bool),
 	queue:         NewSongQueue(),
 	playlistSkips: make(map[string][]string),
+	cache:         NewSongCache(),
 }
 
 // Main function, but only really performs startup tasks. Grabs and parses commandline

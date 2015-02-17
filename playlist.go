@@ -75,7 +75,12 @@ func NewPlaylist(user, id string) (*Playlist, error) {
 			playlist:     playlist,
 			dontSkip:     false,
 		}
-		dj.queue.AddSong(newSong)
+		// Don't spam the chat if a playlist contains songs that are too long
+		if dj.conf.General.MaxSongDuration == 0 {
+			dj.queue.AddSong(newSong)
+		} else if duration <= dj.conf.General.MaxSongDuration {
+			dj.queue.AddSong(newSong)
+		}
 	}
 
 	return playlist, nil

@@ -22,9 +22,9 @@ PlaylistSkipRatio = 0.5
 # NOTE: If you do not want a comment by default, set the variable equal to an empty string ("").
 DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
 
-# Maximum song duration in seconds
-# Default Value 600
-MaxSongDuration = 600
+# Maximum song duration in seconds (0 = unristrcted)
+# Default Value: 0
+MaxSongDuration = 0
 
 [Cache]
 

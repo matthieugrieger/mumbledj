@@ -60,7 +60,7 @@ func NewSong(user, id string, playlist *Playlist) (*Song, error) {
 	duration, _ := jq.Int("data", "duration")
 	videoDuration := fmt.Sprintf("%d:%02d", duration/60, duration%60)
 
-	if duration > dj.conf.General.MaxSongDuration && dj.conf.General.MaxSongDuration > 0 {
+	if dj.conf.General.MaxSongDuration > 0 && duration > dj.conf.General.MaxSongDuration {
 		return nil, errors.New("video exceeds the maximum allowed duration.")
 	}
 

@@ -1,6 +1,15 @@
 MumbleDJ
 ========
-A Mumble bot that plays music fetched from YouTube videos.
+**A Mumble bot that plays music fetched from YouTube videos.**
+
+* [Usage](#usage)
+* [Commands](#commands)
+* [Installation](#installation)
+  * [Setup Guide](#setup-guide)
+  * [Update Guide](#update-guide)
+* [Author](#author)
+* [License](#license)
+* [Thanks](#thanks)
 
 ## USAGE
 `$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root -cert="" -key=""`

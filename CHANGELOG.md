@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### February 18, 2015 -- `v2.6.2`
+* Fixed bot crashing after 5 minutes if there is nothing in the song queue.
+
 ### February 17, 2015 -- `v2.6.0, v2.6.1`
 * Added caching system to MumbleDJ.
 * Added configuration variables in `mumbledj.gcfg` for caching related settings (please note that caching is off by default).

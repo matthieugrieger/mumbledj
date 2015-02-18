@@ -73,8 +73,14 @@ func (c *SongCache) ClearExpired() {
 		songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
 		for _, song := range songs {
 			hours := time.Since(song.ModTime()).Hours()
-			if hours >= dj.conf.Cache.ExpireTime && (dj.queue.CurrentSong().youtubeId+".m4a") != song.Name() {
-				os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, song.Name()))
+			if hours >= dj.conf.Cache.ExpireTime {
+				if dj.queue.Len() > 0 {
+					if (dj.queue.CurrentSong().youtubeId + ".m4a") != song.Name() {
+						os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, song.Name()))
+					}
+				} else {
+					os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, song.Name()))
+				}
 			}
 		}
 	}
@@ -83,9 +89,13 @@ func (c *SongCache) ClearExpired() {
 func (c *SongCache) ClearOldest() error {
 	songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
 	sort.Sort(ByAge(songs))
-	if (dj.queue.CurrentSong().youtubeId + ".m4a") != songs[0].Name() {
-		return os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, songs[0].Name()))
+	if dj.queue.Len() > 0 {
+		if (dj.queue.CurrentSong().youtubeId + ".m4a") != songs[0].Name() {
+			return os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, songs[0].Name()))
+		} else {
+			return errors.New("Song is currently playing.")
+		}
 	} else {
-		return errors.New("Song is currently playing.")
+		return os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, songs[0].Name()))
 	}
 }

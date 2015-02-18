@@ -3,6 +3,7 @@ MumbleDJ
 **A Mumble bot that plays music fetched from YouTube videos.**
 
 * [Usage](#usage)
+* [Features](#features)
 * [Commands](#commands)
 * [Installation](#installation)
   * [Setup Guide](#setup-guide)
@@ -14,6 +15,14 @@ MumbleDJ
 ## USAGE
 `$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root -cert="" -key=""`
 All parameters are optional, the example above shows the default values for each field.
+
+## FEATURES
+* Plays audio from both YouTube videos and YouTube playlists!
+* Displays thumbnail, title, duration, submitter, and playlist title (if exists) when a new song is played.
+* Incredible customization options. Nearly everything is able to be tweaked in `~/.mumbledj/mumbledj.gcfg`.
+* A large array of [commands](#commands) that perform a wide variety of functions.
+* Built-in vote-skipping.
+* Built-in caching system (disabled by default).
 
 ## COMMANDS
 These are all of the chat commands currently supported by MumbleDJ. All command names and command prefixes may be changed in `~/.mumbledj/config/mumbledj.gcfg`.

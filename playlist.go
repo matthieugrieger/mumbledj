@@ -58,9 +58,9 @@ func NewPlaylist(user, id string) (*Playlist, error) {
 		id:    id,
 		title: playlistTitle,
 	}
-
+	j := 0
 	for i := 0; i < playlistItems; i++ {
-		index := strconv.Itoa(i)
+		index := strconv.Itoa(j)
 		songTitle, _ := jq.String("data", "items", index, "video", "title")
 		songId, _ := jq.String("data", "items", index, "video", "id")
 		songThumbnail, _ := jq.String("data", "items", index, "video", "thumbnail", "hqDefault")
@@ -75,7 +75,11 @@ func NewPlaylist(user, id string) (*Playlist, error) {
 			playlist:     playlist,
 			dontSkip:     false,
 		}
-		dj.queue.AddSong(newSong)
+		// Don't spam the chat if a playlist contains songs that are too long
+		if dj.conf.General.MaxSongDuration == 0 || duration <= dj.conf.General.MaxSongDuration {
+			dj.queue.AddSong(newSong)
+			j += 1
+		} 
 	}
 
 	return playlist, nil

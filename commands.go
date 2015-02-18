@@ -195,6 +195,8 @@ func add(user *gumble.User, username, url string) {
 						}
 					}
 				}
+			} else if fmt.Sprint(err) == "video exceeds the maximum allowed duration." {
+				dj.SendPrivateMessage(user, VIDEO_TOO_LONG_MSG)
 			} else {
 				dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
 			}
@@ -208,7 +210,7 @@ func add(user *gumble.User, username, url string) {
 						oldLength := dj.queue.Len()
 						if newPlaylist, err := NewPlaylist(username, shortUrl); err == nil {
 							dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
-							if oldLength == 0 && !dj.audioStream.IsPlaying() {
+							if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
 								if err := dj.queue.CurrentSong().Download(); err == nil {
 									dj.queue.CurrentSong().Play()
 								} else {

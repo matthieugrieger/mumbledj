@@ -192,6 +192,7 @@ func add(user *gumble.User, username, url string) {
 						} else {
 							dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
 							dj.queue.CurrentSong().Delete()
+							dj.queue.OnSongFinished()
 						}
 					}
 				}
@@ -216,6 +217,7 @@ func add(user *gumble.User, username, url string) {
 								} else {
 									dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
 									dj.queue.CurrentSong().Delete()
+									dj.queue.OnSongFinished()
 								}
 							}
 						} else {

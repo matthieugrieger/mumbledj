@@ -3,6 +3,7 @@ MumbleDJ Changelog
 
 ### February 18, 2015 -- `v2.6.2`
 * Fixed bot crashing after 5 minutes if there is nothing in the song queue.
+* Fixed queue freezing up if the download of the first song in queue fails.
 
 ### February 17, 2015 -- `v2.6.0, v2.6.1`
 * Added caching system to MumbleDJ.

@@ -1,10 +1,11 @@
 MumbleDJ Changelog
 ==================
 
-### February 17, 2015 -- `v2.6.0`
+### February 17, 2015 -- `v2.6.0, v2.6.1`
 * Added caching system to MumbleDJ.
 * Added configuration variables in `mumbledj.gcfg` for caching related settings (please note that caching is off by default).
 * Added `!numcached` and `!cachesize` commands for admins.
+* Added optional song length limit (thanks [jakexks](https://github.com/jakexks)!)
 
 ### February 12, 2015 -- `v2.5.0`
 * Updated dependencies and fixed code to match `gumble` API changes.

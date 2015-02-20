@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### February 20, 2015 -- `v2.6.4`
+* Fixed failed audio downloads for YouTube videos with IDs beginning with "-".
+
 ### February 19, 2015 -- `v2.6.3`
 * Added `gumbleutil.CertificateLockFile()` for more secure connections.
 * Added `-insecure` boolean commandline flag to allow MumbleDJ to connect to a server without overwriting `~/.mumbledj/cert.lock`.

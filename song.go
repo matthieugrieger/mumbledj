@@ -80,7 +80,7 @@ func NewSong(user, id string, playlist *Playlist) (*Song, error) {
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *Song) Download() error {
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.youtubeId)); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s.m4a`, s.youtubeId), "--format", "m4a", s.youtubeId)
+		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s.m4a`, s.youtubeId), "--format", "m4a", "--", s.youtubeId)
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()

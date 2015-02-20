@@ -13,7 +13,7 @@ MumbleDJ
 * [Thanks](#thanks)
 
 ## USAGE
-`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root -cert="" -key=""`
+`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root -cert="" -key="" -insecure`
 All parameters are optional, the example above shows the default values for each field.
 
 ## FEATURES

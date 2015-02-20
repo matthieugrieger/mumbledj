@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### February 19, 2015 -- `v2.6.3`
+* Added `gumbleutil.CertificateLockFile()` for more secure connections.
+* Added `-insecure` boolean commandline flag to allow MumbleDJ to connect to a server without overwriting `~/.mumbledj/cert.lock`.
+
 ### February 18, 2015 -- `v2.6.2`
 * Fixed bot crashing after 5 minutes if there is nothing in the song queue.
 * Fixed queue freezing up if the download of the first song in queue fails.

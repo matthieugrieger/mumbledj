@@ -43,10 +43,6 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 		fmt.Println("Channel doesn't exist or one was not provided, staying in root channel...")
 	}
 
-	if currentUser, err := user.Current(); err == nil {
-		dj.homeDir = currentUser.HomeDir
-	}
-
 	if err := loadConfiguration(); err == nil {
 		fmt.Println("Configuration successfully loaded!")
 	} else {
@@ -134,6 +130,7 @@ var dj = mumbledj{
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
 	var address, port, username, password, channel, pemCert, pemKey string
+	var insecure bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
@@ -142,13 +139,23 @@ func main() {
 	flag.StringVar(&channel, "channel", "root", "default channel for MumbleDJ")
 	flag.StringVar(&pemCert, "cert", "", "path to user PEM certificate for MumbleDJ")
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
+	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
 	flag.Parse()
 
-	dj.client = gumble.NewClient(&dj.config)
 	dj.config = gumble.Config{
 		Username: username,
 		Password: password,
 		Address:  address + ":" + port,
+	}
+	dj.client = gumble.NewClient(&dj.config)
+
+	if currentUser, err := user.Current(); err == nil {
+		dj.homeDir = currentUser.HomeDir
+	}
+
+	dj.config.TLSConfig.InsecureSkipVerify = true
+	if !insecure {
+		gumbleutil.CertificateLockFile(dj.client, fmt.Sprintf("%s/.mumbledj/cert.lock", dj.homeDir))
 	}
 	if pemCert != "" {
 		if pemKey == "" {
@@ -171,9 +178,6 @@ func main() {
 	})
 	dj.client.Attach(gumbleutil.AutoBitrate)
 
-	// IMPORTANT NOTE: This will be changed later once released. Not really safe at the
-	// moment.
-	dj.config.TLSConfig.InsecureSkipVerify = true
 	if err := dj.client.Connect(); err != nil {
 		fmt.Printf("Could not connect to Mumble server at %s:%s.\n", address, port)
 		os.Exit(1)

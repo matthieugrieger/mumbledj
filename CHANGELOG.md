@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### February 25, 2015 -- `v2.6.5`
+* Added automatic connection retries if the bot loses connection to the server. The bot will attempt to reconnect to the server every 30 seconds for a period of 15 seconds, then exit if 
+a connection cannot be made.
+
 ### February 20, 2015 -- `v2.6.4`
 * Fixed failed audio downloads for YouTube videos with IDs beginning with "-".
 

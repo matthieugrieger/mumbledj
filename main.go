@@ -17,6 +17,7 @@ import (
 	"github.com/layeh/gumble/gumbleutil"
 	"os"
 	"os/user"
+	"time"
 )
 
 // MumbleDJ type declaration
@@ -68,7 +69,26 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 
 // OnDisconnect event. Terminates MumbleDJ thread.
 func (dj *mumbledj) OnDisconnect(e *gumble.DisconnectEvent) {
-	dj.keepAlive <- true
+	if e.Type == gumble.DisconnectError || e.Type == gumble.DisconnectKicked {
+		fmt.Println("Disconnected from server... Will retry connection in 30 second intervals for 15 minutes.")
+		reconnectSuccess := false
+		for retries := 0; retries <= 30; retries++ {
+			fmt.Println("Retrying connection...")
+			if err := dj.client.Connect(); err == nil {
+				fmt.Println("Successfully reconnected to the server!")
+				reconnectSuccess = true
+				break
+			}
+			time.Sleep(30 * time.Second)
+		}
+		if !reconnectSuccess {
+			fmt.Println("Could not reconnect to server. Exiting...")
+			dj.keepAlive <- true
+			os.Exit(1)
+		}
+	} else {
+		dj.keepAlive <- true
+	}
 }
 
 // OnTextMessage event. Checks for command prefix, and calls parseCommand if it exists. Ignores

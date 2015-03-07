@@ -74,6 +74,10 @@ SkipPlaylistAlias = "skipplaylist"
 # DEFAULT VALUE: "forceskip"
 AdminSkipAlias = "forceskip"
 
+# Alias used for admin playlist skip command
+# DEFAULT VALUE: "forceskipplaylist"
+AdminSkipPlaylistAlias = "forceskipplaylist"
+
 # Alias used for help command
 # DEFAULT VALUE: "help"
 HelpAlias = "help"

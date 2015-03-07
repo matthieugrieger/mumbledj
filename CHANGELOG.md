@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### March 7, 2015 -- `v2.6.6`
+* Added missing AdminSkipPlaylistAlias option to `mumbledj.gcfg`.
+
 ### February 25, 2015 -- `v2.6.5`
 * Added automatic connection retries if the bot loses connection to the server. The bot will attempt to reconnect to the server every 30 seconds for a period of 15 minutes, then exit if a connection cannot be made.
 

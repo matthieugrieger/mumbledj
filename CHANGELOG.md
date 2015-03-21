@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### March 20, 2015 -- `v2.6.7`
+* Fixed a typo in `mumbledj.gcfg`.
+* Songs and playlists are now skipped immediately if the submitter submits a skip command.
+* `SONG_SKIPPED_HTML` and `PLAYLIST_SKIPPED_HTML` are no longer shown if the submitter or admin skips a song/playlist.
+
 ### March 7, 2015 -- `v2.6.6`
 * Added missing AdminSkipPlaylistAlias option to `mumbledj.gcfg`.
 

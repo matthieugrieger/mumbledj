@@ -70,13 +70,14 @@ type DjConfig struct {
 		AdminCacheSize    bool
 		AdminKill         bool
 	}
-}
+} 
 
 // Loads mumbledj.gcfg into dj.conf, a variable of type DjConfig.
 func loadConfiguration() error {
 	if gcfg.ReadFileInto(&dj.conf, fmt.Sprintf("%s/.mumbledj/config/mumbledj.gcfg", dj.homeDir)) == nil {
 		return nil
 	} else {
+		fmt.Printf("%s/.mumbledj/config/mumbledj.gcfg\n", dj.homeDir)
 		return errors.New("Configuration load failed.")
 	}
 }

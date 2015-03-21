@@ -241,12 +241,16 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 		if playlistSkip {
 			if dj.queue.CurrentSong().playlist != nil {
 				if err := dj.queue.CurrentSong().playlist.AddSkip(username); err == nil {
+					submitterSkipped := false
 					if admin {
 						dj.client.Self.Channel.Send(ADMIN_PLAYLIST_SKIP_MSG, false)
+					} else if dj.queue.CurrentSong().submitter == username {
+						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SUBMITTER_SKIP_HTML, username), false)
+						submitterSkipped = true
 					} else {
 						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SKIP_ADDED_HTML, username), false)
 					}
-					if dj.queue.CurrentSong().playlist.SkipReached(len(dj.client.Self.Channel.Users)) || admin {
+					if submitterSkipped || dj.queue.CurrentSong().playlist.SkipReached(len(dj.client.Self.Channel.Users)) || admin {
 						id := dj.queue.CurrentSong().playlist.id
 						dj.queue.CurrentSong().playlist.DeleteSkippers()
 						for i := 0; i < len(dj.queue.queue); i++ {
@@ -261,7 +265,9 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 							// Set dontSkip to true to avoid audioStream.Stop() callback skipping the new first song.
 							dj.queue.CurrentSong().dontSkip = true
 						}
-						dj.client.Self.Channel.Send(PLAYLIST_SKIPPED_HTML, false)
+						if !(submitterSkipped || admin) {
+							dj.client.Self.Channel.Send(PLAYLIST_SKIPPED_HTML, false)
+						}
 						if err := dj.audioStream.Stop(); err != nil {
 							panic(errors.New("An error occurred while stopping the current song."))
 						}
@@ -272,13 +278,19 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 			}
 		} else {
 			if err := dj.queue.CurrentSong().AddSkip(username); err == nil {
+				submitterSkipped := false
 				if admin {
 					dj.client.Self.Channel.Send(ADMIN_SONG_SKIP_MSG, false)
+				} else if dj.queue.CurrentSong().submitter == username {
+					dj.client.Self.Channel.Send(fmt.Sprintf(SUBMITTER_SKIP_HTML, username), false)
+					submitterSkipped = true
 				} else {
 					dj.client.Self.Channel.Send(fmt.Sprintf(SKIP_ADDED_HTML, username), false)
 				}
-				if dj.queue.CurrentSong().SkipReached(len(dj.client.Self.Channel.Users)) || admin {
-					dj.client.Self.Channel.Send(SONG_SKIPPED_HTML, false)
+				if submitterSkipped || dj.queue.CurrentSong().SkipReached(len(dj.client.Self.Channel.Users)) || admin {
+					if !(submitterSkipped || admin) {
+						dj.client.Self.Channel.Send(SONG_SKIPPED_HTML, false)
+					}
 					if err := dj.audioStream.Stop(); err != nil {
 						panic(errors.New("An error occurred while stopping the current song."))
 					}

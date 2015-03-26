@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### March 26, 2015 -- `v2.6.8`
+* Renamed `mumbledj.gcfg` to `config.gcfg`. However, please note that it will still be called `mumbledj.gcfg` in your `~/.mumbledj` directory. Hopefully this will avoid any ambiguity when referring to the 
+config files.
+* Tweaked the `Makefile` to handle situations where `go build` creates an executable with an appended version number.
+
 ### March 20, 2015 -- `v2.6.7`
 * Fixed a typo in `mumbledj.gcfg`.
 * Songs and playlists are now skipped immediately if the submitter submits a skip command.

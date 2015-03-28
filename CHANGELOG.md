@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### March 28, 2015 -- `v2.6.10`
+* Fixed a crash that would occur when the last song of a playlist was skipped.
+
 ### March 27, 2015 -- `v2.6.9`
 * Fixed a race condition that would sometimes cause the bot to crash (thanks [dylanetaft](https://github.com/dylanetaft)!).
 

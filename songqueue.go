@@ -43,7 +43,7 @@ func (q *SongQueue) CurrentSong() *Song {
 func (q *SongQueue) NextSong() {
 	if q.CurrentSong().playlist != nil {
 		if s, err := q.PeekNext(); err == nil {
-			if q.CurrentSong().playlist.id != s.playlist.id {
+			if s.playlist != nil && (q.CurrentSong().playlist.id != s.playlist.id) {
 				q.CurrentSong().playlist.DeleteSkippers()
 			}
 		} else {

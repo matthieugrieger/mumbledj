@@ -44,12 +44,6 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 		fmt.Println("Channel doesn't exist or one was not provided, staying in root channel...")
 	}
 
-	if err := loadConfiguration(); err == nil {
-		fmt.Println("Configuration successfully loaded!")
-	} else {
-		panic(err)
-	}
-
 	if audioStream, err := gumble_ffmpeg.New(dj.client); err == nil {
 		dj.audioStream = audioStream
 		dj.audioStream.Volume = dj.conf.Volume.DefaultVolume
@@ -149,6 +143,17 @@ var dj = mumbledj{
 // Main function, but only really performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
+
+        if currentUser, err := user.Current(); err == nil {
+                dj.homeDir = currentUser.HomeDir
+        }
+
+        if err := loadConfiguration(); err == nil {
+                fmt.Println("Configuration successfully loaded!")
+        } else {
+                panic(err)
+        }
+
 	var address, port, username, password, channel, pemCert, pemKey string
 	var insecure bool
 
@@ -168,10 +173,6 @@ func main() {
 		Address:  address + ":" + port,
 	}
 	dj.client = gumble.NewClient(&dj.config)
-
-	if currentUser, err := user.Current(); err == nil {
-		dj.homeDir = currentUser.HomeDir
-	}
 
 	dj.config.TLSConfig.InsecureSkipVerify = true
 	if !insecure {

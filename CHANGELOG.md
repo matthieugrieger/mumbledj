@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### March 27, 2015 -- `v2.6.9`
+* Fixed a race condition that would sometimes cause the bot to crash (thanks [dylanetaft](https://github.com/dylanetaft)!).
+
 ### March 26, 2015 -- `v2.6.8`
 * Renamed `mumbledj.gcfg` to `config.gcfg`. However, please note that it will still be called `mumbledj.gcfg` in your `~/.mumbledj` directory. Hopefully this will avoid any ambiguity when referring to the 
 config files.

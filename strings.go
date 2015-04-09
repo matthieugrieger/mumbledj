@@ -68,39 +68,6 @@ const CACHE_SIZE_MSG = "The cache is currently %g MB in size."
 // Message shown to user when they attempt to issue a cache-related command when caching is not enabled.
 const CACHE_NOT_ENABLED_MSG = "The cache is not currently enabled."
 
-// Message shown to a channel when a new song starts playing.
-const NOW_PLAYING_HTML = `
-	<table>
-		<tr>
-			<td align="center"><img src="%s" width=150 /></td>
-		</tr>
-		<tr>
-			<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
-		</tr>
-		<tr>
-			<td align="center">Added by %s</td>
-		</tr>
-	</table>
-`
-
-// Message shown to channel when a new song in a playlist starts playing.
-const NOW_PLAYING_PLAYLIST_HTML = `
-	<table>
-		<tr>
-			<td align="center"><img src="%s" width=150 /></td>
-		</tr>
-		<tr>
-			<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
-		</tr>
-		<tr>
-			<td align="center">Added by %s</td>
-		</tr>
-		<tr>
-			<td align="center">From playlist "%s"</td>
-		</tr>
-	</table>
-`
-
 // Message shown to channel when a song is added to the queue by a user.
 const SONG_ADDED_HTML = `
 	<b>%s</b> has added "%s" to the queue.

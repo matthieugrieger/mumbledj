@@ -15,6 +15,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/matthieugrieger/mumbledj/services/youtube"
+
 	"github.com/layeh/gumble/gumble"
 )
 
@@ -184,17 +186,15 @@ func add(user *gumble.User, username, url string) {
 		}
 
 		if matchFound {
-			if newSong, err := NewSong(username, shortUrl, nil); err == nil {
-				if err := dj.queue.AddSong(newSong); err == nil {
-					dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
-					if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-						if err := dj.queue.CurrentSong().Download(); err == nil {
-							dj.queue.CurrentSong().Play()
-						} else {
-							dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-							dj.queue.CurrentSong().Delete()
-							dj.queue.OnSongFinished()
-						}
+			if newSong, err := youtube.NewSong(username, shortUrl, nil); err == nil {
+				dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
+				if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
+					if err := dj.queue.CurrentSong().Download(); err == nil {
+						dj.queue.CurrentSong().Play()
+					} else {
+						dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
+						dj.queue.CurrentSong().Delete()
+						dj.queue.OnSongFinished()
 					}
 				}
 			} else if fmt.Sprint(err) == "video exceeds the maximum allowed duration." {
@@ -210,7 +210,7 @@ func add(user *gumble.User, username, url string) {
 					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
 						shortUrl = re.FindStringSubmatch(url)[1]
 						oldLength := dj.queue.Len()
-						if newPlaylist, err := NewPlaylist(username, shortUrl); err == nil {
+						if newPlaylist, err := youtube.NewPlaylist(username, shortUrl); err == nil {
 							dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
 							if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
 								if err := dj.queue.CurrentSong().Download(); err == nil {
@@ -372,7 +372,7 @@ func reset(username string) {
 func numSongs() {
 	songCount := 0
 	dj.queue.Traverse(func(i int, song *Song) {
-		songCount += 1
+		songCount++
 	})
 	dj.client.Self.Channel.Send(fmt.Sprintf(NUM_SONGS_HTML, songCount), false)
 }
@@ -454,5 +454,4 @@ func deleteSongs() error {
 		}
 		return nil
 	}
-	return nil
 }

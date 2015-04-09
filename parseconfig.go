@@ -70,7 +70,7 @@ type DjConfig struct {
 		AdminCacheSize    bool
 		AdminKill         bool
 	}
-} 
+}
 
 // Loads mumbledj.gcfg into dj.conf, a variable of type DjConfig.
 func loadConfiguration() error {

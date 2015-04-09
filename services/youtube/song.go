@@ -8,14 +8,14 @@
 package youtube
 
 type Song struct {
-  submitter string
-  title string
-  id string
-  duration string
-  thumbnailUrl string
-  skippers []string
-  playlist *Playlist
-  dontSkip bool
+	submitter    string
+	title        string
+	id           string
+	duration     string
+	thumbnailUrl string
+	skippers     []string
+	playlist     *Playlist
+	dontSkip     bool
 }
 
 func NewSong(user, id string, playlist *Playlist) (*Song, error) {

@@ -69,7 +69,7 @@ func (c *SongCache) Update() {
 }
 
 func (c *SongCache) ClearExpired() {
-	for _ = range time.Tick(5 * time.Minute) {
+	for range time.Tick(5 * time.Minute) {
 		songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
 		for _, song := range songs {
 			hours := time.Since(song.ModTime()).Hours()

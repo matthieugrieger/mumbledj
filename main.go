@@ -144,15 +144,15 @@ var dj = mumbledj{
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
 
-        if currentUser, err := user.Current(); err == nil {
-                dj.homeDir = currentUser.HomeDir
-        }
+	if currentUser, err := user.Current(); err == nil {
+		dj.homeDir = currentUser.HomeDir
+	}
 
-        if err := loadConfiguration(); err == nil {
-                fmt.Println("Configuration successfully loaded!")
-        } else {
-                panic(err)
-        }
+	if err := loadConfiguration(); err == nil {
+		fmt.Println("Configuration successfully loaded!")
+	} else {
+		panic(err)
+	}
 
 	var address, port, username, password, channel, pemCert, pemKey string
 	var insecure bool

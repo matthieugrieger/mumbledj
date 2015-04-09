@@ -79,7 +79,7 @@ func NewPlaylist(user, id string) (*Playlist, error) {
 		if dj.conf.General.MaxSongDuration == 0 || duration <= dj.conf.General.MaxSongDuration {
 			dj.queue.AddSong(newSong)
 			j += 1
-		} 
+		}
 	}
 
 	return playlist, nil

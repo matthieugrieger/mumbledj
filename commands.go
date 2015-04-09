@@ -10,11 +10,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/layeh/gumble/gumble"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/layeh/gumble/gumble"
 )
 
 // Called on text message event. Checks the message for a command string, and processes it accordingly if

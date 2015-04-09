@@ -8,9 +8,10 @@
 package main
 
 import (
-	"code.google.com/p/gcfg"
 	"errors"
 	"fmt"
+
+	"code.google.com/p/gcfg"
 )
 
 // Golang struct representation of mumbledj.gcfg file structure for parsing.

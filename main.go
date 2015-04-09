@@ -11,13 +11,14 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"os"
+	"os/user"
+	"time"
+
 	"github.com/layeh/gopus"
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
-	"os"
-	"os/user"
-	"time"
 )
 
 // MumbleDJ type declaration

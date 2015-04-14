@@ -1,14 +1,14 @@
 all: mumbledj
 
-mumbledj: main.go commands.go parseconfig.go strings.go services/base.go services/youtube/song.go services/youtube/playlist.go songqueue.go cache.go
+mumbledj: main.go commands.go parseconfig.go strings.go service.go service_youtube.go songqueue.go cache.go
 	go get github.com/nitrous-io/goop
 	rm -rf Goopfile.lock
 	goop install
 	goop go build .
-		
+
 clean:
 	rm -f mumbledj*
-		
+
 install:
 	mkdir -p ~/.mumbledj/config
 	mkdir -p ~/.mumbledj/songs
@@ -18,4 +18,3 @@ install:
 
 build:
 	goop go build .
-	

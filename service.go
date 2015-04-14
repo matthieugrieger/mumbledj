@@ -1,28 +1,38 @@
 /*
  * MumbleDJ
  * By Matthieu Grieger
- * services/base.go
+ * service.go
  * Copyright (c) 2014, 2015 Matthieu Grieger (MIT License)
  */
 
-package services
+package main
 
 // Song interface. Each service will implement these
 // functions in their Song types.
 type Song interface {
-	Download()
+	Download() error
 	Play()
-	Delete()
-	AddSkip()
-	RemoveSkip()
-	SkipReached()
+	Delete() error
+	AddSkip() error
+	RemoveSkip() error
+	SkipReached() bool
+	Submitter() string
+	Title() string
+	ID() string
+	Filename() string
+	Duration() string
+	Thumbnail() string
+	Playlist() *Playlist
+	DontSkip() bool
 }
 
 // Playlist interface. Each service will implement these
 // functions in their Playlist types.
 type Playlist interface {
-	AddSkip()
-	RemoveSkip()
+	AddSkip() error
+	RemoveSkip() error
 	DeleteSkippers()
-	SkipReached()
+	SkipReached() bool
+	ID() string
+	Title() string
 }

@@ -7,26 +7,22 @@
 
 package main
 
-import (
-	"errors"
-
-	"github.com/matthieugrieger/mumbledj/services"
-)
+import "errors"
 
 // SongQueue type declaration.
 type SongQueue struct {
-	queue []*services.Song
+	queue []Song
 }
 
 // Initializes a new queue and returns the new SongQueue.
 func NewSongQueue() *SongQueue {
 	return &SongQueue{
-		queue: make([]*services.Song, 0),
+		queue: make([]Song, 0),
 	}
 }
 
 // Adds a Song to the SongQueue.
-func (q *SongQueue) AddSong(s *services.Song) error {
+func (q *SongQueue) AddSong(s Song) error {
 	beforeLen := q.Len()
 	q.queue = append(q.queue, s)
 	if len(q.queue) == beforeLen+1 {
@@ -37,7 +33,7 @@ func (q *SongQueue) AddSong(s *services.Song) error {
 }
 
 // Returns the current Song.
-func (q *SongQueue) CurrentSong() *services.Song {
+func (q *SongQueue) CurrentSong() Song {
 	return q.queue[0]
 }
 
@@ -56,7 +52,7 @@ func (q *SongQueue) NextSong() {
 }
 
 // Peeks at the next Song and returns it.
-func (q *SongQueue) PeekNext() (*services.Song, error) {
+func (q *SongQueue) PeekNext() (Song, error) {
 	if q.Len() > 1 {
 		return q.queue[1], nil
 	} else {
@@ -71,7 +67,7 @@ func (q *SongQueue) Len() int {
 
 // A traversal function for SongQueue. Allows a visit function to be passed in which performs
 // the specified action on each queue item.
-func (q *SongQueue) Traverse(visit func(i int, s *services.Song)) {
+func (q *SongQueue) Traverse(visit func(i int, s Song)) {
 	for sQueue, queueSong := range q.queue {
 		visit(sQueue, queueSong)
 	}

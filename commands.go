@@ -15,8 +15,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/matthieugrieger/mumbledj/services/youtube"
-
 	"github.com/layeh/gumble/gumble"
 )
 
@@ -186,7 +184,7 @@ func add(user *gumble.User, username, url string) {
 		}
 
 		if matchFound {
-			if newSong, err := youtube.NewSong(username, shortUrl, nil); err == nil {
+			if newSong, err := NewYouTubeSong(username, shortUrl, nil); err == nil {
 				dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
 				if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
 					if err := dj.queue.CurrentSong().Download(); err == nil {
@@ -210,7 +208,7 @@ func add(user *gumble.User, username, url string) {
 					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
 						shortUrl = re.FindStringSubmatch(url)[1]
 						oldLength := dj.queue.Len()
-						if newPlaylist, err := youtube.NewPlaylist(username, shortUrl); err == nil {
+						if newPlaylist, err := NewYouTubePlaylist(username, shortUrl); err == nil {
 							dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
 							if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
 								if err := dj.queue.CurrentSong().Download(); err == nil {

@@ -39,13 +39,13 @@ func (q *SongQueue) CurrentSong() Song {
 
 // Moves to the next Song in SongQueue. NextSong() removes the first Song in the queue.
 func (q *SongQueue) NextSong() {
-	if q.CurrentSong().playlist != nil {
+	if q.CurrentSong().Playlist() != nil {
 		if s, err := q.PeekNext(); err == nil {
-			if s.playlist != nil && (q.CurrentSong().playlist.id != s.playlist.id) {
-				q.CurrentSong().playlist.DeleteSkippers()
+			if s.Playlist() != nil && (q.CurrentSong().Playlist().ID() != s.Playlist().ID()) {
+				q.CurrentSong().Playlist().DeleteSkippers()
 			}
 		} else {
-			q.CurrentSong().playlist.DeleteSkippers()
+			q.CurrentSong().Playlist().DeleteSkippers()
 		}
 	}
 	q.queue = q.queue[1:]
@@ -76,8 +76,8 @@ func (q *SongQueue) Traverse(visit func(i int, s Song)) {
 // OnSongFinished event. Deletes Song that just finished playing, then queues the next Song (if exists).
 func (q *SongQueue) OnSongFinished() {
 	if q.Len() != 0 {
-		if dj.queue.CurrentSong().dontSkip == true {
-			dj.queue.CurrentSong().dontSkip = false
+		if dj.queue.CurrentSong().DontSkip() == true {
+			dj.queue.CurrentSong().SetDontSkip(false)
 			q.PrepareAndPlayNextSong()
 		} else {
 			q.NextSong()

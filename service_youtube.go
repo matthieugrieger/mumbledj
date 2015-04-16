@@ -41,9 +41,11 @@ type YouTubeSong struct {
 // NewYouTubeSong gathers the metadata for a song extracted from a YouTube video, and returns
 // the song.
 func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
+	var apiResponse *jsonq.JsonQuery
+	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err := PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 
@@ -51,9 +53,9 @@ func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, e
 	thumbnail, _ := apiResponse.String("items", "0", "snippet", "thumbnails", "high", "url")
 	duration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
 
-	minutes := int(duration[2:strings.Index(duration, "M")])
-	seconds := int(duration[strings.Index(duration, "M")+1 : len(duration)-1])
-	totalSeconds := (minutes * 60) + seconds
+	minutes, _ := strconv.ParseInt(duration[2:strings.Index(duration, "M")], 10, 32)
+	seconds, _ := strconv.ParseInt(duration[strings.Index(duration, "M")+1:len(duration)-1], 10, 32)
+	totalSeconds := int((minutes * 60) + seconds)
 	durationString := fmt.Sprintf("%d:%d", minutes, seconds)
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
@@ -241,10 +243,12 @@ type YouTubePlaylist struct {
 
 // NewYouTubePlaylist gathers the metadata for a YouTube playlist and returns it.
 func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
+	var apiResponse *jsonq.JsonQuery
+	var err error
 	// Retrieve title of playlist
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err := PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	title, _ := apiResponse.String("items", "0")
@@ -260,7 +264,7 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
-	numVideos := apiResponse.Int("pageInfo", "totalResults")
+	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
 	if numVideos > 25 {
 		numVideos = 25
 	}
@@ -275,13 +279,13 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 		// playlist? WHY GOOGLE, WHY?!
 		url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=%s&key=%s",
 			videoID, os.Getenv("YOUTUBE_API_KEY"))
-		if response, err = PerformGetRequest(url); err != nil {
+		if apiResponse, err = PerformGetRequest(url); err != nil {
 			return nil, err
 		}
 		videoDuration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
-		minutes := int(videoDuration[2:strings.Index(videoDuration, "M")])
-		seconds := int(videoDuration[strings.Index(videoDuration, "M")+1 : len(videoDuration)-1])
-		totalSeconds := (minutes * 60) + seconds
+		minutes, _ := strconv.ParseInt(videoDuration[2:strings.Index(videoDuration, "M")], 10, 32)
+		seconds, _ := strconv.ParseInt(videoDuration[strings.Index(videoDuration, "M")+1:len(videoDuration)-1], 10, 32)
+		totalSeconds := int((minutes * 60) + seconds)
 		durationString := fmt.Sprintf("%d:%d", minutes, seconds)
 
 		if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {

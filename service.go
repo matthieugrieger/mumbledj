@@ -13,26 +13,27 @@ type Song interface {
 	Download() error
 	Play()
 	Delete() error
-	AddSkip() error
-	RemoveSkip() error
-	SkipReached() bool
+	AddSkip(string) error
+	RemoveSkip(string) error
+	SkipReached(int) bool
 	Submitter() string
 	Title() string
 	ID() string
 	Filename() string
 	Duration() string
 	Thumbnail() string
-	Playlist() *Playlist
+	Playlist() Playlist
 	DontSkip() bool
+	SetDontSkip(bool)
 }
 
 // Playlist interface. Each service will implement these
 // functions in their Playlist types.
 type Playlist interface {
-	AddSkip() error
-	RemoveSkip() error
+	AddSkip(string) error
+	RemoveSkip(string) error
 	DeleteSkippers()
-	SkipReached() bool
+	SkipReached(int) bool
 	ID() string
 	Title() string
 }

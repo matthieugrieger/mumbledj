@@ -4,7 +4,7 @@ mumbledj: main.go commands.go parseconfig.go strings.go service.go service_youtu
 	go get github.com/nitrous-io/goop
 	rm -rf Goopfile.lock
 	goop install
-	goop go build .
+	goop go build
 
 clean:
 	rm -f mumbledj*
@@ -17,4 +17,4 @@ install:
 	if [ -d ~/bin ]; then cp -f mumbledj* ~/bin/mumbledj; else sudo cp -f mumbledj* /usr/local/bin/mumbledj; fi;
 
 build:
-	goop go build .
+	goop go build

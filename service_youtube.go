@@ -34,7 +34,7 @@ type YouTubeSong struct {
 	duration  string
 	thumbnail string
 	skippers  []string
-	playlist  *Playlist
+	playlist  *YouTubePlaylist
 	dontSkip  bool
 }
 
@@ -43,13 +43,13 @@ type YouTubeSong struct {
 func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if response, err := PerformGetRequest(url); err != nil {
+	if apiResponse, err := PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 
-	title, _ := response.String("items", "0", "snippet", "title")
-	thumbnail, _ := response.String("items", "0", "snippet", "thumbnails", "high", "url")
-	duration, _ := response.String("items", "0", "contentDetails", "duration")
+	title, _ := apiResponse.String("items", "0", "snippet", "title")
+	thumbnail, _ := apiResponse.String("items", "0", "snippet", "thumbnails", "high", "url")
+	duration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
 
 	minutes := int(duration[2:strings.Index(duration, "M")])
 	seconds := int(duration[strings.Index(duration, "M")+1 : len(duration)-1])
@@ -58,16 +58,15 @@ func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, e
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 		song := &YouTubeSong{
-			submitter:       user,
-			title:           title,
-			id:              id,
-			filename:        id + ".m4a",
-			duration:        durationString,
-			secondsDuration: totalSeconds,
-			thumbnail:       thumbnail,
-			skippers:        make([]string, 0),
-			playlist:        nil,
-			dontSkip:        false,
+			submitter: user,
+			title:     title,
+			id:        id,
+			filename:  id + ".m4a",
+			duration:  durationString,
+			thumbnail: thumbnail,
+			skippers:  make([]string, 0),
+			playlist:  nil,
+			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
 		return song, nil
@@ -216,13 +215,18 @@ func (s *YouTubeSong) Thumbnail() string {
 }
 
 // Playlist returns the playlist type for the YouTubeSong (may be nil).
-func (s *YouTubeSong) Playlist() *YouTubePlaylist {
-	return s.playlist
+func (s *YouTubeSong) Playlist() Playlist {
+	return *s.playlist
 }
 
 // DontSkip returns the DontSkip boolean value for the YouTubeSong.
 func (s *YouTubeSong) DontSkip() bool {
 	return s.dontSkip
+}
+
+// SetDontSkip sets the DontSkip boolean value for the YouTubeSong.
+func (s *YouTubeSong) SetDontSkip(value bool) {
+	s.dontSkip = value
 }
 
 // ----------------
@@ -240,10 +244,10 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 	// Retrieve title of playlist
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if response, err := PerformGetRequest(url); err != nil {
+	if apiResponse, err := PerformGetRequest(url); err != nil {
 		return nil, err
 	}
-	title, _ := response.String("items", "0")
+	title, _ := apiResponse.String("items", "0")
 
 	playlist := &YouTubePlaylist{
 		id:    id,
@@ -253,19 +257,19 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 	// Retrieve items in playlist
 	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if response, err = PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
-	numVideos := response.Int("pageInfo", "totalResults")
+	numVideos := apiResponse.Int("pageInfo", "totalResults")
 	if numVideos > 25 {
 		numVideos = 25
 	}
 
 	for i := 0; i < numVideos; i++ {
 		index := strconv.Itoa(i)
-		videoTitle, _ := response.String("items", index, "snippet", "title")
-		videoID, _ := response.String("items", index, "snippet", "resourceId", "videoId")
-		videoThumbnail, _ := response.String("items", index, "snippet", "thumbnails", "high", "url")
+		videoTitle, _ := apiResponse.String("items", index, "snippet", "title")
+		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
+		videoThumbnail, _ := apiResponse.String("items", index, "snippet", "thumbnails", "high", "url")
 
 		// A completely separate API call just to get the duration of a video in a
 		// playlist? WHY GOOGLE, WHY?!
@@ -274,7 +278,7 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 		if response, err = PerformGetRequest(url); err != nil {
 			return nil, err
 		}
-		videoDuration, _ := response.String("items", "0", "contentDetails", "duration")
+		videoDuration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
 		minutes := int(videoDuration[2:strings.Index(videoDuration, "M")])
 		seconds := int(videoDuration[strings.Index(videoDuration, "M")+1 : len(videoDuration)-1])
 		totalSeconds := (minutes * 60) + seconds

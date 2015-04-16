@@ -102,8 +102,8 @@ func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 	if e.Type.Has(gumble.UserChangeDisconnected) {
 		if dj.audioStream.IsPlaying() {
-			if dj.queue.CurrentSong().playlist != nil {
-				dj.queue.CurrentSong().playlist.RemoveSkip(e.User.Name)
+			if dj.queue.CurrentSong().Playlist() != nil {
+				dj.queue.CurrentSong().Playlist().RemoveSkip(e.User.Name)
 			}
 			dj.queue.CurrentSong().RemoveSkip(e.User.Name)
 		}

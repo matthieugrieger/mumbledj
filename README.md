@@ -64,12 +64,19 @@ Effective April 20th, 2015, all requests to YouTube's API must use v3 of their A
 **Important:** MumbleDJ will simply not work anymore if you do not follow these steps and create a YouTube API key.
 
 **1)** Navigate to the [Google Developers Console](https://console.developers.google.com) and sign in to your Google account or create one if you haven't already.
+
 **2)** Click the "Create Project" button and give your project a name. It doesn't matter what you set your project name to. Once you have a name click the "Create" button. You should be redirected to your new project once it's ready.
+
 **3)** Click on "APIs & auth" on the sidebar, and then click APIs. Under the "YouTube APIs" header, click "YouTube Data API". Click on the "Enable API" button.
+
 **4)** Click on the "Credentials" option underneath "APIs & auth" on the sidebar. Underneath "Public API access" click on "Create new Key". Click the "Server key" option.
+
 **5)** Add the IP address of your server in the box that appears. Click "Create".
+
 **6)** You should now see that an API key has been generated. Copy it.
+
 **7)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export YOUTUBE_API_KEY="<your_key_here>"`. Replace <your_key_here> with your API key.
+
 **8)** Close your current terminal window and open another one up. You should be able to use MumbleDJ now!
 
 ###SETUP GUIDE  

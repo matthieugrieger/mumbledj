@@ -133,6 +133,15 @@ func (dj *mumbledj) SendPrivateMessage(user *gumble.User, message string) {
 	}
 }
 
+// PerformStartupChecks checks the MumbleDJ installation to ensure proper usage.
+func PerformStartupChecks() {
+	if os.Getenv("YOUTUBE_API_KEY") == "" {
+		fmt.Printf("You do not have a YouTube API key defined in your environment variables.\n" +
+			"Please see the following link for info on how to fix this: https://github.com/matthieugrieger/mumbledj#youtube-api-keys\n")
+		os.Exit(1)
+	}
+}
+
 // dj variable declaration. This is done outside of main() to allow global use.
 var dj = mumbledj{
 	keepAlive:     make(chan bool),
@@ -144,6 +153,8 @@ var dj = mumbledj{
 // Main function, but only really performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
+
+	PerformStartupChecks()
 
 	if currentUser, err := user.Current(); err == nil {
 		dj.homeDir = currentUser.HomeDir

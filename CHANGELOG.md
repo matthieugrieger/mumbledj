@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### April 17, 2015 -- `v2.7.0`
+* Migrated all YouTube API calls to YouTube Data API v3. This means that you **MUST** follow the instructions in the following link if you were using a previous version of MumbleDJ: https://github.com/matthieugrieger/mumbledj#youtube-api-keys.
+* Made the SongQueue much more flexible. These changes will allow easy addition of support for other music services.
+
 ### March 28, 2015 -- `v2.6.10`
 * Fixed a crash that would occur when the last song of a playlist was skipped.
 
@@ -8,7 +12,7 @@ MumbleDJ Changelog
 * Fixed a race condition that would sometimes cause the bot to crash (thanks [dylanetaft](https://github.com/dylanetaft)!).
 
 ### March 26, 2015 -- `v2.6.8`
-* Renamed `mumbledj.gcfg` to `config.gcfg`. However, please note that it will still be called `mumbledj.gcfg` in your `~/.mumbledj` directory. Hopefully this will avoid any ambiguity when referring to the 
+* Renamed `mumbledj.gcfg` to `config.gcfg`. However, please note that it will still be called `mumbledj.gcfg` in your `~/.mumbledj` directory. Hopefully this will avoid any ambiguity when referring to the
 config files.
 * Tweaked the `Makefile` to handle situations where `go build` creates an executable with an appended version number.
 
@@ -161,7 +165,7 @@ config files.
 
 ### October 18, 2014
 * Fixed a crash when an error occurs during the audio downloading & encoding process.
-* Fixed a crash that occurs when the bot tries to join a default channel that does not exist. If the default channel does not exist, the bot will just move itself 
+* Fixed a crash that occurs when the bot tries to join a default channel that does not exist. If the default channel does not exist, the bot will just move itself
 to the root of the server instead.
 
 ### October 13, 2014

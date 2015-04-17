@@ -34,7 +34,7 @@ type YouTubeSong struct {
 	duration  string
 	thumbnail string
 	skippers  []string
-	playlist  *YouTubePlaylist
+	playlist  Playlist
 	dontSkip  bool
 }
 
@@ -53,10 +53,19 @@ func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, e
 	thumbnail, _ := apiResponse.String("items", "0", "snippet", "thumbnails", "high", "url")
 	duration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
 
-	minutes, _ := strconv.ParseInt(duration[2:strings.Index(duration, "M")], 10, 32)
-	seconds, _ := strconv.ParseInt(duration[strings.Index(duration, "M")+1:len(duration)-1], 10, 32)
+	var minutes, seconds int64
+	if strings.Contains(duration, "M") {
+		minutes, _ = strconv.ParseInt(duration[2:strings.Index(duration, "M")], 10, 32)
+	} else {
+		minutes = 0
+	}
+	if strings.Contains(duration, "S") {
+		seconds, _ = strconv.ParseInt(duration[strings.Index(duration, "M")+1:len(duration)-1], 10, 32)
+	} else {
+		seconds = 0
+	}
 	totalSeconds := int((minutes * 60) + seconds)
-	durationString := fmt.Sprintf("%d:%d", minutes, seconds)
+	durationString := fmt.Sprintf("%d:%02d", minutes, seconds)
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 		song := &YouTubeSong{
@@ -79,8 +88,8 @@ func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, e
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *YouTubeSong) Download() error {
-	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.id)); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s.m4a`, s.id), "--format", "m4a", "--", s.id)
+	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
+		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
@@ -95,10 +104,10 @@ func (s *YouTubeSong) Download() error {
 // Play plays the song. Once the song is playing, a notification is displayed in a text message that features the video
 // thumbnail, URL, title, duration, and submitter.
 func (s *YouTubeSong) Play() {
-	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.id), dj.queue.OnSongFinished); err != nil {
+	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID()), dj.queue.OnSongFinished); err != nil {
 		panic(err)
 	} else {
-		if s.playlist == nil {
+		if s.Playlist() == nil {
 			message := `
 				<table>
 					<tr>
@@ -112,8 +121,8 @@ func (s *YouTubeSong) Play() {
 					</tr>
 				</table>
 			`
-			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.thumbnail, s.id, s.title,
-				s.duration, s.submitter), false)
+			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(), s.Title(),
+				s.Duration(), s.Submitter()), false)
 		} else {
 			message := `
 				<table>
@@ -131,8 +140,8 @@ func (s *YouTubeSong) Play() {
 					</tr>
 				</table>
 			`
-			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.thumbnail, s.id,
-				s.title, s.duration, s.submitter, s.playlist.title), false)
+			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
+				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
 		}
 	}
 }
@@ -140,7 +149,7 @@ func (s *YouTubeSong) Play() {
 // Delete deletes the song from ~/.mumbledj/songs if the cache is disabled.
 func (s *YouTubeSong) Delete() error {
 	if dj.conf.Cache.Enabled == false {
-		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.id)
+		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
 				return nil
@@ -218,7 +227,7 @@ func (s *YouTubeSong) Thumbnail() string {
 
 // Playlist returns the playlist type for the YouTubeSong (may be nil).
 func (s *YouTubeSong) Playlist() Playlist {
-	return *s.playlist
+	return s.playlist
 }
 
 // DontSkip returns the DontSkip boolean value for the YouTubeSong.
@@ -251,7 +260,7 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
-	title, _ := apiResponse.String("items", "0")
+	title, _ := apiResponse.String("items", "0", "snippet", "title")
 
 	playlist := &YouTubePlaylist{
 		id:    id,
@@ -271,28 +280,40 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 
 	for i := 0; i < numVideos; i++ {
 		index := strconv.Itoa(i)
-		videoTitle, _ := apiResponse.String("items", index, "snippet", "title")
+		videoTitle, err := apiResponse.String("items", index, "snippet", "title")
 		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
 		videoThumbnail, _ := apiResponse.String("items", index, "snippet", "thumbnails", "high", "url")
 
 		// A completely separate API call just to get the duration of a video in a
 		// playlist? WHY GOOGLE, WHY?!
+		var durationResponse *jsonq.JsonQuery
 		url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=%s&key=%s",
 			videoID, os.Getenv("YOUTUBE_API_KEY"))
-		if apiResponse, err = PerformGetRequest(url); err != nil {
+		if durationResponse, err = PerformGetRequest(url); err != nil {
 			return nil, err
 		}
-		videoDuration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
-		minutes, _ := strconv.ParseInt(videoDuration[2:strings.Index(videoDuration, "M")], 10, 32)
-		seconds, _ := strconv.ParseInt(videoDuration[strings.Index(videoDuration, "M")+1:len(videoDuration)-1], 10, 32)
+		videoDuration, _ := durationResponse.String("items", "0", "contentDetails", "duration")
+
+		var minutes, seconds int64
+		if strings.Contains(videoDuration, "M") {
+			minutes, _ = strconv.ParseInt(videoDuration[2:strings.Index(videoDuration, "M")], 10, 32)
+		} else {
+			minutes = 0
+		}
+		if strings.Contains(videoDuration, "S") {
+			seconds, _ = strconv.ParseInt(videoDuration[strings.Index(videoDuration, "M")+1:len(videoDuration)-1], 10, 32)
+		} else {
+			seconds = 0
+		}
 		totalSeconds := int((minutes * 60) + seconds)
-		durationString := fmt.Sprintf("%d:%d", minutes, seconds)
+		durationString := fmt.Sprintf("%d:%02d", minutes, seconds)
 
 		if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 			playlistSong := &YouTubeSong{
 				submitter: user,
 				title:     videoTitle,
 				id:        videoID,
+				filename:  videoID + ".m4a",
 				duration:  durationString,
 				thumbnail: videoThumbnail,
 				skippers:  make([]string, 0),
@@ -307,21 +328,21 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 
 // AddSkip adds a skip to the playlist's skippers slice.
 func (p *YouTubePlaylist) AddSkip(username string) error {
-	for _, user := range dj.playlistSkips[p.id] {
+	for _, user := range dj.playlistSkips[p.ID()] {
 		if username == user {
 			return errors.New("This user has already skipped the current song.")
 		}
 	}
-	dj.playlistSkips[p.id] = append(dj.playlistSkips[p.id], username)
+	dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()], username)
 	return nil
 }
 
 // RemoveSkip removes a skip from the playlist's skippers slice. If username is not in the slice
 // an error is returned.
 func (p *YouTubePlaylist) RemoveSkip(username string) error {
-	for i, user := range dj.playlistSkips[p.id] {
+	for i, user := range dj.playlistSkips[p.ID()] {
 		if username == user {
-			dj.playlistSkips[p.id] = append(dj.playlistSkips[p.id][:i], dj.playlistSkips[p.id][i+1:]...)
+			dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()][:i], dj.playlistSkips[p.ID()][i+1:]...)
 			return nil
 		}
 	}
@@ -330,14 +351,14 @@ func (p *YouTubePlaylist) RemoveSkip(username string) error {
 
 // DeleteSkippers removes the skippers entry in dj.playlistSkips.
 func (p *YouTubePlaylist) DeleteSkippers() {
-	delete(dj.playlistSkips, p.id)
+	delete(dj.playlistSkips, p.ID())
 }
 
 // SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
 // channel and the number of usernames in the skippers slice. If the value is greater than or equal
 // to the skip ratio defined in the config, the function returns true, and returns false otherwise.
 func (p *YouTubePlaylist) SkipReached(channelUsers int) bool {
-	if float32(len(dj.playlistSkips[p.id]))/float32(channelUsers) >= dj.conf.General.PlaylistSkipRatio {
+	if float32(len(dj.playlistSkips[p.ID()]))/float32(channelUsers) >= dj.conf.General.PlaylistSkipRatio {
 		return true
 	}
 	return false

@@ -6,6 +6,7 @@ MumbleDJ
 * [Features](#features)
 * [Commands](#commands)
 * [Installation](#installation)
+  * [YouTube API Keys](#youtube-api-keys)
   * [Setup Guide](#setup-guide)
   * [Update Guide](#update-guide)
 * [Author](#author)
@@ -57,10 +58,24 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 **NOTE:** This bot was designed for use on Linux machines. If you wish to run the bot on another OS, it will require tweaking and is not something I will be able to help with.  
 **NOTE #2:** Your Mumble server MUST be using the Opus audio codec, not CELT. Audio will not play if your server uses CELT.
 
+###YOUTUBE API KEYS
+Effective April 20th, 2015, all requests to YouTube's API must use v3 of their API. Unfortunately, this means that all those who install an instance of the bot on their server must create their own API key to use with the bot. Below is a guide of the steps you must take to get proper YouTube support.
+
+**Important:** MumbleDJ will simply not work anymore if you do not follow these steps and create a YouTube API key.
+
+**1)** Navigate to the [Google Developers Console](https://console.developers.google.com) and sign in to your Google account or create one if you haven't already.
+**2)** Click the "Create Project" button and give your project a name. It doesn't matter what you set your project name to. Once you have a name click the "Create" button. You should be redirected to your new project once it's ready.
+**3)** Click on "APIs & auth" on the sidebar, and then click APIs. Under the "YouTube APIs" header, click "YouTube Data API". Click on the "Enable API" button.
+**4)** Click on the "Credentials" option underneath "APIs & auth" on the sidebar. Underneath "Public API access" click on "Create new Key". Click the "Server key" option.
+**5)** Add the IP address of your server in the box that appears. Click "Create".
+**6)** You should now see that an API key has been generated. Copy it.
+**7)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export YOUTUBE_API_KEY="<your_key_here>"`. Replace <your_key_here> with your API key.
+**8)** Close your current terminal window and open another one up. You should be able to use MumbleDJ now!
+
 ###SETUP GUIDE  
 **1)** Install and correctly configure [`Go`](https://golang.org/) (1.3 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.
 
-**2)** Install [`ffmpeg`](https://www.ffmpeg.org/) and [`mercurial`](http://mercurial.selenic.com/) if they are not already installed on your system. Also be sure that you have 
+**2)** Install [`ffmpeg`](https://www.ffmpeg.org/) and [`mercurial`](http://mercurial.selenic.com/) if they are not already installed on your system. Also be sure that you have
 [`opus`](http://www.opus-codec.org/) and its development headers installed on your system, as well as `openal` (check your distributions repo for the package name).
 
 **3)** Install [`youtube-dl`](https://github.com/rg3/youtube-dl#installation). It is recommended to install `youtube-dl` through the method described on the linked GitHub page, rather than installing through a distribution repository. This ensures that you get the most up-to-date version of `youtube-dl`.
@@ -69,13 +84,13 @@ Installation for v2 of MumbleDJ is much easier than it was before, due to the re
 
 **5)** Clone the `MumbleDJ` repository or [download the latest release](https://github.com/matthieugrieger/mumbledj/releases).
 
-**6)** `cd` into the `MumbleDJ` repository directory and execute the following commands: 
+**6)** `cd` into the `MumbleDJ` repository directory and execute the following commands:
 ```
 $ make
 $ make install
 ```
 
-**7)** Edit `~/.mumbledj/config/mumbledj.gcfg` to your liking. This file will be overwritten if the config file structure is changed in a commit, but a backup is always stored at 
+**7)** Edit `~/.mumbledj/config/mumbledj.gcfg` to your liking. This file will be overwritten if the config file structure is changed in a commit, but a backup is always stored at
 `~/.mumbledj/config/mumbledj_backup.gcfg`.
 
 **8)** Execute the command shown at the top of this `README` document with your credentials, and the bot should be up and running!

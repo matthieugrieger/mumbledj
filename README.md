@@ -75,7 +75,7 @@ Effective April 20th, 2015, all requests to YouTube's API must use v3 of their A
 
 **6)** You should now see that an API key has been generated. Copy it.
 
-**7)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export YOUTUBE_API_KEY="<your_key_here>"`. Replace <your_key_here> with your API key.
+**7)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export YOUTUBE_API_KEY="<your_key_here>"`. Replace \<your_key_here\> with your API key.
 
 **8)** Close your current terminal window and open another one up. You should be able to use MumbleDJ now!
 

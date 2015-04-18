@@ -80,7 +80,7 @@ Effective April 20th, 2015, all requests to YouTube's API must use v3 of their A
 **8)** Close your current terminal window and open another one up. You should be able to use MumbleDJ now!
 
 ###SETUP GUIDE  
-**1)** Install and correctly configure [`Go`](https://golang.org/) (1.3 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.
+**1)** Install and correctly configure [`Go`](https://golang.org/) (1.4 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.
 
 **2)** Install [`ffmpeg`](https://www.ffmpeg.org/) and [`mercurial`](http://mercurial.selenic.com/) if they are not already installed on your system. Also be sure that you have
 [`opus`](http://www.opus-codec.org/) and its development headers installed on your system, as well as `openal` (check your distributions repo for the package name).

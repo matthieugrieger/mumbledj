@@ -71,7 +71,7 @@ Effective April 20th, 2015, all requests to YouTube's API must use v3 of their A
 
 **4)** Click on the "Credentials" option underneath "APIs & auth" on the sidebar. Underneath "Public API access" click on "Create new Key". Click the "Server key" option.
 
-**5)** Add the IP address of your server in the box that appears. Click "Create".
+**5)** Add the IP address of the machine MumbleDJ will run on in the box that appears. Click "Create".
 
 **6)** You should now see that an API key has been generated. Copy it.
 

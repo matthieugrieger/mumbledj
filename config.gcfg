@@ -40,6 +40,9 @@ MaximumSize = 512
 # DEFAULT VALUE: 24
 ExpireTime = 24
 
+# Directory to store cached songs
+# DEFAULT VALUE: ~/.mumbledj/songs
+CacheDir = ~/.mumbledj/songs
 
 [Volume]
 

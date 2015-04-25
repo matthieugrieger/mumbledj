@@ -27,6 +27,7 @@ type DjConfig struct {
 		Enabled     bool
 		MaximumSize int64
 		ExpireTime  float64
+		CacheDir    string
 	}
 	Volume struct {
 		DefaultVolume float32

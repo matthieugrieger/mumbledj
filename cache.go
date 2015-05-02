@@ -42,13 +42,13 @@ func NewSongCache() *SongCache {
 }
 
 func (c *SongCache) GetNumSongs() int {
-	songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+	songs, _ := ioutil.ReadDir(dj.conf.Cache.CacheDir)
 	return len(songs)
 }
 
 func (c *SongCache) GetCurrentTotalFileSize() int64 {
 	var totalSize int64 = 0
-	songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+	songs, _ := ioutil.ReadDir(dj.conf.Cache.CacheDir)
 	for _, song := range songs {
 		totalSize += song.Size()
 	}
@@ -70,16 +70,16 @@ func (c *SongCache) Update() {
 
 func (c *SongCache) ClearExpired() {
 	for range time.Tick(5 * time.Minute) {
-		songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+		songs, _ := ioutil.ReadDir(dj.conf.Cache.CacheDir)
 		for _, song := range songs {
 			hours := time.Since(song.ModTime()).Hours()
 			if hours >= dj.conf.Cache.ExpireTime {
 				if dj.queue.Len() > 0 {
 					if (dj.queue.CurrentSong().Filename()) != song.Name() {
-						os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, song.Name()))
+						os.Remove(fmt.Sprintf("%s/%s", dj.conf.Cache.CacheDir, song.Name()))
 					}
 				} else {
-					os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, song.Name()))
+					os.Remove(fmt.Sprintf("%s/%s", dj.conf.Cache.CacheDir, song.Name()))
 				}
 			}
 		}
@@ -87,15 +87,15 @@ func (c *SongCache) ClearExpired() {
 }
 
 func (c *SongCache) ClearOldest() error {
-	songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+	songs, _ := ioutil.ReadDir(dj.conf.Cache.CacheDir)
 	sort.Sort(ByAge(songs))
 	if dj.queue.Len() > 0 {
 		if (dj.queue.CurrentSong().Filename()) != songs[0].Name() {
-			return os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, songs[0].Name()))
+			return os.Remove(fmt.Sprintf("%s/%s", dj.conf.Cache.CacheDir, songs[0].Name()))
 		} else {
 			return errors.New("Song is currently playing.")
 		}
 	} else {
-		return os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, songs[0].Name()))
+		return os.Remove(fmt.Sprintf("%s/%s", dj.conf.Cache.CacheDir, songs[0].Name()))
 	}
 }

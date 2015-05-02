@@ -443,11 +443,10 @@ func kill() {
 
 // Deletes songs from ~/.mumbledj/songs.
 func deleteSongs() error {
-	songsDir := fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir)
-	if err := os.RemoveAll(songsDir); err != nil {
+	if err := os.RemoveAll(dj.conf.Cache.CacheDir); err != nil {
 		return errors.New("An error occurred while deleting the audio files.")
 	} else {
-		if err := os.Mkdir(songsDir, 0777); err != nil {
+		if err := os.Mkdir(dj.conf.Cache.CacheDir, 0777); err != nil {
 			return errors.New("An error occurred while recreating the songs directory.")
 		}
 		return nil

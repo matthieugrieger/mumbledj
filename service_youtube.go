@@ -88,8 +88,8 @@ func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, e
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *YouTubeSong) Download() error {
-	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", dj.conf.Cache.CacheDir, s.Filename())); os.IsNotExist(err) {
+		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`%s/%s`, dj.conf.Cache.CacheDir, s.Filename()), "--format", "m4a", "--", s.ID())
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
@@ -104,7 +104,7 @@ func (s *YouTubeSong) Download() error {
 // Play plays the song. Once the song is playing, a notification is displayed in a text message that features the video
 // thumbnail, URL, title, duration, and submitter.
 func (s *YouTubeSong) Play() {
-	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID()), dj.queue.OnSongFinished); err != nil {
+	if err := dj.audioStream.Play(fmt.Sprintf("%s/%s.m4a", dj.conf.Cache.CacheDir, s.ID()), dj.queue.OnSongFinished); err != nil {
 		panic(err)
 	} else {
 		if s.Playlist() == nil {
@@ -149,7 +149,7 @@ func (s *YouTubeSong) Play() {
 // Delete deletes the song from ~/.mumbledj/songs if the cache is disabled.
 func (s *YouTubeSong) Delete() error {
 	if dj.conf.Cache.Enabled == false {
-		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
+		filePath := fmt.Sprintf("%s/%s.m4a", dj.conf.Cache.CacheDir, s.ID())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
 				return nil

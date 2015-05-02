@@ -9,6 +9,7 @@ MumbleDJ
   * [YouTube API Keys](#youtube-api-keys)
   * [Setup Guide](#setup-guide)
   * [Update Guide](#update-guide)
+* [Troubleshooting](#troubleshooting)
 * [Author](#author)
 * [License](#license)
 * [Thanks](#thanks)
@@ -116,6 +117,36 @@ $ make install
 **NOTE**: It is *very* important that you use `make` instead of `make build` when updating MumbleDJ as the first option will grab the latest updates from MumbleDJ's dependencies.
 
 **3)** Check to make sure your configuration in `~/.mumbledj/config/mumbledj.gcfg` is the same as before. If it is back to the default, a backup should have been created at `~/.mumbledj/config/mumbledj_backup.gcfg` so you can copy the values back over.
+
+## TROUBLESHOOTING
+**YouTube videos downloads work when using `youtube-dl` but not within MumbleDJ.**
+
+This is likely related to how you set up your Google account for the YouTube API. Specifically, make sure you you try using an IPv4 server address in the list of allowed IPs if you were using IPv6 previously.
+
+**Whenever the `!add` command is used I receive the following message in chat: "The audio download for this video failed. YouTube has likely not generated the audio files for this video yet. Skipping to the next song!"**
+
+First, make sure you have `youtube-dl` installed and it is the latest version. MumbleDJ makes use of `youtube-dl`'s `--` commandline argument which is not supported in older versions.
+
+If this doesn't fix the issue, try the following fix from [@MrKrucible](https://github.com/MrKrucible):
+
+>I fixed it by following the instructions here to set default arguments: https://github.com/rg3/youtube-dl/blob/master/README.md#configuration
+
+>For the lazy...
+>- 1. First make ```~/.config/youtube-dl/``` and create a file named ```config```.
+>- 2. Then put ```--force-ipv4``` into the config. Nothing else needs to be in there unless you want to add more arguments.
+
+**I receive the following error when compiling MumbleDJ: "undefined: tls.DialWithDialer"**
+
+This issue is caused by having an outdated version of Go. Make sure you are using the latest available version of Go.
+
+**I can't get MumbleDJ to compile correctly under `gccgo`**
+
+Unfortunately MumbleDJ likely will not work with `gccgo`. MumbleDJ is developed and tested on vanilla Go.
+
+**I receive the following message when compiling MumbleDJ: "local.h:6:19: error: AL/alc.h: No such file or directory"**
+
+Don't worry about it. The compilation went through successfully, OpenAL is not needed by the bot.
+
 
 ## AUTHOR
 [Matthieu Grieger](http://matthieugrieger.com)

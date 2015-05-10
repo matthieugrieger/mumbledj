@@ -77,12 +77,16 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 	var minutes, seconds int64
 	if strings.Contains(duration, "M") {
 		minutes, _ = strconv.ParseInt(duration[2:strings.Index(duration, "M")], 10, 32)
+		if strings.Contains(duration, "S") {
+			seconds, _ = strconv.ParseInt(duration[strings.Index(duration, "M")+1:len(duration)-1], 10, 32)
+		} else {
+			seconds = 0
+		}
+	} else if strings.Contains(duration, "S") {
+		minutes = 0
+		seconds, _ = strconv.ParseInt(duration[2:len(duration)-1], 10, 32)
 	} else {
 		minutes = 0
-	}
-	if strings.Contains(duration, "S") {
-		seconds, _ = strconv.ParseInt(duration[strings.Index(duration, "M")+1:len(duration)-1], 10, 32)
-	} else {
 		seconds = 0
 	}
 

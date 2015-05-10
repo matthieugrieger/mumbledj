@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### May 9, 2015 -- `v2.7.1`
+* Added support for YouTube offsets. This means that YouTube URLs with the `t` parameter will start at the time specified in the URL instead of the beginning.
+* Cleaned up comments in some files and removed some unnecessary code.
+* Fixed a bug in which a duration of 0:00 was shown for songs that were less than a minute long.
+
 ### April 17, 2015 -- `v2.7.0`
 * Migrated all YouTube API calls to YouTube Data API v3. This means that you **MUST** follow the instructions in the following link if you were using a previous version of MumbleDJ: https://github.com/matthieugrieger/mumbledj#youtube-api-keys.
 * Made the SongQueue much more flexible. These changes will allow easy addition of support for other music services.

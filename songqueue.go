@@ -7,7 +7,11 @@
 
 package main
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"time"
+)
 
 // SongQueue type declaration.
 type SongQueue struct {
@@ -75,6 +79,8 @@ func (q *SongQueue) Traverse(visit func(i int, s Song)) {
 
 // OnSongFinished event. Deletes Song that just finished playing, then queues the next Song (if exists).
 func (q *SongQueue) OnSongFinished() {
+	resetOffset, _ := time.ParseDuration(fmt.Sprintf("%ds", 0))
+	dj.audioStream.Offset = resetOffset
 	if q.Len() != 0 {
 		if dj.queue.CurrentSong().DontSkip() == true {
 			dj.queue.CurrentSong().SetDontSkip(false)

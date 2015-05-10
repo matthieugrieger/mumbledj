@@ -45,12 +45,8 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 		fmt.Println("Channel doesn't exist or one was not provided, staying in root channel...")
 	}
 
-	if audioStream, err := gumble_ffmpeg.New(dj.client); err == nil {
-		dj.audioStream = audioStream
-		dj.audioStream.Volume = dj.conf.Volume.DefaultVolume
-	} else {
-		panic(err)
-	}
+	dj.audioStream = gumble_ffmpeg.New(dj.client)
+	dj.audioStream.Volume = dj.conf.Volume.DefaultVolume
 
 	dj.client.AudioEncoder.SetApplication(gopus.Audio)
 

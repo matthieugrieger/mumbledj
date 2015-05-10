@@ -164,27 +164,32 @@ func add(user *gumble.User, username, url string) {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
 		youtubePatterns := []string{
-			`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)`,
-			`https?:\/\/youtube\.com\/watch\?v=([\w-]+)`,
-			`https?:\/\/youtu.be\/([\w-]+)`,
-			`https?:\/\/youtube.com\/v\/([\w-]+)`,
-			`https?:\/\/www.youtube.com\/v\/([\w-]+)`,
+			`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+			`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+			`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+			`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+			`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
 		}
 		matchFound := false
-		shortUrl := ""
+		shortURL := ""
+		startOffset := ""
 
 		for _, pattern := range youtubePatterns {
 			if re, err := regexp.Compile(pattern); err == nil {
 				if re.MatchString(url) {
 					matchFound = true
-					shortUrl = re.FindStringSubmatch(url)[1]
+					matches := re.FindAllStringSubmatch(url, -1)
+					shortURL = matches[0][1]
+					if len(matches[0]) == 3 {
+						startOffset = matches[0][2]
+					}
 					break
 				}
 			}
 		}
 
 		if matchFound {
-			if newSong, err := NewYouTubeSong(username, shortUrl, nil); err == nil {
+			if newSong, err := NewYouTubeSong(username, shortURL, startOffset, nil); err == nil {
 				dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
 				if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
 					if err := dj.queue.CurrentSong().Download(); err == nil {
@@ -206,9 +211,9 @@ func add(user *gumble.User, username, url string) {
 			if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
 				if re.MatchString(url) {
 					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
-						shortUrl = re.FindStringSubmatch(url)[1]
+						shortURL = re.FindStringSubmatch(url)[1]
 						oldLength := dj.queue.Len()
-						if newPlaylist, err := NewYouTubePlaylist(username, shortUrl); err == nil {
+						if newPlaylist, err := NewYouTubePlaylist(username, shortURL); err == nil {
 							dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
 							if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
 								if err := dj.queue.CurrentSong().Download(); err == nil {

@@ -17,8 +17,10 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jmoiron/jsonq"
+	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
 // ------------
@@ -30,6 +32,7 @@ type YouTubeSong struct {
 	submitter string
 	title     string
 	id        string
+	offset    int
 	filename  string
 	duration  string
 	thumbnail string
@@ -40,13 +43,31 @@ type YouTubeSong struct {
 
 // NewYouTubeSong gathers the metadata for a song extracted from a YouTube video, and returns
 // the song.
-func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
+func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
+	}
+
+	var offsetMinutes, offsetSeconds int64
+	if offset != "" {
+		if strings.Contains(offset, "m") {
+			offsetMinutes, _ = strconv.ParseInt(offset[3:strings.Index(offset, "m")], 10, 32)
+			if strings.Contains(offset, "s") {
+				offsetSeconds, _ = strconv.ParseInt(offset[strings.Index(offset, "m")+1:strings.Index(offset, "s")], 10, 32)
+			} else {
+				offsetSeconds = 0
+			}
+		} else if strings.Contains(offset, "s") {
+			offsetMinutes = 0
+			offsetSeconds, _ = strconv.ParseInt(offset[3:strings.Index(offset, "s")], 10, 32)
+		}
+	} else {
+		offsetMinutes = 0
+		offsetSeconds = 0
 	}
 
 	title, _ := apiResponse.String("items", "0", "snippet", "title")
@@ -64,14 +85,18 @@ func NewYouTubeSong(user, id string, playlist *YouTubePlaylist) (*YouTubeSong, e
 	} else {
 		seconds = 0
 	}
+
+	combinedMinutes := minutes - offsetMinutes
+	combinedSeconds := seconds - offsetSeconds
 	totalSeconds := int((minutes * 60) + seconds)
-	durationString := fmt.Sprintf("%d:%02d", minutes, seconds)
+	durationString := fmt.Sprintf("%d:%02d", combinedMinutes, combinedSeconds)
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 		song := &YouTubeSong{
 			submitter: user,
 			title:     title,
 			id:        id,
+			offset:    int((offsetMinutes * 60) + offsetSeconds),
 			filename:  id + ".m4a",
 			duration:  durationString,
 			thumbnail: thumbnail,
@@ -104,7 +129,12 @@ func (s *YouTubeSong) Download() error {
 // Play plays the song. Once the song is playing, a notification is displayed in a text message that features the video
 // thumbnail, URL, title, duration, and submitter.
 func (s *YouTubeSong) Play() {
-	if err := dj.audioStream.Play(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID()), dj.queue.OnSongFinished); err != nil {
+	if s.offset != 0 {
+		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", s.offset))
+		dj.audioStream.Offset = offsetDuration
+	}
+	dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename()))
+	if err := dj.audioStream.Play(); err != nil {
 		panic(err)
 	} else {
 		if s.Playlist() == nil {
@@ -143,6 +173,10 @@ func (s *YouTubeSong) Play() {
 			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
 				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
 		}
+		go func() {
+			dj.audioStream.Wait()
+			dj.queue.OnSongFinished()
+		}()
 	}
 }
 

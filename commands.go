@@ -18,8 +18,9 @@ import (
 	"github.com/layeh/gumble/gumble"
 )
 
-// Called on text message event. Checks the message for a command string, and processes it accordingly if
-// it contains a command.
+// parseCommand views incoming chat messages and determines if there is a valid command within them.
+// If a command exists, the arguments (if any) will be parsed and sent to the appropriate helper
+// function to perform the command's task.
 func parseCommand(user *gumble.User, username, command string) {
 	var com, argument string
 	split := strings.Split(command, "\n")
@@ -157,7 +158,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 }
 
-// Performs add functionality. Checks input URL for YouTube format, and adds
+// add performs !add functionality. Checks input URL for YouTube format, and adds
 // the URL to the queue if the format matches.
 func add(user *gumble.User, username, url string) {
 	if url == "" {
@@ -238,7 +239,7 @@ func add(user *gumble.User, username, url string) {
 	}
 }
 
-// Performs skip functionality. Adds a skip to the skippers slice for the current song, and then
+// skip performs !skip functionality. Adds a skip to the skippers slice for the current song, and then
 // evaluates if a skip should be performed. Both skip and forceskip are implemented here.
 func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 	if dj.audioStream.IsPlaying() {
@@ -306,12 +307,12 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 	}
 }
 
-// Performs help functionality. Displays a list of valid commands.
+// help performs !help functionality. Displays a list of valid commands.
 func help(user *gumble.User) {
 	dj.SendPrivateMessage(user, HELP_HTML)
 }
 
-// Performs volume functionality. Checks input value against LowestVolume and HighestVolume from
+// volume performs !volume functionality. Checks input value against LowestVolume and HighestVolume from
 // config to determine if the volume should be applied. If in the correct range, the new volume
 // is applied and is immediately in effect.
 func volume(user *gumble.User, username, value string) {
@@ -332,7 +333,7 @@ func volume(user *gumble.User, username, value string) {
 	}
 }
 
-// Performs move functionality. Determines if the supplied channel is valid and moves the bot
+// move performs !move functionality. Determines if the supplied channel is valid and moves the bot
 // to the channel if it is.
 func move(user *gumble.User, channel string) {
 	if channel == "" {
@@ -346,14 +347,14 @@ func move(user *gumble.User, channel string) {
 	}
 }
 
-// Performs reload functionality. Tells command submitter if the reload completed successfully.
+// reload performs !reload functionality. Tells command submitter if the reload completed successfully.
 func reload(user *gumble.User) {
 	if err := loadConfiguration(); err == nil {
 		dj.SendPrivateMessage(user, CONFIG_RELOAD_SUCCESS_MSG)
 	}
 }
 
-// Performs reset functionality. Clears the song queue, stops playing audio, and deletes all
+// reset performs !reset functionality. Clears the song queue, stops playing audio, and deletes all
 // remaining songs in the ~/.mumbledj/songs directory.
 func reset(username string) {
 	dj.queue.queue = dj.queue.queue[:0]
@@ -369,7 +370,7 @@ func reset(username string) {
 	}
 }
 
-// Performs numsongs functionality. Uses the SongQueue traversal function to traverse the
+// numSongs performs !numsongs functionality. Uses the SongQueue traversal function to traverse the
 // queue with a function call that increments a counter. Once finished, the bot outputs
 // the number of songs in the queue to chat.
 func numSongs() {
@@ -380,7 +381,7 @@ func numSongs() {
 	dj.client.Self.Channel.Send(fmt.Sprintf(NUM_SONGS_HTML, songCount), false)
 }
 
-// Performs nextsong functionality. Uses the SongQueue PeekNext function to peek at the next
+// nextSong performs !nextsong functionality. Uses the SongQueue PeekNext function to peek at the next
 // item if it exists. The user will then be sent a message containing the title and submitter
 // of the next item if it exists.
 func nextSong(user *gumble.User) {
@@ -391,7 +392,7 @@ func nextSong(user *gumble.User) {
 	}
 }
 
-// Performs currentsong functionality. Sends the user who submitted the currentsong command
+// currentSong performs !currentsong functionality. Sends the user who submitted the currentsong command
 // information about the song currently playing.
 func currentSong(user *gumble.User) {
 	if dj.audioStream.IsPlaying() {
@@ -406,13 +407,13 @@ func currentSong(user *gumble.User) {
 	}
 }
 
-// Performs setcomment functionality. Sets the bot's comment to whatever text is supplied in the argument.
+// setComment performs !setcomment functionality. Sets the bot's comment to whatever text is supplied in the argument.
 func setComment(user *gumble.User, comment string) {
 	dj.client.Self.SetComment(comment)
 	dj.SendPrivateMessage(user, COMMENT_UPDATED_MSG)
 }
 
-// Performs numcached functionality. Displays the number of songs currently cached on disk at ~/.mumbledj/songs.
+// numCached performs !numcached functionality. Displays the number of songs currently cached on disk at ~/.mumbledj/songs.
 func numCached(user *gumble.User) {
 	if dj.conf.Cache.Enabled {
 		dj.cache.Update()
@@ -422,7 +423,7 @@ func numCached(user *gumble.User) {
 	}
 }
 
-// Performs cachesize functionality. Displays the total file size of the cached audio files.
+// cacheSize performs !cachesize functionality. Displays the total file size of the cached audio files.
 func cacheSize(user *gumble.User) {
 	if dj.conf.Cache.Enabled {
 		dj.cache.Update()
@@ -432,7 +433,7 @@ func cacheSize(user *gumble.User) {
 	}
 }
 
-// Performs kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any
+// kill performs !kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any
 // excess m4a files. The bot then safely disconnects from the server.
 func kill() {
 	if err := deleteSongs(); err != nil {
@@ -446,15 +447,14 @@ func kill() {
 	}
 }
 
-// Deletes songs from ~/.mumbledj/songs.
+// deleteSongs deletes songs from ~/.mumbledj/songs.
 func deleteSongs() error {
 	songsDir := fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir)
 	if err := os.RemoveAll(songsDir); err != nil {
 		return errors.New("An error occurred while deleting the audio files.")
-	} else {
-		if err := os.Mkdir(songsDir, 0777); err != nil {
-			return errors.New("An error occurred while recreating the songs directory.")
-		}
-		return nil
 	}
+	if err := os.Mkdir(songsDir, 0777); err != nil {
+		return errors.New("An error occurred while recreating the songs directory.")
+	}
+	return nil
 }

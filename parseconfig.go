@@ -14,7 +14,7 @@ import (
 	"code.google.com/p/gcfg"
 )
 
-// Golang struct representation of mumbledj.gcfg file structure for parsing.
+// DjConfig is a Golang struct representation of mumbledj.gcfg file structure for parsing.
 type DjConfig struct {
 	General struct {
 		CommandPrefix     string
@@ -77,8 +77,7 @@ type DjConfig struct {
 func loadConfiguration() error {
 	if gcfg.ReadFileInto(&dj.conf, fmt.Sprintf("%s/.mumbledj/config/mumbledj.gcfg", dj.homeDir)) == nil {
 		return nil
-	} else {
-		fmt.Printf("%s/.mumbledj/config/mumbledj.gcfg\n", dj.homeDir)
-		return errors.New("Configuration load failed.")
 	}
+	fmt.Printf("%s/.mumbledj/config/mumbledj.gcfg\n", dj.homeDir)
+	return errors.New("Configuration load failed.")
 }

@@ -21,7 +21,8 @@ import (
 	"github.com/layeh/gumble/gumbleutil"
 )
 
-// MumbleDJ type declaration
+// mumbledj is a struct that keeps track of all aspects of the bot's current
+// state.
 type mumbledj struct {
 	config         gumble.Config
 	client         *gumble.Client
@@ -106,7 +107,7 @@ func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 	}
 }
 
-// Checks if username has the permissions to execute a command. Permissions are specified in
+// HasPermission checks if username has the permissions to execute a command. Permissions are specified in
 // mumbledj.gcfg.
 func (dj *mumbledj) HasPermission(username string, command bool) bool {
 	if dj.conf.Permissions.AdminsEnabled && command {
@@ -116,12 +117,11 @@ func (dj *mumbledj) HasPermission(username string, command bool) bool {
 			}
 		}
 		return false
-	} else {
-		return true
 	}
+	return true
 }
 
-// Sends a private message to a user. Essentially just checks if a user is still in the server
+// SendPrivateMessage sends a private message to a user. Essentially just checks if a user is still in the server
 // before sending them the message.
 func (dj *mumbledj) SendPrivateMessage(user *gumble.User, message string) {
 	if targetUser := dj.client.Self.Channel.Users.Find(user.Name); targetUser != nil {
@@ -146,7 +146,7 @@ var dj = mumbledj{
 	cache:         NewSongCache(),
 }
 
-// Main function, but only really performs startup tasks. Grabs and parses commandline
+// main primarily performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
 

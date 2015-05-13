@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### May 12, 2015 -- `v2.7.2`
+* Fixed incorrect values shown in timestamp for videos over an hour long.
+* Reworked timestamp parsing.
+
 ### May 9, 2015 -- `v2.7.1`
 * Added support for YouTube offsets. This means that YouTube URLs with the `t` parameter will start at the time specified in the URL instead of the beginning.
 * Cleaned up comments in some files and removed some unnecessary code.

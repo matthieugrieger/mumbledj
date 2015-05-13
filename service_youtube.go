@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -52,55 +53,63 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 		return nil, err
 	}
 
-	var offsetMinutes, offsetSeconds int64
+	var offsetDays, offsetHours, offsetMinutes, offsetSeconds int64
 	if offset != "" {
-		if strings.Contains(offset, "m") {
-			offsetMinutes, _ = strconv.ParseInt(offset[3:strings.Index(offset, "m")], 10, 32)
-			if strings.Contains(offset, "s") {
-				offsetSeconds, _ = strconv.ParseInt(offset[strings.Index(offset, "m")+1:strings.Index(offset, "s")], 10, 32)
-			} else {
-				offsetSeconds = 0
-			}
-		} else if strings.Contains(offset, "s") {
-			offsetMinutes = 0
-			offsetSeconds, _ = strconv.ParseInt(offset[3:strings.Index(offset, "s")], 10, 32)
+		offsetExp := regexp.MustCompile(`t\=(?P<days>\d+d)?(?P<hours>\d+h)?(?P<minutes>\d+m)?(?P<seconds>\d+s)?`)
+		offsetMatch := offsetExp.FindStringSubmatch(offset)
+		offsetResult := make(map[string]string)
+		for i, name := range offsetExp.SubexpNames() {
+			offsetResult[name] = offsetMatch[i]
 		}
-	} else {
-		offsetMinutes = 0
-		offsetSeconds = 0
+
+		if offsetResult["days"] != "" {
+			offsetDays, _ = strconv.ParseInt(strings.TrimSuffix(offsetResult["days"], "d"), 10, 32)
+		}
+		if offsetResult["hours"] != "" {
+			offsetHours, _ = strconv.ParseInt(strings.TrimSuffix(offsetResult["hours"], "h"), 10, 32)
+		}
+		if offsetResult["minutes"] != "" {
+			offsetMinutes, _ = strconv.ParseInt(strings.TrimSuffix(offsetResult["minutes"], "m"), 10, 32)
+		}
+		if offsetResult["seconds"] != "" {
+			offsetSeconds, _ = strconv.ParseInt(strings.TrimSuffix(offsetResult["seconds"], "s"), 10, 32)
+		}
 	}
 
 	title, _ := apiResponse.String("items", "0", "snippet", "title")
 	thumbnail, _ := apiResponse.String("items", "0", "snippet", "thumbnails", "high", "url")
 	duration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
 
-	var minutes, seconds int64
-	if strings.Contains(duration, "M") {
-		minutes, _ = strconv.ParseInt(duration[2:strings.Index(duration, "M")], 10, 32)
-		if strings.Contains(duration, "S") {
-			seconds, _ = strconv.ParseInt(duration[strings.Index(duration, "M")+1:len(duration)-1], 10, 32)
-		} else {
-			seconds = 0
-		}
-	} else if strings.Contains(duration, "S") {
-		minutes = 0
-		seconds, _ = strconv.ParseInt(duration[2:len(duration)-1], 10, 32)
-	} else {
-		minutes = 0
-		seconds = 0
+	var days, hours, minutes, seconds int64
+	timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
+	timestampMatch := timestampExp.FindStringSubmatch(duration)
+	timestampResult := make(map[string]string)
+	for i, name := range timestampExp.SubexpNames() {
+		timestampResult[name] = timestampMatch[i]
 	}
 
-	combinedMinutes := minutes - offsetMinutes
-	combinedSeconds := seconds - offsetSeconds
-	totalSeconds := int((minutes * 60) + seconds)
-	durationString := fmt.Sprintf("%d:%02d", combinedMinutes, combinedSeconds)
+	if timestampResult["days"] != "" {
+		days, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["days"], "D"), 10, 32)
+	}
+	if timestampResult["hours"] != "" {
+		hours, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["hours"], "H"), 10, 32)
+	}
+	if timestampResult["minutes"] != "" {
+		minutes, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["minutes"], "M"), 10, 32)
+	}
+	if timestampResult["seconds"] != "" {
+		seconds, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["seconds"], "S"), 10, 32)
+	}
+
+	totalSeconds := int((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
+	durationString := fmt.Sprintf("%02d:%02d:%02d:%02d", days, hours, minutes, seconds)
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 		song := &YouTubeSong{
 			submitter: user,
 			title:     title,
 			id:        id,
-			offset:    int((offsetMinutes * 60) + offsetSeconds),
+			offset:    int((offsetDays * 86400) + (offsetHours * 3600) + (offsetMinutes * 60) + offsetSeconds),
 			filename:  id + ".m4a",
 			duration:  durationString,
 			thumbnail: thumbnail,
@@ -332,19 +341,29 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 		}
 		videoDuration, _ := durationResponse.String("items", "0", "contentDetails", "duration")
 
-		var minutes, seconds int64
-		if strings.Contains(videoDuration, "M") {
-			minutes, _ = strconv.ParseInt(videoDuration[2:strings.Index(videoDuration, "M")], 10, 32)
-		} else {
-			minutes = 0
+		var days, hours, minutes, seconds int64
+		timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
+		timestampMatch := timestampExp.FindStringSubmatch(videoDuration)
+		timestampResult := make(map[string]string)
+		for i, name := range timestampExp.SubexpNames() {
+			timestampResult[name] = timestampMatch[i]
 		}
-		if strings.Contains(videoDuration, "S") {
-			seconds, _ = strconv.ParseInt(videoDuration[strings.Index(videoDuration, "M")+1:len(videoDuration)-1], 10, 32)
-		} else {
-			seconds = 0
+
+		if timestampResult["days"] != "" {
+			days, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["days"], "D"), 10, 32)
 		}
-		totalSeconds := int((minutes * 60) + seconds)
-		durationString := fmt.Sprintf("%d:%02d", minutes, seconds)
+		if timestampResult["hours"] != "" {
+			hours, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["hours"], "H"), 10, 32)
+		}
+		if timestampResult["minutes"] != "" {
+			minutes, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["minutes"], "M"), 10, 32)
+		}
+		if timestampResult["seconds"] != "" {
+			seconds, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["seconds"], "S"), 10, 32)
+		}
+
+		totalSeconds := int((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
+		durationString := fmt.Sprintf("%02d:%02d:%02d:%02d", days, hours, minutes, seconds)
 
 		if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 			playlistSong := &YouTubeSong{

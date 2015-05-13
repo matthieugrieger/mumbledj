@@ -102,7 +102,16 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 	}
 
 	totalSeconds := int((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
-	durationString := fmt.Sprintf("%02d:%02d:%02d:%02d", days, hours, minutes, seconds)
+	var durationString string
+	if hours != 0 {
+		if days != 0 {
+			durationString = fmt.Sprintf("%d:%02d:%02d:%02d", days, hours, minutes, seconds)
+		} else {
+			durationString = fmt.Sprintf("%d:%02d:%02d", hours, minutes, seconds)
+		}
+	} else {
+		durationString = fmt.Sprintf("%d:%02d", minutes, seconds)
+	}
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 		song := &YouTubeSong{
@@ -363,7 +372,16 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 		}
 
 		totalSeconds := int((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
-		durationString := fmt.Sprintf("%02d:%02d:%02d:%02d", days, hours, minutes, seconds)
+		var durationString string
+		if hours != 0 {
+			if days != 0 {
+				durationString = fmt.Sprintf("%d:%02d:%02d:%02d", days, hours, minutes, seconds)
+			} else {
+				durationString = fmt.Sprintf("%d:%02d:%02d", hours, minutes, seconds)
+			}
+		} else {
+			durationString = fmt.Sprintf("%d:%02d", minutes, seconds)
+		}
 
 		if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
 			playlistSong := &YouTubeSong{

@@ -15,9 +15,19 @@ MumbleDJ
 * [Thanks](#thanks)
 
 ## USAGE
-`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="" -channel=root -cert="" -key="" -insecure`
+`$ mumbledj -server=localhost -port=64738 -username=MumbleDJ -password="hunter2"`
 
-All parameters are optional, the example above shows the default values for each field.
+All commandline parameters are optional. Below are descriptions of all the available options:
+
+* `-server`: The address of the Mumble server. Defaults to localhost.
+* `-port`: The port number of the Mumble server. Defaults to 64738.
+* `-username`: The username for the bot. Defaults to MumbleDJ.
+* `-password`: The password for the Mumble server, if exists. Defaults to no password.
+* `-channel`: The channel the bot enters after connecting to the Mumble server. Defaults to root.
+* `-cert`: Path to user PEM certificate. Defaults to no cert.
+* `-key`: Path to user PEM key. Defaults to no key.
+* `-insecure`: If included, the bot will not check the certs for the server. Try using this commandline flag if you are having connection issues.
+* `-accesstokens`: List of access tokens for the bot separated by spaces. Defaults to no access tokens.
 
 ## FEATURES
 * Plays audio from both YouTube videos and YouTube playlists!

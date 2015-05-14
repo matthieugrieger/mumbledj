@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"strings"
 	"time"
 
 	"github.com/layeh/gopus"
@@ -27,7 +28,7 @@ type mumbledj struct {
 	config         gumble.Config
 	client         *gumble.Client
 	keepAlive      chan bool
-	defaultChannel string
+	defaultChannel []string
 	conf           DjConfig
 	queue          *SongQueue
 	audioStream    *gumble_ffmpeg.Stream
@@ -40,8 +41,8 @@ type mumbledj struct {
 // via commandline args, and moves to root channel if the channel does not exist. The current
 // user's homedir path is stored, configuration is loaded, and the audio stream is set up.
 func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
-	if dj.client.Channels.Find(dj.defaultChannel) != nil {
-		dj.client.Self.Move(dj.client.Channels.Find(dj.defaultChannel))
+	if dj.client.Channels.Find(dj.defaultChannel...) != nil {
+		dj.client.Self.Move(dj.client.Channels.Find(dj.defaultChannel...))
 	} else {
 		fmt.Println("Channel doesn't exist or one was not provided, staying in root channel...")
 	}
@@ -162,7 +163,7 @@ func main() {
 		panic(err)
 	}
 
-	var address, port, username, password, channel, pemCert, pemKey string
+	var address, port, username, password, channel, pemCert, pemKey, accesstokens string
 	var insecure bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
@@ -172,6 +173,7 @@ func main() {
 	flag.StringVar(&channel, "channel", "root", "default channel for MumbleDJ")
 	flag.StringVar(&pemCert, "cert", "", "path to user PEM certificate for MumbleDJ")
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
+	flag.StringVar(&accesstokens, "accesstokens", "", "list of access tokens for channel auth")
 	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
 	flag.Parse()
 
@@ -179,6 +181,7 @@ func main() {
 		Username: username,
 		Password: password,
 		Address:  address + ":" + port,
+		Tokens:   strings.Split(accesstokens, " "),
 	}
 	dj.client = gumble.NewClient(&dj.config)
 
@@ -197,7 +200,7 @@ func main() {
 		}
 	}
 
-	dj.defaultChannel = channel
+	dj.defaultChannel = strings.Split(channel, "/")
 
 	dj.client.Attach(gumbleutil.Listener{
 		Connect:     dj.OnConnect,

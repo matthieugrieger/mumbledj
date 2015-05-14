@@ -339,10 +339,10 @@ func move(user *gumble.User, channel string) {
 	if channel == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
-		if dj.client.Channels.Find(channel) != nil {
-			dj.client.Self.Move(dj.client.Channels.Find(channel))
+		if channels := strings.Split(channel, "/"); dj.client.Channels.Find(channels...) != nil {
+			dj.client.Self.Move(dj.client.Channels.Find(channels...))
 		} else {
-			dj.SendPrivateMessage(user, CHANNEL_DOES_NOT_EXIST_MSG)
+			dj.SendPrivateMessage(user, CHANNEL_DOES_NOT_EXIST_MSG+" "+channel)
 		}
 	}
 }

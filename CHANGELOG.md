@@ -1,6 +1,11 @@
 MumbleDJ Changelog
 ==================
 
+### May 14, 2015 -- `v2.7.3`
+* Fixed `!move` not working for subchannels (thanks [@mkbwong](https://github.com/mkbwong)).
+* Fixed MumbleDJ showing invalid YouTube ID error message in chat when an invalid YouTube API key is supplied (thanks [@fiveofeight](https://github.com/fiveofeight)).
+* Fixed MumbleDJ showing invalid YouTube ID error message in chat when a song exceeds the allowed time duration.
+
 ### May 12, 2015 -- `v2.7.2`
 * Fixed incorrect values shown in timestamp for videos over an hour long.
 * Reworked timestamp parsing.

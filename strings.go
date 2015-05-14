@@ -7,6 +7,9 @@
 
 package main
 
+// Message shown to users when the bot has an invalid YouTube API key.
+const INVALID_API_KEY = "MumbleDJ does not have a valid YouTube API key."
+
 // Message shown to users when they do not have permission to execute a command.
 const NO_PERMISSION_MSG = "You do not have permission to execute that command."
 

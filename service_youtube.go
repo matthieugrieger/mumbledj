@@ -59,7 +59,9 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 		offsetMatch := offsetExp.FindStringSubmatch(offset)
 		offsetResult := make(map[string]string)
 		for i, name := range offsetExp.SubexpNames() {
-			offsetResult[name] = offsetMatch[i]
+			if i < len(offsetMatch) {
+				offsetResult[name] = offsetMatch[i]
+			}
 		}
 
 		if offsetResult["days"] != "" {
@@ -85,7 +87,9 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 	timestampMatch := timestampExp.FindStringSubmatch(duration)
 	timestampResult := make(map[string]string)
 	for i, name := range timestampExp.SubexpNames() {
-		timestampResult[name] = timestampMatch[i]
+		if i < len(timestampMatch) {
+			timestampResult[name] = timestampMatch[i]
+		}
 	}
 
 	if timestampResult["days"] != "" {
@@ -354,8 +358,11 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 		timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
 		timestampMatch := timestampExp.FindStringSubmatch(videoDuration)
 		timestampResult := make(map[string]string)
+		fmt.Println(timestampExp.SubexpNames())
 		for i, name := range timestampExp.SubexpNames() {
-			timestampResult[name] = timestampMatch[i]
+			if i < len(timestampMatch) {
+				timestampResult[name] = timestampMatch[i]
+			}
 		}
 
 		if timestampResult["days"] != "" {

@@ -358,7 +358,6 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 		timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
 		timestampMatch := timestampExp.FindStringSubmatch(videoDuration)
 		timestampResult := make(map[string]string)
-		fmt.Println(timestampExp.SubexpNames())
 		for i, name := range timestampExp.SubexpNames() {
 			if i < len(timestampMatch) {
 				timestampResult[name] = timestampMatch[i]

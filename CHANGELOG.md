@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### May 19, 2015 -- `v2.7.4`
+* Fixed a panic that occurred when certain YouTube playlists were added to the queue.
+
 ### May 14, 2015 -- `v2.7.3`
 * Fixed `!move` not working for subchannels (thanks [@mkbwong](https://github.com/mkbwong)).
 * Fixed MumbleDJ showing invalid YouTube ID error message in chat when an invalid YouTube API key is supplied (thanks [@fiveofeight](https://github.com/fiveofeight)).

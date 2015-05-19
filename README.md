@@ -153,7 +153,7 @@ Unfortunately MumbleDJ likely will not work with `gccgo`. MumbleDJ is developed 
 
 Don't worry about it. The compilation went through successfully, OpenAL is not needed by the bot.
 
-**I receive the following message when building MumbleDJ: "cannot create <nil>/go.o: No such file or directory"**
+**I receive the following message when building MumbleDJ: "cannot create \<nil\>/go.o: No such file or directory"**
 
 Execute the following before building:
 

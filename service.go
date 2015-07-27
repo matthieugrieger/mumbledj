@@ -46,5 +46,5 @@ type Playlist interface {
 }
 
 var services = []Service{
-	YoutubeService{},
+	new(YoutubeService),
 }

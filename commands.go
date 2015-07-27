@@ -164,7 +164,7 @@ func add(user *gumble.User, username, url string) {
 	if url == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
-		var urlService *Service
+		var urlService Service
 
 		// Checks all services to see if any can take the URL
 		for _, service := range services {

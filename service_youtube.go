@@ -62,8 +62,8 @@ func (y YouTube) URLRegex(url string) bool {
 }
 
 // Creates the requested song/playlist and adds to the queue
-func (y YouTube) NewRequest(user *gumble.User, url string) {
-
+func (y YouTube) NewRequest(user *gumble.User, url string) error {
+	return nil
 }
 
 // ------------

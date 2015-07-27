@@ -203,7 +203,7 @@ func main() {
 	}
 
 	dj.defaultChannel = strings.Split(channel, "/")
-	dj.verbose = &verbose
+	dj.verbose = verbose
 
 	dj.client.Attach(gumbleutil.Listener{
 		Connect:     dj.OnConnect,

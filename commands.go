@@ -158,12 +158,28 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 }
 
-// add performs !add functionality. Checks input URL for YouTube format, and adds
+// add performs !add functionality. Checks input URL for service, and adds
 // the URL to the queue if the format matches.
 func add(user *gumble.User, username, url string) {
 	if url == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
+		var urlService *Service
+
+		// Checks all services to see if any can take the URL
+		for _, service := range services {
+			if service.URLRegex(url) {
+				urlService = service
+			}
+		}
+
+		if urlService == nil {
+			dj.SendPrivateMessage(user, INVALID_URL_MSG)
+		}
+		//		else {
+		//			urlService.NewRequest(user, url)
+		//		}
+
 		youtubePatterns := []string{
 			`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
 			`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,

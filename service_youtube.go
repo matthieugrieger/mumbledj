@@ -24,6 +24,47 @@ import (
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
+// ---------------
+// YOUTUBE SERVICE
+// ---------------
+
+type YouTubeService struct {
+}
+
+// Name of the service
+func (yt *YoutubeService) ServiceName() string {
+	return "Youtube"
+}
+
+// Checks to see if service will accept URL
+func (yt *YoutubeService) URLRegex(url) bool {
+	youtubePatterns := []string{
+		`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+		`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+		`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+		`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+		`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+		`https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`,
+	}
+	matchFound := false
+
+	for _, pattern := range youtubePatterns {
+		if re, err := regexp.Compile(pattern); err == nil {
+			if re.MatchString(url) {
+				matchFound = true
+				break
+			}
+		}
+	}
+
+	return matchFound
+}
+
+// Creates the requested song/playlist and adds to the queue
+func (yt *YoutubeService) NewRequest(user, url) {
+
+}
+
 // ------------
 // YOUTUBE SONG
 // ------------
@@ -149,7 +190,7 @@ func (s *YouTubeSong) Download() error {
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
 
 		if dj.verbose {
-			fmt.Printf("Downloading %s\n", s.Title)
+			fmt.Printf("Downloading %s\n", s.Title())
 		}
 
 		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
@@ -433,7 +474,7 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 			}
 			dj.queue.AddSong(playlistSong)
 			if dj.verbose {
-				fmt.Printf("%s added song %s\n", playlistSong.Submitter, playlistSong.Title())
+				fmt.Printf("%s added song %s\n", playlistSong.Submitter(), playlistSong.Title())
 			}
 		}
 	}

@@ -7,6 +7,13 @@
 
 package main
 
+// Service interface. Each service should implement these functions
+type Service interface {
+	ServiceName() string
+	URLRegex(string) bool                  // Can service deal with URL
+	NewRequest(*gumble.User, string) error // Create song/playlist and add to the queue
+}
+
 // Song interface. Each service will implement these
 // functions in their Song types.
 type Song interface {
@@ -36,4 +43,8 @@ type Playlist interface {
 	SkipReached(int) bool
 	ID() string
 	Title() string
+}
+
+var services = []Service{
+	YoutubeService{},
 }

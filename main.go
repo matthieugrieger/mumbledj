@@ -155,7 +155,7 @@ var services []Service
 func main() {
 
 	PerformStartupChecks()
-	services = []Service{Youtube{}}
+	services = []Service{new(Youtube)}
 
 	if currentUser, err := user.Current(); err == nil {
 		dj.homeDir = currentUser.HomeDir

@@ -33,12 +33,12 @@ type YouTube struct {
 }
 
 // Name of the service
-func (y *Youtube) ServiceName() string {
+func (y Youtube) ServiceName() string {
 	return "Youtube"
 }
 
 // Checks to see if service will accept URL
-func (y *Youtube) URLRegex(url string) bool {
+func (y Youtube) URLRegex(url string) bool {
 	youtubePatterns := []string{
 		`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
 		`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
@@ -62,7 +62,7 @@ func (y *Youtube) URLRegex(url string) bool {
 }
 
 // Creates the requested song/playlist and adds to the queue
-func (y *Youtube) NewRequest(user *gumble.User, url string) {
+func (y Youtube) NewRequest(user *gumble.User, url string) {
 
 }
 

@@ -148,14 +148,11 @@ var dj = mumbledj{
 	cache:         NewSongCache(),
 }
 
-var services []Service
-
 // main primarily performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
 
 	PerformStartupChecks()
-	services = []Service{new(Youtube)}
 
 	if currentUser, err := user.Current(); err == nil {
 		dj.homeDir = currentUser.HomeDir

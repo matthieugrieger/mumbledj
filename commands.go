@@ -175,10 +175,9 @@ func add(user *gumble.User, username, url string) {
 
 		if urlService == nil {
 			dj.SendPrivateMessage(user, INVALID_URL_MSG)
+		} else {
+			urlService.NewRequest(user, url)
 		}
-		//		else {
-		//			urlService.NewRequest(user, url)
-		//		}
 
 		youtubePatterns := []string{
 			`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,

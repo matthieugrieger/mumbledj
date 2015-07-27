@@ -25,6 +25,15 @@ import (
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
+var youtubePlaylistPattern = `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
+var youtubeVideoPatterns = []string{
+	`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+	`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+	`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+	`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+	`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+}
+
 // ---------------
 // YOUTUBE SERVICE
 // ---------------
@@ -39,43 +48,34 @@ func (y YouTube) ServiceName() string {
 
 // Checks to see if service will accept URL
 func (y YouTube) URLRegex(url string) bool {
-	youtubePatterns := []string{
-		`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-		`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-		`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-		`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-		`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-		`https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`,
-	}
-	matchFound := false
+	return RegexpFromURL(url, append(youtubeVideoPatterns, []string{youtubePlaylistPattern}...)) != nil
+}
 
-	for _, pattern := range youtubePatterns {
+func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
+	for _, pattern := range patterns {
 		if re, err := regexp.Compile(pattern); err == nil {
 			if re.MatchString(url) {
-				matchFound = true
-				break
+				return re
 			}
 		}
 	}
-
-	return matchFound
+	return nil
 }
 
 // Creates the requested song/playlist and adds to the queue
 func (y YouTube) NewRequest(user *gumble.User, url string) error {
-	shortURL := ""
-	startOffset := ""
-	youtubePlaylistPattern := `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
-
+	var shortURL, startOffset = ""
 	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
 		if re.MatchString(url) {
 			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
 				shortURL = re.FindStringSubmatch(url)[1]
-				NewYouTubePlaylist(user.Name, shortURL)
+				_, err := NewYouTubePlaylist(user.Name, shortURL)
+				return err
 			} else {
 				return errors.New("NO_PLAYLIST_PERMISSION")
 			}
 		} else {
+			re = RegexpFromURL(url, youtubeVideoPatterns)
 			matches := re.FindAllStringSubmatch(url, -1)
 			shortURL = matches[0][1]
 			if len(matches[0]) == 3 {
@@ -83,7 +83,6 @@ func (y YouTube) NewRequest(user *gumble.User, url string) error {
 			}
 			NewYouTubeSong(user.Name, shortURL, startOffset, nil)
 		}
-		return nil
 	} else {
 		return err
 	}

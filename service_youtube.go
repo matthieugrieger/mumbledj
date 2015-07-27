@@ -71,7 +71,7 @@ func (y YouTube) NewRequest(user *gumble.User, url string) error {
 		if re.MatchString(url) {
 			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
 				shortURL = re.FindStringSubmatch(url)[1]
-				NewYouTubePlaylist(user, shortURL)
+				NewYouTubePlaylist(user.Name, shortURL)
 			} else {
 				return errors.New("NO_PLAYLIST_PERMISSION")
 			}
@@ -81,7 +81,7 @@ func (y YouTube) NewRequest(user *gumble.User, url string) error {
 			if len(matches[0]) == 3 {
 				startOffset = matches[0][2]
 			}
-			NewYouTubeSong(user, shortURL, startOffset, nil)
+			NewYouTubeSong(user.Name, shortURL, startOffset, nil)
 		}
 		return nil
 	} else {

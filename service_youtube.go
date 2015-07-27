@@ -131,6 +131,11 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
+
+		if dj.verbose {
+			fmt.Printf("%s added track %s\n", song.Submitter, song.Title())
+		}
+
 		return song, nil
 	}
 	return nil, errors.New("Song exceeds the maximum allowed duration.")
@@ -139,14 +144,31 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *YouTubeSong) Download() error {
+
+	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
+
+		if dj.verbose {
+			fmt.Printf("Downloading %s\n", s.Title)
+		}
+
 		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
 			}
+
+			if dj.verbose {
+				fmt.Printf("%s downloaded\n", s.Title())
+			}
+
 			return nil
 		}
+
+		if dj.verbose {
+			fmt.Printf("%s failed to download\n", s.Title())
+		}
+
 		return errors.New("Song download failed.")
 	}
 	return nil
@@ -199,6 +221,11 @@ func (s *YouTubeSong) Play() {
 			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
 				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
 		}
+
+		if dj.verbose {
+			fmt.Printf("Now playing %s\n", s.Title())
+		}
+
 		go func() {
 			dj.audioStream.Wait()
 			dj.queue.OnSongFinished()
@@ -212,6 +239,9 @@ func (s *YouTubeSong) Delete() error {
 		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
+				if dj.verbose {
+					fmt.Printf("Deleting %s\n", s.Title())
+				}
 				return nil
 			}
 			return errors.New("Error occurred while deleting audio file.")
@@ -402,6 +432,9 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 				dontSkip:  false,
 			}
 			dj.queue.AddSong(playlistSong)
+			if dj.verbose {
+				fmt.Printf("%s added song %s\n", playlistSong.Submitter, playlistSong.Title())
+			}
 		}
 	}
 	return playlist, nil

@@ -32,10 +32,6 @@ import (
 type YouTube struct {
 }
 
-var services = []Service{
-	Youtube{},
-}
-
 // Name of the service
 func (y Youtube) ServiceName() string {
 	return "Youtube"

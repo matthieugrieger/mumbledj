@@ -84,8 +84,9 @@ func (y YouTube) NewRequest(user *gumble.User, url string) error {
 			NewYouTubeSong(user.Name, shortURL, startOffset, nil)
 		}
 		return nil
+	} else {
+		return err
 	}
-	return err
 }
 
 // ------------

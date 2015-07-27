@@ -48,7 +48,3 @@ type Playlist interface {
 	ID() string
 	Title() string
 }
-
-var services = []Service{
-	new(*YoutubeService),
-}

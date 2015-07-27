@@ -29,16 +29,20 @@ import (
 // YOUTUBE SERVICE
 // ---------------
 
-type YouTubeService struct {
+var services = []Service{
+	Youtube{},
+}
+
+type YouTube struct {
 }
 
 // Name of the service
-func (yt YoutubeService) ServiceName() string {
+func (y Youtube) ServiceName() string {
 	return "Youtube"
 }
 
 // Checks to see if service will accept URL
-func (yt YoutubeService) URLRegex(url string) bool {
+func (y Youtube) URLRegex(url string) bool {
 	youtubePatterns := []string{
 		`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
 		`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
@@ -62,7 +66,7 @@ func (yt YoutubeService) URLRegex(url string) bool {
 }
 
 // Creates the requested song/playlist and adds to the queue
-func (yt YoutubeService) NewRequest(user *gumble.User, url string) {
+func (y Youtube) NewRequest(user *gumble.User, url string) {
 
 }
 

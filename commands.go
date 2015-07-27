@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -186,12 +185,6 @@ func add(user *gumble.User, username, url string) {
 					dj.queue.CurrentSong().Delete()
 					dj.queue.OnSongFinished()
 				}
-			} else if fmt.Sprint(err) == "Song exceeds the maximum allowed duration." {
-				dj.SendPrivateMessage(user, VIDEO_TOO_LONG_MSG)
-			} else if fmt.Sprint(err) == "Invalid API key supplied." {
-				dj.SendPrivateMessage(user, INVALID_API_KEY)
-			} else {
-				dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
 			}
 		}
 	}

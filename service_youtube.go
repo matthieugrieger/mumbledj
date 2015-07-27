@@ -29,11 +29,11 @@ import (
 // YOUTUBE SERVICE
 // ---------------
 
-var services = []Service{
-	Youtube{},
+type YouTube struct {
 }
 
-type YouTube struct {
+var services = []Service{
+	Youtube{},
 }
 
 // Name of the service

@@ -63,15 +63,14 @@ func (y YouTube) URLRegex(url string) bool {
 
 // Creates the requested song/playlist and adds to the queue
 func (y YouTube) NewRequest(user *gumble.User, url string) error {
-	var matches, shortURL, startOffset
 	youtubePlaylistPattern := `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
 	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
 		if re.MatchString(url) {
-			if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
-				shortURL = re.FindStringSubmatch(url)[1]
-				NewYouTubePlaylist(username, shortURL)
+			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
+				shortURL := re.FindStringSubmatch(url)[1]
+				NewYouTubePlaylist(user.Name, shortURL)
 			} else {
-				return errors.new("NO_PLAYLIST_PERMISSION")
+				return errors.New("NO_PLAYLIST_PERMISSION")
 			}
 		} else {
 			matches = re.FindAllStringSubmatch(url, -1)
@@ -79,7 +78,7 @@ func (y YouTube) NewRequest(user *gumble.User, url string) error {
 			if len(matches[0]) == 3 {
 				startOffset = matches[0][2]
 			}
-			NewYouTubeSong(user, shortURL, startOffset, nil)
+			NewYouTubeSong(user.Name, shortURL, startOffset, nil)
 		}
 		return nil
 	}

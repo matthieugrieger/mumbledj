@@ -7,6 +7,13 @@
 
 package main
 
+import (
+	"github.com/layeh/gopus"
+	"github.com/layeh/gumble/gumble"
+	"github.com/layeh/gumble/gumble_ffmpeg"
+	"github.com/layeh/gumble/gumbleutil"
+)
+
 // Service interface. Each service should implement these functions
 type Service interface {
 	ServiceName() string

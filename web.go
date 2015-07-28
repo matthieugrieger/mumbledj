@@ -36,7 +36,7 @@ func loadPage(title string) (*Page, error) {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	var uname = token_client[r.URL.Path[1:]]
-	if uname == nil {
+	if uname == "" {
 		fmt.Fprintf(w, "I don't know you")
 	} else {
 		fmt.Fprintf(w, "Hi there, I love %s!", uname)
@@ -50,8 +50,8 @@ func Webserver() {
 }
 
 func GetWebAddress(user *gumble.User) {
-	if client_token[user.Name] != nil {
-		token_client[client_token[user.Name]] = nil
+	if client_token[user.Name] != "" {
+		token_client[client_token[user.Name]] = ""
 	}
 	client_token[user.Name] = randSeq(10)
 	token_client[client_token[user.Name]] = user.Name

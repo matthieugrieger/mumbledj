@@ -30,12 +30,6 @@ func (q *SongQueue) AddSong(s Song) error {
 	beforeLen := q.Len()
 	q.queue = append(q.queue, s)
 	if len(q.queue) == beforeLen+1 {
-
-		// Caching as added to queue
-		if dj.conf.Cache.Enabled && dj.cache.GetCurrentTotalFileSize() < (dj.conf.Cache.MaximumSize*1048576) {
-			s.Download()
-		}
-
 		return nil
 	}
 	return errors.New("Could not add Song to the SongQueue.")

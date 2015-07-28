@@ -39,7 +39,7 @@ var youtubeVideoPatterns = []string{
 // YOUTUBE SERVICE
 // ---------------
 
-type YouTube struct {}
+type YouTube struct{}
 
 // Name of the service
 func (y YouTube) ServiceName() string {
@@ -63,16 +63,16 @@ func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
 }
 
 // Creates the requested song/playlist and adds to the queue
-func (y YouTube) NewRequest(user *gumble.User, url string) error {
+func (y YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 	var shortURL, startOffset = "", ""
 	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
 		if re.MatchString(url) {
 			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
 				shortURL = re.FindStringSubmatch(url)[1]
-				_, err := NewYouTubePlaylist(user.Name, shortURL)
-				return err
+				playlist, err := NewYouTubePlaylist(user.Name, shortURL)
+				return playlist.Title(), err
 			} else {
-				return errors.New("NO_PLAYLIST_PERMISSION")
+				return nil, errors.New("NO_PLAYLIST_PERMISSION")
 			}
 		} else {
 			re = RegexpFromURL(url, youtubeVideoPatterns)
@@ -81,11 +81,11 @@ func (y YouTube) NewRequest(user *gumble.User, url string) error {
 			if len(matches[0]) == 3 {
 				startOffset = matches[0][2]
 			}
-			_, err := NewYouTubeSong(user.Name, shortURL, startOffset, nil)
-			return err
+			song, err := NewYouTubeSong(user.Name, shortURL, startOffset, nil)
+			return song.Title(), err
 		}
 	} else {
-		return err
+		return nil, err
 	}
 }
 

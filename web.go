@@ -5,64 +5,58 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"html"
 	"strings"
 	"time"
 
 	"github.com/layeh/gumble/gumble"
 )
 
-var client_token = make(map[string]string)
-var token_client = make(map[string]string)
+var client_token = make(map[*gumble.User]string)
+var token_client = make(map[string]*gumble.User)
 var external_ip = ""
 
-type Page struct {
-	Title string
-	Body  []byte
-}
-
-func (p *Page) save() error {
-	filename := p.Title + ".txt"
-	return ioutil.WriteFile(filename, p.Body, 0600)
-}
-
-func loadPage(title string) (*Page, error) {
-	filename := title + ".txt"
-	body, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	return &Page{Title: title, Body: body}, nil
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	var uname = token_client[r.URL.Path[1:]]
-	if uname == "" {
-		fmt.Fprintf(w, "I don't know you")
-	} else {
-		fmt.Fprintf(w, "Hi there, I love %s!", uname)
-	}
-}
-
 func Webserver() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", homepage)
+	http.HandleFunc("/add", addSong)
 	http.ListenAndServe(":9563", nil)
 	rand.Seed(time.Now().UnixNano())
 }
 
+func homepage(w http.ResponseWriter, r *http.Request) {
+	var uname = token_client[r.FormValue("token")]
+	if uname == "" {
+		fmt.Fprintf(w, "Invalid Token")
+	} else {
+		fmt.Fprintf(w, "Hang in there %s, I haven't made the website yet!", uname.Name)
+	}
+}
+
+func addSong(w http.ResponseWriter, r *http.Request) {
+	var uname = token_client[r.FormValue("token")]
+	if uname == "" {
+		fmt.Fprintf(w, "Invalid Token")
+	} else {
+		var url = UnescapeString(r.FormValue("url"))
+		
+	}
+}
+
 func GetWebAddress(user *gumble.User) {
-	if client_token[user.Name] != "" {
-		token_client[client_token[user.Name]] = ""
+	if client_token[user] != "" {
+		token_client[client_token[user]] = ""
 	}
 	// dealing with collisions
 	var firstLoop = true
-	for firstLoop || token_client[client_token[user.Name]] != "" {
-		client_token[user.Name] = randSeq(10)
+	for firstLoop || token_client[client_token[user]] != "" {
+		client_token[user] = randSeq(10)
 		firstLoop = false
 	}
-	token_client[client_token[user.Name]] = user.Name
-	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), client_token[user.Name], getIP(), client_token[user.Name]))
+	token_client[client_token[user]] = user
+	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), client_token[user], getIP(), client_token[user]))
 }
 
+// Gets the external ip address for the server
 func getIP() string {
 	if external_ip != "" {
 		return external_ip
@@ -79,9 +73,9 @@ func getIP() string {
 	}
 }
 
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
+// Generates a pseudorandom string of characters
 func randSeq(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]

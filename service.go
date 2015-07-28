@@ -8,14 +8,15 @@
 package main
 
 import (
+	"fmt"
 	"github.com/layeh/gumble/gumble"
 )
 
 // Service interface. Each service should implement these functions
 type Service interface {
 	ServiceName() string
-	URLRegex(string) bool                  // Can service deal with URL
-	NewRequest(*gumble.User, string) error // Create song/playlist and add to the queue
+	URLRegex(string) bool                            // Can service deal with URL
+	NewRequest(*gumble.User, string) (string, error) // Create song/playlist and add to the queue
 }
 
 // Song interface. Each service will implement these
@@ -50,3 +51,34 @@ type Playlist interface {
 }
 
 var services = []Service{YouTube{}}
+
+func findServiceAndAdd(user *gumble.User, url string) (string, error) {
+	var urlService Service
+
+	// Checks all services to see if any can take the URL
+	for _, service := range services {
+		if service.URLRegex(url) {
+			urlService = service
+		}
+	}
+
+	if urlService == nil {
+		return nil, errors.New("INVALID_URL")
+	} else {
+		oldLength := dj.queue.Len()
+		if title, err := urlService.NewRequest(user, url); err == nil {
+
+			// Starts playing the new song if nothing else is playing
+			if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
+				if err := dj.queue.CurrentSong().Download(); err == nil {
+					dj.queue.CurrentSong().Play()
+				} else {
+					dj.queue.CurrentSong().Delete()
+					dj.queue.OnSongFinished()
+					return nil, errors.New("FAILED_TO_DOWNLOAD")
+				}
+			}
+		}
+		return title, err
+	}
+}

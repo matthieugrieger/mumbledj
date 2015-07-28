@@ -55,7 +55,7 @@ func GetWebAddress(user *gumble.User) {
 	}
 	// dealing with collisions
 	var firstLoop = true
-	for !firstLoop && token_client[client_token[user.Name]] == "" {
+	for firstLoop || token_client[client_token[user.Name]] != "" {
 		client_token[user.Name] = randSeq(10)
 		firstLoop = false
 	}

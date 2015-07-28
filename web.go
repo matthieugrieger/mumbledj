@@ -37,7 +37,7 @@ func addSong(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		var url = UnescapeString(r.FormValue("url"))
+		var url = html.UnescapeString(r.FormValue("url"))
 
 	}
 }

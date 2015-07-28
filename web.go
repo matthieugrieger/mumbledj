@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"io/ioutil"
 	"math/rand"
 	"net/http"

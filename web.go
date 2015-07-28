@@ -1,4 +1,4 @@
-package mumbledj
+package main
 
 import (
 	"fmt"

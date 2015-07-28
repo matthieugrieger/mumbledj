@@ -19,12 +19,12 @@ var external_ip = ""
 func Webserver() {
 	http.HandleFunc("/", homepage)
 	http.HandleFunc("/add", addSong)
-	http.ListenAndServe(":9563", nil)
+	http.ListenAndServe(":80", nil)
 	rand.Seed(time.Now().UnixNano())
 }
 
 func homepage(w http.ResponseWriter, r *http.Request) {
-	var uname = token_client[r.FormValue("token")]
+	var uname = token_client[r.URL.Path[1:]]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {

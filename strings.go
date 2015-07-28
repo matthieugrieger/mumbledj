@@ -173,5 +173,5 @@ const CURRENT_SONG_PLAYLIST_HTML = `
 
 // URL of the server for connecting via a web address
 const WEB_ADDRESS = `
-	Control mumbledj from a web browser: <a href="http://%s:9563/%s">http://%s:9563/%s</a>
+	Control mumbledj from a web browser: <a href="http://%s/%s">http://%s/%s</a>
 `

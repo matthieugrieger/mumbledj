@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
+	"strings"
 
 	"github.com/layeh/gumble/gumble"
 )
 
 var client_token = new(map[string]string)
+var token_client = new(map[string]string)
 var external_ip = ""
 
 type Page struct {
@@ -31,16 +34,27 @@ func loadPage(title string) (*Page, error) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	var uname = token_client[r.URL.Path[1:]]
+	if uname == nil {
+		fmt.Fprintf(w, "I don't know you")
+	} else {
+		fmt.Fprintf(w, "Hi there, I love %s!", uname)
+	}
 }
 
 func Webserver() {
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":9563", nil)
+	rand.Seed(time.Now().UnixNano())
 }
 
 func GetWebAddress(user *gumble.User) {
-	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), user.Name, getIP(), user.Name))
+	if client_token[user.Name] != nil {
+		token_client[client_token[user.Name]] = nil
+	}
+	client_token[user.Name] = randSeq(10)
+	token_client[client_token[user.Name]] = user.Name
+	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), client_token[user.Name], getIP(), client_token[user.Name]))
 }
 
 func getIP() string {
@@ -51,11 +65,20 @@ func getIP() string {
 			defer response.Body.Close()
 			if response.StatusCode == 200 {
 				if body, err := ioutil.ReadAll(response.Body); err == nil {
-					external_ip = string(body)
+					external_ip = strings.TrimSpace(string(body))
 				}
 			}
 		}
-
 		return external_ip
 	}
+}
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

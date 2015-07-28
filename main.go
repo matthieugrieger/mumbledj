@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/user"
 	"reflect"
+	"regexp"
 	"strings"
 	"time"
 
@@ -102,7 +103,7 @@ func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 	if e.Type.Has(gumble.UserChangeDisconnected) {
 		if dj.audioStream.IsPlaying() {
-			if dj.queue.CurrentSong().Playlist() != nil {
+			if !isNil(dj.queue.CurrentSong().Playlist()) {
 				dj.queue.CurrentSong().Playlist().RemoveSkip(e.User.Name)
 			}
 			dj.queue.CurrentSong().RemoveSkip(e.User.Name)
@@ -143,13 +144,24 @@ func PerformStartupChecks() {
 
 func Verbose(msg string) {
 	if dj.verbose {
-		fmt.Printf(msg)
+		fmt.Printf(msg + "\n")
 	}
 }
 
 func isNil(a interface{}) bool {
 	defer func() { recover() }()
 	return a == nil || reflect.ValueOf(a).IsNil()
+}
+
+func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
+	for _, pattern := range patterns {
+		if re, err := regexp.Compile(pattern); err == nil {
+			if re.MatchString(url) {
+				return re
+			}
+		}
+	}
+	return nil
 }
 
 // dj variable declaration. This is done outside of main() to allow global use.
@@ -159,6 +171,8 @@ var dj = mumbledj{
 	playlistSkips: make(map[string][]string),
 	cache:         NewSongCache(),
 }
+
+var web *WebServer
 
 // main primarily performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
@@ -228,9 +242,14 @@ func main() {
 	if err := dj.client.Connect(); err != nil {
 		fmt.Printf("Could not connect to Mumble server at %s:%s.\n", address, port)
 		os.Exit(1)
-	}	
-	
-	Webserver()
+	}
+
+	web = NewWebServer(9563)
+	web.makeWeb()
+
+	if isNil(web) {
+		Verbose("WEB IS NIL")
+	}
 
 	<-dj.keepAlive
 }

@@ -146,6 +146,11 @@ func Verbose(msg string) {
 	}
 }
 
+func isNil(a interface{}) bool {
+  defer func() { recover() }()
+  return a == nil || reflect.ValueOf(a).IsNil()
+}
+
 // dj variable declaration. This is done outside of main() to allow global use.
 var dj = mumbledj{
 	keepAlive:     make(chan bool),

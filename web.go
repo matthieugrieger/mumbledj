@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"html"
 	"strings"
 	"time"
 
@@ -38,7 +37,7 @@ func addSong(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
 		var url = UnescapeString(r.FormValue("url"))
-		
+
 	}
 }
 

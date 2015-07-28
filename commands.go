@@ -82,6 +82,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+	// Web command
+	case dj.conf.Aliases.WebAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminWeb) {
+			web(user)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
 	// Move command
 	case dj.conf.Aliases.MoveAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminMove) {
@@ -289,6 +296,11 @@ func volume(user *gumble.User, username, value string) {
 			dj.SendPrivateMessage(user, fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 		}
 	}
+}
+
+// web performs !web functionality. Gives user URL to web interface
+func web(user *gumble.User){
+	
 }
 
 // move performs !move functionality. Determines if the supplied channel is valid and moves the bot

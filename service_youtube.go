@@ -110,7 +110,7 @@ type YouTubeSong struct {
 
 // NewYouTubeSong gathers the metadata for a song extracted from a YouTube video, and returns
 // the song.
-func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
+func NewYouTubeSong(user, id, offset string, list *YouTubePlaylist) (*YouTubeSong, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
@@ -193,7 +193,7 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 			duration:  durationString,
 			thumbnail: thumbnail,
 			skippers:  make([]string, 0),
-			playlist:  playlist,
+			playlist:  list,
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)

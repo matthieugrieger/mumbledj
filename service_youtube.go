@@ -236,7 +236,7 @@ func (s *YouTubeSong) Play() {
 	if err := dj.audioStream.Play(); err != nil {
 		panic(err)
 	} else {
-		if s.Playlist() == &nil {
+		if isNil(s.Playlist()) {
 			message := `
 				<table>
 					<tr>

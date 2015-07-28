@@ -140,6 +140,12 @@ func PerformStartupChecks() {
 	}
 }
 
+func Verbose(msg string) {
+	if dj.verbose {
+		fmt.Printf(msg)
+	}
+}
+
 // dj variable declaration. This is done outside of main() to allow global use.
 var dj = mumbledj{
 	keepAlive:     make(chan bool),

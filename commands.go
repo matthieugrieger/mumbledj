@@ -176,15 +176,22 @@ func add(user *gumble.User, username, url string) {
 			dj.SendPrivateMessage(user, INVALID_URL_MSG)
 		} else {
 			oldLength := dj.queue.Len()
-			urlService.NewRequest(user, url)
-			if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
-				if err := dj.queue.CurrentSong().Download(); err == nil {
-					dj.queue.CurrentSong().Play()
-				} else {
-					dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-					dj.queue.CurrentSong().Delete()
-					dj.queue.OnSongFinished()
+
+			if err := urlService.NewRequest(user, url); err == nil {
+				dj.client.Self.Channel.Send(SONG_ADDED_HTML, false)
+
+				// Starts playing the new song if nothing else is playing
+				if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
+					if err := dj.queue.CurrentSong().Download(); err == nil {
+						dj.queue.CurrentSong().Play()
+					} else {
+						dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
+						dj.queue.CurrentSong().Delete()
+						dj.queue.OnSongFinished()
+					}
 				}
+			} else {
+				dj.SendPrivateMessage(user, err)
 			}
 		}
 	}

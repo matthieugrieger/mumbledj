@@ -25,6 +25,7 @@ import (
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
+// Regular expressions for youtube urls
 var youtubePlaylistPattern = `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
 var youtubeVideoPatterns = []string{
 	`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
@@ -115,7 +116,7 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return nil, err
+		return nil, errors.New(INVALID_API_KEY)
 	}
 
 	var offsetDays, offsetHours, offsetMinutes, offsetSeconds int64
@@ -192,18 +193,15 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 			duration:  durationString,
 			thumbnail: thumbnail,
 			skippers:  make([]string, 0),
-			playlist:  nil,
+			playlist:  playlist,
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
-
-		if dj.verbose {
-			fmt.Printf("%s added track %s\n", song.Submitter, song.Title())
-		}
+		Verbose(song.Submitter + " added track " + song.Title() + "\n")
 
 		return song, nil
 	}
-	return nil, errors.New("Song exceeds the maximum allowed duration.")
+	return nil, errors.New(VIDEO_TOO_LONG_MSG)
 }
 
 // Download downloads the song via youtube-dl if it does not already exist on disk.
@@ -212,28 +210,16 @@ func (s *YouTubeSong) Download() error {
 
 	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
-
-		if dj.verbose {
-			fmt.Printf("Downloading %s\n", s.Title())
-		}
-
+		Verbose("Downloading " + s.Title() + "\n")
 		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
 			}
-
-			if dj.verbose {
-				fmt.Printf("%s downloaded\n", s.Title())
-			}
-
+			Verbose(s.Title() + " downloaded\n")
 			return nil
 		}
-
-		if dj.verbose {
-			fmt.Printf("%s failed to download\n", s.Title())
-		}
-
+		Verbose(s.Title() + " failed to download\n")
 		return errors.New("Song download failed.")
 	}
 	return nil
@@ -286,10 +272,7 @@ func (s *YouTubeSong) Play() {
 			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
 				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
 		}
-
-		if dj.verbose {
-			fmt.Printf("Now playing %s\n", s.Title())
-		}
+		Verbose("Now playing " + s.Title() + "\n")
 
 		go func() {
 			dj.audioStream.Wait()
@@ -304,11 +287,10 @@ func (s *YouTubeSong) Delete() error {
 		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
-				if dj.verbose {
-					fmt.Printf("Deleting %s\n", s.Title())
-				}
+				Verbose("Deleted " + s.Title() + "\n")
 				return nil
 			}
+			Verbose("Failed to delete " + s.Title() + "\n")
 			return errors.New("Error occurred while deleting audio file.")
 		}
 		return nil
@@ -435,72 +417,8 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 
 	for i := 0; i < numVideos; i++ {
 		index := strconv.Itoa(i)
-		videoTitle, err := apiResponse.String("items", index, "snippet", "title")
 		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
-		videoThumbnail, _ := apiResponse.String("items", index, "snippet", "thumbnails", "high", "url")
-
-		// A completely separate API call just to get the duration of a video in a
-		// playlist? WHY GOOGLE, WHY?!
-		var durationResponse *jsonq.JsonQuery
-		url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=%s&key=%s",
-			videoID, os.Getenv("YOUTUBE_API_KEY"))
-		if durationResponse, err = PerformGetRequest(url); err != nil {
-			return nil, err
-		}
-		videoDuration, _ := durationResponse.String("items", "0", "contentDetails", "duration")
-
-		var days, hours, minutes, seconds int64
-		timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
-		timestampMatch := timestampExp.FindStringSubmatch(videoDuration)
-		timestampResult := make(map[string]string)
-		for i, name := range timestampExp.SubexpNames() {
-			if i < len(timestampMatch) {
-				timestampResult[name] = timestampMatch[i]
-			}
-		}
-
-		if timestampResult["days"] != "" {
-			days, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["days"], "D"), 10, 32)
-		}
-		if timestampResult["hours"] != "" {
-			hours, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["hours"], "H"), 10, 32)
-		}
-		if timestampResult["minutes"] != "" {
-			minutes, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["minutes"], "M"), 10, 32)
-		}
-		if timestampResult["seconds"] != "" {
-			seconds, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["seconds"], "S"), 10, 32)
-		}
-
-		totalSeconds := int((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
-		var durationString string
-		if hours != 0 {
-			if days != 0 {
-				durationString = fmt.Sprintf("%d:%02d:%02d:%02d", days, hours, minutes, seconds)
-			} else {
-				durationString = fmt.Sprintf("%d:%02d:%02d", hours, minutes, seconds)
-			}
-		} else {
-			durationString = fmt.Sprintf("%d:%02d", minutes, seconds)
-		}
-
-		if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
-			playlistSong := &YouTubeSong{
-				submitter: user,
-				title:     videoTitle,
-				id:        videoID,
-				filename:  videoID + ".m4a",
-				duration:  durationString,
-				thumbnail: videoThumbnail,
-				skippers:  make([]string, 0),
-				playlist:  playlist,
-				dontSkip:  false,
-			}
-			dj.queue.AddSong(playlistSong)
-			if dj.verbose {
-				fmt.Printf("%s added song %s\n", playlistSong.Submitter(), playlistSong.Title())
-			}
-		}
+		NewYouTubeSong(user, videoID, "", playlist)
 	}
 	return playlist, nil
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/layeh/gumble/gumble"
 )
 
 var client_token = new(map[string]string)
@@ -53,7 +55,7 @@ func getIP() string {
 				}
 			}
 		}
-		
+
 		return external_ip
 	}
 }

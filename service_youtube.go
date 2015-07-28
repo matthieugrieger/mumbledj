@@ -404,16 +404,16 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 		title: title,
 	}
 
-	// Retrieve items in playlist &maxResults=25
-	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=%s&key=%s",
+	// Retrieve items in playlist
+	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
-	//	if numVideos > 2 {
-	//		numVideos = 2
-	//	}
+	if numVideos > 25 {
+		numVideos = 25
+	}
 
 	for i := 0; i < numVideos; i++ {
 		index := strconv.Itoa(i)

@@ -299,8 +299,9 @@ func volume(user *gumble.User, username, value string) {
 }
 
 // web performs !web functionality. Gives user URL to web interface
-func web(user *gumble.User){
-	
+func web(user *gumble.User) {
+	Verbose("Sending user web address")
+	dj.SendPrivateMessage(user, "http://178.62.73.59:9563/"+user.Name())
 }
 
 // move performs !move functionality. Determines if the supplied channel is valid and moves the bot

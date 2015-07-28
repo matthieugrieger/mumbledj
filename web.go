@@ -19,7 +19,7 @@ var external_ip = ""
 func Webserver() {
 	http.HandleFunc("/", homepage)
 	http.HandleFunc("/add", addSong)
-	http.ListenAndServe(":80", nil)
+	http.ListenAndServe(":9563", nil)
 	rand.Seed(time.Now().UnixNano())
 }
 

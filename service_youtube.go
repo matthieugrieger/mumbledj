@@ -193,7 +193,7 @@ func NewYouTubeSong(user, id, offset string, list *YouTubePlaylist) (*YouTubeSon
 			duration:  durationString,
 			thumbnail: thumbnail,
 			skippers:  make([]string, 0),
-			playlist:  list,
+			playlist:  &list,
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)

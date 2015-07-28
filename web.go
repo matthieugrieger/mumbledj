@@ -6,12 +6,13 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/layeh/gumble/gumble"
 )
 
-var client_token = new(map[string]string)
-var token_client = new(map[string]string)
+var client_token = make(map[string]string)
+var token_client = make(map[string]string)
 var external_ip = ""
 
 type Page struct {

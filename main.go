@@ -15,6 +15,7 @@ import (
 	"os/user"
 	"strings"
 	"time"
+	"reflect"
 
 	"github.com/layeh/gopus"
 	"github.com/layeh/gumble/gumble"

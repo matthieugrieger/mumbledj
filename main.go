@@ -13,9 +13,9 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"reflect"
 	"strings"
 	"time"
-	"reflect"
 
 	"github.com/layeh/gopus"
 	"github.com/layeh/gumble/gumble"
@@ -148,8 +148,8 @@ func Verbose(msg string) {
 }
 
 func isNil(a interface{}) bool {
-  defer func() { recover() }()
-  return a == nil || reflect.ValueOf(a).IsNil()
+	defer func() { recover() }()
+	return a == nil || reflect.ValueOf(a).IsNil()
 }
 
 // dj variable declaration. This is done outside of main() to allow global use.
@@ -228,7 +228,9 @@ func main() {
 	if err := dj.client.Connect(); err != nil {
 		fmt.Printf("Could not connect to Mumble server at %s:%s.\n", address, port)
 		os.Exit(1)
-	}
+	}	
+	
+	Webserver()
 
 	<-dj.keepAlive
 }

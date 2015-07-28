@@ -39,8 +39,7 @@ var youtubeVideoPatterns = []string{
 // YOUTUBE SERVICE
 // ---------------
 
-type YouTube struct {
-}
+type YouTube struct {}
 
 // Name of the service
 func (y YouTube) ServiceName() string {

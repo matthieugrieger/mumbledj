@@ -69,7 +69,7 @@ func findServiceAndAdd(user *gumble.User, url string) (string, error) {
 		oldLength := dj.queue.Len()
 		var title string
 		var err error
-		if title, err := urlService.NewRequest(user, url); err == nil {
+		if title, err = urlService.NewRequest(user, url); err == nil {
 
 			// Starts playing the new song if nothing else is playing
 			if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {

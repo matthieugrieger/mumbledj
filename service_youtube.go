@@ -72,7 +72,7 @@ func (y YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 				playlist, err := NewYouTubePlaylist(user.Name, shortURL)
 				return playlist.Title(), err
 			} else {
-				return nil, errors.New("NO_PLAYLIST_PERMISSION")
+				return "", errors.New("NO_PLAYLIST_PERMISSION")
 			}
 		} else {
 			re = RegexpFromURL(url, youtubeVideoPatterns)
@@ -85,7 +85,7 @@ func (y YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 			return song.Title(), err
 		}
 	} else {
-		return nil, err
+		return "", err
 	}
 }
 

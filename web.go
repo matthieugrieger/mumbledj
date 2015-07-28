@@ -24,7 +24,7 @@ func Webserver() {
 
 func homepage(w http.ResponseWriter, r *http.Request) {
 	var uname = token_client[r.FormValue("token")]
-	if uname == "" {
+	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
 		fmt.Fprintf(w, "Hang in there %s, I haven't made the website yet!", uname.Name)
@@ -33,7 +33,7 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 
 func addSong(w http.ResponseWriter, r *http.Request) {
 	var uname = token_client[r.FormValue("token")]
-	if uname == "" {
+	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
 		var url = UnescapeString(r.FormValue("url"))
@@ -43,11 +43,11 @@ func addSong(w http.ResponseWriter, r *http.Request) {
 
 func GetWebAddress(user *gumble.User) {
 	if client_token[user] != "" {
-		token_client[client_token[user]] = ""
+		token_client[client_token[user]] = nil
 	}
 	// dealing with collisions
 	var firstLoop = true
-	for firstLoop || token_client[client_token[user]] != "" {
+	for firstLoop || token_client[client_token[user]] != nil {
 		client_token[user] = randSeq(10)
 		firstLoop = false
 	}

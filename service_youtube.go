@@ -21,8 +21,74 @@ import (
 	"time"
 
 	"github.com/jmoiron/jsonq"
+	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
+
+// Regular expressions for youtube urls
+var youtubePlaylistPattern = `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
+var youtubeVideoPatterns = []string{
+	`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+	`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+	`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+	`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+	`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+}
+
+// ---------------
+// YOUTUBE SERVICE
+// ---------------
+
+type YouTube struct {
+}
+
+// Name of the service
+func (y YouTube) ServiceName() string {
+	return "Youtube"
+}
+
+// Checks to see if service will accept URL
+func (y YouTube) URLRegex(url string) bool {
+	return RegexpFromURL(url, append(youtubeVideoPatterns, []string{youtubePlaylistPattern}...)) != nil
+}
+
+func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
+	for _, pattern := range patterns {
+		if re, err := regexp.Compile(pattern); err == nil {
+			if re.MatchString(url) {
+				return re
+			}
+		}
+	}
+	return nil
+}
+
+// Creates the requested song/playlist and adds to the queue
+func (y YouTube) NewRequest(user *gumble.User, url string) error {
+	var shortURL, startOffset = "", ""
+	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
+		if re.MatchString(url) {
+			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
+				shortURL = re.FindStringSubmatch(url)[1]
+				_, err := NewYouTubePlaylist(user.Name, shortURL)
+				return err
+			} else {
+				return errors.New("NO_PLAYLIST_PERMISSION")
+			}
+		} else {
+			re = RegexpFromURL(url, youtubeVideoPatterns)
+			matches := re.FindAllStringSubmatch(url, -1)
+			shortURL = matches[0][1]
+			if len(matches[0]) == 3 {
+				startOffset = matches[0][2]
+			}
+			_, err := NewYouTubeSong(user.Name, shortURL, startOffset, nil)
+			return err
+		}
+	} else {
+		return err
+	}
+}
 
 // ------------
 // YOUTUBE SONG
@@ -50,7 +116,7 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return nil, err
+		return nil, errors.New(INVALID_API_KEY)
 	}
 
 	var offsetDays, offsetHours, offsetMinutes, offsetSeconds int64
@@ -127,26 +193,33 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 			duration:  durationString,
 			thumbnail: thumbnail,
 			skippers:  make([]string, 0),
-			playlist:  nil,
+			playlist:  playlist,
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
+		Verbose(song.Submitter() + " added track " + song.Title() + "\n")
+
 		return song, nil
 	}
-	return nil, errors.New("Song exceeds the maximum allowed duration.")
+	return nil, errors.New(VIDEO_TOO_LONG_MSG)
 }
 
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *YouTubeSong) Download() error {
+
+	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
+		Verbose("Downloading " + s.Title() + "\n")
 		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
 			}
+			Verbose(s.Title() + " downloaded\n")
 			return nil
 		}
+		Verbose(s.Title() + " failed to download\n")
 		return errors.New("Song download failed.")
 	}
 	return nil
@@ -163,7 +236,7 @@ func (s *YouTubeSong) Play() {
 	if err := dj.audioStream.Play(); err != nil {
 		panic(err)
 	} else {
-		if s.Playlist() == nil {
+		if isNil(s.Playlist()) {
 			message := `
 				<table>
 					<tr>
@@ -199,6 +272,8 @@ func (s *YouTubeSong) Play() {
 			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
 				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
 		}
+		Verbose("Now playing " + s.Title() + "\n")
+
 		go func() {
 			dj.audioStream.Wait()
 			dj.queue.OnSongFinished()
@@ -212,8 +287,10 @@ func (s *YouTubeSong) Delete() error {
 		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
+				Verbose("Deleted " + s.Title() + "\n")
 				return nil
 			}
+			Verbose("Failed to delete " + s.Title() + "\n")
 			return errors.New("Error occurred while deleting audio file.")
 		}
 		return nil
@@ -328,81 +405,20 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 	}
 
 	// Retrieve items in playlist
-	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=%s&key=%s",
+	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=2&playlistId=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
-	if numVideos > 25 {
-		numVideos = 25
+	if numVideos > 2 {
+		numVideos = 2
 	}
 
 	for i := 0; i < numVideos; i++ {
 		index := strconv.Itoa(i)
-		videoTitle, err := apiResponse.String("items", index, "snippet", "title")
 		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
-		videoThumbnail, _ := apiResponse.String("items", index, "snippet", "thumbnails", "high", "url")
-
-		// A completely separate API call just to get the duration of a video in a
-		// playlist? WHY GOOGLE, WHY?!
-		var durationResponse *jsonq.JsonQuery
-		url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=%s&key=%s",
-			videoID, os.Getenv("YOUTUBE_API_KEY"))
-		if durationResponse, err = PerformGetRequest(url); err != nil {
-			return nil, err
-		}
-		videoDuration, _ := durationResponse.String("items", "0", "contentDetails", "duration")
-
-		var days, hours, minutes, seconds int64
-		timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
-		timestampMatch := timestampExp.FindStringSubmatch(videoDuration)
-		timestampResult := make(map[string]string)
-		for i, name := range timestampExp.SubexpNames() {
-			if i < len(timestampMatch) {
-				timestampResult[name] = timestampMatch[i]
-			}
-		}
-
-		if timestampResult["days"] != "" {
-			days, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["days"], "D"), 10, 32)
-		}
-		if timestampResult["hours"] != "" {
-			hours, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["hours"], "H"), 10, 32)
-		}
-		if timestampResult["minutes"] != "" {
-			minutes, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["minutes"], "M"), 10, 32)
-		}
-		if timestampResult["seconds"] != "" {
-			seconds, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["seconds"], "S"), 10, 32)
-		}
-
-		totalSeconds := int((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
-		var durationString string
-		if hours != 0 {
-			if days != 0 {
-				durationString = fmt.Sprintf("%d:%02d:%02d:%02d", days, hours, minutes, seconds)
-			} else {
-				durationString = fmt.Sprintf("%d:%02d:%02d", hours, minutes, seconds)
-			}
-		} else {
-			durationString = fmt.Sprintf("%d:%02d", minutes, seconds)
-		}
-
-		if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
-			playlistSong := &YouTubeSong{
-				submitter: user,
-				title:     videoTitle,
-				id:        videoID,
-				filename:  videoID + ".m4a",
-				duration:  durationString,
-				thumbnail: videoThumbnail,
-				skippers:  make([]string, 0),
-				playlist:  playlist,
-				dontSkip:  false,
-			}
-			dj.queue.AddSong(playlistSong)
-		}
+		NewYouTubeSong(user, videoID, "", playlist)
 	}
 	return playlist, nil
 }

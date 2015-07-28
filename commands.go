@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -158,41 +157,31 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 }
 
-// add performs !add functionality. Checks input URL for YouTube format, and adds
+// add performs !add functionality. Checks input URL for service, and adds
 // the URL to the queue if the format matches.
 func add(user *gumble.User, username, url string) {
 	if url == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 	} else {
-		youtubePatterns := []string{
-			`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-			`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-			`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-			`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-			`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-		}
-		matchFound := false
-		shortURL := ""
-		startOffset := ""
+		var urlService Service
 
-		for _, pattern := range youtubePatterns {
-			if re, err := regexp.Compile(pattern); err == nil {
-				if re.MatchString(url) {
-					matchFound = true
-					matches := re.FindAllStringSubmatch(url, -1)
-					shortURL = matches[0][1]
-					if len(matches[0]) == 3 {
-						startOffset = matches[0][2]
-					}
-					break
-				}
+		// Checks all services to see if any can take the URL
+		for _, service := range services {
+			if service.URLRegex(url) {
+				urlService = service
 			}
 		}
 
-		if matchFound {
-			if newSong, err := NewYouTubeSong(username, shortURL, startOffset, nil); err == nil {
-				dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
-				if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
+		if urlService == nil {
+			dj.SendPrivateMessage(user, INVALID_URL_MSG)
+		} else {
+			oldLength := dj.queue.Len()
+
+			if err := urlService.NewRequest(user, url); err == nil {
+				dj.client.Self.Channel.Send(SONG_ADDED_HTML, false)
+
+				// Starts playing the new song if nothing else is playing
+				if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
 					if err := dj.queue.CurrentSong().Download(); err == nil {
 						dj.queue.CurrentSong().Play()
 					} else {
@@ -201,41 +190,8 @@ func add(user *gumble.User, username, url string) {
 						dj.queue.OnSongFinished()
 					}
 				}
-			} else if fmt.Sprint(err) == "Song exceeds the maximum allowed duration." {
-				dj.SendPrivateMessage(user, VIDEO_TOO_LONG_MSG)
-			} else if fmt.Sprint(err) == "Invalid API key supplied." {
-				dj.SendPrivateMessage(user, INVALID_API_KEY)
 			} else {
-				dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
-			}
-		} else {
-			// Check to see if we have a playlist URL instead.
-			youtubePlaylistPattern := `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
-			if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
-				if re.MatchString(url) {
-					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
-						shortURL = re.FindStringSubmatch(url)[1]
-						oldLength := dj.queue.Len()
-						if newPlaylist, err := NewYouTubePlaylist(username, shortURL); err == nil {
-							dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
-							if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
-								if err := dj.queue.CurrentSong().Download(); err == nil {
-									dj.queue.CurrentSong().Play()
-								} else {
-									dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-									dj.queue.CurrentSong().Delete()
-									dj.queue.OnSongFinished()
-								}
-							}
-						} else {
-							dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
-						}
-					} else {
-						dj.SendPrivateMessage(user, NO_PLAYLIST_PERMISSION_MSG)
-					}
-				} else {
-					dj.SendPrivateMessage(user, INVALID_URL_MSG)
-				}
+				dj.SendPrivateMessage(user, err.Error())
 			}
 		}
 	}

@@ -85,7 +85,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	// Web command
 	case dj.conf.Aliases.WebAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminWeb) {
-			web(user)
+			GetWebAddress(user)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -296,12 +296,6 @@ func volume(user *gumble.User, username, value string) {
 			dj.SendPrivateMessage(user, fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 		}
 	}
-}
-
-// web performs !web functionality. Gives user URL to web interface
-func web(user *gumble.User) {
-	Verbose("Sending user web address")
-	dj.SendPrivateMessage(user, "http://178.62.73.59:9563/"+user.Name)
 }
 
 // move performs !move functionality. Determines if the supplied channel is valid and moves the bot

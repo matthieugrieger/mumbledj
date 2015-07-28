@@ -6,6 +6,9 @@ import (
 	"net/http"
 )
 
+var client_token = new(map[string]string)
+var external_ip = ""
+
 type Page struct {
 	Title string
 	Body  []byte
@@ -26,10 +29,31 @@ func loadPage(title string) (*Page, error) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
-func Webserver(){
+func Webserver() {
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":9563", nil)
+}
+
+func GetWebAddress(user *gumble.User) {
+	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), user.Name, getIP(), user.Name))
+}
+
+func getIP() string {
+	if external_ip != "" {
+		return external_ip
+	} else {
+		if response, err := http.Get("http://myexternalip.com/raw"); err == nil {
+			defer response.Body.Close()
+			if response.StatusCode == 200 {
+				if body, err := ioutil.ReadAll(response.Body); err == nil {
+					external_ip = string(body)
+				}
+			}
+		}
+		
+		return external_ip
+	}
 }

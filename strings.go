@@ -170,3 +170,8 @@ const CURRENT_SONG_HTML = `
 const CURRENT_SONG_PLAYLIST_HTML = `
 	The song currently playing is "%s", added <b>%s</b> from the playlist "%s".
 `
+
+// URL of the server for connecting via a web address
+const WEB_ADDRESS = `
+	Control mumbledj from a web browser: <a href="http://%s/%s">http://%s/%s</a>.
+`

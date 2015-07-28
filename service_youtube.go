@@ -197,7 +197,7 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
-		Verbose(song.Submitter + " added track " + song.Title() + "\n")
+		Verbose(song.Submitter() + " added track " + song.Title() + "\n")
 
 		return song, nil
 	}

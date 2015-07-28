@@ -191,7 +191,7 @@ func add(user *gumble.User, username, url string) {
 					}
 				}
 			} else {
-				dj.SendPrivateMessage(user, err)
+				dj.SendPrivateMessage(user, err.Error())
 			}
 		}
 	}

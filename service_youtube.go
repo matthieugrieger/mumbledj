@@ -39,8 +39,7 @@ var youtubeVideoPatterns = []string{
 // YOUTUBE SERVICE
 // ---------------
 
-type YouTube struct {
-}
+type YouTube struct {}
 
 // Name of the service
 func (y YouTube) ServiceName() string {
@@ -405,14 +404,14 @@ func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
 	}
 
 	// Retrieve items in playlist
-	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=2&playlistId=%s&key=%s",
+	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
-	if numVideos > 2 {
-		numVideos = 2
+	if numVideos > 50 {
+		numVideos = 50
 	}
 
 	for i := 0; i < numVideos; i++ {

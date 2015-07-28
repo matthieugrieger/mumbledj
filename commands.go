@@ -82,6 +82,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+	// Web command
+	case dj.conf.Aliases.WebAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminWeb) {
+			GetWebAddress(user)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
 	// Move command
 	case dj.conf.Aliases.MoveAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminMove) {

@@ -166,9 +166,10 @@ func parseCommand(user *gumble.User, username, command string) {
 
 // add performs !add functionality. Checks input URL for service, and adds
 // the URL to the queue if the format matches.
-func add(user *gumble.User, url string) {
+func add(user *gumble.User, url string) error {
 	if url == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
+		return errors.New("NO_ARGUMENT")
 	} else {
 		title, err := findServiceAndAdd(user, url)
 		if err == nil {
@@ -176,6 +177,7 @@ func add(user *gumble.User, url string) {
 		} else {
 			dj.SendPrivateMessage(user, err.Error())
 		}
+		return err
 	}
 }
 

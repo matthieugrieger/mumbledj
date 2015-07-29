@@ -102,7 +102,7 @@ func (dj *mumbledj) OnTextMessage(e *gumble.TextMessageEvent) {
 func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 	if e.Type.Has(gumble.UserChangeDisconnected) {
 		if dj.audioStream.IsPlaying() {
-			if dj.queue.CurrentSong().Playlist() != nil {
+			if !isNull(dj.queue.CurrentSong().Playlist()) {
 				dj.queue.CurrentSong().Playlist().RemoveSkip(e.User.Name)
 			}
 			dj.queue.CurrentSong().RemoveSkip(e.User.Name)
@@ -228,8 +228,8 @@ func main() {
 	if err := dj.client.Connect(); err != nil {
 		fmt.Printf("Could not connect to Mumble server at %s:%s.\n", address, port)
 		os.Exit(1)
-	}	
-	
+	}
+
 	Webserver()
 
 	<-dj.keepAlive

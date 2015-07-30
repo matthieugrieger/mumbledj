@@ -5,7 +5,7 @@
  * Copyright (c) 2014, 2015 Matthieu Grieger (MIT License)
  */
 
-package mumbledj
+package main
 
 // Message shown to users when the bot has an invalid YouTube API key.
 const INVALID_API_KEY = "MumbleDJ does not have a valid YouTube API key."

@@ -12,13 +12,13 @@
 			function addURL() {
 				var url = $("#textbox");
 				$.ajax(api("add") + "&value=" + url.attr("value"));
-				url.value = "";
+				url.attr("value", "");
 			}
 
 			function volume() {
 				var volume = $("#textbox");
 				$.ajax(api("volume") + "&value=" + volume.attr("value"));
-				volume.value = "";
+				volume.attr("value", "");
 			}
 
 			function skip(val) {

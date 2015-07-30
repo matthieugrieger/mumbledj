@@ -80,8 +80,8 @@ func (web *WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		var url = html.UnescapeString(r.FormValue("value"))
-		add(uname, url)
+		var volume = html.UnescapeString(r.FormValue("value"))
+		volume(uname, volume)
 	}
 }
 
@@ -90,8 +90,8 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		var url = html.UnescapeString(r.FormValue("value"))
-		add(uname, url)
+		var playlist = html.UnescapeString(r.FormValue("value"))
+		skip(uname, false, playlist)
 	}
 }
 

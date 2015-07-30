@@ -172,6 +172,8 @@ var dj = mumbledj{
 	cache:         NewSongCache(),
 }
 
+var web *Webserver
+
 // main primarily performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
@@ -242,7 +244,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	Webserver(9563)
+	web = Webserver(9563)
 
 	<-dj.keepAlive
 }

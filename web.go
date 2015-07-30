@@ -27,7 +27,7 @@ type Page struct {
 
 var external_ip = ""
 
-func Webserver(port int) *WebServer {
+func Webserver(port int) WebServer {
 	var webserver = WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}
 	http.HandleFunc("/", webserver.homepage)
 	http.HandleFunc("/add", webserver.add)

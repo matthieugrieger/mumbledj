@@ -83,7 +83,7 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (website *websiteServer) GetwebsiteAddress(user *gumble.User) {
+func (website *WebServer) GetWebAddress(user *gumble.User) {
 	if website.client_token[user] != "" {
 		website.token_client[website.client_token[user]] = nil
 	}

@@ -246,5 +246,9 @@ func main() {
 
 	web = makeWebserver(9563)
 
+	if isNil(web) {
+		Verbose("WEB IS NIL")
+	}
+
 	<-dj.keepAlive
 }

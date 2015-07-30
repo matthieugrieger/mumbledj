@@ -144,7 +144,7 @@ func PerformStartupChecks() {
 
 func Verbose(msg string) {
 	if dj.verbose {
-		fmt.Printf(msg)
+		fmt.Printf(msg + "\n")
 	}
 }
 

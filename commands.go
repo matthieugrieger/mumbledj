@@ -36,7 +36,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	// Add command
 	case dj.conf.Aliases.AddAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAdd) {
-			add(user, username, argument)
+			add(user, argument)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -85,7 +85,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	// Web command
 	case dj.conf.Aliases.WebAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminWeb) {
-			GetWebAddress(user)
+			web.GetWebAddress(user)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -166,41 +166,12 @@ func parseCommand(user *gumble.User, username, command string) {
 
 // add performs !add functionality. Checks input URL for service, and adds
 // the URL to the queue if the format matches.
-func add(user *gumble.User, username, url string) {
+func add(user *gumble.User, url string) error {
 	if url == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
+		return errors.New("NO_ARGUMENT")
 	} else {
-		var urlService Service
-
-		// Checks all services to see if any can take the URL
-		for _, service := range services {
-			if service.URLRegex(url) {
-				urlService = service
-			}
-		}
-
-		if urlService == nil {
-			dj.SendPrivateMessage(user, INVALID_URL_MSG)
-		} else {
-			oldLength := dj.queue.Len()
-
-			if err := urlService.NewRequest(user, url); err == nil {
-				dj.client.Self.Channel.Send(SONG_ADDED_HTML, false)
-
-				// Starts playing the new song if nothing else is playing
-				if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
-					if err := dj.queue.CurrentSong().Download(); err == nil {
-						dj.queue.CurrentSong().Play()
-					} else {
-						dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-						dj.queue.CurrentSong().Delete()
-						dj.queue.OnSongFinished()
-					}
-				}
-			} else {
-				dj.SendPrivateMessage(user, err.Error())
-			}
-		}
+		return findServiceAndAdd(user, url)
 	}
 }
 

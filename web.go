@@ -28,7 +28,7 @@ type Page struct {
 var external_ip = ""
 
 func Webserver(port int) *WebServer {
-	webserver := new(WebServer{})
+	webserver := WebServer{}
 
 	webserver.port = port
 	webserver.client_token = make(map[*gumble.User]string)

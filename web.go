@@ -52,7 +52,7 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
 		cwd, _ := os.Getwd()
-		t, err := template.ParseFiles(filepath.Join(cwd, "./index.html"))
+		t, err := template.ParseFiles(filepath.Join(cwd, "./.mumbledj/web/index.html"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

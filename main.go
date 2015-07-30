@@ -244,7 +244,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	web = &Webserver(9563)
+	web = Webserver(9563)
 
 	<-dj.keepAlive
 }

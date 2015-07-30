@@ -28,17 +28,20 @@ type Page struct {
 var external_ip = ""
 
 func Webserver(port int) *WebServer {
-	return &WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}.construct()
-}
+	webserver := new(WebServer)
 
-func (web *WebServer) construct() *WebServer {
-	http.HandleFunc("/", web.homepage)
-	http.HandleFunc("/add", web.add)
-	http.HandleFunc("/volume", web.volume)
-	http.HandleFunc("/skip", web.skip)
-	http.ListenAndServe(":"+strconv.Itoa(web.port), nil)
+	webserver.port = port
+	webserver.client_token = make(map[*gumble.User]string)
+	webserver.token_client = make(map[string]*gumble.User)
+
+	http.HandleFunc("/", webserver.homepage)
+	http.HandleFunc("/add", webserver.add)
+	http.HandleFunc("/volume", webserver.volume)
+	http.HandleFunc("/skip", webserver.skip)
+	http.ListenAndServe(":"+strconv.Itoa(port), nil)
+
 	rand.Seed(time.Now().UnixNano())
-	return web
+	return webserver
 }
 
 func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {

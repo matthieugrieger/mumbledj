@@ -27,7 +27,7 @@ type Page struct {
 
 var external_ip = ""
 
-func Webserver(port int) WebServer {
+func Webserver(port int) *WebServer {
 	var webserver = WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}
 	http.HandleFunc("/", webserver.homepage)
 	http.HandleFunc("/add", webserver.add)
@@ -35,10 +35,10 @@ func Webserver(port int) WebServer {
 	http.HandleFunc("/skip", webserver.skip)
 	http.ListenAndServe(":"+strconv.Itoa(port), nil)
 	rand.Seed(time.Now().UnixNano())
-	return webserver
+	return &webserver
 }
 
-func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.URL.Path[1:]]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -48,7 +48,7 @@ func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web WebServer) add(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) add(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -57,7 +57,7 @@ func (web WebServer) add(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web WebServer) volume(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -67,7 +67,7 @@ func (web WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web WebServer) skip(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -77,7 +77,7 @@ func (web WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web WebServer) GetWebAddress(user *gumble.User) {
+func (web *WebServer) GetWebAddress(user *gumble.User) {
 	if web.client_token[user] != "" {
 		web.token_client[web.client_token[user]] = nil
 	}

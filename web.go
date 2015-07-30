@@ -84,6 +84,12 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 }
 
 func (website *WebServer) GetWebAddress(user *gumble.User) {
+	if website == nil {
+		Verbose("WEBSITE NOT INITIALISED")
+	}
+	if website.client_token == nil {
+		Verbose("CLIENT_TOKEN NOT INITIALISED")
+	}
 	if website.client_token[user] != "" {
 		website.token_client[website.client_token[user]] = nil
 	}

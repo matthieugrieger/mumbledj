@@ -23,9 +23,9 @@ type WebServer struct {
 }
 
 type Page struct {
-	siteUrl string
-	token   string
-	user    string
+	Site  string
+	Token string
+	User  string
 }
 
 var external_ip = ""

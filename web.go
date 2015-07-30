@@ -84,6 +84,8 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 }
 
 func (website *WebServer) GetWebAddress(user *gumble.User) {
+	// A random comment
+	Verbose("Not fun")
 	if website == nil {
 		Verbose("WEBSITE NOT INITIALISED")
 	}

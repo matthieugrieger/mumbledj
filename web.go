@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -49,7 +51,8 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		t, err := template.ParseFiles("./index.html")
+		cwd, _ := os.Getwd()
+		t, err := template.ParseFiles(filepath.Join(cwd, "./index.html"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

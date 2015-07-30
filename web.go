@@ -27,8 +27,8 @@ type Page struct {
 
 var external_ip = ""
 
-func makeWebserver(port int) *WebServer {
-	webserver := &WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}
+func makeWebserver(port int) WebServer {
+	webserver := WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}
 
 	http.HandleFunc("/", webserver.homepage)
 	http.HandleFunc("/add", webserver.add)
@@ -40,7 +40,7 @@ func makeWebserver(port int) *WebServer {
 	return webserver
 }
 
-func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
+func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.URL.Path[1:]]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -50,7 +50,7 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web *WebServer) add(w http.ResponseWriter, r *http.Request) {
+func (web WebServer) add(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -59,7 +59,7 @@ func (web *WebServer) add(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web *WebServer) volume(w http.ResponseWriter, r *http.Request) {
+func (web WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -69,7 +69,7 @@ func (web *WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
+func (web WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")

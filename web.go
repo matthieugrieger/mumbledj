@@ -94,7 +94,7 @@ func (website *WebServer) GetWebAddress(user *gumble.User) {
 		firstLoop = false
 	}
 	website.token_client[website.client_token[user]] = user
-	dj.SendPrivateMessage(user, fmt.Sprintf(website_ADDRESS, getIP(), website.client_token[user], getIP(), website.client_token[user]))
+	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), website.client_token[user], getIP(), website.client_token[user]))
 }
 
 // Gets the external ip address for the server

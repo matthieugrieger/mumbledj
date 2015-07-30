@@ -172,7 +172,7 @@ var dj = mumbledj{
 	cache:         NewSongCache(),
 }
 
-var web WebServer
+var web *WebServer
 
 // main primarily performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.

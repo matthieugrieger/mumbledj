@@ -192,7 +192,7 @@ func (yt YouTube) NewSong(user, id, offset string, playlist *YouTubePlaylist) (*
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
-		Verbose(song.Submitter() + " added track " + song.Title() + "\n")
+		Verbose(song.Submitter() + " added track " + song.Title())
 
 		return song, nil
 	}
@@ -245,16 +245,16 @@ func (s *YouTubeSong) Download() error {
 
 	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
-		Verbose("Downloading " + s.Title() + "\n")
+		Verbose("Downloading " + s.Title())
 		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
 			}
-			Verbose(s.Title() + " downloaded\n")
+			Verbose(s.Title() + " downloaded")
 			return nil
 		}
-		Verbose(s.Title() + " failed to download\n")
+		Verbose(s.Title() + " failed to download")
 		return errors.New("Song download failed.")
 	}
 	return nil
@@ -307,7 +307,7 @@ func (s *YouTubeSong) Play() {
 			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
 				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
 		}
-		Verbose("Now playing " + s.Title() + "\n")
+		Verbose("Now playing " + s.Title())
 
 		go func() {
 			dj.audioStream.Wait()
@@ -322,10 +322,10 @@ func (s *YouTubeSong) Delete() error {
 		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
-				Verbose("Deleted " + s.Title() + "\n")
+				Verbose("Deleted " + s.Title())
 				return nil
 			}
-			Verbose("Failed to delete " + s.Title() + "\n")
+			Verbose("Failed to delete " + s.Title())
 			return errors.New("Error occurred while deleting audio file.")
 		}
 		return nil

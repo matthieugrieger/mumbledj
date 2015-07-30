@@ -72,6 +72,7 @@ func (web *WebServer) add(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
 		add(uname, html.UnescapeString(r.FormValue("value")))
+		fmt.Fprintf(w, "Success")
 	}
 }
 
@@ -80,8 +81,9 @@ func (web *WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		var url = html.UnescapeString(r.FormValue("value"))
-		add(uname, url)
+		var vol = html.UnescapeString(r.FormValue("value"))
+		volume(uname, vol)
+		fmt.Fprintf(w, "Success")
 	}
 }
 
@@ -90,8 +92,14 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		var url = html.UnescapeString(r.FormValue("value"))
-		add(uname, url)
+		value := html.UnescapeString(r.FormValue("value"))
+		playlist, err := strconv.ParseBool(value)
+		if err == nil {
+			skip(uname, false, playlist)
+			fmt.Fprintf(w, "Success")
+		} else {
+			fmt.Fprintf(w, "Invalid Value")
+		}
 	}
 }
 

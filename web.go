@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -27,27 +28,27 @@ var external_ip = ""
 
 func Webserver(port int) *WebServer {
 	var webserver = WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}
-	http.HandleFunc("/", webServer.homepage)
+	http.HandleFunc("/", webserver.homepage)
 	http.HandleFunc("/add", webserver.add)
 	http.HandleFunc("/volume", webserver.volume)
 	http.HandleFunc("/skip", webserver.skip)
-	http.ListenAndServe(":"+port, nil)
+	http.ListenAndServe(":"+strconv.Itoa(port), nil)
 	rand.Seed(time.Now().UnixNano())
 	return &webserver
 }
 
 func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {
-	var uname = token_client[r.URL.Path[1:]]
+	var uname = web.token_client[r.URL.Path[1:]]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
 		t, _ := template.ParseFiles("index.html")
-		t.Execute(w, Page{"http://" + getIp() + ":" + w.port + "/", r.URL.Path[1:]})
+		t.Execute(w, Page{"http://" + getIp() + ":" + web.port + "/", r.URL.Path[1:]})
 	}
 }
 
 func (web WebServer) add(w http.ResponseWriter, r *http.Request) {
-	var uname = token_client[r.FormValue("token")]
+	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
@@ -56,7 +57,7 @@ func (web WebServer) add(w http.ResponseWriter, r *http.Request) {
 }
 
 func (web WebServer) volume(w http.ResponseWriter, r *http.Request) {
-	var uname = token_client[r.FormValue("token")]
+	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
@@ -66,7 +67,7 @@ func (web WebServer) volume(w http.ResponseWriter, r *http.Request) {
 }
 
 func (web WebServer) skip(w http.ResponseWriter, r *http.Request) {
-	var uname = token_client[r.FormValue("token")]
+	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
@@ -76,17 +77,17 @@ func (web WebServer) skip(w http.ResponseWriter, r *http.Request) {
 }
 
 func (web WebServer) GetWebAddress(user *gumble.User) {
-	if client_token[user] != "" {
-		token_client[client_token[user]] = nil
+	if web.client_token[user] != "" {
+		web.token_client[web.client_token[user]] = nil
 	}
 	// dealing with collisions
 	var firstLoop = true
-	for firstLoop || token_client[client_token[user]] != nil {
-		client_token[user] = randSeq(10)
+	for firstLoop || web.token_client[web.client_token[user]] != nil {
+		web.client_token[user] = randSeq(10)
 		firstLoop = false
 	}
-	token_client[client_token[user]] = user
-	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), client_token[user], getIP(), client_token[user]))
+	web.token_client[web.client_token[user]] = user
+	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), web.client_token[user], getIP(), web.client_token[user]))
 }
 
 // Gets the external ip address for the server

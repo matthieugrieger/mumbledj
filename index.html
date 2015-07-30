@@ -2,17 +2,37 @@
 <html>
 	<head>
 		<meta charset="ISO-8859-1">
-		<title>%s - mumbledj</title>
+		<title>{{user}} - mumbledj</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script type="text/javascript">
-			function addURL(url) {
+			function api(type) {
+				return "{{.siteURL}}" + type + "?token={{.token}}";
+			}
 
+			function addURL() {
+				var url = $("#textbox");
+				$.ajax(api("add") + "&value=" + url.value);
+				url.value = "";
+			}
+
+			function volume() {
+				var volume = $("#textbox");
+				$.ajax(api("volume") + "&value=" + volume.value);
+				volume.value = "";
+			}
+
+			function skip(val) {
+				$.ajax(api("skip") + "&value=" + val);
 			}
 
 		</script>
 	</head>
 	<body>
 		<h1>Add Song Form</h1>
-		<input type="text"/>
-		<input type="button" value="Add Song" />
+		<input id="textbox" type="text"/>
+		<input id="add" type="button" value="Add Song" onclick="addURL()"/>
+		<input id="volume" type="button" value="Set Volume" onclick="volume()"/>
+		<input id="skipSong" type="button" value="Skip Current Song" onclick="skip('song')"/>
+		<input id="skipPlaylist" type="button" value="Skip Current Playlist" onclick="skip('playlist')"/>
 	</body>
 </html>

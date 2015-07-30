@@ -35,63 +35,12 @@ var youtubeVideoPatterns = []string{
 	`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
 }
 
-// ---------------
-// YOUTUBE SERVICE
-// ---------------
+// ------
+// TYPES
+// ------
 
+// YouTube implements the Service interface
 type YouTube struct{}
-
-// Name of the service
-func (y YouTube) ServiceName() string {
-	return "Youtube"
-}
-
-// Checks to see if service will accept URL
-func (y YouTube) URLRegex(url string) bool {
-	return RegexpFromURL(url, append(youtubeVideoPatterns, []string{youtubePlaylistPattern}...)) != nil
-}
-
-func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
-	for _, pattern := range patterns {
-		if re, err := regexp.Compile(pattern); err == nil {
-			if re.MatchString(url) {
-				return re
-			}
-		}
-	}
-	return nil
-}
-
-// Creates the requested song/playlist and adds to the queue
-func (y YouTube) NewRequest(user *gumble.User, url string) (string, error) {
-	var shortURL, startOffset = "", ""
-	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
-		if re.MatchString(url) {
-			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
-				shortURL = re.FindStringSubmatch(url)[1]
-				playlist, err := NewYouTubePlaylist(user.Name, shortURL)
-				return playlist.Title(), err
-			} else {
-				return "", errors.New("NO_PLAYLIST_PERMISSION")
-			}
-		} else {
-			re = RegexpFromURL(url, youtubeVideoPatterns)
-			matches := re.FindAllStringSubmatch(url, -1)
-			shortURL = matches[0][1]
-			if len(matches[0]) == 3 {
-				startOffset = matches[0][2]
-			}
-			song, err := NewYouTubeSong(user.Name, shortURL, startOffset, nil)
-			return song.Title(), err
-		}
-	} else {
-		return "", err
-	}
-}
-
-// ------------
-// YOUTUBE SONG
-// ------------
 
 // YouTubeSong holds the metadata for a song extracted from a YouTube video.
 type YouTubeSong struct {
@@ -107,14 +56,61 @@ type YouTubeSong struct {
 	dontSkip  bool
 }
 
-// NewYouTubeSong gathers the metadata for a song extracted from a YouTube video, and returns
+// YouTubePlaylist holds the metadata for a YouTube playlist.
+type YouTubePlaylist struct {
+	id    string
+	title string
+}
+
+// ---------------
+// YOUTUBE SERVICE
+// ---------------
+
+// Name of the service
+func (yt YouTube) ServiceName() string {
+	return "Youtube"
+}
+
+// Checks to see if service will accept URL
+func (yt YouTube) URLRegex(url string) bool {
+	return RegexpFromURL(url, append(youtubeVideoPatterns, []string{youtubePlaylistPattern}...)) != nil
+}
+
+// Creates the requested song/playlist and adds to the queue
+func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
+	var shortURL, startOffset = "", ""
+	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
+		if re.MatchString(url) {
+			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
+				shortURL = re.FindStringSubmatch(url)[1]
+				playlist, err := yt.NewPlaylist(user.Name, shortURL)
+				return playlist.Title(), err
+			} else {
+				return "", errors.New("NO_PLAYLIST_PERMISSION")
+			}
+		} else {
+			re = RegexpFromURL(url, youtubeVideoPatterns)
+			matches := re.FindAllStringSubmatch(url, -1)
+			shortURL = matches[0][1]
+			if len(matches[0]) == 3 {
+				startOffset = matches[0][2]
+			}
+			song, err := yt.NewSong(user.Name, shortURL, startOffset, nil)
+			return song.Title(), err
+		}
+	} else {
+		return "", err
+	}
+}
+
+// NewSong gathers the metadata for a song extracted from a YouTube video, and returns
 // the song.
-func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
+func (yt YouTube) NewSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = PerformGetRequest(url); err != nil {
+	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
 		return nil, errors.New(INVALID_API_KEY)
 	}
 
@@ -202,6 +198,46 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 	}
 	return nil, errors.New(VIDEO_TOO_LONG_MSG)
 }
+
+// NewPlaylist gathers the metadata for a YouTube playlist and returns it.
+func (yt YouTube) NewPlaylist(user, id string) (*YouTubePlaylist, error) {
+	var apiResponse *jsonq.JsonQuery
+	var err error
+	// Retrieve title of playlist
+	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
+		id, os.Getenv("YOUTUBE_API_KEY"))
+	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+		return nil, err
+	}
+	title, _ := apiResponse.String("items", "0", "snippet", "title")
+
+	playlist := &YouTubePlaylist{
+		id:    id,
+		title: title,
+	}
+
+	// Retrieve items in playlist
+	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s",
+		id, os.Getenv("YOUTUBE_API_KEY"))
+	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+		return nil, err
+	}
+	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
+	if numVideos > 50 {
+		numVideos = 50
+	}
+
+	for i := 0; i < numVideos; i++ {
+		index := strconv.Itoa(i)
+		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
+		yt.NewSong(user, videoID, "", playlist)
+	}
+	return playlist, nil
+}
+
+// ------------
+// YOUTUBE SONG
+// ------------
 
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
@@ -380,48 +416,6 @@ func (s *YouTubeSong) SetDontSkip(value bool) {
 // YOUTUBE PLAYLIST
 // ----------------
 
-// YouTubePlaylist holds the metadata for a YouTube playlist.
-type YouTubePlaylist struct {
-	id    string
-	title string
-}
-
-// NewYouTubePlaylist gathers the metadata for a YouTube playlist and returns it.
-func NewYouTubePlaylist(user, id string) (*YouTubePlaylist, error) {
-	var apiResponse *jsonq.JsonQuery
-	var err error
-	// Retrieve title of playlist
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
-		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return nil, err
-	}
-	title, _ := apiResponse.String("items", "0", "snippet", "title")
-
-	playlist := &YouTubePlaylist{
-		id:    id,
-		title: title,
-	}
-
-	// Retrieve items in playlist
-	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s",
-		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return nil, err
-	}
-	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
-	if numVideos > 50 {
-		numVideos = 50
-	}
-
-	for i := 0; i < numVideos; i++ {
-		index := strconv.Itoa(i)
-		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
-		NewYouTubeSong(user, videoID, "", playlist)
-	}
-	return playlist, nil
-}
-
 // AddSkip adds a skip to the playlist's skippers slice.
 func (p *YouTubePlaylist) AddSkip(username string) error {
 	for _, user := range dj.playlistSkips[p.ID()] {
@@ -475,7 +469,7 @@ func (p *YouTubePlaylist) Title() string {
 // -----------
 
 // PerformGetRequest does all the grunt work for a YouTube HTTPS GET request.
-func PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
+func (yt YouTube) PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
 	jsonString := ""
 
 	if response, err := http.Get(url); err == nil {

@@ -53,7 +53,7 @@ type Playlist interface {
 
 var services = []Service{YouTube{}}
 
-func findServiceAndAdd(user *gumble.User, url string) (string, error) {
+func findServiceAndAdd(user *gumble.User, url string) error {
 	var urlService Service
 
 	// Checks all services to see if any can take the URL
@@ -69,7 +69,9 @@ func findServiceAndAdd(user *gumble.User, url string) (string, error) {
 		oldLength := dj.queue.Len()
 		var title string
 		var err error
+
 		if title, err = urlService.NewRequest(user, url); err == nil {
+			dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, user.Name, title), false)
 
 			// Starts playing the new song if nothing else is playing
 			if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
@@ -81,7 +83,9 @@ func findServiceAndAdd(user *gumble.User, url string) (string, error) {
 					return "", errors.New("FAILED_TO_DOWNLOAD")
 				}
 			}
+		} else {
+			dj.SendPrivateMessage(user, err.Error())
 		}
-		return title, err
+		return err
 	}
 }

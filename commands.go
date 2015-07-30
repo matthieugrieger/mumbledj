@@ -171,13 +171,7 @@ func add(user *gumble.User, url string) error {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 		return errors.New("NO_ARGUMENT")
 	} else {
-		title, err := findServiceAndAdd(user, url)
-		if err == nil {
-			dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, user.Name, title), false)
-		} else {
-			dj.SendPrivateMessage(user, err.Error())
-		}
-		return err
+		return findServiceAndAdd(user, url)
 	}
 }
 

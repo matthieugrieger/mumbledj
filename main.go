@@ -152,6 +152,17 @@ func isNil(a interface{}) bool {
 	return a == nil || reflect.ValueOf(a).IsNil()
 }
 
+func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
+	for _, pattern := range patterns {
+		if re, err := regexp.Compile(pattern); err == nil {
+			if re.MatchString(url) {
+				return re
+			}
+		}
+	}
+	return nil
+}
+
 // dj variable declaration. This is done outside of main() to allow global use.
 var dj = mumbledj{
 	keepAlive:     make(chan bool),
@@ -230,7 +241,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	Webserver()
+	Webserver(9563)
 
 	<-dj.keepAlive
 }

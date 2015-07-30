@@ -83,18 +83,18 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web *WebServer) GetWebAddress(user *gumble.User) {
-	if web.client_token[user] != "" {
-		web.token_client[web.client_token[user]] = nil
+func (website *websiteServer) GetwebsiteAddress(user *gumble.User) {
+	if website.client_token[user] != "" {
+		website.token_client[website.client_token[user]] = nil
 	}
 	// dealing with collisions
 	var firstLoop = true
-	for firstLoop || web.token_client[web.client_token[user]] != nil {
-		web.client_token[user] = randSeq(10)
+	for firstLoop || website.token_client[website.client_token[user]] != nil {
+		website.client_token[user] = randSeq(10)
 		firstLoop = false
 	}
-	web.token_client[web.client_token[user]] = user
-	dj.SendPrivateMessage(user, fmt.Sprintf(WEB_ADDRESS, getIP(), web.client_token[user], getIP(), web.client_token[user]))
+	website.token_client[website.client_token[user]] = user
+	dj.SendPrivateMessage(user, fmt.Sprintf(website_ADDRESS, getIP(), website.client_token[user], getIP(), website.client_token[user]))
 }
 
 // Gets the external ip address for the server

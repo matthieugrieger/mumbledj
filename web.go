@@ -28,7 +28,7 @@ type Page struct {
 var external_ip = ""
 
 func Webserver(port int) *WebServer {
-	return WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}.construct()
+	return &WebServer{port, make(map[*gumble.User]string), make(map[string]*gumble.User)}.construct()
 }
 
 func (web *WebServer) construct() *WebServer {

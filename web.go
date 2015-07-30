@@ -35,7 +35,7 @@ func Webserver(port int) WebServer {
 	http.HandleFunc("/skip", webserver.skip)
 	http.ListenAndServe(":"+strconv.Itoa(port), nil)
 	rand.Seed(time.Now().UnixNano())
-	return &webserver
+	return webserver
 }
 
 func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {

@@ -44,7 +44,7 @@ func makeWebserver(port int) *WebServer {
 	return webserver
 }
 
-func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.URL.Path[1:]]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -54,7 +54,7 @@ func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web WebServer) add(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) add(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -63,7 +63,7 @@ func (web WebServer) add(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web WebServer) volume(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -73,7 +73,7 @@ func (web WebServer) volume(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web WebServer) skip(w http.ResponseWriter, r *http.Request) {
+func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
@@ -83,7 +83,7 @@ func (web WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (website WebServer) GetWebAddress(user *gumble.User) {
+func (website *WebServer) GetWebAddress(user *gumble.User) {
 	Verbose("Port number: " + strconv.Itoa(web.port))
 	if web.client_token[user] != "" {
 		web.token_client[web.client_token[user]] = nil

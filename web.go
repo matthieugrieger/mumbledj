@@ -44,7 +44,7 @@ func (web WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
 		t, _ := template.ParseFiles("index.html")
-		t.Execute(w, Page{"http://" + getIP() + ":" + web.port + "/", r.URL.Path[1:]})
+		t.Execute(w, Page{"http://" + getIP() + ":" + strconv.Itoa(web.port) + "/", r.URL.Path[1:]})
 	}
 }
 

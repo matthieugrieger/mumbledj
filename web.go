@@ -79,7 +79,7 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (website *WebServer) GetWebAddress(user *gumble.User) {
+func (website WebServer) GetWebAddress(user *gumble.User) {
 	Verbose("Port number: " + strconv.Itoa(web.port))
 	if web.client_token[user] != "" {
 		web.token_client[web.client_token[user]] = nil

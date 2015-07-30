@@ -92,8 +92,8 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		value = html.UnescapeString(r.FormValue("value"))
-		playlist, err := strconv.ParseBool(playlist)
+		value := html.UnescapeString(r.FormValue("value"))
+		playlist, err := strconv.ParseBool(value)
 		if err == nil {
 			skip(uname, false, playlist)
 			fmt.Fprintf(w, "Success")

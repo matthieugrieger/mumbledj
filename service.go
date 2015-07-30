@@ -9,6 +9,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/layeh/gumble/gumble"
 )
@@ -64,7 +65,7 @@ func findServiceAndAdd(user *gumble.User, url string) error {
 	}
 
 	if urlService == nil {
-		return "", errors.New("INVALID_URL")
+		return errors.New("INVALID_URL")
 	} else {
 		oldLength := dj.queue.Len()
 		var title string
@@ -80,7 +81,7 @@ func findServiceAndAdd(user *gumble.User, url string) error {
 				} else {
 					dj.queue.CurrentSong().Delete()
 					dj.queue.OnSongFinished()
-					return "", errors.New("FAILED_TO_DOWNLOAD")
+					return errors.New("FAILED_TO_DOWNLOAD")
 				}
 			}
 		} else {

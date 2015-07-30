@@ -59,7 +59,7 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = t.Execute(w, &Page{"http://" + getIP() + ":" + strconv.Itoa(web.port) + "/", r.URL.Path[1:], uname.Name})
+		err = t.Execute(w, Page{"http://" + getIP() + ":" + strconv.Itoa(web.port) + "/", r.URL.Path[1:], uname.Name})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

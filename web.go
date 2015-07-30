@@ -31,6 +31,7 @@ type Page struct {
 var external_ip = ""
 
 func NewWebServer(port int) *WebServer {
+	rand.Seed(time.Now().UnixNano())
 	return &WebServer{
 		port:         port,
 		client_token: make(map[*gumble.User]string),
@@ -44,7 +45,6 @@ func (web *WebServer) makeWeb() {
 	http.HandleFunc("/volume", web.volume)
 	http.HandleFunc("/skip", web.skip)
 	http.ListenAndServe(":"+strconv.Itoa(web.port), nil)
-	rand.Seed(time.Now().UnixNano())
 }
 
 func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +59,7 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = t.Execute(w, Page{"http://" + getIP() + ":" + strconv.Itoa(web.port) + "/", r.URL.Path[1:], uname.Name})
+		err = t.Execute(w, Page{getIP() + ":" + strconv.Itoa(web.port), r.URL.Path[1:], uname.Name})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

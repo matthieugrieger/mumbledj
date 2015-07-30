@@ -6,7 +6,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script type="text/javascript">
 			function api(type) {
-				return "{{.Site}}" + type + "?token={{.Token}}";
+				return "http://{{.Site}}/" + type + "?token={{.Token}}";
 			}
 
 			function addURL() {

@@ -25,6 +25,7 @@ type WebServer struct {
 type Page struct {
 	siteUrl string
 	token   string
+	user    string
 }
 
 var external_ip = ""
@@ -58,7 +59,7 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = t.Execute(w, &Page{"http://" + getIP() + ":" + strconv.Itoa(web.port) + "/", r.URL.Path[1:]})
+		err = t.Execute(w, &Page{"http://" + getIP() + ":" + strconv.Itoa(web.port) + "/", r.URL.Path[1:], uname})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

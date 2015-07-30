@@ -49,12 +49,12 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		t, err := template.ParseFiles("index.html")
+		t, err := template.ParseFiles("~/.mumbledj/web/index.html")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		
+
 		err = t.Execute(w, &Page{"http://" + getIP() + ":" + strconv.Itoa(web.port) + "/", r.URL.Path[1:]})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

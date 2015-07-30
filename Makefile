@@ -15,6 +15,7 @@ install:
 	mkdir -p ~/.mumbledj/web
 	if [ -a ~/.mumbledj/config/mumbledj.gcfg ]; then mv ~/.mumbledj/config/mumbledj.gcfg ~/.mumbledj/config/mumbledj_backup.gcfg; fi;
 	cp -u config.gcfg ~/.mumbledj/config/mumbledj.gcfg
+	cp -u index.html ~/.mumbledj/web/index.html
 	if [ -d ~/bin ]; then cp -f mumbledj* ~/bin/mumbledj; else sudo cp -f mumbledj* /usr/local/bin/mumbledj; fi;
 
 build:

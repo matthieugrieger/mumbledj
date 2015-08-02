@@ -142,12 +142,14 @@ func PerformStartupChecks() {
 	}
 }
 
+// Prints out messages only if verbose flag is true
 func Verbose(msg string) {
 	if dj.verbose {
 		fmt.Printf(msg + "\n")
 	}
 }
 
+// Checks to see if an object is nil
 func isNil(a interface{}) bool {
 	defer func() { recover() }()
 	return a == nil || reflect.ValueOf(a).IsNil()

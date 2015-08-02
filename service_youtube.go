@@ -110,7 +110,7 @@ func (yt YouTube) NewSong(user, id, offset string, playlist *YouTubePlaylist) (*
 	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, errors.New(INVALID_API_KEY)
 	}
 
@@ -206,7 +206,7 @@ func (yt YouTube) NewPlaylist(user, id string) (*YouTubePlaylist, error) {
 	// Retrieve title of playlist
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	title, _ := apiResponse.String("items", "0", "snippet", "title")
@@ -219,7 +219,7 @@ func (yt YouTube) NewPlaylist(user, id string) (*YouTubePlaylist, error) {
 	// Retrieve items in playlist
 	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
@@ -469,7 +469,7 @@ func (p *YouTubePlaylist) Title() string {
 // -----------
 
 // PerformGetRequest does all the grunt work for a YouTube HTTPS GET request.
-func (yt YouTube) PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
+func PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
 	jsonString := ""
 
 	if response, err := http.Get(url); err == nil {
@@ -482,7 +482,7 @@ func (yt YouTube) PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
 			if response.StatusCode == 403 {
 				return nil, errors.New("Invalid API key supplied.")
 			}
-			return nil, errors.New("Invalid YouTube ID supplied.")
+			return nil, errors.New("Invalid ID supplied.")
 		}
 	} else {
 		return nil, errors.New("An error occurred while receiving HTTP GET response.")

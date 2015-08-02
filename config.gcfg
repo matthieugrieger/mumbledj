@@ -55,6 +55,24 @@ LowestVolume = 0.01
 # DEFAULT VALUE: 0.8
 HighestVolume = 0.8
 
+
+[Web]
+
+# Enable web browser control
+# DEFAULT VALUE: true
+WebBrowser: true
+
+# Port for web browser, 80 provides links with no port
+# DEFAULT VALUE: 9563
+WebPort: 9563
+
+# Web address to provide links for
+# DEFAULT VALUE: http://{{IP}}:{{PORT}}/
+WebAddress: http://{{IP}}:{{PORT}}/
+
+# Can users have their own web page
+# DEFAULT VALUE: false
+CustomWebPage: false
  
 [Aliases]
 

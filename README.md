@@ -1,6 +1,6 @@
 MumbleDJ
 ========
-[![Build Status](https://drone.io/github.com/MichaelOultram/mumbledj/status.png)](https://drone.io/github.com/MichaelOultram/mumbledj/latest) **A Mumble bot that plays music fetched from YouTube videos.**
+**A Mumble bot that plays music fetched from YouTube videos.** [![Build Status](https://drone.io/github.com/MichaelOultram/mumbledj/status.png)](https://drone.io/github.com/MichaelOultram/mumbledj/latest)
 
 * [Usage](#usage)
 * [Features](#features)

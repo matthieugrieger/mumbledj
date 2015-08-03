@@ -128,13 +128,15 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 func (web *WebServer) status(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
-		fmt.Fprintf(w, string(json.Marshal(&Status{true, "Invalid Token"})))
+		str, ok := json.Marshal(&Status{true, "Invalid Token"}).(string)
+		fmt.Fprintf(w, str)
 	} else {
 		// Generate song queue
-		var songsInQueue [dj.queue.Len()]SongInfo
+		queueLength := dj.queue.Len()
+		var songsInQueue [queueLength]SongInfo
 		for i := 0; i < dj.queue.Len(); i++ {
 			songItem := dj.queue.Get(i)
-			songs[i] = &SongInfo{
+			songsInQueue[i] = &SongInfo{
 				TitleID:   songItem.ID(),
 				Title:     songItem.Title(),
 				Submitter: songItem.Submitter(),
@@ -142,8 +144,8 @@ func (web *WebServer) status(w http.ResponseWriter, r *http.Request) {
 				Thumbnail: songItem.Thumbnail(),
 			}
 			if !isNil(songItem.Playlist()) {
-				songs[i].PlaylistID = songItem.Playlist().ID()
-				songs[i].Playlist = songItem.Playlist().Title()
+				songsInQueuei].PlaylistID = songItem.Playlist().ID()
+				songsInQueue[i].Playlist = songItem.Playlist().Title()
 			}
 		}
 

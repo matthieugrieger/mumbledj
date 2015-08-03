@@ -5,7 +5,7 @@ cache:
   - $HOME/opus
   - $HOME/bin
   - $HOME/gopath/bin
-  - $HOME/gopath/src/github.com/nitrous-io/goop
+  - $HOME/gopath/pkg
   - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
 
 before_script:

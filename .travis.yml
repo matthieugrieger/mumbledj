@@ -13,7 +13,7 @@ before_script:
     - curl https://yt-dl.org/downloads/2015.07.28/youtube-dl -o ~/bin/youtube-dl
     - chmod a+rx ~/bin/youtube-dl
     - bash install-opus.sh
-    - export PATH=$PATH:$HOME/opus/lib
+    - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/opus/lib
 
 install:
     - ls -R $HOME/opus

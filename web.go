@@ -75,7 +75,7 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 			webpage = "index"
 		}
 
-		t, err := template.ParseFiles(fmt.Sprintf("%s/.mumbledj/songs/%s.html", dj.homeDir, uname.Name))
+		t, err := template.ParseFiles(fmt.Sprintf("%s/.mumbledj/songs/%s.html", dj.homeDir, webpage))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

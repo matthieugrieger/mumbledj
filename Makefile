@@ -1,7 +1,7 @@
 all: mumbledj
 
 mumbledj: main.go commands.go parseconfig.go strings.go service.go service_youtube.go songqueue.go cache.go web.go
-	if [ ! -f $GOPATH/bin/goop ]; then go get github.com/nitrous-io/goop; fi;
+	if [ ! -f $(GOPATH)/bin/goop ]; then go get github.com/nitrous-io/goop; fi;
 	rm -rf Goopfile.lock
 	goop install
 	goop go build

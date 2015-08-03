@@ -144,7 +144,7 @@ func (web *WebServer) status(w http.ResponseWriter, r *http.Request) {
 				Thumbnail: songItem.Thumbnail(),
 			}
 			if !isNil(songItem.Playlist()) {
-				songsInQueuei].PlaylistID = songItem.Playlist().ID()
+				songsInQueue[i].PlaylistID = songItem.Playlist().ID()
 				songsInQueue[i].Playlist = songItem.Playlist().Title()
 			}
 		}

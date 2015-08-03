@@ -4,7 +4,9 @@ cache:
   directories:
   - $HOME/opus
   - $HOME/bin
-  - $TRAVIS_BUILD_DIR/.vendor
+  - $HOME/gopath/bin
+  - $HOME/gopath/src/github.com/nitrous-io/goop
+  - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
 
 before_script:
     - export PATH=$PATH:~/bin/

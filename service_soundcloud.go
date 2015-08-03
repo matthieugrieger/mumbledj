@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -88,7 +87,7 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 	if err != nil {
 		return "", err
 	}
-	duration, err := trackData.Int("duration")
+	duration, err := trackData.String("duration")
 	if err != nil {
 		return "", err
 	}
@@ -102,7 +101,7 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 		title:     title,
 		thumbnail: thumbnail,
 		submitter: user,
-		duration:  strconv.ParseInt(duration),
+		duration:  duration,
 		playlist:  playlist,
 		skippers:  make([]string, 0),
 		dontSkip:  false,

@@ -1,0 +1,16 @@
+language: go
+
+install:
+    - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
+    - tar -xvf ffmpeg-release-64bit-static.tar.xz --strip 1 --no-anchored ffmpeg ffprobe
+    - sudo chmod a+rx ffmpeg
+    - sudo chmod a+rx ffprobe
+    - sudo mv ffmpeg /usr/local/bin/ffmpeg
+    - sudo mv ffprobe /usr/local/bin/ffprobe
+    - wget http://downloads.xiph.org/releases/opus/opus-1.0.3.tar.gz
+    - tar xzvf opus-1.0.3.tar.gz
+    - ./opus-1.0.3/configure
+    - make opus-1.0.3
+    - sudo make install opus-1.0.3
+    - sudo curl https://yt-dl.org/downloads/2015.07.28/youtube-dl -o /usr/local/bin/youtube-dl
+    - sudo chmod a+rx /usr/local/bin/youtube-dl

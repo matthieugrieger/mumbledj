@@ -96,7 +96,7 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 		return "", err
 	}
 
-	song := &YoutubeDL{
+	song := &YouTubeDL{
 		id:        id,
 		title:     title,
 		thumbnail: thumbnail,

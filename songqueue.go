@@ -78,7 +78,7 @@ func (q *SongQueue) Traverse(visit func(i int, s Song)) {
 }
 
 // Gets the song at a specific point in the queue
-func (q *SongQueue) Get(int i) (Song, error) {
+func (q *SongQueue) Get(i int) (Song, error) {
 	if q.Len() > i+1 {
 		return q.queue[i], nil
 	}

@@ -9,7 +9,6 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -29,7 +28,7 @@ type Page struct {
 	User  string
 }
 
-type status struct {
+type Status struct {
 	Error    bool
 	ErrorMsg string
 	Queue    []SongInfo

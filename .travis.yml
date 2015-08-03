@@ -3,9 +3,9 @@ language: go
 cache:
   directories:
   - $HOME/opus
+  - $TRAVIS_BUILD_DIR/.vendor
 
 before_script:
-    - export PATH=$PATH:~/bin/
     - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.xz
     - tar -xvf /tmp/ffmpeg.tar.xz --strip 1 --no-anchored ffmpeg ffprobe
     - chmod a+rx ffmpeg ffprobe
@@ -17,3 +17,6 @@ before_script:
 
 install:
     - ls -R $HOME/opus
+
+env: 
+    - PATH=$PATH:~/bin/

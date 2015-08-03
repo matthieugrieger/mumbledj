@@ -16,6 +16,8 @@ type YouTubeDL struct {
 	thumbnail string
 	submitter string
 	duration  string
+	url       string
+	offset    string
 	playlist  Playlist
 	skippers  []string
 	dontSkip  bool
@@ -99,7 +101,7 @@ func (dl *YouTubeDL) AddSkip(username string) error {
 func (dl *YouTubeDL) RemoveSkip(username string) error {
 	for i, user := range dl.skippers {
 		if username == user {
-			dl.skippers = append(s.skippers[:i], s.skippers[i+1:]...)
+			dl.skippers = append(dl.skippers[:i], dl.skippers[i+1:]...)
 			return nil
 		}
 	}

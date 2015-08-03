@@ -29,20 +29,6 @@ var soundcloudPlaylistPattern = `https?:\/\/(www)?\.soundcloud\.com\/([\w-]+)\/s
 // YouTube implements the Service interface
 type SoundCloud struct{}
 
-// YouTubeSong holds the metadata for a song extracted from a YouTube video.
-type SoundCloudSong struct {
-	submitter string
-	title     string
-	id        string
-	offset    int
-	filename  string
-	duration  string
-	thumbnail string
-	skippers  []string
-	playlist  Playlist
-	dontSkip  bool
-}
-
 // YouTubePlaylist holds the metadata for a YouTube playlist.
 type SoundCloudPlaylist struct {
 	id    string
@@ -72,25 +58,115 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 		return nil, errors.New(INVALID_API_KEY)
 	}
 
-	title, _ := apiResponse.String("title")
 	tracks, err := apiResponse.ArrayOfObjects("tracks")
-
 	if err == nil {
-		if re.MatchString(url) {
-			// PLAYLIST
-			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
-				playlist, err := sc.NewPlaylist(user.Name, url)
-				return playlist.Title(), err
-			} else {
-				return "", errors.New("NO_PLAYLIST_PERMISSION")
-			}
-		} else {
+		// PLAYLIST
+		if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
+			// Check duration of playlist
+			// duration, _ := apiResponse.Int("duration")
 
-			// SONG
-			song, err := sc.NewSong(user.Name, url, nil)
-			return song.Title(), err
+			// Create playlist
+			title, _ := apiResponse.String("title")
+			permalink, _ := apiResponse.String("permalink_url")
+			playlist := &SoundCloudPlaylist{
+				id:    permalink,
+				title: title,
+			}
+
+			// Add all tracks
+			for _, t := range tracks {
+				sc.NewSong(user.Name, jsonq.NewQuery(t), playlist)
+			}
+			return playlist.Title(), err
+		} else {
+			return "", errors.New("NO_PLAYLIST_PERMISSION")
 		}
 	} else {
+		return sc.NewSong(user.Name, apiResponse, nil)
+	}
+}
+
+// Creates a track and adds to the queue
+func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist SoundCloudPlaylist) (string, error) {
+	title, err := trackData.String("title")
+	if err != nil {
 		return "", err
 	}
+	id, err := trackData.String("id")
+	if err != nil {
+		return "", err
+	}
+	duration, err := trackData.Int("duration")
+	if err != nil {
+		return "", err
+	}
+	thumbnail, err := trackData.String("artwork_uri")
+	if err != nil {
+		return "", err
+	}
+
+	song := &YoutubeDL{
+		id:        id,
+		title:     title,
+		thumbnail: thumbnail,
+		submitter: user.Name,
+		duration:  duration,
+		playlist:  playlist,
+		skippers:  make([]string, 0),
+		dontSkip:  false,
+	}
+	dj.queue.AddSong(song)
+	return title, nil
+}
+
+// ----------------
+// YOUTUBE PLAYLIST
+// ----------------
+
+// AddSkip adds a skip to the playlist's skippers slice.
+func (p *SoundCloudPlaylist) AddSkip(username string) error {
+	for _, user := range dj.playlistSkips[p.ID()] {
+		if username == user {
+			return errors.New("This user has already skipped the current song.")
+		}
+	}
+	dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()], username)
+	return nil
+}
+
+// RemoveSkip removes a skip from the playlist's skippers slice. If username is not in the slice
+// an error is returned.
+func (p *YouTubePlaylist) RemoveSkip(username string) error {
+	for i, user := range dj.playlistSkips[p.ID()] {
+		if username == user {
+			dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()][:i], dj.playlistSkips[p.ID()][i+1:]...)
+			return nil
+		}
+	}
+	return errors.New("This user has not skipped the song.")
+}
+
+// DeleteSkippers removes the skippers entry in dj.playlistSkips.
+func (p *YouTubePlaylist) DeleteSkippers() {
+	delete(dj.playlistSkips, p.ID())
+}
+
+// SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
+// channel and the number of usernames in the skippers slice. If the value is greater than or equal
+// to the skip ratio defined in the config, the function returns true, and returns false otherwise.
+func (p *YouTubePlaylist) SkipReached(channelUsers int) bool {
+	if float32(len(dj.playlistSkips[p.ID()]))/float32(channelUsers) >= dj.conf.General.PlaylistSkipRatio {
+		return true
+	}
+	return false
+}
+
+// ID returns the id of the YouTubePlaylist.
+func (p *YouTubePlaylist) ID() string {
+	return p.id
+}
+
+// Title returns the title of the YouTubePlaylist.
+func (p *YouTubePlaylist) Title() string {
+	return p.title
 }

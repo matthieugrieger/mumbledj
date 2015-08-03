@@ -59,7 +59,7 @@ func (web *WebServer) makeWeb() {
 	http.HandleFunc("/api/add", web.add)
 	http.HandleFunc("/api/volume", web.volume)
 	http.HandleFunc("/api/skip", web.skip)
-	http.HandleFunc("/api/status", web.status)
+	//http.HandleFunc("/api/status", web.status)
 	http.ListenAndServe(":"+strconv.Itoa(web.port), nil)
 }
 
@@ -125,34 +125,34 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (web *WebServer) status(w http.ResponseWriter, r *http.Request) {
-	var uname = web.token_client[r.FormValue("token")]
-	if uname == nil {
-		str, ok := json.Marshal(&Status{true, "Invalid Token"}).(string)
-		fmt.Fprintf(w, str)
-	} else {
-		// Generate song queue
-		queueLength := dj.queue.Len()
-		var songsInQueue [queueLength]SongInfo
-		for i := 0; i < dj.queue.Len(); i++ {
-			songItem := dj.queue.Get(i)
-			songsInQueue[i] = &SongInfo{
-				TitleID:   songItem.ID(),
-				Title:     songItem.Title(),
-				Submitter: songItem.Submitter(),
-				Duration:  songItem.Duration(),
-				Thumbnail: songItem.Thumbnail(),
-			}
-			if !isNil(songItem.Playlist()) {
-				songsInQueue[i].PlaylistID = songItem.Playlist().ID()
-				songsInQueue[i].Playlist = songItem.Playlist().Title()
-			}
-		}
-
-		// Output status
-		fmt.Fprintf(w, string(json.MarshalIndent(&Status{false, "", songsInQueue})))
-	}
-}
+//func (web *WebServer) status(w http.ResponseWriter, r *http.Request) {
+//	var uname = web.token_client[r.FormValue("token")]
+//	if uname == nil {
+//		str, ok := json.Marshal(&Status{true, "Invalid Token"}).(string)
+//		fmt.Fprintf(w, str)
+//	} else {
+//		// Generate song queue
+//		queueLength := dj.queue.Len()
+//		var songsInQueue [queueLength]SongInfo
+//		for i := 0; i < dj.queue.Len(); i++ {
+//			songItem := dj.queue.Get(i)
+//			songsInQueue[i] = &SongInfo{
+//				TitleID:   songItem.ID(),
+//				Title:     songItem.Title(),
+//				Submitter: songItem.Submitter(),
+//				Duration:  songItem.Duration(),
+//				Thumbnail: songItem.Thumbnail(),
+//			}
+//			if !isNil(songItem.Playlist()) {
+//				songsInQueue[i].PlaylistID = songItem.Playlist().ID()
+//				songsInQueue[i].Playlist = songItem.Playlist().Title()
+//			}
+//		}
+//
+//		// Output status
+//		fmt.Fprintf(w, string(json.MarshalIndent(&Status{false, "", songsInQueue})))
+//	}
+//}
 
 func (website *WebServer) GetWebAddress(user *gumble.User) {
 	Verbose("Port number: " + strconv.Itoa(web.port))

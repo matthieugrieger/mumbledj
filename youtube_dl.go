@@ -26,8 +26,8 @@ type YouTubeDL struct {
 func (dl *YouTubeDL) Download() error {
 
 	// Checks to see if song is already downloaded
-	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, id+".m4a")); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, id+".m4a"), "--format", "m4a", "--", url)
+	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.id+".m4a")); os.IsNotExist(err) {
+		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, dl.id+".m4a"), "--format", "m4a", "--", dl.url)
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
@@ -42,7 +42,7 @@ func (dl *YouTubeDL) Download() error {
 // Play plays the song. Once the song is playing, a notification is displayed in a text message that features the song
 // thumbnail, URL, title, duration, and submitter.
 func (dl *YouTubeDL) Play() {
-	if s.offset != 0 {
+	if dl.offset != 0 {
 		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", dl.offset))
 		dj.audioStream.Offset = offsetDuration
 	}

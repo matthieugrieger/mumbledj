@@ -17,7 +17,7 @@ type YouTubeDL struct {
 	submitter string
 	duration  string
 	url       string
-	offset    string
+	offset    int
 	playlist  Playlist
 	skippers  []string
 	dontSkip  bool

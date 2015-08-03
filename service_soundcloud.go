@@ -1,21 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"os"
-	"os/exec"
-	"regexp"
-	"strconv"
-	"strings"
-	"time"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
 // Regular expressions for soundcloud urls

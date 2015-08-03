@@ -1,4 +1,4 @@
-MumbleDJ [![Build Status](https://drone.io/github.com/MichaelOultram/mumbledj/status.png)](https://drone.io/github.com/MichaelOultram/mumbledj/latest)
+MumbleDJ [![Build Status](https://travis-ci.org/MichaelOultram/mumbledj.svg?branch=master)](https://travis-ci.org/MichaelOultram/mumbledj)
 ========
 **A Mumble bot that plays music fetched from YouTube videos.**
 

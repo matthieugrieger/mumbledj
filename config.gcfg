@@ -86,10 +86,6 @@ HelpAlias = "help"
 # DEFAULT VALUE: "volume"
 VolumeAlias = "volume"
 
-# Alias used for web address command
-# DEFAULT VALUE: "web"
-WebAlias = "web"
-
 # Alias used for move command
 # DEFAULT VALUE: "move"
 MoveAlias = "move"
@@ -144,7 +140,7 @@ AdminsEnabled = true
 # SYNTAX: In order to specify multiple admins, repeat the Admins="username"
 # line of code. Each line has one username, and an unlimited amount of usernames may
 # be entered in this matter.
-Admins = "Matt"
+Admins = "BottleOToast"
 
 # Make add an admin command?
 # DEFAULT VALUE: false
@@ -165,10 +161,6 @@ AdminHelp = false
 # Make volume an admin command?
 # DEFAULT VALUE: false
 AdminVolume = false
-
-# Make web an admin command?
-# DEFAULT VALUE: false
-AdminWeb = false
 
 # Make move an admin command?
 # DEFAULT VALUE: true

@@ -6,6 +6,7 @@ cache:
   - $HOME/bin
   - $HOME/gopath/bin
   - $HOME/gopath/pkg
+  - $HOME/gopath/src/github.com/nitrous-io
   - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
 
 before_script:

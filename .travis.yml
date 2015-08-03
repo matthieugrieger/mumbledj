@@ -7,11 +7,9 @@ cache:
   - $TRAVIS_BUILD_DIR/.vendor
 
 before_script:
+    - export PATH=$PATH:~/bin/
+    - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/opus/lib/pkgconfig
     - bash install-dependencies.sh
 
 install:
     - ls -R $HOME/opus
-
-env: 
-    - PATH=$PATH:~/bin/
-    - PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/opus/lib/pkgconfig

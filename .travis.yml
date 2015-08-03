@@ -9,8 +9,10 @@ install:
     - sudo mv ffprobe /usr/local/bin/ffprobe
     - wget http://downloads.xiph.org/releases/opus/opus-1.0.3.tar.gz
     - tar xzvf opus-1.0.3.tar.gz
-    - ./opus-1.0.3/configure
-    - make opus-1.0.3
-    - sudo make install opus-1.0.3
+    - cd opus-1.0.3
+    - ./configure
+    - make
+    - sudo make install
+    - cd ..
     - sudo curl https://yt-dl.org/downloads/2015.07.28/youtube-dl -o /usr/local/bin/youtube-dl
     - sudo chmod a+rx /usr/local/bin/youtube-dl

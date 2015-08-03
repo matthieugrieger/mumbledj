@@ -128,7 +128,7 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 func (web *WebServer) status(w http.ResponseWriter, r *http.Request) {
 	var uname = web.token_client[r.FormValue("token")]
 	if uname == nil {
-		fmt.Fprintf(w, string(json.MarshalIndent(&Status{true, "Invalid Token"})))
+		fmt.Fprintf(w, string(json.Marshal(&Status{true, "Invalid Token"})))
 	} else {
 		// Generate song queue
 		var songsInQueue [dj.queue.Len()]SongInfo

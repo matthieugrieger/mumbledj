@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -100,14 +101,14 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 		id:        id,
 		title:     title,
 		thumbnail: thumbnail,
-		submitter: user.Name,
-		duration:  duration,
+		submitter: user,
+		duration:  strconv.ParseInt(duration),
 		playlist:  playlist,
 		skippers:  make([]string, 0),
 		dontSkip:  false,
 	}
 	dj.queue.AddSong(song)
-	return title, nil
+	return title, nil	
 }
 
 // ----------------

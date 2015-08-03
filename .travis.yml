@@ -4,10 +4,10 @@ cache:
   directories:
   - $HOME/opus
   - $HOME/bin
-  - $GOPATH/bin
-  - $GOPATH/pkg
-  - $GOPATH/src/github.com/nitrous-io
-  - $GOPATH/src/github.com/MichaelOultram/mumbledj/.vendor
+  - $HOME/gopath/bin
+  - $HOME/gopath/pkg
+  - $HOME/gopath/src/github.com/nitrous-io
+  - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
 
 before_script:
     - export PATH=$PATH:~/bin/

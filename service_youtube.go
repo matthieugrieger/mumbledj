@@ -96,7 +96,11 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 				startOffset = matches[0][2]
 			}
 			song, err := yt.NewSong(user.Name, shortURL, startOffset, nil)
-			return song.Title(), err
+			if !isNil(song) {
+				return song.Title(), err
+			} else {
+				return "", err
+			}
 		}
 	} else {
 		return "", err

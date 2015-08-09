@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"github.com/layeh/gumble/gumble"
+	"testing"
+)
 
 func createClient(uname string) *gumble.Client {
 	return gumble.NewClient(&gumble.Config{

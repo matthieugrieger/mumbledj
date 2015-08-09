@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/layeh/gumble/gumble"
+	"os"
 	"testing"
 )
 
 func createClient(uname string) *gumble.Client {
 	return gumble.NewClient(&gumble.Config{
 		Username: uname,
-		Password: password,
-		Address:  address + ":" + port,
-		Tokens:   strings.Split(accesstokens, " ")})
+		Password: os.Getenv("MUMBLE_PASSWORD"),
+		Address:  os.Getenv("MUMBLE_IP") + ":" + os.Getenv("MUMBLE_PORT")})
 }
 
 func TestYoutubeSong(t *testing.T) {

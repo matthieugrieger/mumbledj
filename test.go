@@ -42,7 +42,7 @@ func testYoutubeSong(password, ip, port string) {
 			fmt.Printf("For: %s; Expected: %s; Got: %s", url, title, dj.queue.CurrentSong().Title())
 		}
 
-		sleep(time.Second * 5)
+		time.Sleep(time.Second * 5)
 		skip(dummyUser, false, false)
 	}
 

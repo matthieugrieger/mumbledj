@@ -15,5 +15,9 @@ before_install:
     - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/opus/lib/pkgconfig
     - bash install-dependencies.sh
 
+install:
+    - make
+    - make install
+
 after_success:
     - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=travis -password=$MUMBLE_PASSWORD -test=true

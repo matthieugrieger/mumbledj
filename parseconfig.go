@@ -33,12 +33,6 @@ type DjConfig struct {
 		LowestVolume  float32
 		HighestVolume float32
 	}
-	Web struct {
-		WebBrowser    bool
-		WebPort       int
-		WebAddress    string
-		CustomWebPage bool
-	}
 	Aliases struct {
 		AddAlias               string
 		SkipAlias              string

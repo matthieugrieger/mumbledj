@@ -12,10 +12,10 @@ else
 fi
 
 # check to see if opus is installed
-if [ ! -d "$HOME/bin/lib" ]; then
+if [ ! -d "$HOME/opus/lib" ]; then
     wget http://downloads.xiph.org/releases/opus/opus-1.0.3.tar.gz
     tar xzvf opus-1.0.3.tar.gz
-    cd opus-1.0.3 && ./configure --prefix=$HOME/bin && make && make install
+    cd opus-1.0.3 && ./configure --prefix=$HOME/opus && make && make install
 else
   echo 'Using cached version of opus.';
 fi
@@ -27,8 +27,3 @@ if [ ! -f "$HOME/bin/youtube-dl" ]; then
 else
   echo 'Using cached version of youtube-dl.';
 fi
-
-ls -l $HOME/bin
-ls -l $HOME/bin/lib
-ls -l $HOME/opus
-ls -l $HOME/opus/lib

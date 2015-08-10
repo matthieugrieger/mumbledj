@@ -10,9 +10,10 @@ cache:
   - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
 
 before_install:
-    - export PATH=$PATH:~/bin/
-    - export PATH=$PATH:$GOPATH/bin/
-    - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/opus/lib/pkgconfig
+    - export PATH=$PATH:$HOME/bin/
+    - export LD_RUN_PATH=$LD_RUN_PATH:$HOME/opus/lib
+    - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/opus/lib
+    - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/opus/lib
     - bash install-dependencies.sh
 
 install:

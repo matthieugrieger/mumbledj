@@ -14,15 +14,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
 // Regular expressions for youtube urls
@@ -85,7 +82,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 
 // NewSong gathers the metadata for a song extracted from a YouTube video, and returns
 // the song.
-func (yt YouTube) NewSong(user, id, offset string, playlist *Playlist) (*Song, error) {
+func (yt YouTube) NewSong(user, id, offset string, playlist Playlist) (Song, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
@@ -180,7 +177,7 @@ func (yt YouTube) NewSong(user, id, offset string, playlist *Playlist) (*Song, e
 }
 
 // NewPlaylist gathers the metadata for a YouTube playlist and returns it.
-func (yt YouTube) NewPlaylist(user, id string) (*Playlist, error) {
+func (yt YouTube) NewPlaylist(user, id string) (Playlist, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	// Retrieve title of playlist

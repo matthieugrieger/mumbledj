@@ -253,11 +253,11 @@ func main() {
 	if isNil(web) {
 		Verbose("WEB IS NIL")
 	}
-
-	<-dj.keepAlive
-
+	
 	if test {
 		Test(password, address, port)
 		kill()
 	}
+
+	<-dj.keepAlive
 }

@@ -68,7 +68,7 @@ WebPort: 9563
 
 # Web address to provide links for
 # DEFAULT VALUE: http://{{IP}}:{{PORT}}/
-WebAddress: http://{{IP}}:{{PORT}}/
+WebAddress: "http://{{IP}}:{{PORT}}/"
 
 # Can users have their own web page
 # DEFAULT VALUE: false

@@ -10,7 +10,8 @@ import (
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
-type YouTubeDL struct {
+// Extends a Song
+type YouTubeDLSong struct {
 	id        string
 	title     string
 	thumbnail string
@@ -23,9 +24,18 @@ type YouTubeDL struct {
 	dontSkip  bool
 }
 
+type YouTubeDLPlaylist struct {
+	id    string
+	title string
+}
+
+// -------------
+// YouTubeDLSong
+// -------------
+
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
-func (dl *YouTubeDL) Download() error {
+func (dl *YouTubeDLSong) Download() error {
 
 	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.id+".m4a")); os.IsNotExist(err) {
@@ -43,7 +53,7 @@ func (dl *YouTubeDL) Download() error {
 
 // Play plays the song. Once the song is playing, a notification is displayed in a text message that features the song
 // thumbnail, URL, title, duration, and submitter.
-func (dl *YouTubeDL) Play() {
+func (dl *YouTubeDLSong) Play() {
 	if dl.offset != 0 {
 		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", dl.offset))
 		dj.audioStream.Offset = offsetDuration
@@ -70,7 +80,7 @@ func (dl *YouTubeDL) Play() {
 }
 
 // Delete deletes the song from ~/.mumbledj/songs if the cache is disabled.
-func (dl *YouTubeDL) Delete() error {
+func (dl *YouTubeDLSong) Delete() error {
 	if dj.conf.Cache.Enabled == false {
 		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, dl.id)
 		if _, err := os.Stat(filePath); err == nil {
@@ -86,7 +96,7 @@ func (dl *YouTubeDL) Delete() error {
 
 // AddSkip adds a skip to the skippers slice. If the user is already in the slice, AddSkip
 // returns an error and does not add a duplicate skip.
-func (dl *YouTubeDL) AddSkip(username string) error {
+func (dl *YouTubeDLSong) AddSkip(username string) error {
 	for _, user := range dl.skippers {
 		if username == user {
 			return errors.New("This user has already skipped the current song.")
@@ -98,7 +108,7 @@ func (dl *YouTubeDL) AddSkip(username string) error {
 
 // RemoveSkip removes a skip from the skippers slice. If username is not in slice, an error is
 // returned.
-func (dl *YouTubeDL) RemoveSkip(username string) error {
+func (dl *YouTubeDLSong) RemoveSkip(username string) error {
 	for i, user := range dl.skippers {
 		if username == user {
 			dl.skippers = append(dl.skippers[:i], dl.skippers[i+1:]...)
@@ -111,7 +121,7 @@ func (dl *YouTubeDL) RemoveSkip(username string) error {
 // SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
 // channel and the number of usernames in the skippers slice. If the value is greater than or equal
 // to the skip ratio defined in the config, the function returns true, and returns false otherwise.
-func (dl *YouTubeDL) SkipReached(channelUsers int) bool {
+func (dl *YouTubeDLSong) SkipReached(channelUsers int) bool {
 	if float32(len(dl.skippers))/float32(channelUsers) >= dj.conf.General.SkipRatio {
 		return true
 	}
@@ -119,46 +129,98 @@ func (dl *YouTubeDL) SkipReached(channelUsers int) bool {
 }
 
 // Submitter returns the name of the submitter of the Song.
-func (dl *YouTubeDL) Submitter() string {
+func (dl *YouTubeDLSong) Submitter() string {
 	return dl.submitter
 }
 
 // Title returns the title of the Song.
-func (dl *YouTubeDL) Title() string {
+func (dl *YouTubeDLSong) Title() string {
 	return dl.title
 }
 
 // ID returns the id of the Song.
-func (dl *YouTubeDL) ID() string {
+func (dl *YouTubeDLSong) ID() string {
 	return dl.id
 }
 
 // Filename returns the filename of the Song.
-func (dl *YouTubeDL) Filename() string {
+func (dl *YouTubeDLSong) Filename() string {
 	return dl.id + ".m4a"
 }
 
 // Duration returns the duration of the Song.
-func (dl *YouTubeDL) Duration() string {
+func (dl *YouTubeDLSong) Duration() string {
 	return dl.duration
 }
 
 // Thumbnail returns the thumbnail URL for the Song.
-func (dl *YouTubeDL) Thumbnail() string {
+func (dl *YouTubeDLSong) Thumbnail() string {
 	return dl.thumbnail
 }
 
 // Playlist returns the playlist type for the Song (may be nil).
-func (dl *YouTubeDL) Playlist() Playlist {
+func (dl *YouTubeDLSong) Playlist() Playlist {
 	return dl.playlist
 }
 
 // DontSkip returns the DontSkip boolean value for the Song.
-func (dl *YouTubeDL) DontSkip() bool {
+func (dl *YouTubeDLSong) DontSkip() bool {
 	return dl.dontSkip
 }
 
 // SetDontSkip sets the DontSkip boolean value for the Song.
-func (dl *YouTubeDL) SetDontSkip(value bool) {
+func (dl *YouTubeDLSong) SetDontSkip(value bool) {
 	dl.dontSkip = value
+}
+
+// ----------------
+// YOUTUBE PLAYLIST
+// ----------------
+
+// AddSkip adds a skip to the playlist's skippers slice.
+func (p *YouTubeDLPlaylist) AddSkip(username string) error {
+	for _, user := range dj.playlistSkips[p.ID()] {
+		if username == user {
+			return errors.New("This user has already skipped the current song.")
+		}
+	}
+	dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()], username)
+	return nil
+}
+
+// RemoveSkip removes a skip from the playlist's skippers slice. If username is not in the slice
+// an error is returned.
+func (p *YouTubeDLPlaylist) RemoveSkip(username string) error {
+	for i, user := range dj.playlistSkips[p.ID()] {
+		if username == user {
+			dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()][:i], dj.playlistSkips[p.ID()][i+1:]...)
+			return nil
+		}
+	}
+	return errors.New("This user has not skipped the song.")
+}
+
+// DeleteSkippers removes the skippers entry in dj.playlistSkips.
+func (p *YouTubeDLPlaylist) DeleteSkippers() {
+	delete(dj.playlistSkips, p.ID())
+}
+
+// SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
+// channel and the number of usernames in the skippers slice. If the value is greater than or equal
+// to the skip ratio defined in the config, the function returns true, and returns false otherwise.
+func (p *YouTubeDLPlaylist) SkipReached(channelUsers int) bool {
+	if float32(len(dj.playlistSkips[p.ID()]))/float32(channelUsers) >= dj.conf.General.PlaylistSkipRatio {
+		return true
+	}
+	return false
+}
+
+// ID returns the id of the YouTubeDLPlaylist.
+func (p *YouTubeDLPlaylist) ID() string {
+	return p.id
+}
+
+// Title returns the title of the YouTubeDLPlaylist.
+func (p *YouTubeDLPlaylist) Title() string {
+	return p.title
 }

@@ -13,18 +13,8 @@ import (
 var soundcloudSongPattern = `https?:\/\/(www)?\.soundcloud\.com\/([\w-]+)\/([\w-]+)`
 var soundcloudPlaylistPattern = `https?:\/\/(www)?\.soundcloud\.com\/([\w-]+)\/sets\/([\w-]+)`
 
-// ------
-// TYPES
-// ------
-
-// YouTube implements the Service interface
+// SoundCloud implements the Service interface
 type SoundCloud struct{}
-
-// YouTubePlaylist holds the metadata for a YouTube playlist.
-type SoundCloudPlaylist struct {
-	id    string
-	title string
-}
 
 // ------------------
 // SOUNDCLOUD SERVICE
@@ -59,7 +49,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 			// Create playlist
 			title, _ := apiResponse.String("title")
 			permalink, _ := apiResponse.String("permalink_url")
-			playlist := &SoundCloudPlaylist{
+			playlist := &YouTubeDLPlaylist{
 				id:    permalink,
 				title: title,
 			}
@@ -73,6 +63,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 			return "", errors.New("NO_PLAYLIST_PERMISSION")
 		}
 	} else {
+		// SONG
 		return sc.NewSong(user.Name, apiResponse, nil)
 	}
 }
@@ -96,7 +87,7 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 		return "", err
 	}
 
-	song := &YouTubeDL{
+	song := &YouTubeDLSong{
 		id:        id,
 		title:     title,
 		thumbnail: thumbnail,
@@ -107,57 +98,5 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 		dontSkip:  false,
 	}
 	dj.queue.AddSong(song)
-	return title, nil	
-}
-
-// ----------------
-// YOUTUBE PLAYLIST
-// ----------------
-
-// AddSkip adds a skip to the playlist's skippers slice.
-func (p *SoundCloudPlaylist) AddSkip(username string) error {
-	for _, user := range dj.playlistSkips[p.ID()] {
-		if username == user {
-			return errors.New("This user has already skipped the current song.")
-		}
-	}
-	dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()], username)
-	return nil
-}
-
-// RemoveSkip removes a skip from the playlist's skippers slice. If username is not in the slice
-// an error is returned.
-func (p *SoundCloudPlaylist) RemoveSkip(username string) error {
-	for i, user := range dj.playlistSkips[p.ID()] {
-		if username == user {
-			dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()][:i], dj.playlistSkips[p.ID()][i+1:]...)
-			return nil
-		}
-	}
-	return errors.New("This user has not skipped the song.")
-}
-
-// DeleteSkippers removes the skippers entry in dj.playlistSkips.
-func (p *SoundCloudPlaylist) DeleteSkippers() {
-	delete(dj.playlistSkips, p.ID())
-}
-
-// SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
-// channel and the number of usernames in the skippers slice. If the value is greater than or equal
-// to the skip ratio defined in the config, the function returns true, and returns false otherwise.
-func (p *SoundCloudPlaylist) SkipReached(channelUsers int) bool {
-	if float32(len(dj.playlistSkips[p.ID()]))/float32(channelUsers) >= dj.conf.General.PlaylistSkipRatio {
-		return true
-	}
-	return false
-}
-
-// ID returns the id of the YouTubePlaylist.
-func (p *SoundCloudPlaylist) ID() string {
-	return p.id
-}
-
-// Title returns the title of the YouTubePlaylist.
-func (p *SoundCloudPlaylist) Title() string {
-	return p.title
+	return title, nil
 }

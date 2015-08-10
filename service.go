@@ -52,7 +52,7 @@ type Playlist interface {
 	Title() string
 }
 
-var services = []Service{YouTube{}}
+var services = []Service{YouTube{}, SoundCloud{}}
 
 func findServiceAndAdd(user *gumble.User, url string) error {
 	var urlService Service

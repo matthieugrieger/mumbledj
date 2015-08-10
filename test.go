@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/layeh/gumble/gumble"
 )
 
@@ -35,17 +36,9 @@ func testYoutubeSong(password, ip, port string) {
 	for url, title := range songs {
 		err := add(dummyUser, url)
 		if err != nil {
-			t.Error(
-				"For", url,
-				"expected", title,
-				"got", err,
-			)
+			fmt.Printf("For: %s; Expected: %s; Got: %s", url, title, err.Error())
 		} else if dj.queue.CurrentSong().Title() != title {
-			t.Error(
-				"For", url,
-				"expected", title,
-				"got", dj.queue.CurrentSong().Title(),
-			)
+			fmt.Printf("For: %s; Expected: %s; Got: %s", url, title, dj.queue.CurrentSong().Title())
 		}
 		skip(dummyUser, false, false)
 	}

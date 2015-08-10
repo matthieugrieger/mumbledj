@@ -62,7 +62,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 				return playlist.Title(), nil
 			} else {
 				Verbose("soundcloud.NewRequest: " + err.Error())
-				return nil, err
+				return "", err
 			}
 		} else {
 			return "", errors.New("NO_PLAYLIST_PERMISSION")

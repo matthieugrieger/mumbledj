@@ -77,7 +77,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 				return song.Title(), nil
 			} else {
 				Verbose("youtube.NewRequest: " + err.Error())
-				return nil, err
+				return "", err
 			}
 		}
 	} else {

@@ -11,6 +11,7 @@ cache:
 
 before_install:
     - export PATH=$PATH:~/bin/
+    - export PATH=$PATH:$GOPATH/bin/
     - export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/opus/lib/pkgconfig
     - bash install-dependencies.sh
 

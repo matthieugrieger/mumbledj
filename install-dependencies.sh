@@ -27,3 +27,5 @@ if [ ! -f "$HOME/bin/youtube-dl" ]; then
 else
   echo 'Using cached version of youtube-dl.';
 fi
+
+ls -lR $HOME/opus

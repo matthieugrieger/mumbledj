@@ -1,0 +1,34 @@
+{
+	"ImportPath": "github.com/MichaelOultram/mumbledj",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/gcfg",
+			"Rev": "c2d3050044d05357eaf6c3547249ba57c5e235cb"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "0f7a9caded1fb3c9cc5a9b4bcf2ff633cc8ae644"
+		},
+		{
+			"ImportPath": "github.com/jmoiron/jsonq",
+			"Rev": "7c27c8eb9f6831555a4209f6a7d579159e766a3c"
+		},
+		{
+			"ImportPath": "github.com/layeh/gopus",
+			"Rev": "2f86fa22bc209cc0ccbc6418dfbad9199e3dbc78"
+		},
+		{
+			"ImportPath": "github.com/layeh/gumble/gumble",
+			"Rev": "c9fcce8fc4b71c7c53a5d3d9d48a1e001ad19a19"
+		},
+		{
+			"ImportPath": "github.com/layeh/gumble/gumble_ffmpeg",
+			"Rev": "c9fcce8fc4b71c7c53a5d3d9d48a1e001ad19a19"
+		},
+		{
+			"ImportPath": "github.com/layeh/gumble/gumbleutil",
+			"Rev": "c9fcce8fc4b71c7c53a5d3d9d48a1e001ad19a19"
+		}
+	]
+}

@@ -21,4 +21,4 @@ script:
     - make install
 
 after_success:
-    - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=travis -password=$MUMBLE_PASSWORD -test=true
+    - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=travis -password=$MUMBLE_PASSWORD -verbose=true -test=true

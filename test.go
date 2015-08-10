@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/layeh/gumble/gumble"
+	"time"
 )
 
 func Test(password, ip, port string) {
-
+	testYoutubeSong(password, ip, port)
 }
 
 func createClient(uname, password, ip, port string) *gumble.Client {
@@ -40,6 +41,8 @@ func testYoutubeSong(password, ip, port string) {
 		} else if dj.queue.CurrentSong().Title() != title {
 			fmt.Printf("For: %s; Expected: %s; Got: %s", url, title, dj.queue.CurrentSong().Title())
 		}
+
+		sleep(time.Second * 5)
 		skip(dummyUser, false, false)
 	}
 

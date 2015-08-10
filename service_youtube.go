@@ -161,7 +161,6 @@ func (yt YouTube) NewSong(user, id, offset string, playlist Playlist) (Song, err
 			title:     title,
 			id:        id,
 			offset:    int((offsetDays * 86400) + (offsetHours * 3600) + (offsetMinutes * 60) + offsetSeconds),
-			filename:  id + ".m4a",
 			duration:  durationString,
 			thumbnail: thumbnail,
 			skippers:  make([]string, 0),

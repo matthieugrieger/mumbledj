@@ -2,19 +2,21 @@ package main
 
 import (
 	"github.com/layeh/gumble/gumble"
-	"os"
-	"testing"
 )
 
-func createClient(uname string) *gumble.Client {
-	return gumble.NewClient(&gumble.Config{
-		Username: uname,
-		Password: os.Getenv("MUMBLE_PASSWORD"),
-		Address:  os.Getenv("MUMBLE_IP") + ":" + os.Getenv("MUMBLE_PORT")})
+func Test(password, ip, port string) {
+
 }
 
-func TestYoutubeSong(t *testing.T) {
-	dummyClient := createClient("dummy")
+func createClient(uname, password, ip, port string) *gumble.Client {
+	return gumble.NewClient(&gumble.Config{
+		Username: uname,
+		Password: password,
+		Address:  ip + ":" + port})
+}
+
+func testYoutubeSong(password, ip, port string) {
+	dummyClient := createClient("dummy", password, ip, port)
 	dummyClient.Connect()
 	dummyUser := dj.client.Users.Find("dummy")
 

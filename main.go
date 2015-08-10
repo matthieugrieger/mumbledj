@@ -193,7 +193,7 @@ func main() {
 	}
 
 	var address, port, username, password, channel, pemCert, pemKey, accesstokens string
-	var insecure, verbose bool
+	var insecure, verbose, test bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
@@ -204,7 +204,8 @@ func main() {
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
 	flag.StringVar(&accesstokens, "accesstokens", "", "list of access tokens for channel auth")
 	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
-	flag.BoolVar(&verbose, "verbose", false, "prints out debug messages to the console")
+	flag.BoolVar(&verbose, "verbose", false, "[debug] prints out debug messages to the console")
+	flag.BoolVar(&test, "test", false, "[debug] tests the features of mumbledj")
 	flag.Parse()
 
 	dj.config = gumble.Config{
@@ -254,4 +255,9 @@ func main() {
 	}
 
 	<-dj.keepAlive
+
+	if test {
+		Test(password, address, port)
+		kill()
+	}
 }

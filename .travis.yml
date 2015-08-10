@@ -15,4 +15,4 @@ before_install:
     - bash install-dependencies.sh
 
 after_success:
-    - go test
+    - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=travis -password=$MUMBLE_PASSWORD -test=true

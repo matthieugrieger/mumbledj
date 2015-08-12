@@ -7,10 +7,13 @@ machine:
 
 dependencies:
     pre:
+        - sudo apt-get update; sudo apt-get upgrade
         - bash install-dependencies.sh
+        
     override:
         - make
         - make install
+        
     cache_directories:
         - "~/opus"
         - "~/bin"
@@ -18,6 +21,7 @@ dependencies:
         - "/home/ubuntu/.go_workspace/bin"
         - "/home/ubuntu/.go_workspace/pkg"
         - "/home/ubuntu/.go_workspace/src/github.com/nitrous-io"
+        
 test:
     override:
         - youtube-dl --output ~/.mumbledj/songs/QcIy9NiNbmo.m4a --format m4a --prefer-ffmpeg http://www.youtube.com/watch?v=QcIy9NiNbmo

@@ -6,30 +6,30 @@ import (
 	"time"
 )
 
-type Test struct {
+type TestSettings struct {
 	password string
 	ip       string
 	port     string
 }
 
-var test Test
+var test TestSettings
 
 func Test(password, ip, port string) {
-	test = Test{
+	test = TestSettings{
 		password: password,
 		ip:       ip,
 		port:     port,
 	}
 }
 
-func (t Test) createClient(uname) *gumble.Client {
+func (t TestSettings) createClient(uname string) *gumble.Client {
 	return gumble.NewClient(&gumble.Config{
 		Username: uname,
 		Password: t.password,
 		Address:  t.ip + ":" + t.port})
 }
 
-func (t Test) testYoutubeSong() {
+func (t TestSettings) testYoutubeSong() {
 	dummyClient := t.createClient("dummy")
 	dummyClient.Connect()
 	dummyUser := dj.client.Users.Find("dummy")

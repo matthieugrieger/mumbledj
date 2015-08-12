@@ -6,19 +6,31 @@ import (
 	"time"
 )
 
-func Test(password, ip, port string) {
-	testYoutubeSong(password, ip, port)
+type Test struct {
+	password string
+	ip       string
+	port     string
 }
 
-func createClient(uname, password, ip, port string) *gumble.Client {
+var test Test
+
+func Test(password, ip, port string) {
+	test = Test{
+		password: password,
+		ip:       ip,
+		port:     port,
+	}
+}
+
+func (t Test) createClient(uname) *gumble.Client {
 	return gumble.NewClient(&gumble.Config{
 		Username: uname,
-		Password: password,
-		Address:  ip + ":" + port})
+		Password: t.password,
+		Address:  t.ip + ":" + t.port})
 }
 
-func testYoutubeSong(password, ip, port string) {
-	dummyClient := createClient("dummy", password, ip, port)
+func (t Test) testYoutubeSong() {
+	dummyClient := t.createClient("dummy")
 	dummyClient.Connect()
 	dummyUser := dj.client.Users.Find("dummy")
 

@@ -38,14 +38,15 @@ type YouTubeDLPlaylist struct {
 func (dl *YouTubeDLSong) Download() error {
 
 	// Checks to see if song is already downloaded
-	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.id+".m4a")); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, dl.id+".m4a"), "--format", "m4a", "--", dl.url)
+	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())); os.IsNotExist(err) {
+		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, dl.Filename()), "--format", "m4a", dl.url)
 		if err := cmd.Run(); err == nil {
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
 			}
 			return nil
 		}
+		Verbose("youtube-dl: " + err.Error())
 		return errors.New("Song download failed.")
 	}
 	return nil
@@ -58,18 +59,16 @@ func (dl *YouTubeDLSong) Play() {
 		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", dl.offset))
 		dj.audioStream.Offset = offsetDuration
 	}
-	dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, dl.id))
+	dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()))
 	if err := dj.audioStream.Play(); err != nil {
 		panic(err)
 	} else {
-		message := `<table><tr>	<td align="center"><img src="%s" width=150 /></td></tr><tr><td align="center"><b><a href="%s">%s</a> (%s)</b></td></tr><tr><td align="center">Added by %s</td></tr>`
+		message := `<table><tr><td align="center"><img src="%s" width=150 /></td></tr><tr><td align="center"><b><a href="%s">%s</a> (%s)</b></td></tr><tr><td align="center">Added by %s</td></tr>`
 		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.duration, dl.submitter)
-		if isNil(dl.playlist) {
-			dj.client.Self.Channel.Send(message+`</table>`, false)
-		} else {
-			message += `<tr><td align="center">From playlist "%s"</td></tr></table>`
-			dj.client.Self.Channel.Send(fmt.Sprintf(message, dl.playlist.Title()), false)
+		if !isNil(dl.playlist) {
+			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.playlist.Title())
 		}
+		dj.client.Self.Channel.Send(message+`</table>`, false)
 		Verbose("Now playing " + dl.title)
 
 		go func() {
@@ -82,7 +81,7 @@ func (dl *YouTubeDLSong) Play() {
 // Delete deletes the song from ~/.mumbledj/songs if the cache is disabled.
 func (dl *YouTubeDLSong) Delete() error {
 	if dj.conf.Cache.Enabled == false {
-		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, dl.id)
+		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
 				return nil

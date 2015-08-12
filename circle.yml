@@ -1,7 +1,4 @@
 machine:
-    go:
-        version:
-            1.4.2
     environment:
         PATH: $PATH:$HOME/bin/
         LD_RUN_PATH: $LD_RUN_PATH:$HOME/opus/lib

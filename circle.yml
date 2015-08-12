@@ -8,7 +8,6 @@ machine:
 dependencies:
     pre:
         - sudo apt-get -y remove ffmpeg
-        - sudo apt-get -y install libavconf
         - bash install-dependencies.sh
         
     override:

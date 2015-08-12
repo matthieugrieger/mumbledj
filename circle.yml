@@ -15,7 +15,6 @@ dependencies:
         - "~/opus"
         - "~/bin"
         - "/usr/local/go/bin"
-        - "/usr/local/go/pkg"
         - "/usr/local/go/src/github.com/nitrous-io"
         - "~/.vendor"
 test:

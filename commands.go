@@ -161,7 +161,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		}
 	// Test command (WORKAROUND)
 	case "test":
-		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) && test != nil {
+		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
 			test.testYoutubeSong()
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)

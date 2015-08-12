@@ -8,7 +8,7 @@ machine:
 dependencies:
     pre:
         - sudo apt-get -qq update
-        - sudo apt-get -qqy upgrade ffmpeg
+        - sudo apt-get -qqy install ffmpeg
         - bash install-dependencies.sh
         
     override:

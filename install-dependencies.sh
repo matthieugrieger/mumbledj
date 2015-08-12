@@ -17,7 +17,7 @@ if [ ! -d "$HOME/opus/lib" ]; then
     echo 'Installing opus'
     wget http://downloads.xiph.org/releases/opus/opus-1.0.3.tar.gz
     tar xzvf opus-1.0.3.tar.gz
-    cd opus-1.0.3 && ./configure --prefix=~/opus && make && make install
+    cd opus-1.0.3 && ./configure --prefix=$HOME/opus && make && make install
 else
   echo 'Using cached version of opus.';
 fi

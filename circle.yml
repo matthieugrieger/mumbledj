@@ -1,5 +1,5 @@
 machine:
-    golang:
+    go:
         version:
             1.4.2
     environment:
@@ -14,14 +14,14 @@ dependencies:
     override:
         - make
         - make install
-    cache:
-        directories:
-            - $HOME/opus
-            - $HOME/bin
-            - $HOME/gopath/bin
-            - $HOME/gopath/pkg
-            - $HOME/gopath/src/github.com/nitrous-io
-            - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
+    cache_directories:
+        - $HOME/opus
+        - $HOME/bin
+        - $HOME/gopath/bin
+        - $HOME/gopath/pkg
+        - $HOME/gopath/src/github.com/nitrous-io
+        - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
 test:
     override:
-        - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=travis -password=$MUMBLE_PASSWORD -verbose=true -test=true
+        - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=circleci -password=$MUMBLE_PASSWORD -verbose=true -test=true:
+            timeout: 180

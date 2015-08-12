@@ -249,7 +249,7 @@ func main() {
 
 	if testcode {
 		Verbose("Testing is enabled")
-		Test(password, address, port)
+		Test(password, address, port, accesstokens)
 	}
 
 	web = NewWebServer(9563)

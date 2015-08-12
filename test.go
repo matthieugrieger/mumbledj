@@ -15,12 +15,12 @@ type TestSettings struct {
 
 var test TestSettings
 
-func Test(password, ip, port, accesstokens string) {
+func Test(password, ip, port string, accesstokens []string) {
 	test = TestSettings{
 		password:     password,
 		ip:           ip,
 		port:         port,
-		accesstokens: strings.Split(accesstokens, " "),
+		accesstokens: accesstokens,
 	}
 	test.testYoutubeSong()
 }

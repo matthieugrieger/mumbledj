@@ -12,12 +12,12 @@ dependencies:
         - make
         - make install
     cache_directories:
-        - "opus"
-        - "bin"
-        - "gopath/bin"
-        - "gopath/pkg"
-        - "gopath/src/github.com/nitrous-io"
-        - "gopath/src/github.com/MichaelOultram/mumbledj/.vendor"
+        - "~/opus"
+        - "~/bin"
+        - "~/gopath/bin"
+        - "~/gopath/pkg"
+        - "~/gopath/src/github.com/nitrous-io"
+        - "~/gopath/src/github.com/MichaelOultram/mumbledj/.vendor"
 test:
     override:
         - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=circleci -password=$MUMBLE_PASSWORD -verbose=true -test=true:

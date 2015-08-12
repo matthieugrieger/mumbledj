@@ -249,7 +249,7 @@ func main() {
 
 	if testcode {
 		Verbose("Testing is enabled")
-		Test(password, address, port, accesstokens)
+		Test(password, address, port, strings.Split(accesstokens, " "))
 	}
 
 	web = NewWebServer(9563)

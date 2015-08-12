@@ -80,5 +80,6 @@ func (t TestSettings) testYoutubeSong() {
 		skip(dummyUser, false, false)
 	}
 
+	os.Exit(0)
 	//dummyClient.Disconnect()
 }

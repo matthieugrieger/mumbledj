@@ -20,6 +20,6 @@ dependencies:
         - "/home/ubuntu/.go_workspace/src/github.com/nitrous-io"
 test:
     override:
-        - youtube-dl --output ~/.mumbledj/songs/QcIy9NiNbmo.m4a --format m4a http://www.youtube.com/watch?v=QcIy9NiNbmo
+        - youtube-dl --output ~/.mumbledj/songs/QcIy9NiNbmo.m4a --format m4a --prefer-ffmpeg http://www.youtube.com/watch?v=QcIy9NiNbmo
         - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=circleci -password=$MUMBLE_PASSWORD -verbose=true -test=true:
             timeout: 180

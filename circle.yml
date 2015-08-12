@@ -14,7 +14,7 @@ dependencies:
     cache_directories:
         - "~/opus"
         - "~/bin"
-        - "~/.vendor"
+        - "~/mumbledj/.vendor"
         - "/home/ubuntu/.go_workspace/bin"
         - "/home/ubuntu/.go_workspace/pkg"
         - "/home/ubuntu/.go_workspace/src/github.com/nitrous-io"

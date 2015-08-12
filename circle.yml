@@ -14,9 +14,9 @@ dependencies:
     cache_directories:
         - "~/opus"
         - "~/bin"
-        - "/usr/local/go/bin"
-        - "/usr/local/go/src/github.com/nitrous-io"
+        - "$(GOPATH)/src/github.com/nitrous-io"
         - "~/.vendor"
+        - "$(GOPATH)/bin/goop"
 test:
     override:
         - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=circleci -password=$MUMBLE_PASSWORD -verbose=true -test=true:

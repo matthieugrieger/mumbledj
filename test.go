@@ -43,7 +43,8 @@ func (t TestSettings) testYoutubeSong() {
 	//	if err := dummyClient.Connect(); err != nil {
 	//		panic(err)
 	//	}
-	if dummyUser := dj.client.Users.Find("BottleOToast"); dummyUser == nil {
+	dummyUser := dj.client.Users.Find("BottleOToast")
+	if dummyUser == nil {
 		fmt.Printf("User does not exist")
 		os.Exit(1)
 	}

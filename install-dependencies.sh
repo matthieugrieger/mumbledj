@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+echo "Gopath: $GOPATH"
+ls -lR $GOPATH
+
 # check to see if ffmpeg is installed
 if [ ! -f "$HOME/bin/ffmpeg" ]; then
     echo 'Installing ffmpeg'

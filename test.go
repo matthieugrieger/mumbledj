@@ -45,7 +45,11 @@ func (t TestSettings) testYoutubeSong() {
 	//	}
 	dummyUser := dj.client.Users.Find("bottleotoast")
 	if dummyUser == nil {
-		fmt.Printf("User does not exist")
+		fmt.Printf("User does not exist, printing users\n")
+		for _, user := range dj.client.Users {
+			fmt.Printf(user.Name + "\n")
+		}
+		fmt.Printf("End of user list\n")
 		os.Exit(1)
 	}
 

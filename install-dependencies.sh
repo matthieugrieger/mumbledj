@@ -2,15 +2,15 @@
 set -e
 
 # check to see if ffmpeg is installed
-#if [ ! -f "$HOME/bin/ffmpeg" ]; then
-#    echo 'Installing ffmpeg'
-#    wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.xz
-#    tar -xvf /tmp/ffmpeg.tar.xz --strip 1 --no-anchored ffmpeg ffprobe
-#    chmod a+rx ffmpeg ffprobe
-#    mv ff* ~/bin
-#else
-#  echo 'Using cached version of ffmpeg.';
-#fi
+if [ ! -f "$HOME/bin/ffmpeg" ]; then
+    echo 'Installing ffmpeg'
+    wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.xz
+    tar -xvf /tmp/ffmpeg.tar.xz --strip 1 --no-anchored ffmpeg ffprobe
+    chmod a+rx ffmpeg ffprobe
+    mv ff* ~/bin
+else
+  echo 'Using cached version of ffmpeg.';
+fi
 
 # check to see if opus is installed
 if [ ! -d "$HOME/opus/lib" ]; then

@@ -43,7 +43,8 @@ func (t TestSettings) testYoutubeSong() {
 	//	if err := dummyClient.Connect(); err != nil {
 	//		panic(err)
 	//	}
-	dummyUser := dj.client.Users.Find("bottleotoast")
+	dj.client.Request(gumble.Request.RequestUserList)
+	dummyUser := dj.client.Users.Find("BottleOToast")
 	if dummyUser == nil {
 		fmt.Printf("User does not exist, printing users\n")
 		for _, user := range dj.client.Users {

@@ -8,8 +8,6 @@ machine:
 dependencies:
     pre:
         - sudo apt-get -qqy remove ffmpeg
-        - sudo apt-get -qq update
-        - sudo apt-get -qqy upgrade
         - bash install-dependencies.sh
         
     override:
@@ -27,6 +25,7 @@ dependencies:
 test:
     override:
         - ffmpeg -version
-        - youtube-dl --output ~/.mumbledj/songs/QcIy9NiNbmo.m4a --format m4a --prefer-ffmpeg http://www.youtube.com/watch?v=QcIy9NiNbmo
+        - avconf -version
+        - youtube-dl --output ~/.mumbledj/songs/QcIy9NiNbmo.m4a --format m4a --prefer-ffmpeg -v http://www.youtube.com/watch?v=QcIy9NiNbmo
         - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=circleci -password=$MUMBLE_PASSWORD -verbose=true -test=true:
             timeout: 180

@@ -7,9 +7,6 @@ machine:
 
 dependencies:
     pre:
-        - sudo apt-get -qq update
-        - sudo apt-get -qqy remove --purge ffmpeg
-        - sudo apt-get clean
         - bash install-dependencies.sh
         
     override:

@@ -26,6 +26,7 @@ test:
     override:
         - ffmpeg -version
         - ls -lR /usr/local/bin
+        - echo "$PATH"
         - youtube-dl --output ~/.mumbledj/songs/QcIy9NiNbmo.m4a --format m4a --prefer-ffmpeg -v http://www.youtube.com/watch?v=QcIy9NiNbmo
         - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=circleci -password=$MUMBLE_PASSWORD -verbose=true -test=true:
             timeout: 180

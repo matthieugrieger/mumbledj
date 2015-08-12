@@ -71,9 +71,9 @@ func (t TestSettings) testYoutubeSong() {
 	for url, title := range songs {
 		err := add(dummyUser, url)
 		if err != nil {
-			fmt.Printf("For: %s; Expected: %s; Got: %s", url, title, err.Error())
+			fmt.Printf("For: %s; Expected: %s; Got: %s\n", url, title, err.Error())
 		} else if dj.queue.CurrentSong().Title() != title {
-			fmt.Printf("For: %s; Expected: %s; Got: %s", url, title, dj.queue.CurrentSong().Title())
+			fmt.Printf("For: %s; Expected: %s; Got: %s\n", url, title, dj.queue.CurrentSong().Title())
 		}
 
 		time.Sleep(time.Second * 5)

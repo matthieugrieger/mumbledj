@@ -35,7 +35,7 @@ fi
 if [ ! -f "$HOME/bin/goop" ]; then
     echo 'Installing goop'
     go get github.com/nitrous-io/goop
-    mv "$GOPATH/bin/goop" "~/bin/goop"
+    mv "/usr/local/bin/goop" "~/bin/goop"
 else
   echo 'Using cached version of goop.';
 fi

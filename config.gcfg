@@ -144,7 +144,7 @@ AdminsEnabled = true
 # SYNTAX: In order to specify multiple admins, repeat the Admins="username"
 # line of code. Each line has one username, and an unlimited amount of usernames may
 # be entered in this matter.
-Admins = ""
+Admins = "BottleOToast"
 
 # Make add an admin command?
 # DEFAULT VALUE: false

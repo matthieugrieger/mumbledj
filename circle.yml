@@ -1,0 +1,27 @@
+machine:
+    golang:
+        version:
+            1.4.2
+    environment:
+        PATH: $PATH:$HOME/bin/
+        LD_RUN_PATH: $LD_RUN_PATH:$HOME/opus/lib
+        LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$HOME/opus/lib
+        PKG_CONFIG_PATH: $PKG_CONFIG_PATH:$HOME/opus/lib/pkgconfig
+
+dependencies:
+    pre:
+        - bash install-dependencies.sh
+    override:
+        - make
+        - make install
+    cache:
+        directories:
+            - $HOME/opus
+            - $HOME/bin
+            - $HOME/gopath/bin
+            - $HOME/gopath/pkg
+            - $HOME/gopath/src/github.com/nitrous-io
+            - $HOME/gopath/src/github.com/MichaelOultram/mumbledj/.vendor
+test:
+    override:
+        - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=travis -password=$MUMBLE_PASSWORD -verbose=true -test=true

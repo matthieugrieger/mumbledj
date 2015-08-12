@@ -7,6 +7,7 @@ machine:
 
 dependencies:
     pre:
+        - sudo apt-get purge -y ffmpeg
         - bash install-dependencies.sh
         
     override:

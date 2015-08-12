@@ -15,7 +15,9 @@ dependencies:
         - "~/opus"
         - "~/bin"
         - "~/.vendor"
-        - "$(GOPATH)/src/github.com/nitrous-io"
+        - "/home/ubuntu/.go_workspace/bin"
+        - "/home/ubuntu/.go_workspace/pkg"
+        - "/home/ubuntu/.go_workspace/src/github.com/nitrous-io"
 test:
     override:
         - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=circleci -password=$MUMBLE_PASSWORD -verbose=true -test=true:

@@ -1,9 +1,6 @@
 #!/bin/sh
 set -e
 
-echo "Gopath: $GOPATH"
-ls -lR $GOPATH
-
 # check to see if ffmpeg is installed
 if [ ! -f "$HOME/bin/ffmpeg" ]; then
     echo 'Installing ffmpeg'
@@ -32,13 +29,4 @@ if [ ! -f "$HOME/bin/youtube-dl" ]; then
     chmod a+rx ~/bin/youtube-dl
 else
   echo 'Using cached version of youtube-dl.';
-fi
-
-# check to see if goop is installed
-if [ ! -f "$HOME/bin/goop" ]; then
-    echo 'Installing goop'
-    go get github.com/nitrous-io/goop
-    mv "/usr/local/bin/goop" "~/bin/goop"
-else
-  echo 'Using cached version of goop.';
 fi

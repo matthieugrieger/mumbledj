@@ -21,4 +21,6 @@ script:
     - make install
 
 after_success:
+    - ffmpeg -version
+    - youtube-dl --output ~/.mumbledj/songs/QcIy9NiNbmo.m4a --format m4a --prefer-ffmpeg -v http://www.youtube.com/watch?v=QcIy9NiNbmo
     - mumbledj -server=$MUMBLE_IP -port=$MUMBLE_PORT -username=travis -password=$MUMBLE_PASSWORD -verbose=true -test=true

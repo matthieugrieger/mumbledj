@@ -20,6 +20,7 @@ func Test(password, ip, port string) {
 		ip:       ip,
 		port:     port,
 	}
+	test.testYoutubeSong()
 }
 
 func (t TestSettings) createClient(uname string) *gumble.Client {

@@ -250,7 +250,6 @@ func main() {
 	if testcode {
 		Verbose("Testing is enabled")
 		Test(password, address, port)
-		kill()
 	}
 
 	web = NewWebServer(9563)

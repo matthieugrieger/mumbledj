@@ -7,11 +7,11 @@ machine:
 
 dependencies:
     pre:
-        - ffmpeg --version
+        - ffmpeg -version
         - sudo apt-get remove -y ffmpeg
-        - ffmpeg --version
+        - ffmpeg -version
         - bash install-dependencies.sh
-        - ffmpeg --version
+        - ffmpeg -version
         
     override:
         - make

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/layeh/gumble/gumble"
+	"github.com/layeh/gumble/gumbleutil"
 	"time"
 )
 
@@ -26,12 +27,14 @@ func Test(password, ip, port string, accesstokens []string) {
 }
 
 func (t TestSettings) createClient(uname string) *gumble.Client {
-	return gumble.NewClient(&gumble.Config{
+	client := gumble.NewClient(&gumble.Config{
 		Username: uname,
 		Password: t.password,
 		Address:  t.ip + ":" + t.port,
 		Tokens:   t.accesstokens,
 	})
+	gumbleutil.CertificateLockFile(client, fmt.Sprintf("%s/.mumbledj/cert.lock", dj.homeDir))
+	return client
 }
 
 func (t TestSettings) testYoutubeSong() {

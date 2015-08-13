@@ -10,8 +10,8 @@ import (
 )
 
 // Regular expressions for soundcloud urls
-var soundcloudSongPattern = `https?:\/\/(www)?\.soundcloud\.com\/([\w-]+)\/([\w-]+)`
-var soundcloudPlaylistPattern = `https?:\/\/(www)?\.soundcloud\.com\/([\w-]+)\/sets\/([\w-]+)`
+var soundcloudSongPattern = `https?:\/\/(www\.)?soundcloud\.com\/([\w-]+)\/([\w-]+)`
+var soundcloudPlaylistPattern = `https?:\/\/(www\.)?soundcloud\.com\/([\w-]+)\/sets\/([\w-]+)`
 
 // SoundCloud implements the Service interface
 type SoundCloud struct{}

@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"time"
 
+	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 

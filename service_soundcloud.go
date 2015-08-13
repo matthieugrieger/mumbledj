@@ -102,7 +102,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 		url:       url,
 		thumbnail: thumbnail,
 		submitter: user,
-		duration:  duration,
+		duration:  string(duration),
 		playlist:  playlist,
 		skippers:  make([]string, 0),
 		dontSkip:  false,

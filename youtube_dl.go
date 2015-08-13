@@ -17,7 +17,7 @@ type YouTubeDLSong struct {
 	title     string
 	thumbnail string
 	submitter *gumble.User
-	duration  int
+	duration  string
 	url       string
 	offset    int
 	playlist  Playlist
@@ -52,7 +52,7 @@ func (dl *YouTubeDLSong) Download() error {
 			for s := range cmd.Args {
 				Verbose("youtube-dl args: " + cmd.Args[s])
 			}
-			Verbose(string(cmd.Output()))
+			Verbose(string(cmd.CombinedOutput()))
 			return errors.New("Song download failed.")
 		}
 	}
@@ -155,7 +155,7 @@ func (dl *YouTubeDLSong) Filename() string {
 }
 
 // Duration returns the duration of the Song.
-func (dl *YouTubeDLSong) Duration() int {
+func (dl *YouTubeDLSong) Duration() string {
 	return dl.duration
 }
 

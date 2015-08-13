@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -97,12 +98,12 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 	}
 
 	song := &YouTubeDLSong{
-		id:        string(id),
+		id:        strconv.Itoa(id),
 		title:     title,
 		url:       url,
 		thumbnail: thumbnail,
 		submitter: user,
-		duration:  string(duration),
+		duration:  strconv.Itoa(duration),
 		format:    "mp3",
 		playlist:  playlist,
 		skippers:  make([]string, 0),

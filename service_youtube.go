@@ -165,6 +165,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			submitter: user,
 			title:     title,
 			id:        id,
+			url:       "https://youtu.be/" + id,
 			offset:    int((offsetDays * 86400) + (offsetHours * 3600) + (offsetMinutes * 60) + offsetSeconds),
 			duration:  durationString,
 			thumbnail: thumbnail,

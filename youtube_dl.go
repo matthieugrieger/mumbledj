@@ -52,8 +52,7 @@ func (dl *YouTubeDLSong) Download() error {
 			for s := range cmd.Args {
 				Verbose("youtube-dl args: " + cmd.Args[s])
 			}
-			 b, _ := ioutil.ReadAll(cmd.Stdout)
-        	Verbose(string(b))
+			Verbose(string(cmd.Output()))
 			return errors.New("Song download failed.")
 		}
 	}
@@ -137,7 +136,7 @@ func (dl *YouTubeDLSong) SkipReached(channelUsers int) bool {
 
 // Submitter returns the name of the submitter of the Song.
 func (dl *YouTubeDLSong) Submitter() string {
-	return dl.submitter
+	return dl.submitter.Name
 }
 
 // Title returns the title of the Song.
@@ -156,7 +155,7 @@ func (dl *YouTubeDLSong) Filename() string {
 }
 
 // Duration returns the duration of the Song.
-func (dl *YouTubeDLSong) Duration() string {
+func (dl *YouTubeDLSong) Duration() int {
 	return dl.duration
 }
 

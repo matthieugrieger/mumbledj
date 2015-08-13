@@ -20,6 +20,7 @@ type YouTubeDLSong struct {
 	duration  string
 	url       string
 	offset    int
+	format    string
 	playlist  Playlist
 	skippers  []string
 	dontSkip  bool
@@ -40,7 +41,7 @@ func (dl *YouTubeDLSong) Download() error {
 
 	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--no-mtime", "--output", fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()), "--format", "m4a", "--prefer-ffmpeg", dl.url)
+		cmd := exec.Command("youtube-dl", "--no-mtime", "--output", fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()), "--format", dl.format, "--prefer-ffmpeg", dl.url)
 		output, err := cmd.CombinedOutput()
 		if err == nil {
 			if dj.conf.Cache.Enabled {
@@ -48,9 +49,9 @@ func (dl *YouTubeDLSong) Download() error {
 			}
 			return nil
 		} else {
-			args := "youtube-dl "
+			args := ""
 			for s := range cmd.Args {
-				args += cmd.Args[s]
+				args += cmd.Args[s] + " "
 			}
 			Verbose(args)
 			Verbose(string(output))
@@ -153,7 +154,7 @@ func (dl *YouTubeDLSong) ID() string {
 
 // Filename returns the filename of the Song.
 func (dl *YouTubeDLSong) Filename() string {
-	return dl.id + ".m4a"
+	return dl.id + dl.format
 }
 
 // Duration returns the duration of the Song.

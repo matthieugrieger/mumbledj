@@ -169,6 +169,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			offset:    int((offsetDays * 86400) + (offsetHours * 3600) + (offsetMinutes * 60) + offsetSeconds),
 			duration:  durationString,
 			thumbnail: thumbnail,
+			format:    "m4a",
 			skippers:  make([]string, 0),
 			playlist:  playlist,
 			dontSkip:  false,

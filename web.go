@@ -1,6 +1,7 @@
 package main
 
 import (
+	//"encoding/json"
 	"fmt"
 	"html"
 	"html/template"
@@ -8,7 +9,6 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -28,6 +28,21 @@ type Page struct {
 	User  string
 }
 
+type Status struct {
+	Error    bool
+	ErrorMsg string
+	Queue    []SongInfo
+}
+type SongInfo struct {
+	TitleID    string
+	PlaylistID string
+	Title      string
+	Playlist   string
+	Submitter  string
+	Duration   string
+	Thumbnail  string
+}
+
 var external_ip = ""
 
 func NewWebServer(port int) *WebServer {
@@ -41,9 +56,10 @@ func NewWebServer(port int) *WebServer {
 
 func (web *WebServer) makeWeb() {
 	http.HandleFunc("/", web.homepage)
-	http.HandleFunc("/add", web.add)
-	http.HandleFunc("/volume", web.volume)
-	http.HandleFunc("/skip", web.skip)
+	http.HandleFunc("/api/add", web.add)
+	http.HandleFunc("/api/volume", web.volume)
+	http.HandleFunc("/api/skip", web.skip)
+	//http.HandleFunc("/api/status", web.status)
 	http.ListenAndServe(":"+strconv.Itoa(web.port), nil)
 }
 
@@ -52,8 +68,14 @@ func (web *WebServer) homepage(w http.ResponseWriter, r *http.Request) {
 	if uname == nil {
 		fmt.Fprintf(w, "Invalid Token")
 	} else {
-		cwd, _ := os.Getwd()
-		t, err := template.ParseFiles(filepath.Join(cwd, "./.mumbledj/web/index.html"))
+		var webpage = uname.Name
+
+		// Check to see if user has a custom webpage
+		if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/web/%s.html", dj.homeDir, uname.Name)); os.IsNotExist(err) {
+			webpage = "index"
+		}
+
+		t, err := template.ParseFiles(fmt.Sprintf("%s/.mumbledj/web/%s.html", dj.homeDir, webpage))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -103,6 +125,35 @@ func (web *WebServer) skip(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//func (web *WebServer) status(w http.ResponseWriter, r *http.Request) {
+//	var uname = web.token_client[r.FormValue("token")]
+//	if uname == nil {
+//		str, ok := json.Marshal(&Status{true, "Invalid Token"}).(string)
+//		fmt.Fprintf(w, str)
+//	} else {
+//		// Generate song queue
+//		queueLength := dj.queue.Len()
+//		var songsInQueue [queueLength]SongInfo
+//		for i := 0; i < dj.queue.Len(); i++ {
+//			songItem := dj.queue.Get(i)
+//			songsInQueue[i] = &SongInfo{
+//				TitleID:   songItem.ID(),
+//				Title:     songItem.Title(),
+//				Submitter: songItem.Submitter(),
+//				Duration:  songItem.Duration(),
+//				Thumbnail: songItem.Thumbnail(),
+//			}
+//			if !isNil(songItem.Playlist()) {
+//				songsInQueue[i].PlaylistID = songItem.Playlist().ID()
+//				songsInQueue[i].Playlist = songItem.Playlist().Title()
+//			}
+//		}
+//
+//		// Output status
+//		fmt.Fprintf(w, string(json.MarshalIndent(&Status{false, "", songsInQueue})))
+//	}
+//}
+
 func (website *WebServer) GetWebAddress(user *gumble.User) {
 	Verbose("Port number: " + strconv.Itoa(web.port))
 	if web.client_token[user] != "" {
@@ -110,7 +161,7 @@ func (website *WebServer) GetWebAddress(user *gumble.User) {
 	}
 	// dealing with collisions
 	var firstLoop = true
-	for firstLoop || web.token_client[web.client_token[user]] != nil {
+	for firstLoop || web.token_client[web.client_token[user]] != nil || web.client_token[user] == "api" {
 		web.client_token[user] = randSeq(10)
 		firstLoop = false
 	}

@@ -1,38 +1,49 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="ISO-8859-1">
-		<title>{{.User}} - mumbledj</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-		<script type="text/javascript">
-			function api(type) {
-				return "http://{{.Site}}/" + type + "?token={{.Token}}";
-			}
+<head>
+<meta charset="ISO-8859-1">
+<title>{{.User}} - mumbledj</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript">
+	function onLoad() {
+		window.setInterval(function() {
+			// Get the song queue
+		}, 6000);
+	}
 
-			function addURL() {
-				var url = $("#textbox");
-				$.ajax(api("add") + "&value=" + url.attr("value"));
-				url.attr("value", "");
-			}
+	function setAPI(type, val) {
+		$.ajax({
+			url : "http://{{.Site}}/api/" + type + "?token={{.Token}}"
+					+ "&value=" + val,
+			complete : apiComplete,
+			cache : false
+		});
+	}
 
-			function volume() {
-				var volume = $("#textbox");
-				$.ajax(api("volume") + "&value=" + volume.attr("value"));
-				volume.attr("value", "");
-			}
+	function apiComplete(jqXHR, textStatus) {
+		alert(textStatus);
+	}
 
-			function skip(val) {
-				$.ajax(api("skip") + "&value=" + val);
-			}
-
-		</script>
-	</head>
-	<body>
-		<h1>Add Song Form</h1>
-		<input id="textbox" type="text"/>
-		<input id="add" type="button" value="Add Song" onclick="addURL()"/>
-		<input id="volume" type="button" value="Set Volume" onclick="volume()"/>
-		<input id="skipSong" type="button" value="Skip Current Song" onclick="skip('false')"/>
-		<input id="skipPlaylist" type="button" value="Skip Current Playlist" onclick="skip('true')"/>
-	</body>
+	function txtBox(type) {
+		var txt = $("#textbox");
+		api(type, txt.attr("value"));
+		txt.attr("value", "");
+	}
+</script>
+</head>
+<body onload="onLoad();" bgcolor="#FFFFFF">
+	<h1>Add Song Form</h1>
+	<input id="textbox" type="text" />
+	<input id="add" type="button" value="Add Song"
+		onclick="setAPI('add', $('#textbox').attr('value'))" />
+	<input id="volume" type="button" value="Set Volume"
+		onclick="setAPI('volume', $('#textbox').attr('value'))" />
+	<input id="skipSong" type="button" value="Skip Current Song"
+		onclick="setAPI('skip', false)" />
+	<input id="skipPlaylist" type="button" value="Skip Current Playlist"
+		onclick="setAPI('skip', true)" />
+	<br />
+	<textarea id="status" rows="10" cols="30"></textarea>
+</body>
 </html>

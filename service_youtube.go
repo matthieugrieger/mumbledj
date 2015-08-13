@@ -14,15 +14,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
 // Regular expressions for youtube urls
@@ -41,26 +38,6 @@ var youtubeVideoPatterns = []string{
 
 // YouTube implements the Service interface
 type YouTube struct{}
-
-// YouTubeSong holds the metadata for a song extracted from a YouTube video.
-type YouTubeSong struct {
-	submitter string
-	title     string
-	id        string
-	offset    int
-	filename  string
-	duration  string
-	thumbnail string
-	skippers  []string
-	playlist  Playlist
-	dontSkip  bool
-}
-
-// YouTubePlaylist holds the metadata for a YouTube playlist.
-type YouTubePlaylist struct {
-	id    string
-	title string
-}
 
 // ---------------
 // YOUTUBE SERVICE
@@ -83,7 +60,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 		if re.MatchString(url) {
 			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
 				shortURL = re.FindStringSubmatch(url)[1]
-				playlist, err := yt.NewPlaylist(user.Name, shortURL)
+				playlist, err := yt.NewPlaylist(user, shortURL)
 				return playlist.Title(), err
 			} else {
 				return "", errors.New("NO_PLAYLIST_PERMISSION")
@@ -95,10 +72,11 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 			if len(matches[0]) == 3 {
 				startOffset = matches[0][2]
 			}
-			song, err := yt.NewSong(user.Name, shortURL, startOffset, nil)
+			song, err := yt.NewSong(user, shortURL, startOffset, nil)
 			if !isNil(song) {
-				return song.Title(), err
+				return song.Title(), nil
 			} else {
+				Verbose("youtube.NewRequest: " + err.Error())
 				return "", err
 			}
 		}
@@ -109,12 +87,12 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 
 // NewSong gathers the metadata for a song extracted from a YouTube video, and returns
 // the song.
-func (yt YouTube) NewSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTubeSong, error) {
+func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlist) (Song, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, errors.New(INVALID_API_KEY)
 	}
 
@@ -183,14 +161,15 @@ func (yt YouTube) NewSong(user, id, offset string, playlist *YouTubePlaylist) (*
 	}
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
-		song := &YouTubeSong{
+		song := &YouTubeDLSong{
 			submitter: user,
 			title:     title,
 			id:        id,
+			url:       "https://youtu.be/" + id,
 			offset:    int((offsetDays * 86400) + (offsetHours * 3600) + (offsetMinutes * 60) + offsetSeconds),
-			filename:  id + ".m4a",
 			duration:  durationString,
 			thumbnail: thumbnail,
+			format:    "m4a",
 			skippers:  make([]string, 0),
 			playlist:  playlist,
 			dontSkip:  false,
@@ -204,18 +183,17 @@ func (yt YouTube) NewSong(user, id, offset string, playlist *YouTubePlaylist) (*
 }
 
 // NewPlaylist gathers the metadata for a YouTube playlist and returns it.
-func (yt YouTube) NewPlaylist(user, id string) (*YouTubePlaylist, error) {
+func (yt YouTube) NewPlaylist(user *gumble.User, id string) (Playlist, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	// Retrieve title of playlist
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
-		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s", id, os.Getenv("YOUTUBE_API_KEY"))
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	title, _ := apiResponse.String("items", "0", "snippet", "title")
 
-	playlist := &YouTubePlaylist{
+	playlist := &YouTubeDLPlaylist{
 		id:    id,
 		title: title,
 	}
@@ -223,7 +201,7 @@ func (yt YouTube) NewPlaylist(user, id string) (*YouTubePlaylist, error) {
 	// Retrieve items in playlist
 	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s",
 		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = yt.PerformGetRequest(url); err != nil {
+	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
 	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
@@ -239,241 +217,8 @@ func (yt YouTube) NewPlaylist(user, id string) (*YouTubePlaylist, error) {
 	return playlist, nil
 }
 
-// ------------
-// YOUTUBE SONG
-// ------------
-
-// Download downloads the song via youtube-dl if it does not already exist on disk.
-// All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
-func (s *YouTubeSong) Download() error {
-
-	// Checks to see if song is already downloaded
-	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
-		Verbose("Downloading " + s.Title())
-		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
-		if err := cmd.Run(); err == nil {
-			if dj.conf.Cache.Enabled {
-				dj.cache.CheckMaximumDirectorySize()
-			}
-			Verbose(s.Title() + " downloaded")
-			return nil
-		}
-		Verbose(s.Title() + " failed to download")
-		return errors.New("Song download failed.")
-	}
-	return nil
-}
-
-// Play plays the song. Once the song is playing, a notification is displayed in a text message that features the video
-// thumbnail, URL, title, duration, and submitter.
-func (s *YouTubeSong) Play() {
-	if s.offset != 0 {
-		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", s.offset))
-		dj.audioStream.Offset = offsetDuration
-	}
-	dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename()))
-	if err := dj.audioStream.Play(); err != nil {
-		panic(err)
-	} else {
-		if isNil(s.Playlist()) {
-			message := `
-				<table>
-					<tr>
-						<td align="center"><img src="%s" width=150 /></td>
-					</tr>
-					<tr>
-						<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
-					</tr>
-					<tr>
-						<td align="center">Added by %s</td>
-					</tr>
-				</table>
-			`
-			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(), s.Title(),
-				s.Duration(), s.Submitter()), false)
-		} else {
-			message := `
-				<table>
-					<tr>
-						<td align="center"><img src="%s" width=150 /></td>
-					</tr>
-					<tr>
-						<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
-					</tr>
-					<tr>
-						<td align="center">Added by %s</td>
-					</tr>
-					<tr>
-						<td align="center">From playlist "%s"</td>
-					</tr>
-				</table>
-			`
-			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
-				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
-		}
-		Verbose("Now playing " + s.Title())
-
-		go func() {
-			dj.audioStream.Wait()
-			dj.queue.OnSongFinished()
-		}()
-	}
-}
-
-// Delete deletes the song from ~/.mumbledj/songs if the cache is disabled.
-func (s *YouTubeSong) Delete() error {
-	if dj.conf.Cache.Enabled == false {
-		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
-		if _, err := os.Stat(filePath); err == nil {
-			if err := os.Remove(filePath); err == nil {
-				Verbose("Deleted " + s.Title())
-				return nil
-			}
-			Verbose("Failed to delete " + s.Title())
-			return errors.New("Error occurred while deleting audio file.")
-		}
-		return nil
-	}
-	return nil
-}
-
-// AddSkip adds a skip to the skippers slice. If the user is already in the slice, AddSkip
-// returns an error and does not add a duplicate skip.
-func (s *YouTubeSong) AddSkip(username string) error {
-	for _, user := range s.skippers {
-		if username == user {
-			return errors.New("This user has already skipped the current song.")
-		}
-	}
-	s.skippers = append(s.skippers, username)
-	return nil
-}
-
-// RemoveSkip removes a skip from the skippers slice. If username is not in slice, an error is
-// returned.
-func (s *YouTubeSong) RemoveSkip(username string) error {
-	for i, user := range s.skippers {
-		if username == user {
-			s.skippers = append(s.skippers[:i], s.skippers[i+1:]...)
-			return nil
-		}
-	}
-	return errors.New("This user has not skipped the song.")
-}
-
-// SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
-// channel and the number of usernames in the skippers slice. If the value is greater than or equal
-// to the skip ratio defined in the config, the function returns true, and returns false otherwise.
-func (s *YouTubeSong) SkipReached(channelUsers int) bool {
-	if float32(len(s.skippers))/float32(channelUsers) >= dj.conf.General.SkipRatio {
-		return true
-	}
-	return false
-}
-
-// Submitter returns the name of the submitter of the YouTubeSong.
-func (s *YouTubeSong) Submitter() string {
-	return s.submitter
-}
-
-// Title returns the title of the YouTubeSong.
-func (s *YouTubeSong) Title() string {
-	return s.title
-}
-
-// ID returns the id of the YouTubeSong.
-func (s *YouTubeSong) ID() string {
-	return s.id
-}
-
-// Filename returns the filename of the YouTubeSong.
-func (s *YouTubeSong) Filename() string {
-	return s.filename
-}
-
-// Duration returns the duration of the YouTubeSong.
-func (s *YouTubeSong) Duration() string {
-	return s.duration
-}
-
-// Thumbnail returns the thumbnail URL for the YouTubeSong.
-func (s *YouTubeSong) Thumbnail() string {
-	return s.thumbnail
-}
-
-// Playlist returns the playlist type for the YouTubeSong (may be nil).
-func (s *YouTubeSong) Playlist() Playlist {
-	return s.playlist
-}
-
-// DontSkip returns the DontSkip boolean value for the YouTubeSong.
-func (s *YouTubeSong) DontSkip() bool {
-	return s.dontSkip
-}
-
-// SetDontSkip sets the DontSkip boolean value for the YouTubeSong.
-func (s *YouTubeSong) SetDontSkip(value bool) {
-	s.dontSkip = value
-}
-
-// ----------------
-// YOUTUBE PLAYLIST
-// ----------------
-
-// AddSkip adds a skip to the playlist's skippers slice.
-func (p *YouTubePlaylist) AddSkip(username string) error {
-	for _, user := range dj.playlistSkips[p.ID()] {
-		if username == user {
-			return errors.New("This user has already skipped the current song.")
-		}
-	}
-	dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()], username)
-	return nil
-}
-
-// RemoveSkip removes a skip from the playlist's skippers slice. If username is not in the slice
-// an error is returned.
-func (p *YouTubePlaylist) RemoveSkip(username string) error {
-	for i, user := range dj.playlistSkips[p.ID()] {
-		if username == user {
-			dj.playlistSkips[p.ID()] = append(dj.playlistSkips[p.ID()][:i], dj.playlistSkips[p.ID()][i+1:]...)
-			return nil
-		}
-	}
-	return errors.New("This user has not skipped the song.")
-}
-
-// DeleteSkippers removes the skippers entry in dj.playlistSkips.
-func (p *YouTubePlaylist) DeleteSkippers() {
-	delete(dj.playlistSkips, p.ID())
-}
-
-// SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
-// channel and the number of usernames in the skippers slice. If the value is greater than or equal
-// to the skip ratio defined in the config, the function returns true, and returns false otherwise.
-func (p *YouTubePlaylist) SkipReached(channelUsers int) bool {
-	if float32(len(dj.playlistSkips[p.ID()]))/float32(channelUsers) >= dj.conf.General.PlaylistSkipRatio {
-		return true
-	}
-	return false
-}
-
-// ID returns the id of the YouTubePlaylist.
-func (p *YouTubePlaylist) ID() string {
-	return p.id
-}
-
-// Title returns the title of the YouTubePlaylist.
-func (p *YouTubePlaylist) Title() string {
-	return p.title
-}
-
-// -----------
-// YOUTUBE API
-// -----------
-
 // PerformGetRequest does all the grunt work for a YouTube HTTPS GET request.
-func (yt YouTube) PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
+func PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
 	jsonString := ""
 
 	if response, err := http.Get(url); err == nil {
@@ -486,7 +231,7 @@ func (yt YouTube) PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
 			if response.StatusCode == 403 {
 				return nil, errors.New("Invalid API key supplied.")
 			}
-			return nil, errors.New("Invalid YouTube ID supplied.")
+			return nil, errors.New("Invalid ID supplied.")
 		}
 	} else {
 		return nil, errors.New("An error occurred while receiving HTTP GET response.")

@@ -1,4 +1,4 @@
-MumbleDJ [![Build Status](https://travis-ci.org/MichaelOultram/mumbledj.svg?branch=master)](https://travis-ci.org/MichaelOultram/mumbledj)
+MumbleDJ [![Circle CI](https://circleci.com/gh/MichaelOultram/mumbledj/tree/master.svg?style=svg)](https://circleci.com/gh/MichaelOultram/mumbledj/tree/master)
 ========
 **A Mumble bot that plays music fetched from YouTube videos.**
 

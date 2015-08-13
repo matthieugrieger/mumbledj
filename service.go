@@ -52,7 +52,7 @@ type Playlist interface {
 	Title() string
 }
 
-var services = []Service{YouTube{}}
+var services = []Service{YouTube{}, SoundCloud{}}
 
 func findServiceAndAdd(user *gumble.User, url string) error {
 	var urlService Service
@@ -65,6 +65,7 @@ func findServiceAndAdd(user *gumble.User, url string) error {
 	}
 
 	if urlService == nil {
+		Verbose("Invalid_URL")
 		return errors.New("INVALID_URL")
 	} else {
 		oldLength := dj.queue.Len()

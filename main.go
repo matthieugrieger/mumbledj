@@ -142,12 +142,14 @@ func PerformStartupChecks() {
 	}
 }
 
+// Prints out messages only if verbose flag is true
 func Verbose(msg string) {
 	if dj.verbose {
 		fmt.Printf(msg + "\n")
 	}
 }
 
+// Checks to see if an object is nil
 func isNil(a interface{}) bool {
 	defer func() { recover() }()
 	return a == nil || reflect.ValueOf(a).IsNil()
@@ -191,7 +193,7 @@ func main() {
 	}
 
 	var address, port, username, password, channel, pemCert, pemKey, accesstokens string
-	var insecure, verbose bool
+	var insecure, verbose, testcode bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
@@ -202,7 +204,8 @@ func main() {
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
 	flag.StringVar(&accesstokens, "accesstokens", "", "list of access tokens for channel auth")
 	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
-	flag.BoolVar(&verbose, "verbose", false, "prints out debug messages to the console")
+	flag.BoolVar(&verbose, "verbose", false, "[debug] prints out debug messages to the console")
+	flag.BoolVar(&testcode, "test", false, "[debug] tests the features of mumbledj")
 	flag.Parse()
 
 	dj.config = gumble.Config{
@@ -242,6 +245,11 @@ func main() {
 	if err := dj.client.Connect(); err != nil {
 		fmt.Printf("Could not connect to Mumble server at %s:%s.\n", address, port)
 		os.Exit(1)
+	}
+
+	if testcode {
+		Verbose("Testing is enabled")
+		Test(password, address, port, strings.Split(accesstokens, " "))
 	}
 
 	web = NewWebServer(9563)

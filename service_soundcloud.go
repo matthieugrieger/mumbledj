@@ -79,7 +79,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 	if err != nil {
 		return "", err
 	}
-	id, err := trackData.String("id")
+	id, err := trackData.Int("id")
 	if err != nil {
 		return "", err
 	}
@@ -97,7 +97,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 	}
 
 	song := &YouTubeDLSong{
-		id:        id,
+		id:        string(id),
 		title:     title,
 		url:       url,
 		thumbnail: thumbnail,

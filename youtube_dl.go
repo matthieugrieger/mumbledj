@@ -48,11 +48,13 @@ func (dl *YouTubeDLSong) Download() error {
 			}
 			return nil
 		} else {
-			Verbose("youtube-dl: " + err.Error())
+			args := "youtube-dl "
 			for s := range cmd.Args {
-				Verbose("youtube-dl args: " + cmd.Args[s])
+				args += cmd.Args[s]
 			}
+			Verbose(args)
 			Verbose(string(output))
+			Verbose("youtube-dl: " + err.Error())
 			return errors.New("Song download failed.")
 		}
 	}

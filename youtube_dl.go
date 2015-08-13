@@ -74,7 +74,7 @@ func (dl *YouTubeDLSong) Play() {
 		panic(err)
 	} else {
 		message := `<table><tr><td align="center"><img src="%s" width=150 /></td></tr><tr><td align="center"><b><a href="%s">%s</a> (%s)</b></td></tr><tr><td align="center">Added by %s</td></tr>`
-		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.duration, dl.submitter)
+		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.duration, dl.submitter.Name)
 		if !isNil(dl.playlist) {
 			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.playlist.Title())
 		}

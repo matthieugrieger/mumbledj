@@ -15,8 +15,8 @@ type YouTubeDLSong struct {
 	id        string
 	title     string
 	thumbnail string
-	submitter string
-	duration  string
+	submitter *gumble.User
+	duration  int
 	url       string
 	offset    int
 	playlist  Playlist
@@ -39,7 +39,7 @@ func (dl *YouTubeDLSong) Download() error {
 
 	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()), "--format m4a", "--prefer-ffmpeg", "--", dl.ID())
+		cmd := exec.Command("youtube-dl", "--output", fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()), "--format m4a", "--prefer-ffmpeg", "--", dl.url)
 		err = cmd.Run()
 		if err == nil {
 			if dj.conf.Cache.Enabled {
@@ -51,6 +51,8 @@ func (dl *YouTubeDLSong) Download() error {
 			for s := range cmd.Args {
 				Verbose("youtube-dl args: " + cmd.Args[s])
 			}
+			 b, _ := ioutil.ReadAll(cmd.Stdout)
+        	Verbose(string(b))
 			return errors.New("Song download failed.")
 		}
 	}

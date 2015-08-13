@@ -44,7 +44,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 		// PLAYLIST
 		if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
 			// Check duration of playlist
-			// duration, _ := apiResponse.Int("duration")
+			duration, _ := apiResponse.Int("duration")
 
 			// Create playlist
 			title, _ := apiResponse.String("title")
@@ -56,7 +56,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 
 			// Add all tracks
 			for _, t := range tracks {
-				sc.NewSong(user.Name, jsonq.NewQuery(t), playlist)
+				sc.NewSong(user, jsonq.NewQuery(t), playlist)
 			}
 			if err == nil {
 				return playlist.Title(), nil
@@ -69,12 +69,12 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 		}
 	} else {
 		// SONG
-		return sc.NewSong(user.Name, apiResponse, nil)
+		return sc.NewSong(user, apiResponse, nil)
 	}
 }
 
 // Creates a track and adds to the queue
-func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist Playlist) (string, error) {
+func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, playlist Playlist) (string, error) {
 	title, err := trackData.String("title")
 	if err != nil {
 		return "", err
@@ -83,7 +83,7 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 	if err != nil {
 		return "", err
 	}
-	duration, err := trackData.String("duration")
+	duration, err := trackData.Int("duration")
 	if err != nil {
 		return "", err
 	}
@@ -91,10 +91,15 @@ func (sc SoundCloud) NewSong(user string, trackData *jsonq.JsonQuery, playlist P
 	if err != nil {
 		return "", err
 	}
+	url, err := trackData.String("permalink_url")
+	if err != nil {
+		return "", err
+	}
 
 	song := &YouTubeDLSong{
 		id:        id,
 		title:     title,
+		url:       url,
 		thumbnail: thumbnail,
 		submitter: user,
 		duration:  duration,

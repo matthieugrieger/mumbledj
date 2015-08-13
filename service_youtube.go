@@ -60,7 +60,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 		if re.MatchString(url) {
 			if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
 				shortURL = re.FindStringSubmatch(url)[1]
-				playlist, err := yt.NewPlaylist(user.Name, shortURL)
+				playlist, err := yt.NewPlaylist(user, shortURL)
 				return playlist.Title(), err
 			} else {
 				return "", errors.New("NO_PLAYLIST_PERMISSION")
@@ -72,7 +72,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 			if len(matches[0]) == 3 {
 				startOffset = matches[0][2]
 			}
-			song, err := yt.NewSong(user.Name, shortURL, startOffset, nil)
+			song, err := yt.NewSong(user, shortURL, startOffset, nil)
 			if err == nil {
 				return song.Title(), nil
 			} else {
@@ -87,7 +87,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 
 // NewSong gathers the metadata for a song extracted from a YouTube video, and returns
 // the song.
-func (yt YouTube) NewSong(user, id, offset string, playlist Playlist) (Song, error) {
+func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlist) (Song, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
@@ -181,12 +181,11 @@ func (yt YouTube) NewSong(user, id, offset string, playlist Playlist) (Song, err
 }
 
 // NewPlaylist gathers the metadata for a YouTube playlist and returns it.
-func (yt YouTube) NewPlaylist(user, id string) (Playlist, error) {
+func (yt YouTube) NewPlaylist(user *gumble.User, id string) (Playlist, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
 	// Retrieve title of playlist
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
-		id, os.Getenv("YOUTUBE_API_KEY"))
+	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s", id, os.Getenv("YOUTUBE_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}

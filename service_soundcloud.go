@@ -44,7 +44,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 		// PLAYLIST
 		if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
 			// Check duration of playlist
-			duration, _ := apiResponse.Int("duration")
+			//duration, _ := apiResponse.Int("duration")
 
 			// Create playlist
 			title, _ := apiResponse.String("title")

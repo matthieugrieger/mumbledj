@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### August 12, 2015 -- `v2.7.5`
+* Fixed cache clearing earlier than expected (thanks [@CMahaff](https://github.com/CMahaff)).
+
 ### May 19, 2015 -- `v2.7.4`
 * Fixed a panic that occurred when certain YouTube playlists were added to the queue.
 

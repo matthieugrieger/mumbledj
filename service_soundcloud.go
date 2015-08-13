@@ -80,18 +80,30 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 	if err != nil {
 		return "", err
 	}
+
 	id, err := trackData.Int("id")
 	if err != nil {
 		return "", err
 	}
+
 	duration, err := trackData.Int("duration")
 	if err != nil {
 		return "", err
 	}
 	thumbnail, err := trackData.String("artwork_url")
 	if err != nil {
-		return "", err
+		// Song has no artwork, using profile avatar instead
+		userObj, err := trackData.Object("user")
+		if err != nil {
+			return "", err
+		}
+
+		thumbnail, err = jsonq.NewQuery(userObj).String("avatar_url")
+		if err != nil {
+			return "", err
+		}
 	}
+
 	url, err := trackData.String("permalink_url")
 	if err != nil {
 		return "", err

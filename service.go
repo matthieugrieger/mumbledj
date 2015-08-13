@@ -34,7 +34,7 @@ type Song interface {
 	Title() string
 	ID() string
 	Filename() string
-	Duration() string
+	Duration() int
 	Thumbnail() string
 	Playlist() Playlist
 	DontSkip() bool

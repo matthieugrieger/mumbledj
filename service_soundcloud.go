@@ -87,7 +87,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 	if err != nil {
 		return "", err
 	}
-	thumbnail, err := trackData.String("artwork_uri")
+	thumbnail, err := trackData.String("artwork_url")
 	if err != nil {
 		return "", err
 	}

@@ -7,10 +7,8 @@ machine:
 
 dependencies:
     pre:
-        - ffmpeg -version
-        - sudo apt-get remove -y ffmpeg
-        - ffmpeg -version
         - bash install-dependencies.sh
+        - pip install youtube-dl
         - ffmpeg -version
         
     override:

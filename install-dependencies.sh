@@ -21,12 +21,3 @@ if [ ! -d "$HOME/opus/lib" ]; then
 else
   echo 'Using cached version of opus.';
 fi
-
-# check to see if youtube-dl is installed
-if [ ! -f "$HOME/bin/youtube-dl" ]; then
-    echo 'Installing youtube-dl'
-    curl https://yt-dl.org/downloads/2015.07.28/youtube-dl -o ~/bin/youtube-dl
-    chmod a+rx ~/bin/youtube-dl
-else
-  echo 'Using cached version of youtube-dl.';
-fi

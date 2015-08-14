@@ -9,7 +9,7 @@ dependencies:
     pre:
         - sudo apt-get -qqy remove ffmpeg ffprobe
         - bash install-dependencies.sh
-        - sudo pip install youtube-dlS
+        - sudo pip install youtube-dl
         - ffmpeg -version
         
     override:

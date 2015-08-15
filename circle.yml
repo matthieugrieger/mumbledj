@@ -7,7 +7,9 @@ machine:
 
 dependencies:
     pre:
-        - sudo apt-get -qqy remove ffmpeg ffprobe
+        - sudo apt-get remove -y ffmpeg ffprobe
+        - sudo type ffmpeg
+        - sudo whereis ffmpeg
         - bash install-dependencies.sh
         - sudo pip install youtube-dl
         - ffmpeg -version

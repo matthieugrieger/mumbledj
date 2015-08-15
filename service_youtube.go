@@ -161,7 +161,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 	}
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
-		song := &YouTubeDLSong{
+		song := &YouTubeSong{
 			submitter: user,
 			title:     title,
 			id:        id,
@@ -193,7 +193,7 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) (Playlist, error) {
 	}
 	title, _ := apiResponse.String("items", "0", "snippet", "title")
 
-	playlist := &YouTubeDLPlaylist{
+	playlist := &YouTubePlaylist{
 		id:    id,
 		title: title,
 	}

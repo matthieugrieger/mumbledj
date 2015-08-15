@@ -50,7 +50,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 			// Create playlist
 			title, _ := apiResponse.String("title")
 			permalink, _ := apiResponse.String("permalink_url")
-			playlist := &YouTubeDLPlaylist{
+			playlist := &YouTubePlaylist{
 				id:    permalink,
 				title: title,
 			}
@@ -109,7 +109,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 		return "", err
 	}
 
-	song := &YouTubeDLSong{
+	song := &YouTubeSong{
 		id:        strconv.Itoa(id),
 		title:     title,
 		url:       url,

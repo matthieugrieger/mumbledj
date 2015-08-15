@@ -14,11 +14,11 @@ import (
 	"github.com/layeh/gumble/gumble"
 )
 
-// Service interface. Each service should implement these functions
+// Service interface. Each service will implement these functions
 type Service interface {
 	ServiceName() string
-	URLRegex(string) bool                            // Can service deal with URL
-	NewRequest(*gumble.User, string) (string, error) // Create song/playlist and add to the queue
+	URLRegex(string) bool
+	NewRequest(*gumble.User, string) (string, error)
 }
 
 // Song interface. Each service will implement these

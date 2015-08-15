@@ -39,14 +39,14 @@ func (t TestSettings) createClient(uname string) *gumble.Client {
 }
 
 func (t TestSettings) testYoutubeSong() {
-	//	dummyClient := t.createClient("dummy")
-	//	if err := dummyClient.Connect(); err != nil {
-	//		panic(err)
-	//	}
+	dummyClient := t.createClient("dummy")
+	if err := dummyClient.Connect(); err != nil {
+		panic(err)
+	}
 
 	dj.client.Request(gumble.RequestUserList)
 	time.Sleep(time.Second * 5)
-	dummyUser := dj.client.Users.Find("BottleOToast")
+	dummyUser := dj.client.Users.Find("dummy")
 	if dummyUser == nil {
 		fmt.Printf("User does not exist, printing users\n")
 		for _, user := range dj.client.Users {
@@ -76,10 +76,10 @@ func (t TestSettings) testYoutubeSong() {
 			fmt.Printf("For: %s; Expected: %s; Got: %s\n", url, title, dj.queue.CurrentSong().Title())
 		}
 
-		time.Sleep(time.Second * 5)
+		time.Sleep(time.Second * 10)
 		skip(dummyUser, false, false)
 	}
 
 	os.Exit(0)
-	//dummyClient.Disconnect()
+	dummyClient.Disconnect()
 }

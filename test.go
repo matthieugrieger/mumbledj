@@ -28,13 +28,14 @@ func Test(password, ip, port string, accesstokens []string) {
 }
 
 func (t TestSettings) createClient(uname string) *gumble.Client {
-	client := gumble.NewClient(&gumble.Config{
+	config := gumble.Config{
 		Username: uname,
 		Password: t.password,
 		Address:  t.ip + ":" + t.port,
 		Tokens:   t.accesstokens,
-	})
-	gumbleutil.CertificateLockFile(client, fmt.Sprintf("%s/.mumbledj/cert.lock", dj.homeDir))
+	}
+	config.TLSConfig.InsecureSkipVerify = true
+	client := gumble.NewClient(&config)
 	return client
 }
 

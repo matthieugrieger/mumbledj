@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumbleutil"
 	"os"
 	"time"
 )

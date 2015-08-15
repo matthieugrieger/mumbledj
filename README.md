@@ -51,7 +51,6 @@ Command | Description | Arguments | Admin | Example
 **help** | Displays this list of commands in Mumble chat. | None | No | `!help`
 **volume** | Either outputs the current volume or changes the current volume. If desired volume is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to desired volume if it is within the allowed volume range. | None OR desired volume | No | `!volume 0.5`, `!volume`
 **move** | Moves MumbleDJ into channel if it exists. | Channel | Yes | `!move Music`
-**web** | Displays a unique url for the user to control mumbledj from a web browser | None | No | `!web`
 **reload** | Reloads `mumbledj.gcfg` to retrieve updated configuration settings. | None | Yes | `!reload`
 **reset** | Stops all audio and resets the song queue. | None | Yes | `!reset`
 **numsongs** | Outputs the number of songs in the queue in chat. Individual songs and songs within playlists are both counted. | None | No | `!numsongs`

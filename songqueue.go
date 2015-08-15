@@ -77,14 +77,6 @@ func (q *SongQueue) Traverse(visit func(i int, s Song)) {
 	}
 }
 
-// Gets the song at a specific point in the queue
-func (q *SongQueue) Get(i int) (Song, error) {
-	if q.Len() > i+1 {
-		return q.queue[i], nil
-	}
-	return nil, errors.New("Out of Bounds")
-}
-
 // OnSongFinished event. Deletes Song that just finished playing, then queues the next Song (if exists).
 func (q *SongQueue) OnSongFinished() {
 	resetOffset, _ := time.ParseDuration(fmt.Sprintf("%ds", 0))

@@ -10,15 +10,15 @@ package main
 import (
 	"errors"
 	"fmt"
+	"regexp"
 
 	"github.com/layeh/gumble/gumble"
 )
 
-// Service interface. Each service should implement these functions
+// Service interface. Each service will implement these functions
 type Service interface {
-	ServiceName() string
-	URLRegex(string) bool                            // Can service deal with URL
-	NewRequest(*gumble.User, string) (string, error) // Create song/playlist and add to the queue
+	URLRegex(string) bool
+	NewRequest(*gumble.User, string) (string, error)
 }
 
 // Song interface. Each service will implement these
@@ -52,9 +52,9 @@ type Playlist interface {
 	Title() string
 }
 
-var services = []Service{YouTube{}, SoundCloud{}}
+var services []Service
 
-func findServiceAndAdd(user *gumble.User, url string) error {
+func FindServiceAndAdd(user *gumble.User, url string) error {
 	var urlService Service
 
 	// Checks all services to see if any can take the URL
@@ -65,8 +65,7 @@ func findServiceAndAdd(user *gumble.User, url string) error {
 	}
 
 	if urlService == nil {
-		Verbose("Invalid_URL")
-		return errors.New("INVALID_URL")
+		return errors.New(INVALID_URL_MSG)
 	} else {
 		oldLength := dj.queue.Len()
 		var title string
@@ -90,4 +89,16 @@ func findServiceAndAdd(user *gumble.User, url string) error {
 		}
 		return err
 	}
+}
+
+// RegexpFromURL loops through an array of patterns to see if it matches the url
+func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
+	for _, pattern := range patterns {
+		if re, err := regexp.Compile(pattern); err == nil {
+			if re.MatchString(url) {
+				return re
+			}
+		}
+	}
+	return nil
 }

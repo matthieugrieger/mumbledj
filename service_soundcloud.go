@@ -11,7 +11,7 @@ import (
 )
 
 // Regular expressions for soundcloud urls
-var soundcloudSongPattern = `https?:\/\/(www\.)?soundcloud\.com\/([\w-]+)\/([\w-]+)`
+var soundcloudSongPattern = `https?:\/\/(www\.)?soundcloud\.com\/([\w-]+)\/([\w-]+)(#t=\n\n?(:\n\n)*)?`
 var soundcloudPlaylistPattern = `https?:\/\/(www\.)?soundcloud\.com\/([\w-]+)\/sets\/([\w-]+)`
 
 // SoundCloud implements the Service interface
@@ -21,17 +21,12 @@ type SoundCloud struct{}
 // SOUNDCLOUD SERVICE
 // ------------------
 
-// Name of the service
-func (sc SoundCloud) ServiceName() string {
-	return "SoundCloud"
-}
-
-// Checks to see if service will accept URL
+// URLRegex checks to see if service will accept URL
 func (sc SoundCloud) URLRegex(url string) bool {
 	return RegexpFromURL(url, []string{soundcloudSongPattern, soundcloudPlaylistPattern}) != nil
 }
 
-// Creates the requested song/playlist and adds to the queue
+// NewRequest creates the requested song/playlist and adds to the queue
 func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
@@ -44,13 +39,10 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 	if err == nil {
 		// PLAYLIST
 		if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
-			// Check duration of playlist
-			//duration, _ := apiResponse.Int("duration")
-
 			// Create playlist
 			title, _ := apiResponse.String("title")
 			permalink, _ := apiResponse.String("permalink_url")
-			playlist := &YouTubeDLPlaylist{
+			playlist := &YouTubePlaylist{
 				id:    permalink,
 				title: title,
 			}
@@ -62,7 +54,6 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 			if err == nil {
 				return playlist.Title(), nil
 			} else {
-				Verbose("soundcloud.NewRequest: " + err.Error())
 				return "", err
 			}
 		} else {
@@ -74,53 +65,34 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 	}
 }
 
-// Creates a track and adds to the queue
+// NewSong creates a track and adds to the queue
 func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, playlist Playlist) (string, error) {
-	title, err := trackData.String("title")
-	if err != nil {
-		return "", err
-	}
-
-	id, err := trackData.Int("id")
-	if err != nil {
-		return "", err
-	}
-
-	duration, err := trackData.Int("duration")
-	if err != nil {
-		return "", err
-	}
+	title, _ := trackData.String("title")
+	id, _ := trackData.Int("id")
+	duration, _ := trackData.Int("duration")
+	url, _ := trackData.String("permalink_url")
 	thumbnail, err := trackData.String("artwork_url")
 	if err != nil {
 		// Song has no artwork, using profile avatar instead
-		userObj, err := trackData.Object("user")
-		if err != nil {
-			return "", err
+		userObj, _ := trackData.Object("user")
+		thumbnail, _ = jsonq.NewQuery(userObj).String("avatar_url")
+	}
+
+	if dj.conf.General.MaxSongDuration == 0 || (duration/1000) <= dj.conf.General.MaxSongDuration {
+		song := &YouTubeSong{
+			id:        strconv.Itoa(id),
+			title:     title,
+			url:       url,
+			thumbnail: thumbnail,
+			submitter: user,
+			duration:  strconv.Itoa(duration),
+			format:    "mp3",
+			playlist:  playlist,
+			skippers:  make([]string, 0),
+			dontSkip:  false,
 		}
-
-		thumbnail, err = jsonq.NewQuery(userObj).String("avatar_url")
-		if err != nil {
-			return "", err
-		}
+		dj.queue.AddSong(song)
+		return song.Title(), nil
 	}
-
-	url, err := trackData.String("permalink_url")
-	if err != nil {
-		return "", err
-	}
-
-	song := &YouTubeDLSong{
-		id:        strconv.Itoa(id),
-		title:     title,
-		url:       url,
-		thumbnail: thumbnail,
-		submitter: user,
-		duration:  strconv.Itoa(duration),
-		format:    "mp3",
-		playlist:  playlist,
-		skippers:  make([]string, 0),
-		dontSkip:  false,
-	}
-	dj.queue.AddSong(song)
-	return title, nil
+	return "", errors.New(VIDEO_TOO_LONG_MSG)
 }

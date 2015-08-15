@@ -152,13 +152,6 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
-	// Test command (WORKAROUND)
-	case "test":
-		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
-			test.testYoutubeSong()
-		} else {
-			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
-		}
 	default:
 		dj.SendPrivateMessage(user, COMMAND_DOESNT_EXIST_MSG)
 	}
@@ -171,7 +164,7 @@ func add(user *gumble.User, url string) error {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 		return errors.New("NO_ARGUMENT")
 	} else {
-		err := findServiceAndAdd(user, url)
+		err := FindServiceAndAdd(user, url)
 		if err != nil {
 			dj.SendPrivateMessage(user, err.Error())
 		}

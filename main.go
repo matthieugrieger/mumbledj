@@ -14,7 +14,6 @@ import (
 	"os"
 	"os/user"
 	"reflect"
-	"regexp"
 	"strings"
 	"time"
 
@@ -37,7 +36,6 @@ type mumbledj struct {
 	homeDir        string
 	playlistSkips  map[string][]string
 	cache          *SongCache
-	verbose        bool
 }
 
 // OnConnect event. First moves MumbleDJ into the default channel specified
@@ -133,37 +131,42 @@ func (dj *mumbledj) SendPrivateMessage(user *gumble.User, message string) {
 	}
 }
 
-// PerformStartupChecks checks the MumbleDJ installation to ensure proper usage.
-func PerformStartupChecks() {
+// CheckAPIKeys enables the services with API keys in the environment varaibles
+func CheckAPIKeys() {
+	anyDisabled := false
+
+	// Checks YouTube API key
 	if os.Getenv("YOUTUBE_API_KEY") == "" {
-		fmt.Printf("You do not have a YouTube API key defined in your environment variables.\n" +
-			"Please see the following link for info on how to fix this: https://github.com/matthieugrieger/mumbledj#youtube-api-keys\n")
+		anyDisabled = true
+		fmt.Printf("The youtube service has been disabled as you do not have a YouTube API key defined in your environment variables.\n")
+	} else {
+		services = append(services, YouTube{})
+	}
+
+	// Checks Soundcloud API key
+	if os.Getenv("SOUNDCLOUD_API_KEY") == "" {
+		anyDisabled = true
+		fmt.Printf("The soundcloud service has been disabled as you do not have a Soundcloud API key defined in your environment variables.\n")
+	} else {
+		services = append(services, SoundCloud{})
+	}
+
+	// Checks to see if any service was disabled
+	if anyDisabled {
+		fmt.Printf("Please see the following link for info on how to enable services: https://github.com/matthieugrieger/mumbledj\n")
+	}
+
+	// Exits application if no services are enabled
+	if services == nil {
+		fmt.Printf("No services are enabled, and thus closing\n")
 		os.Exit(1)
 	}
 }
 
-// Prints out messages only if verbose flag is true
-func Verbose(msg string) {
-	if dj.verbose {
-		fmt.Printf(msg + "\n")
-	}
-}
-
-// Checks to see if an object is nil
+// isNil checks to see if an object is nil
 func isNil(a interface{}) bool {
 	defer func() { recover() }()
 	return a == nil || reflect.ValueOf(a).IsNil()
-}
-
-func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
-	for _, pattern := range patterns {
-		if re, err := regexp.Compile(pattern); err == nil {
-			if re.MatchString(url) {
-				return re
-			}
-		}
-	}
-	return nil
 }
 
 // dj variable declaration. This is done outside of main() to allow global use.
@@ -178,7 +181,7 @@ var dj = mumbledj{
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
 
-	PerformStartupChecks()
+	CheckAPIKeys()
 
 	if currentUser, err := user.Current(); err == nil {
 		dj.homeDir = currentUser.HomeDir
@@ -191,7 +194,7 @@ func main() {
 	}
 
 	var address, port, username, password, channel, pemCert, pemKey, accesstokens string
-	var insecure, verbose, testcode bool
+	var insecure, testcode bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
@@ -202,7 +205,6 @@ func main() {
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
 	flag.StringVar(&accesstokens, "accesstokens", "", "list of access tokens for channel auth")
 	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
-	flag.BoolVar(&verbose, "verbose", false, "[debug] prints out debug messages to the console")
 	flag.BoolVar(&testcode, "test", false, "[debug] tests the features of mumbledj")
 	flag.Parse()
 
@@ -230,7 +232,6 @@ func main() {
 	}
 
 	dj.defaultChannel = strings.Split(channel, "/")
-	dj.verbose = verbose
 
 	dj.client.Attach(gumbleutil.Listener{
 		Connect:     dj.OnConnect,
@@ -246,7 +247,6 @@ func main() {
 	}
 
 	if testcode {
-		Verbose("Testing is enabled")
 		Test(password, address, port, strings.Split(accesstokens, " "))
 	}
 	<-dj.keepAlive

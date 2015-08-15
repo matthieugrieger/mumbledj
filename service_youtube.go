@@ -43,17 +43,12 @@ type YouTube struct{}
 // YOUTUBE SERVICE
 // ---------------
 
-// Name of the service
-func (yt YouTube) ServiceName() string {
-	return "Youtube"
-}
-
-// Checks to see if service will accept URL
+// URLRegex checks to see if service will accept URL
 func (yt YouTube) URLRegex(url string) bool {
 	return RegexpFromURL(url, append(youtubeVideoPatterns, []string{youtubePlaylistPattern}...)) != nil
 }
 
-// Creates the requested song/playlist and adds to the queue
+// NewRequest creates the requested song/playlist and adds to the queue
 func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 	var shortURL, startOffset = "", ""
 	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
@@ -76,7 +71,6 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 			if !isNil(song) {
 				return song.Title(), err
 			} else {
-				Verbose("youtube.NewRequest: " + err.Error())
 				return "", err
 			}
 		}
@@ -85,8 +79,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 	}
 }
 
-// NewSong gathers the metadata for a song extracted from a YouTube video, and returns
-// the song.
+// NewSong gathers the metadata for a song extracted from a YouTube video, and returns the song.
 func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlist) (Song, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
@@ -161,7 +154,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 	}
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
-		song := &YouTubeDLSong{
+		song := &YouTubeSong{
 			submitter: user,
 			title:     title,
 			id:        id,
@@ -175,7 +168,6 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
-		Verbose(song.Submitter() + " added track " + song.Title())
 
 <<<<<<< HEAD
 		return song, nil
@@ -311,7 +303,7 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) (Playlist, error) {
 	}
 	title, _ := apiResponse.String("items", "0", "snippet", "title")
 
-	playlist := &YouTubeDLPlaylist{
+	playlist := &YouTubePlaylist{
 		id:    id,
 		title: title,
 	}

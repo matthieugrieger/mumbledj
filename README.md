@@ -7,6 +7,7 @@ MumbleDJ [![Build Status](https://travis-ci.org/MichaelOultram/mumbledj.svg?bran
 * [Commands](#commands)
 * [Installation](#installation)
   * [YouTube API Keys](#youtube-api-keys)
+  * [Soundcloud API Keys](#soundcloud-api-keys)
   * [Setup Guide](#setup-guide)
   * [Update Guide](#update-guide)
 * [Troubleshooting](#troubleshooting)
@@ -28,7 +29,6 @@ All commandline parameters are optional. Below are descriptions of all the avail
 * `-key`: Path to user PEM key. Defaults to no key.
 * `-insecure`: If included, the bot will not check the certs for the server. Try using this commandline flag if you are having connection issues.
 * `-accesstokens`: List of access tokens for the bot separated by spaces. Defaults to no access tokens.
-* `-verbose`: Prints out song status into the console.
 
 ## FEATURES
 * Plays audio from both YouTube videos and YouTube playlists!
@@ -86,6 +86,19 @@ Effective April 20th, 2015, all requests to YouTube's API must use v3 of their A
 **7)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export YOUTUBE_API_KEY="<your_key_here>"`. Replace \<your_key_here\> with your API key.
 
 **8)** Close your current terminal window and open another one up. You should be able to use MumbleDJ now!
+
+###SOUNDCLOUD API KEYS
+A soundcloud API key is required for soundcloud integration. If no soundcloud api key is found, then the service will be disabled (youtube links will still work however).
+
+**1)** Login/signup for a soundcloud account on [https://soundcloud.com](https://soundcloud.com) 
+
+**2)** Now to get the API key create a new app here: [http://soundcloud.com/you/apps/new](http://soundcloud.com/you/apps/new)
+
+**3)** Copy the Client ID (not the Client Secret)
+
+**4)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export SOUNDCLOUD_API_KEY="<your_key_here>"`. Replace \<your_key_here\> with your API key.
+
+**5)** Close your current terminal window and open another one up. You should be able to use soundcloud on MumbleDJ now!
 
 ###SETUP GUIDE  
 **1)** Install and correctly configure [`Go`](https://golang.org/) (1.4 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.

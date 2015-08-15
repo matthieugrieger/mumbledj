@@ -51,7 +51,6 @@ type DjConfig struct {
 		NumCachedAlias         string
 		CacheSizeAlias         string
 		KillAlias              string
-		WebAlias               string
 	}
 	Permissions struct {
 		AdminsEnabled     bool
@@ -71,7 +70,6 @@ type DjConfig struct {
 		AdminNumCached    bool
 		AdminCacheSize    bool
 		AdminKill         bool
-		AdminWeb          bool
 	}
 }
 

@@ -252,9 +252,6 @@ func main() {
 		Test(password, address, port, strings.Split(accesstokens, " "))
 	}
 
-	web = NewWebServer(9563)
-	web.makeWeb()
-
 	if isNil(web) {
 		Verbose("WEB IS NIL")
 	}

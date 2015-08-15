@@ -86,10 +86,6 @@ HelpAlias = "help"
 # DEFAULT VALUE: "volume"
 VolumeAlias = "volume"
 
-# Alias used for web address command
-# DEFAULT VALUE: "web"
-WebAlias = "web"
-
 # Alias used for move command
 # DEFAULT VALUE: "move"
 MoveAlias = "move"
@@ -165,10 +161,6 @@ AdminHelp = false
 # Make volume an admin command?
 # DEFAULT VALUE: false
 AdminVolume = false
-
-# Make web an admin command?
-# DEFAULT VALUE: false
-AdminWeb = false
 
 # Make move an admin command?
 # DEFAULT VALUE: true

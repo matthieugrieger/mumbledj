@@ -54,14 +54,6 @@ type Playlist interface {
 
 var services []Service
 
-func AddService(service Service) {
-	if services == nil {
-		service = Service{service}
-	} else {
-		service = append(service, services)
-	}
-}
-
 func findServiceAndAdd(user *gumble.User, url string) error {
 	var urlService Service
 

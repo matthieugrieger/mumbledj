@@ -140,7 +140,7 @@ func CheckAPIKeys() {
 		fmt.Printf("The youtube service has been disabled as you do not have a YouTube API key defined in your environment variables.\n" +
 			"Please see the following link for info on how to fix this: https://github.com/matthieugrieger/mumbledj#youtube-api-keys\n")
 	} else {
-		AddService(YouTube{})
+		services = append(services, YouTube{})
 	}
 
 	// Checks Soundcloud API key
@@ -148,7 +148,7 @@ func CheckAPIKeys() {
 		fmt.Printf("The soundcloud service has been disabled as you do not have a Soundcloud API key defined in your environment variables.\n" +
 			"Please see the following link for info on how to fix this: https://github.com/matthieugrieger/mumbledj#soundcloud-api-keys\n")
 	} else {
-		AddService(SoundCloud{})
+		services = append(services, SoundCloud{})
 	}
 }
 

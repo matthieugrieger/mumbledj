@@ -169,4 +169,4 @@ const CURRENT_SONG_HTML = `
 // playlist is playing.
 const CURRENT_SONG_PLAYLIST_HTML = `
 	The song currently playing is "%s", added <b>%s</b> from the playlist "%s".
-
+`

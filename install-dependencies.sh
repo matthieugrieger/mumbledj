@@ -1,6 +1,11 @@
 #!/bin/sh
 set -e
 
+# removing old ffmpeg
+sudo rm -rf /usr/bin/ffmpeg
+sudo rm -rf /usr/bin/X11/ffmpeg
+sudo rm -rf /usr/share/man/man1/ffmpeg.1.gz
+
 # check to see if ffmpeg is installed
 if [ ! -f "$HOME/bin/ffmpeg" ]; then
     echo 'Installing ffmpeg'

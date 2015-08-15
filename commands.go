@@ -164,7 +164,7 @@ func add(user *gumble.User, url string) error {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
 		return errors.New("NO_ARGUMENT")
 	} else {
-		err := findServiceAndAdd(user, url)
+		err := FindServiceAndAdd(user, url)
 		if err != nil {
 			dj.SendPrivateMessage(user, err.Error())
 		}

@@ -25,11 +25,9 @@ import (
 // Regular expressions for youtube urls
 var youtubePlaylistPattern = `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
 var youtubeVideoPatterns = []string{
-	`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-	`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+	`https?:\/\/(www\.)?youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+	`https?:\/\/(www\.)?youtube\.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
 	`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-	`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-	`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
 }
 
 // ------
@@ -43,17 +41,12 @@ type YouTube struct{}
 // YOUTUBE SERVICE
 // ---------------
 
-// Name of the service
-func (yt YouTube) ServiceName() string {
-	return "Youtube"
-}
-
-// Checks to see if service will accept URL
+// URLRegex checks to see if service will accept URL
 func (yt YouTube) URLRegex(url string) bool {
 	return RegexpFromURL(url, append(youtubeVideoPatterns, []string{youtubePlaylistPattern}...)) != nil
 }
 
-// Creates the requested song/playlist and adds to the queue
+// NewRequest creates the requested song/playlist and adds to the queue
 func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 	var shortURL, startOffset = "", ""
 	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
@@ -85,8 +78,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 	}
 }
 
-// NewSong gathers the metadata for a song extracted from a YouTube video, and returns
-// the song.
+// NewSong gathers the metadata for a song extracted from a YouTube video, and returns the song.
 func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlist) (Song, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error

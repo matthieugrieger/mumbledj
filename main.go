@@ -133,28 +133,39 @@ func (dj *mumbledj) SendPrivateMessage(user *gumble.User, message string) {
 	}
 }
 
-// PerformStartupChecks checks the MumbleDJ installation to ensure proper usage.
-func PerformStartupChecks() {
+// CheckAPIKeys enables the services with API keys in the environment varaibles
+func CheckAPIKeys() {
+	// Checks YouTube API key
 	if os.Getenv("YOUTUBE_API_KEY") == "" {
-		fmt.Printf("You do not have a YouTube API key defined in your environment variables.\n" +
+		fmt.Printf("The youtube service has been disabled as you do not have a YouTube API key defined in your environment variables.\n" +
 			"Please see the following link for info on how to fix this: https://github.com/matthieugrieger/mumbledj#youtube-api-keys\n")
-		os.Exit(1)
+	} else {
+		AddService(YouTube{})
+	}
+
+	// Checks Soundcloud API key
+	if os.Getenv("SOUNDCLOUD_API_KEY") == "" {
+		fmt.Printf("The soundcloud service has been disabled as you do not have a Soundcloud API key defined in your environment variables.\n" +
+			"Please see the following link for info on how to fix this: https://github.com/matthieugrieger/mumbledj#soundcloud-api-keys\n")
+	} else {
+		AddService(SoundCloud{})
 	}
 }
 
-// Prints out messages only if verbose flag is true
+// Verbose prints out messages only if verbose flag is true
 func Verbose(msg string) {
 	if dj.verbose {
 		fmt.Printf(msg + "\n")
 	}
 }
 
-// Checks to see if an object is nil
+// isNil checks to see if an object is nil
 func isNil(a interface{}) bool {
 	defer func() { recover() }()
 	return a == nil || reflect.ValueOf(a).IsNil()
 }
 
+// RegexpFromURL loops through an array of patterns to see if it matches the url
 func RegexpFromURL(url string, patterns []string) *regexp.Regexp {
 	for _, pattern := range patterns {
 		if re, err := regexp.Compile(pattern); err == nil {
@@ -178,7 +189,7 @@ var dj = mumbledj{
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
 
-	PerformStartupChecks()
+	CheckAPIKeys()
 
 	if currentUser, err := user.Current(); err == nil {
 		dj.homeDir = currentUser.HomeDir

@@ -64,10 +64,10 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 			timesplit = strings.Split(timesplit[1], ":")
 			multiplier := 1
 			for i := len(timesplit) - 1; i >= 0; i-- {
-				offset += strconv.Itoa(timesplit[i]) * multiplier
+				offset += strconv.Atoa(timesplit[i]) * multiplier
 				mutiplier *= 60
 			}
-			fmt.Printf("Offset: " + offset) // DEBUG
+			fmt.Printf("Offset: " + strconv.Itoa(offset)) // DEBUG
 		}
 		return sc.NewSong(user, apiResponse, offset, nil)
 	}

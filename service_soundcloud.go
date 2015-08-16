@@ -92,7 +92,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
-		return song, nil
+		return song.Title(), nil
 	}
 	return "", errors.New(VIDEO_TOO_LONG_MSG)
 }

@@ -25,9 +25,11 @@ import (
 // Regular expressions for youtube urls
 var youtubePlaylistPattern = `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
 var youtubeVideoPatterns = []string{
-	`https?:\/\/(www\.)?youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-	`https?:\/\/(www\.)?youtube\.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+	`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
+	`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
 	`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+	`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+	`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
 }
 
 // ------

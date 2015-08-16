@@ -54,6 +54,8 @@ type Playlist interface {
 
 var services []Service
 
+// FindServiceAndAdd tries the given url with each service 
+// and adds the song/playlist with the correct service
 func FindServiceAndAdd(user *gumble.User, url string) error {
 	var urlService Service
 

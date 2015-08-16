@@ -153,7 +153,7 @@ func CheckAPIKeys() {
 
 	// Checks to see if any service was disabled
 	if anyDisabled {
-		fmt.Printf("Please see the following link for info on how to enable services: https://github.com/matthieugrieger/mumbledj\n")
+		fmt.Printf("Please see the following link for info on how to enable missing services: https://github.com/matthieugrieger/mumbledj\n")
 	}
 
 	// Exits application if no services are enabled
@@ -194,7 +194,7 @@ func main() {
 	}
 
 	var address, port, username, password, channel, pemCert, pemKey, accesstokens string
-	var insecure, testcode bool
+	var insecure bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
@@ -205,7 +205,6 @@ func main() {
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
 	flag.StringVar(&accesstokens, "accesstokens", "", "list of access tokens for channel auth")
 	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
-	flag.BoolVar(&testcode, "test", false, "[debug] tests the features of mumbledj")
 	flag.Parse()
 
 	dj.config = gumble.Config{
@@ -246,8 +245,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	if testcode {
-		Test(password, address, port, strings.Split(accesstokens, " "))
-	}
 	<-dj.keepAlive
 }

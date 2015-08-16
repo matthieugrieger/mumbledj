@@ -1,3 +1,10 @@
+/*
+ * MumbleDJ
+ * By Matthieu Grieger
+ * service_soundcloud.go
+ * Copyright (c) 2014, 2015 Matthieu Grieger (MIT License)
+ */
+
 package main
 
 import (
@@ -5,6 +12,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -30,7 +39,8 @@ func (sc SoundCloud) URLRegex(url string) bool {
 func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
-	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", url, os.Getenv("SOUNDCLOUD_API_KEY"))
+	timesplit := strings.Split(url, "#t=")
+	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", timesplit[0], os.Getenv("SOUNDCLOUD_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return "", errors.New(INVALID_API_KEY)
 	}
@@ -49,27 +59,32 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 
 			// Add all tracks
 			for _, t := range tracks {
-				sc.NewSong(user, jsonq.NewQuery(t), playlist)
+				sc.NewSong(user, jsonq.NewQuery(t), 0, playlist)
 			}
-			if err == nil {
-				return playlist.Title(), nil
-			} else {
-				return "", err
-			}
-		} else {
-			return "", errors.New("NO_PLAYLIST_PERMISSION")
+			return playlist.Title(), nil
 		}
+		return "", errors.New(NO_PLAYLIST_PERMISSION_MSG)
 	} else {
 		// SONG
-		return sc.NewSong(user, apiResponse, nil)
+		offset := 0
+		if len(timesplit) == 2 {
+			timesplit = strings.Split(timesplit[1], ":")
+			multiplier := 1
+			for i := len(timesplit) - 1; i >= 0; i-- {
+				time, _ := strconv.Atoi(timesplit[i])
+				offset += time * multiplier
+				multiplier *= 60
+			}
+		}
+		return sc.NewSong(user, apiResponse, offset, nil)
 	}
 }
 
 // NewSong creates a track and adds to the queue
-func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, playlist Playlist) (string, error) {
+func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offset int, playlist Playlist) (string, error) {
 	title, _ := trackData.String("title")
 	id, _ := trackData.Int("id")
-	duration, _ := trackData.Int("duration")
+	durationMS, _ := trackData.Int("duration")
 	url, _ := trackData.String("permalink_url")
 	thumbnail, err := trackData.String("artwork_url")
 	if err != nil {
@@ -78,14 +93,19 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 		thumbnail, _ = jsonq.NewQuery(userObj).String("avatar_url")
 	}
 
-	if dj.conf.General.MaxSongDuration == 0 || (duration/1000) <= dj.conf.General.MaxSongDuration {
+	// Check song is not longer than the MaxSongDuration
+	if dj.conf.General.MaxSongDuration == 0 || (durationMS/1000) <= dj.conf.General.MaxSongDuration {
+		timeDuration, _ := time.ParseDuration(strconv.Itoa(durationMS/1000) + "s")
+		duration := strings.NewReplacer("h", ":", "m", ":", "s", "").Replace(timeDuration.String())
+
 		song := &YouTubeSong{
 			id:        strconv.Itoa(id),
 			title:     title,
 			url:       url,
 			thumbnail: thumbnail,
 			submitter: user,
-			duration:  strconv.Itoa(duration),
+			duration:  duration,
+			offset:    offset,
 			format:    "mp3",
 			playlist:  playlist,
 			skippers:  make([]string, 0),

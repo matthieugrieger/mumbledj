@@ -66,7 +66,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 }
 
 // NewSong creates a track and adds to the queue
-func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, playlist Playlist) (Song, error) {
+func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, playlist Playlist) (string, error) {
 	title, _ := trackData.String("title")
 	id, _ := trackData.Int("id")
 	duration, _ := trackData.Int("duration")
@@ -94,5 +94,5 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 		dj.queue.AddSong(song)
 		return song, nil
 	}
-	return nil, errors.New(VIDEO_TOO_LONG_MSG)
+	return "", errors.New(VIDEO_TOO_LONG_MSG)
 }

@@ -14,7 +14,6 @@ import (
 	"os"
 	"os/user"
 	"reflect"
-	"regexp"
 	"strings"
 	"time"
 

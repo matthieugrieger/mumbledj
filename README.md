@@ -29,7 +29,6 @@ All commandline parameters are optional. Below are descriptions of all the avail
 * `-key`: Path to user PEM key. Defaults to no key.
 * `-insecure`: If included, the bot will not check the certs for the server. Try using this commandline flag if you are having connection issues.
 * `-accesstokens`: List of access tokens for the bot separated by spaces. Defaults to no access tokens.
-* `-verbose`: Prints out song status into the console.
 
 ## FEATURES
 * Plays audio from both YouTube videos and YouTube playlists!

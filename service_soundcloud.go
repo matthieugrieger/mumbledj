@@ -39,9 +39,6 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 	if err == nil {
 		// PLAYLIST
 		if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
-			// Check duration of playlist
-			//duration, _ := apiResponse.Int("duration")
-
 			// Create playlist
 			title, _ := apiResponse.String("title")
 			permalink, _ := apiResponse.String("permalink_url")
@@ -57,7 +54,6 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 			if err == nil {
 				return playlist.Title(), nil
 			} else {
-				Verbose("soundcloud.NewRequest: " + err.Error())
 				return "", err
 			}
 		} else {

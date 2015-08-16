@@ -64,8 +64,7 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 	}
 
 	if urlService == nil {
-		Verbose("INVALID_URL")
-		return errors.New("INVALID_URL")
+		return errors.New(INVALID_URL_MSG)
 	} else {
 		oldLength := dj.queue.Len()
 		var title string

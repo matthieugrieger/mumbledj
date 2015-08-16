@@ -54,9 +54,7 @@ func (dl *YouTubeSong) Download() error {
 			for s := range cmd.Args {
 				args += cmd.Args[s] + " "
 			}
-			Verbose(args)
-			Verbose(string(output))
-			Verbose("youtube-dl: " + err.Error())
+			fmt.Printf(args + "\n" + string(output) + "\n" + "youtube-dl: " + err.Error() + "\n")
 			return errors.New("Song download failed.")
 		}
 	}
@@ -80,7 +78,6 @@ func (dl *YouTubeSong) Play() {
 			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.playlist.Title())
 		}
 		dj.client.Self.Channel.Send(message+`</table>`, false)
-		Verbose("Now playing " + dl.title)
 
 		go func() {
 			dj.audioStream.Wait()

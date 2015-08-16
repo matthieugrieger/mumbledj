@@ -69,7 +69,6 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) (string, error) {
 			if !isNil(song) {
 				return song.Title(), nil
 			} else {
-				Verbose("youtube.NewRequest: " + err.Error())
 				return "", err
 			}
 		}
@@ -167,7 +166,6 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			dontSkip:  false,
 		}
 		dj.queue.AddSong(song)
-		Verbose(song.Submitter() + " added track " + song.Title())
 
 		return song, nil
 	}

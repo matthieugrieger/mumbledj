@@ -37,7 +37,6 @@ type mumbledj struct {
 	homeDir        string
 	playlistSkips  map[string][]string
 	cache          *SongCache
-	verbose        bool
 }
 
 // OnConnect event. First moves MumbleDJ into the default channel specified
@@ -165,13 +164,6 @@ func CheckAPIKeys() {
 	}
 }
 
-// Verbose prints out messages only if verbose flag is true
-func Verbose(msg string) {
-	if dj.verbose {
-		fmt.Printf(msg + "\n")
-	}
-}
-
 // isNil checks to see if an object is nil
 func isNil(a interface{}) bool {
 	defer func() { recover() }()
@@ -203,7 +195,7 @@ func main() {
 	}
 
 	var address, port, username, password, channel, pemCert, pemKey, accesstokens string
-	var insecure, verbose, testcode bool
+	var insecure, testcode bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
@@ -214,7 +206,6 @@ func main() {
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
 	flag.StringVar(&accesstokens, "accesstokens", "", "list of access tokens for channel auth")
 	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
-	flag.BoolVar(&verbose, "verbose", false, "[debug] prints out debug messages to the console")
 	flag.BoolVar(&testcode, "test", false, "[debug] tests the features of mumbledj")
 	flag.Parse()
 
@@ -242,7 +233,6 @@ func main() {
 	}
 
 	dj.defaultChannel = strings.Split(channel, "/")
-	dj.verbose = verbose
 
 	dj.client.Attach(gumbleutil.Listener{
 		Connect:     dj.OnConnect,
@@ -258,7 +248,6 @@ func main() {
 	}
 
 	if testcode {
-		Verbose("Testing is enabled")
 		Test(password, address, port, strings.Split(accesstokens, " "))
 	}
 	<-dj.keepAlive

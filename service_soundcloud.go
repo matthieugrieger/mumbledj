@@ -32,7 +32,8 @@ func (sc SoundCloud) URLRegex(url string) bool {
 func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 	var apiResponse *jsonq.JsonQuery
 	var err error
-	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", url, os.Getenv("SOUNDCLOUD_API_KEY"))
+	timesplit := strings.Split(url, "#t=")
+	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", timesplit[0], os.Getenv("SOUNDCLOUD_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return "", errors.New(INVALID_API_KEY)
 	}
@@ -53,24 +54,21 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 			for _, t := range tracks {
 				sc.NewSong(user, jsonq.NewQuery(t), 0, playlist)
 			}
-			if err == nil {
-				return playlist.Title(), nil
-			} else {
-				return "", err
-			}
-		} else {
-			return "", errors.New("NO_PLAYLIST_PERMISSION")
+			return playlist.Title(), nil
 		}
+		return "", errors.New(NO_PLAYLIST_PERMISSION_MSG)
 	} else {
 		// SONG
-		// Calculating offset
 		offset := 0
-		timesplit := strings.Split(url, "#t=")
 		if len(timesplit) == 2 {
-			duration, _ := time.ParseDuration(timesplit[1])
-			offset = int(duration.Seconds())
+			timesplit = strings.Split(timesplit[1], ":")
+			multiplier := 1
+			for i := len(timesplit) - 1; i >= 0; i-- {
+				offset += strconv.Itoa(timesplit[i]) * multiplier
+				mutiplier *= 60
+			}
+			fmt.Printf("Offset: " + offset) // DEBUG
 		}
-
 		return sc.NewSong(user, apiResponse, offset, nil)
 	}
 }
@@ -91,7 +89,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offs
 	// Check song is not longer than the MaxSongDuration
 	if dj.conf.General.MaxSongDuration == 0 || (durationMS/1000) <= dj.conf.General.MaxSongDuration {
 		timeDuration, _ := time.ParseDuration(strconv.Itoa(durationMS) + "ms")
-		duration := strings.NewReplacer("h", ":", "m", ":", "s", ":").Replace(timeDuration.String())
+		duration := timeDuration.String()
 
 		song := &YouTubeSong{
 			id:        strconv.Itoa(id),

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -61,15 +63,22 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 		}
 	} else {
 		// SONG
-		return sc.NewSong(user, apiResponse, nil)
+		// Calculating offset
+		offset := 0
+		timesplit := strings.Split(url, "#t=")
+		if timesplit.size == 2 {
+			offset = time.Duration(timesplit[1]).Seconds()
+		}
+
+		return sc.NewSong(user, apiResponse, offset, nil)
 	}
 }
 
 // NewSong creates a track and adds to the queue
-func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, playlist Playlist) (string, error) {
+func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offset int, playlist Playlist) (string, error) {
 	title, _ := trackData.String("title")
 	id, _ := trackData.Int("id")
-	duration, _ := trackData.Int("duration")
+	durationMS, _ := trackData.Int("duration")
 	url, _ := trackData.String("permalink_url")
 	thumbnail, err := trackData.String("artwork_url")
 	if err != nil {
@@ -78,14 +87,19 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, play
 		thumbnail, _ = jsonq.NewQuery(userObj).String("avatar_url")
 	}
 
-	if dj.conf.General.MaxSongDuration == 0 || (duration/1000) <= dj.conf.General.MaxSongDuration {
+	// Check song is not longer than the MaxSongDuration
+	if dj.conf.General.MaxSongDuration == 0 || (durationMS/1000) <= dj.conf.General.MaxSongDuration {
+		duration, err = time.ParseDuration(strconv.Itoa(durationMS) + "ms")
+		duration = strings.NewReplacer("h", ":", "m", ":", "s", ":").Replace(duration.String())
+
 		song := &YouTubeSong{
 			id:        strconv.Itoa(id),
 			title:     title,
 			url:       url,
 			thumbnail: thumbnail,
 			submitter: user,
-			duration:  strconv.Itoa(duration),
+			duration:  duration,
+			offset:    offset,
 			format:    "mp3",
 			playlist:  playlist,
 			skippers:  make([]string, 0),

@@ -68,7 +68,6 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 				offset += time * multiplier
 				multiplier *= 60
 			}
-			fmt.Printf("Offset: " + strconv.Itoa(offset)) // DEBUG
 		}
 		return sc.NewSong(user, apiResponse, offset, nil)
 	}
@@ -89,8 +88,8 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offs
 
 	// Check song is not longer than the MaxSongDuration
 	if dj.conf.General.MaxSongDuration == 0 || (durationMS/1000) <= dj.conf.General.MaxSongDuration {
-		timeDuration, _ := time.ParseDuration(strconv.Itoa(durationMS) + "ms")
-		duration := timeDuration.String()
+		timeDuration, _ := time.ParseDuration(strconv.Itoa(durationMS/1000) + "s")
+		duration := strings.NewReplacer("h", ":", "m", ":", "s", "").Replace(timeDuration.String())
 
 		song := &YouTubeSong{
 			id:        strconv.Itoa(id),

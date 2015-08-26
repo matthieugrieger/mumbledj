@@ -1,6 +1,6 @@
 MumbleDJ [![Circle CI](https://circleci.com/gh/MichaelOultram/mumbledj/tree/master.svg?style=svg)](https://circleci.com/gh/MichaelOultram/mumbledj/tree/master)
 ========
-**A Mumble bot that plays music fetched from YouTube videos.**
+**A Mumble bot that plays music fetched from YouTube videos and Soundcloud tracks.**
 
 * [Usage](#usage)
 * [Features](#features)
@@ -31,7 +31,8 @@ All commandline parameters are optional. Below are descriptions of all the avail
 * `-accesstokens`: List of access tokens for the bot separated by spaces. Defaults to no access tokens.
 
 ## FEATURES
-* Plays audio from both YouTube videos and YouTube playlists!
+* Plays audio from YouTube and Soundcloud!
+* Supports playlists and individual videos/tracks.
 * Displays thumbnail, title, duration, submitter, and playlist title (if exists) when a new song is played.
 * Incredible customization options. Nearly everything is able to be tweaked in `~/.mumbledj/mumbledj.gcfg`.
 * A large array of [commands](#commands) that perform a wide variety of functions.
@@ -43,7 +44,7 @@ These are all of the chat commands currently supported by MumbleDJ. All command 
 
 Command | Description | Arguments | Admin | Example
 --------|-------------|-----------|-------|--------
-**add** | Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. YouTube playlists may also be added using this command. Please note, however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue. | youtube_video_url OR youtube_playlist_url | No | `!add https://www.youtube.com/watch?v=5xfEr2Oxdys`
+**add** | Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. YouTube playlists may also be added using this command. Please note, however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue. | youtube_video_url OR youtube_playlist_url OR soundcloud_track_url OR soundcloud_playlist_url | No | `!add https://www.youtube.com/watch?v=5xfEr2Oxdys`
 **skip**| Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song. | None | No | `!skip`
 **skipplaylist** | Submits a vote to skip the current playlist. Once the skip ratio target (specified in mumbledj.gcfg) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist. | None | No | `!skipplaylist`
 **forceskip** | An admin command that forces a song skip. | None | Yes | `!forceskip`
@@ -60,9 +61,6 @@ Command | Description | Arguments | Admin | Example
 **numcached** | Outputs the number of songs currently cached on disk. | None | Yes | `!numcached`
 **cachesize** | Outputs the total file size of the cache in MB. | None | Yes | `!cachesize`
 **kill** | Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory. | None | Yes | `!kill`
-
-
-
 
 ## INSTALLATION
 

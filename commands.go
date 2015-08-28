@@ -34,8 +34,8 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 
 	switch com {
-	// Add command
-	case dj.conf.Aliases.AddAlias:
+	// Add commands
+	case dj.conf.Aliases.AddAlias, dj.conf.Aliases.AddAlias2:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAdd) {
 			add(user, username, argument)
 		} else {
@@ -76,8 +76,8 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
-	// Volume command
-	case dj.conf.Aliases.VolumeAlias:
+	// Volume commands
+	case dj.conf.Aliases.VolumeAlias, dj.conf.Aliases.VolumeAlias2:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminVolume) {
 			volume(user, username, argument)
 		} else {

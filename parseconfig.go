@@ -35,12 +35,14 @@ type DjConfig struct {
 	}
 	Aliases struct {
 		AddAlias               string
+		AddAlias2              string
 		SkipAlias              string
 		SkipPlaylistAlias      string
 		AdminSkipAlias         string
 		AdminSkipPlaylistAlias string
 		HelpAlias              string
 		VolumeAlias            string
+		VolumeAlias2           string
 		MoveAlias              string
 		ReloadAlias            string
 		ResetAlias             string

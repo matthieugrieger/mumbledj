@@ -61,6 +61,7 @@ HighestVolume = 0.8
 # Alias used for add command
 # DEFAULT VALUE: "add"
 AddAlias = "add"
+AddAlias2 = "ADD"
 
 # Alias used for skip command
 # DEFAULT VALUE: "skip"
@@ -85,6 +86,7 @@ HelpAlias = "help"
 # Alias used for volume command
 # DEFAULT VALUE: "volume"
 VolumeAlias = "volume"
+VolumeAlias2 = "v"
 
 # Alias used for move command
 # DEFAULT VALUE: "move"

@@ -200,6 +200,10 @@ func add(user *gumble.User, username, url string) {
 						dj.queue.CurrentSong().Delete()
 						dj.queue.OnSongFinished()
 					}
+				} else {
+					if addedSong,err := dj.queue.PeekLast(); err == nil {
+						go addedSong.Download()
+					}
 				}
 			} else if fmt.Sprint(err) == "Song exceeds the maximum allowed duration." {
 				dj.SendPrivateMessage(user, VIDEO_TOO_LONG_MSG)

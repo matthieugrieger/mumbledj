@@ -19,7 +19,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
+	"sync"
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
@@ -40,6 +40,7 @@ type YouTubeSong struct {
 	skippers  []string
 	playlist  Playlist
 	dontSkip  bool
+	waitgroup sync.WaitGroup
 }
 
 // NewYouTubeSong gathers the metadata for a song extracted from a YouTube video, and returns
@@ -118,6 +119,7 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 	}
 
 	if dj.conf.General.MaxSongDuration == 0 || totalSeconds <= dj.conf.General.MaxSongDuration {
+		var wg sync.WaitGroup
 		song := &YouTubeSong{
 			submitter: user,
 			title:     title,
@@ -129,6 +131,7 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 			skippers:  make([]string, 0),
 			playlist:  nil,
 			dontSkip:  false,
+			waitgroup: wg,
 		}
 		dj.queue.AddSong(song)
 		return song, nil
@@ -139,11 +142,15 @@ func NewYouTubeSong(user, id, offset string, playlist *YouTubePlaylist) (*YouTub
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (s *YouTubeSong) Download() error {
+	s.waitgroup.Wait()
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
+		s.waitgroup.Add(1)
 		cmd := exec.Command("youtube-dl", "--no-mtime", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
 		if err := cmd.Run(); err == nil {
+			s.waitgroup.Done()
 			if dj.conf.Cache.Enabled {
 				dj.cache.CheckMaximumDirectorySize()
+				return nil
 			}
 			return nil
 		}

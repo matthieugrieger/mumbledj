@@ -62,6 +62,14 @@ func (q *SongQueue) PeekNext() (Song, error) {
 	return nil, errors.New("There isn't a Song coming up next.")
 }
 
+// PeekLast peeks at the last Song and returns it.
+func (q *SongQueue) PeekLast() (Song, error) {
+	if q.Len() >= 1 {
+		return q.queue[q.Len()-1], nil
+	}
+	return nil, errors.New("There isn't a Song coming up next.")
+}
+
 // Len returns the length of the SongQueue.
 func (q *SongQueue) Len() int {
 	return len(q.queue)

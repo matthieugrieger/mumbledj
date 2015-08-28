@@ -48,7 +48,7 @@ Command | Description | Arguments | Admin | Example
 **forceskip** | An admin command that forces a song skip. | None | Yes | `!forceskip`
 **forceskipplaylist** | An admin command that forces a playlist skip. | None | Yes | `!forceskipplaylist`
 **help** | Displays this list of commands in Mumble chat. | None | No | `!help`
-**volume** | Either outputs the current volume or changes the current volume. If desired volume is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to desired volume if it is within the allowed volume range. | None OR desired volume | No | `!volume 0.5`, `!volume`
+**volume** | Either outputs the current volume or changes the current volume. If desired volume is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to desired volume if it is within the allowed volume range. | None OR desired volume | No | `!volume 0.5` or `!v 0.5`
 **move** | Moves MumbleDJ into channel if it exists. | Channel | Yes | `!move Music`
 **reload** | Reloads `mumbledj.gcfg` to retrieve updated configuration settings. | None | Yes | `!reload`
 **reset** | Stops all audio and resets the song queue. | None | Yes | `!reset`

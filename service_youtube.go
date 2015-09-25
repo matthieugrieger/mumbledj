@@ -32,16 +32,8 @@ var youtubeVideoPatterns = []string{
 	`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
 }
 
-// ------
-// TYPES
-// ------
-
 // YouTube implements the Service interface
 type YouTube struct{}
-
-// ---------------
-// YOUTUBE SERVICE
-// ---------------
 
 // URLRegex checks to see if service will accept URL
 func (yt YouTube) URLRegex(url string) bool {

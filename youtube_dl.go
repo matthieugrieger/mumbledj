@@ -159,7 +159,7 @@ func (dl *YouTubeSong) ID() string {
 
 // Filename returns the filename of the Song.
 func (dl *YouTubeSong) Filename() string {
-	return dl.id + dl.format
+	return dl.id + "." + dl.format
 }
 
 // Duration returns the duration of the Song.

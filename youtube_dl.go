@@ -49,7 +49,7 @@ func (dl *YouTubeSong) Download() error {
 
 	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--no-mtime", "--output", fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()), "--format", dl.format, "--prefer-ffmpeg", dl.url)
+		cmd := exec.Command("youtube-dl", "--verbose", "--no-mtime", "--output", fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()), "--format", dl.format, "--prefer-ffmpeg", dl.url)
 		output, err := cmd.CombinedOutput()
 		if err == nil {
 			if dj.conf.Cache.Enabled {

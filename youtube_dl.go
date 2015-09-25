@@ -1,3 +1,10 @@
+/*
+ * MumbleDJ
+ * By Matthieu Grieger
+ * youtube_dl.go
+ * Copyright (c) 2014, 2015 Matthieu Grieger (MIT License)
+ */
+
 package main
 
 import (

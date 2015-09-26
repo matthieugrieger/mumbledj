@@ -132,12 +132,12 @@ const SUBMITTER_SKIP_HTML = `
 
 // Message shown to users when another user votes to skip the current playlist.
 const PLAYLIST_SKIP_ADDED_HTML = `
-	<b>%s</b> has voted to skip the current %s.
+	<b>%s</b> has voted to skip the current playlist.
 `
 
 // Message shown to users when the submitter of a song decides to skip their song.
 const PLAYLIST_SUBMITTER_SKIP_HTML = `
-	The current %s has been skipped by <b>%s</b>, the submitter.
+	The current playlist has been skipped by <b>%s</b>, the submitter.
 `
 
 // Message shown to users when they successfully change the volume.

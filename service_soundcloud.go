@@ -52,7 +52,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 	timesplit := strings.Split(url, "#t=")
 	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", timesplit[0], os.Getenv("SOUNDCLOUD_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return nil, errors.New(INVALID_API_KEY)
+		return nil, errors.New(fmt.Sprintf(INVALID_API_KEY, sc.ServiceName()))
 	}
 
 	tracks, err := apiResponse.ArrayOfObjects("tracks")

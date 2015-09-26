@@ -15,6 +15,8 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/jmoiron/jsonq"
@@ -28,7 +30,7 @@ type YouTubeSong struct {
 	title     string
 	thumbnail string
 	submitter *gumble.User
-	Duration  int
+	duration  int
 	url       string
 	offset    int
 	format    string
@@ -74,7 +76,7 @@ func (dl *YouTubeSong) Download() error {
 }
 
 // Play plays the song. Once the song is playing, a notification is displayed in a text message that features the song
-// thumbnail, URL, title, Duration, and submitter.
+// thumbnail, URL, title, duration, and submitter.
 func (dl *YouTubeSong) Play() {
 	if dl.offset != 0 {
 		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", dl.offset))
@@ -85,7 +87,7 @@ func (dl *YouTubeSong) Play() {
 		panic(err)
 	} else {
 		message := `<table><tr><td align="center"><img src="%s" width=150 /></td></tr><tr><td align="center"><b><a href="%s">%s</a> (%s)</b></td></tr><tr><td align="center">Added by %s</td></tr>`
-		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.Duration, dl.submitter.Name)
+		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.duration, dl.submitter.Name)
 		if !isNil(dl.playlist) {
 			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.playlist.Title())
 		}
@@ -167,9 +169,14 @@ func (dl *YouTubeSong) Filename() string {
 	return dl.id + "." + dl.format
 }
 
-// Duration returns the Duration of the Song.
+// DurationInt returns number of seconds for the Song.
+func (dl *YouTubeSong) DurationInt() string {
+	return duration
+}
+
+// DurationString returns the pretty version of duration for the Song.
 func (dl *YouTubeSong) DurationString() string {
-	timeDuration, _ := time.ParseDuration(stvconv.Iota(dl.Duration) + "s")
+	timeDuration, _ := time.ParseDuration(strconv.Iota(dl.duration) + "s")
 	return timeDuration.String()
 }
 

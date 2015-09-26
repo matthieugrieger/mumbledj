@@ -55,8 +55,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) ([]Song, error) {
 	if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
 		if re.MatchString(url) {
 			shortURL = re.FindStringSubmatch(url)[1]
-			playlist, err := yt.NewPlaylist(user, shortURL)
-			return playlist.Title(), err
+			return yt.NewPlaylist(user, shortURL)
 		} else {
 			re = RegexpFromURL(url, youtubeVideoPatterns)
 			matches := re.FindAllStringSubmatch(url, -1)
@@ -136,7 +135,8 @@ func (yt YouTube) parseTime(duration string) time.Duration {
 	} else {
 		totalSeconds = 0
 	}
-	return time.ParseDuration(strconv.Itoa(totalSeconds) + "s")
+	output, _ := time.ParseDuration(strconv.Itoa(int(totalSeconds)) + "s")
+	return output
 }
 
 // NewPlaylist gathers the metadata for a YouTube playlist and returns it.

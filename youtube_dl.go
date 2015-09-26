@@ -176,7 +176,7 @@ func (dl *YouTubeSong) DurationInt() string {
 
 // DurationString returns the pretty version of duration for the Song.
 func (dl *YouTubeSong) DurationString() string {
-	timeDuration, _ := time.ParseDuration(strconv.Iota(dl.duration) + "s")
+	timeDuration, _ := time.ParseDuration(strconv.Itoa(dl.duration) + "s")
 	return timeDuration.String()
 }
 

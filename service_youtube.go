@@ -90,7 +90,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			id:        id,
 			url:       "https://youtu.be/" + id,
 			offset:    int(yt.parseTime(offset).Seconds()),
-			Duration:  int(yt.parseTime(duration).Seconds()),
+			duration:  int(yt.parseTime(duration).Seconds()),
 			thumbnail: thumbnail,
 			format:    "m4a",
 			skippers:  make([]string, 0),

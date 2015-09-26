@@ -37,8 +37,7 @@ type Song interface {
 	Title() string
 	ID() string
 	Filename() string
-	DurationInt() int
-	DurationString() string
+	Duration() time.Duration
 	Thumbnail() string
 	Playlist() Playlist
 	DontSkip() bool
@@ -92,8 +91,7 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 		oldLength := dj.queue.Len()
 		for _, song := range songArray {
 			// Check song is not too long
-			time, _ := time.ParseDuration(song.DurationInt())
-			if dj.conf.General.MaxSongDuration == 0 || int(time.Seconds()) <= dj.conf.General.MaxSongDuration {
+			if dj.conf.General.MaxSongDuration == 0 || song.Duration().Seconds()) <= dj.conf.General.MaxSongDuration {
 				if !isNil(song.Playlist()) {
 					title = song.Playlist().Title()
 				} else {

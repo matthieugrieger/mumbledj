@@ -169,15 +169,10 @@ func (dl *YouTubeSong) Filename() string {
 	return dl.id + "." + dl.format
 }
 
-// DurationInt returns number of seconds for the Song.
-func (dl *YouTubeSong) DurationInt() string {
-	return duration
-}
-
-// DurationString returns the pretty version of duration for the Song.
-func (dl *YouTubeSong) DurationString() string {
+// Duration returns duration for the Song.
+func (dl *YouTubeSong) Duration() time.Duration {
 	timeDuration, _ := time.ParseDuration(strconv.Itoa(dl.duration) + "s")
-	return timeDuration.String()
+	return timeDuration
 }
 
 // Thumbnail returns the thumbnail URL for the Song.

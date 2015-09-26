@@ -91,7 +91,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			id:        id,
 			url:       "https://youtu.be/" + id,
 			offset:    int(yt.parseTime(offset).Seconds()),
-			duration:  int(yt.parseTime(duration).Seconds()),
+			Duration:  int(yt.parseTime(duration).Seconds()),
 			thumbnail: thumbnail,
 			format:    "m4a",
 			skippers:  make([]string, 0),
@@ -132,11 +132,11 @@ func (yt YouTube) parseTime(duration string) time.Duration {
 			seconds, _ = strconv.ParseInt(strings.TrimSuffix(timestampResult["seconds"], "S"), 10, 32)
 		}
 
-		totalSeconds = int((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
+		totalSeconds = int64((days * 86400) + (hours * 3600) + (minutes * 60) + seconds)
 	} else {
 		totalSeconds = 0
 	}
-	return time.ParseDuration(totalSeconds + "s")
+	return time.ParseDuration(strconv.Itoa(totalSeconds) + "s")
 }
 
 // NewPlaylist gathers the metadata for a YouTube playlist and returns it.

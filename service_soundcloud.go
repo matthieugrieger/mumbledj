@@ -13,7 +13,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -115,7 +114,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offs
 		url:       url,
 		thumbnail: thumbnail,
 		submitter: user,
-		duration:  durationMS / 1000,
+		Duration:  durationMS / 1000,
 		offset:    offset,
 		format:    "mp3",
 		playlist:  playlist,

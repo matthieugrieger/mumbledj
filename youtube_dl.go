@@ -8,12 +8,18 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 	"time"
 
+	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
@@ -24,13 +30,14 @@ type YouTubeSong struct {
 	title     string
 	thumbnail string
 	submitter *gumble.User
-	duration  string
+	duration  int
 	url       string
 	offset    int
 	format    string
 	playlist  Playlist
 	skippers  []string
 	dontSkip  bool
+	service   Service
 }
 
 // YouTubePlaylist implements the Playlist interface
@@ -80,9 +87,9 @@ func (dl *YouTubeSong) Play() {
 		panic(err)
 	} else {
 		message := `<table><tr><td align="center"><img src="%s" width=150 /></td></tr><tr><td align="center"><b><a href="%s">%s</a> (%s)</b></td></tr><tr><td align="center">Added by %s</td></tr>`
-		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.duration, dl.submitter.Name)
+		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.Duration().String(), dl.submitter.Name)
 		if !isNil(dl.playlist) {
-			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.playlist.Title())
+			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.Playlist().Title())
 		}
 		dj.client.Self.Channel.Send(message+`</table>`, false)
 
@@ -162,9 +169,10 @@ func (dl *YouTubeSong) Filename() string {
 	return dl.id + "." + dl.format
 }
 
-// Duration returns the duration of the Song.
-func (dl *YouTubeSong) Duration() string {
-	return dl.duration
+// Duration returns duration for the Song.
+func (dl *YouTubeSong) Duration() time.Duration {
+	timeDuration, _ := time.ParseDuration(strconv.Itoa(dl.duration) + "s")
+	return timeDuration
 }
 
 // Thumbnail returns the thumbnail URL for the Song.
@@ -237,4 +245,32 @@ func (p *YouTubePlaylist) ID() string {
 // Title returns the title of the YouTubePlaylist.
 func (p *YouTubePlaylist) Title() string {
 	return p.title
+}
+
+// PerformGetRequest does all the grunt work for HTTPS GET request.
+func PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
+	jsonString := ""
+
+	if response, err := http.Get(url); err == nil {
+		defer response.Body.Close()
+		if response.StatusCode == 200 {
+			if body, err := ioutil.ReadAll(response.Body); err == nil {
+				jsonString = string(body)
+			}
+		} else {
+			if response.StatusCode == 403 {
+				return nil, errors.New("Invalid API key supplied.")
+			}
+			return nil, errors.New("Invalid ID supplied.")
+		}
+	} else {
+		return nil, errors.New("An error occurred while receiving HTTP GET response.")
+	}
+
+	jsonData := map[string]interface{}{}
+	decoder := json.NewDecoder(strings.NewReader(jsonString))
+	decoder.Decode(&jsonData)
+	jq := jsonq.NewQuery(jsonData)
+
+	return jq, nil
 }

@@ -13,7 +13,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -30,42 +29,53 @@ type SoundCloud struct{}
 // SOUNDCLOUD SERVICE
 // ------------------
 
+// ServiceName is the human readable version of the service name
+func (sc SoundCloud) ServiceName() string {
+	return "Soundcloud"
+}
+
+// TrackName is the human readable version of the service name
+func (sc SoundCloud) TrackName() string {
+	return "Song"
+}
+
 // URLRegex checks to see if service will accept URL
 func (sc SoundCloud) URLRegex(url string) bool {
 	return RegexpFromURL(url, []string{soundcloudSongPattern, soundcloudPlaylistPattern}) != nil
 }
 
 // NewRequest creates the requested song/playlist and adds to the queue
-func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
+func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 	var apiResponse *jsonq.JsonQuery
+	var songArray []Song
 	var err error
 	timesplit := strings.Split(url, "#t=")
 	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", timesplit[0], os.Getenv("SOUNDCLOUD_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return "", errors.New(INVALID_API_KEY)
+		return nil, errors.New(fmt.Sprintf(INVALID_API_KEY, sc.ServiceName()))
 	}
 
 	tracks, err := apiResponse.ArrayOfObjects("tracks")
 	if err == nil {
 		// PLAYLIST
-		if dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
-			// Create playlist
-			title, _ := apiResponse.String("title")
-			permalink, _ := apiResponse.String("permalink_url")
-			playlist := &YouTubePlaylist{
-				id:    permalink,
-				title: title,
-			}
-
-			// Add all tracks
-			for _, t := range tracks {
-				sc.NewSong(user, jsonq.NewQuery(t), 0, playlist)
-			}
-			return playlist.Title(), nil
+		// Create playlist
+		title, _ := apiResponse.String("title")
+		permalink, _ := apiResponse.String("permalink_url")
+		playlist := &YouTubePlaylist{
+			id:    permalink,
+			title: title,
 		}
-		return "", errors.New(NO_PLAYLIST_PERMISSION_MSG)
+
+		// Add all tracks
+		for _, t := range tracks {
+			if song, err := sc.NewSong(user, jsonq.NewQuery(t), 0, playlist); err == nil {
+				songArray = append(songArray, song)
+			}
+		}
+		return songArray, nil
 	} else {
 		// SONG
+		// Calculate offset
 		offset := 0
 		if len(timesplit) == 2 {
 			timesplit = strings.Split(timesplit[1], ":")
@@ -76,12 +86,17 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) (string, error) {
 				multiplier *= 60
 			}
 		}
-		return sc.NewSong(user, apiResponse, offset, nil)
+
+		// Add the track
+		if song, err := sc.NewSong(user, apiResponse, offset, nil); err == nil {
+			return append(songArray, song), err
+		}
+		return nil, err
 	}
 }
 
 // NewSong creates a track and adds to the queue
-func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offset int, playlist Playlist) (string, error) {
+func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offset int, playlist Playlist) (Song, error) {
 	title, _ := trackData.String("title")
 	id, _ := trackData.Int("id")
 	durationMS, _ := trackData.Int("duration")
@@ -93,26 +108,19 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offs
 		thumbnail, _ = jsonq.NewQuery(userObj).String("avatar_url")
 	}
 
-	// Check song is not longer than the MaxSongDuration
-	if dj.conf.General.MaxSongDuration == 0 || (durationMS/1000) <= dj.conf.General.MaxSongDuration {
-		timeDuration, _ := time.ParseDuration(strconv.Itoa(durationMS/1000) + "s")
-		duration := strings.NewReplacer("h", ":", "m", ":", "s", "").Replace(timeDuration.String())
-
-		song := &YouTubeSong{
-			id:        strconv.Itoa(id),
-			title:     title,
-			url:       url,
-			thumbnail: thumbnail,
-			submitter: user,
-			duration:  duration,
-			offset:    offset,
-			format:    "mp3",
-			playlist:  playlist,
-			skippers:  make([]string, 0),
-			dontSkip:  false,
-		}
-		dj.queue.AddSong(song)
-		return song.Title(), nil
+	song := &YouTubeSong{
+		id:        strconv.Itoa(id),
+		title:     title,
+		url:       url,
+		thumbnail: thumbnail,
+		submitter: user,
+		duration:  durationMS / 1000,
+		offset:    offset,
+		format:    "mp3",
+		playlist:  playlist,
+		skippers:  make([]string, 0),
+		dontSkip:  false,
+		service:   sc,
 	}
-	return "", errors.New(VIDEO_TOO_LONG_MSG)
+	return song, nil
 }

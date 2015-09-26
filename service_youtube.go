@@ -88,7 +88,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			title:     title,
 			id:        id,
 			url:       "https://youtu.be/" + id,
-			offset:    int(yt.parseTime(offset, `t\=(?P<days>\d+D)?(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`).Seconds()),
+			offset:    int(yt.parseTime(offset, `\?T\=(?P<days>\d+D)?(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`).Seconds()),
 			duration:  int(yt.parseTime(duration, `P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`).Seconds()),
 			thumbnail: thumbnail,
 			format:    "m4a",
@@ -105,7 +105,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 
 // parseTime converts from the string youtube returns to a time.Duration
 func (yt YouTube) parseTime(duration, regex string) time.Duration {
-	fmt.Printf("parseTime(%s)", duration)
+	fmt.Printf("parseTime(%s)", strings.ToUpper(duration))
 	var days, hours, minutes, seconds, totalSeconds int64
 	if duration != "" {
 		timestampExp := regexp.MustCompile(regex)

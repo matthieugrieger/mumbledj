@@ -78,7 +78,7 @@ const SONG_ADDED_HTML = `
 
 // Message shown to channel when a playlist is added to the queue by a user.
 const PLAYLIST_ADDED_HTML = `
-	<b>%s</b> has added the %s "%s" to the queue.
+	<b>%s</b> has added the playlist "%s" to the queue.
 `
 
 // Message shown to channel when a song has been skipped.

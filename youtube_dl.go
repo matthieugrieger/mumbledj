@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"time"
 
 	"github.com/layeh/gumble/gumble"
@@ -27,7 +28,7 @@ type YouTubeSong struct {
 	title     string
 	thumbnail string
 	submitter *gumble.User
-	duration  string
+	duration  int
 	url       string
 	offset    int
 	format    string
@@ -168,7 +169,8 @@ func (dl *YouTubeSong) Filename() string {
 
 // Duration returns the duration of the Song.
 func (dl *YouTubeSong) Duration() string {
-	return dl.duration
+	timeDuration, _ := time.ParseDuration(stvconv.Iota(dl.duration) + "s")
+	return timeDuration.String()
 }
 
 // Thumbnail returns the thumbnail URL for the Song.

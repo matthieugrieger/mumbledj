@@ -75,9 +75,10 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 		var title string
 		var songsAdded = 0
 		var songArray []Song
+		var err error
 
 		// Get service to create songs
-		if songArray, err := urlService.NewRequest(user, url); err != nil {
+		if songArray, err = urlService.NewRequest(user, url); err != nil {
 			return err
 		}
 

@@ -73,7 +73,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) ([]Song, error) {
 			}
 		}
 	} else {
-		return "", err
+		return nil, err
 	}
 }
 
@@ -90,8 +90,8 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			title:     title,
 			id:        id,
 			url:       "https://youtu.be/" + id,
-			offset:    yt.parseTime(offset).Seconds(),
-			duration:  yt.parseTime(duration).Seconds(),
+			offset:    int(yt.parseTime(offset).Seconds()),
+			duration:  int(yt.parseTime(duration).Seconds()),
 			thumbnail: thumbnail,
 			format:    "m4a",
 			skippers:  make([]string, 0),
@@ -140,8 +140,9 @@ func (yt YouTube) parseTime(duration string) time.Duration {
 }
 
 // NewPlaylist gathers the metadata for a YouTube playlist and returns it.
-func (yt YouTube) NewPlaylist(user *gumble.User, id string) (Playlist, error) {
+func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 	var apiResponse *jsonq.JsonQuery
+	var songArray []Song
 	var err error
 	// Retrieve title of playlist
 	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s", id, os.Getenv("YOUTUBE_API_KEY"))
@@ -169,7 +170,9 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) (Playlist, error) {
 	for i := 0; i < numVideos; i++ {
 		index := strconv.Itoa(i)
 		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
-		yt.NewSong(user, videoID, "", playlist)
+		if song, err := yt.NewSong(user, videoID, "", playlist); err == nil {
+			songArray = append(songArray, song)
+		}
 	}
-	return playlist, nil
+	return songArray, nil
 }

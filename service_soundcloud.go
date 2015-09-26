@@ -89,10 +89,10 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 		}
 
 		// Add the track
-		if song, err := sc.NewSong(user, apiResponse, offset, nil); err != nil {
-			return nil, err
+		if song, err := sc.NewSong(user, apiResponse, offset, nil); err == nil {
+			return append(songArray, song), err
 		}
-		return append(songArray, song), err
+		return nil, err
 	}
 }
 
@@ -109,16 +109,13 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offs
 		thumbnail, _ = jsonq.NewQuery(userObj).String("avatar_url")
 	}
 
-	timeDuration, _ := time.ParseDuration(strconv.Itoa(durationMS/1000) + "s")
-	duration := timeDuration.String() //Lazy way to display time
-
 	song := &YouTubeSong{
 		id:        strconv.Itoa(id),
 		title:     title,
 		url:       url,
 		thumbnail: thumbnail,
 		submitter: user,
-		duration:  duration,
+		duration:  durationMS / 1000,
 		offset:    offset,
 		format:    "mp3",
 		playlist:  playlist,

@@ -28,7 +28,7 @@ type YouTubeSong struct {
 	title     string
 	thumbnail string
 	submitter *gumble.User
-	duration  int
+	Duration  int
 	url       string
 	offset    int
 	format    string
@@ -74,7 +74,7 @@ func (dl *YouTubeSong) Download() error {
 }
 
 // Play plays the song. Once the song is playing, a notification is displayed in a text message that features the song
-// thumbnail, URL, title, duration, and submitter.
+// thumbnail, URL, title, Duration, and submitter.
 func (dl *YouTubeSong) Play() {
 	if dl.offset != 0 {
 		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", dl.offset))
@@ -85,7 +85,7 @@ func (dl *YouTubeSong) Play() {
 		panic(err)
 	} else {
 		message := `<table><tr><td align="center"><img src="%s" width=150 /></td></tr><tr><td align="center"><b><a href="%s">%s</a> (%s)</b></td></tr><tr><td align="center">Added by %s</td></tr>`
-		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.duration, dl.submitter.Name)
+		message = fmt.Sprintf(message, dl.thumbnail, dl.url, dl.title, dl.Duration, dl.submitter.Name)
 		if !isNil(dl.playlist) {
 			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.playlist.Title())
 		}
@@ -167,9 +167,9 @@ func (dl *YouTubeSong) Filename() string {
 	return dl.id + "." + dl.format
 }
 
-// Duration returns the duration of the Song.
-func (dl *YouTubeSong) Duration() string {
-	timeDuration, _ := time.ParseDuration(stvconv.Iota(dl.duration) + "s")
+// Duration returns the Duration of the Song.
+func (dl *YouTubeSong) DurationString() string {
+	timeDuration, _ := time.ParseDuration(stvconv.Iota(dl.Duration) + "s")
 	return timeDuration.String()
 }
 

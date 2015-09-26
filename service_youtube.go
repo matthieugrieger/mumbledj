@@ -88,8 +88,8 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			title:     title,
 			id:        id,
 			url:       "https://youtu.be/" + id,
-			offset:    int(yt.parseTime(offset).Seconds()),
-			duration:  int(yt.parseTime(duration).Seconds()),
+			offset:    int(yt.parseTime(offset, `t\=(?P<days>\d+d)?(?P<hours>\d+h)?(?P<minutes>\d+m)?(?P<seconds>\d+s)?`).Seconds()),
+			duration:  int(yt.parseTime(duration, `P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`).Seconds()),
 			thumbnail: thumbnail,
 			format:    "m4a",
 			skippers:  make([]string, 0),
@@ -104,10 +104,10 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 }
 
 // parseTime converts from the string youtube returns to a time.Duration
-func (yt YouTube) parseTime(duration string) time.Duration {
+func (yt YouTube) parseTime(duration, regex string) time.Duration {
 	var days, hours, minutes, seconds, totalSeconds int64
 	if duration != "" {
-		timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
+		timestampExp := regexp.MustCompile(regex)
 		timestampMatch := timestampExp.FindStringSubmatch(strings.ToUpper(duration))
 		timestampResult := make(map[string]string)
 		for i, name := range timestampExp.SubexpNames() {

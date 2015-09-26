@@ -64,9 +64,8 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) ([]Song, error) {
 				startOffset = matches[0][2]
 			}
 			song, err := yt.NewSong(user, shortURL, startOffset, nil)
-			if isNil(song) {
-				songArray = append(songArray, song)
-				return songArray, nil
+			if !isNil(song) {
+				return append(songArray, song), nil
 			} else {
 				return nil, err
 			}

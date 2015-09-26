@@ -90,7 +90,6 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 		// Loop through all songs and add to the queue
 		oldLength := dj.queue.Len()
 		for _, song := range songArray {
-			fmt.Printf("Song loop, title: %s, duration: %d", song.Title(), int(song.Duration().Seconds()))
 			// Check song is not too long
 			if dj.conf.General.MaxSongDuration == 0 || int(song.Duration().Seconds()) <= dj.conf.General.MaxSongDuration {
 				if !isNil(song.Playlist()) {
@@ -104,11 +103,10 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 				songsAdded++
 			}
 		}
-		fmt.Printf("Songs added: %d", songsAdded)
 
 		// Alert channel of added song/playlist
 		if songsAdded == 0 {
-			return errors.New(TRACK_TOO_LONG_MSG)
+			return errors.New(fmt.Sprintf(TRACK_TOO_LONG_MSG, urlService.ServiceName()))
 		} else if songsAdded == 1 {
 			dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, user.Name, title), false)
 		} else {

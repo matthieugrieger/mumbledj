@@ -170,6 +170,7 @@ func isNil(a interface{}) bool {
 }
 
 // dj variable declaration. This is done outside of main() to allow global use.
+var dj = mumbledj{
 	keepAlive:     make(chan bool),
 	queue:         NewSongQueue(),
 	playlistSkips: make(map[string][]string),

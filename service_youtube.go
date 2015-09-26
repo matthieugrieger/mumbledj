@@ -98,7 +98,6 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			dontSkip:  false,
 			service:   yt,
 		}
-		dj.queue.AddSong(song)
 
 		return song, nil
 	}

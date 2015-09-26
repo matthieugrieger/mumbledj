@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"strconv"
 	"time"
 
 	"github.com/layeh/gumble/gumble"
@@ -75,10 +74,10 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 	} else {
 		var title string
 		var songsAdded = 0
-		var err errors
+		var err error
 
 		// Get service to create songs
-		if songArray, err = urlService.NewRequest(user, url); err != nil {
+		if songArray, err := urlService.NewRequest(user, url); err != nil {
 			return err
 		}
 
@@ -90,6 +89,7 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 		// Loop through all songs and add to the queue
 		oldLength := dj.queue.Len()
 		for song := range songArray {
+			// Check song is not too long
 			time, _ := time.ParseDuration(song.Duration())
 			if dj.conf.General.MaxSongDuration == 0 || int(time.Seconds()) <= dj.conf.General.MaxSongDuration {
 				if !isNil(song.Playlist()) {
@@ -98,11 +98,13 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 					title = song.Title()
 				}
 
+				// Add song to queue
 				dj.queue.AddSong(song)
 				songsAdded++
 			}
 		}
 
+		// Alert channel of added song/playlist
 		if songsAdded == 0 {
 			return errors.New(TRACK_TOO_LONG_MSG)
 		} else if songsAdded == 1 {

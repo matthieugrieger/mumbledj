@@ -11,14 +11,18 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
+	"time"
 
 	"github.com/layeh/gumble/gumble"
 )
 
 // Service interface. Each service will implement these functions
 type Service interface {
+	ServiceName() string
+	TrackName() string
 	URLRegex(string) bool
-	NewRequest(*gumble.User, string) (string, error)
+	NewRequest(*gumble.User, string) ([]Song, error)
 }
 
 // Song interface. Each service will implement these
@@ -54,7 +58,7 @@ type Playlist interface {
 
 var services []Service
 
-// FindServiceAndAdd tries the given url with each service 
+// FindServiceAndAdd tries the given url with each service
 // and adds the song/playlist with the correct service
 func FindServiceAndAdd(user *gumble.User, url string) error {
 	var urlService Service
@@ -69,27 +73,54 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 	if urlService == nil {
 		return errors.New(INVALID_URL_MSG)
 	} else {
-		oldLength := dj.queue.Len()
 		var title string
-		var err error
+		var songsAdded = 0
+		var err errors
 
-		if title, err = urlService.NewRequest(user, url); err == nil {
-			dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, user.Name, title), false)
-
-			// Starts playing the new song if nothing else is playing
-			if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
-				if err := dj.queue.CurrentSong().Download(); err == nil {
-					dj.queue.CurrentSong().Play()
-				} else {
-					dj.queue.CurrentSong().Delete()
-					dj.queue.OnSongFinished()
-					return errors.New("FAILED_TO_DOWNLOAD")
-				}
-			}
-		} else {
-			dj.SendPrivateMessage(user, err.Error())
+		// Get service to create songs
+		if songArray, err = urlService.NewRequest(user, url); err != nil {
+			return err
 		}
-		return err
+
+		// Check Playlist Permission
+		if len(songArray) > 1 && !dj.HasPermission(user.Name, dj.conf.Permissions.AdminAddPlaylists) {
+			return errors.New(NO_PLAYLIST_PERMISSION_MSG)
+		}
+
+		// Loop through all songs and add to the queue
+		oldLength := dj.queue.Len()
+		for song := range songArray {
+			time, _ := time.ParseDuration(song.Duration())
+			if dj.conf.General.MaxSongDuration == 0 || int(time.Seconds()) <= dj.conf.General.MaxSongDuration {
+				if !isNil(song.Playlist()) {
+					title = song.Playlist().Title()
+				} else {
+					title = song.Title()
+				}
+
+				dj.queue.AddSong(song)
+				songsAdded++
+			}
+		}
+
+		if songsAdded == 0 {
+			return errors.New(TRACK_TOO_LONG_MSG)
+		} else if songsAdded == 1 {
+			dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, user.Name, title), false)
+		} else {
+			dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, user.Name, title), false)
+		}
+
+		// Starts playing the new song if nothing else is playing
+		if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
+			if err := dj.queue.CurrentSong().Download(); err == nil {
+				dj.queue.CurrentSong().Play()
+			} else {
+				dj.queue.CurrentSong().Delete()
+				dj.queue.OnSongFinished()
+				return errors.New(AUDIO_FAIL_MSG)
+			}
+		}
 	}
 }
 

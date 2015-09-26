@@ -31,6 +31,7 @@ type YouTubeSong struct {
 	playlist  Playlist
 	skippers  []string
 	dontSkip  bool
+	service   Service
 }
 
 // YouTubePlaylist implements the Playlist interface
@@ -237,4 +238,32 @@ func (p *YouTubePlaylist) ID() string {
 // Title returns the title of the YouTubePlaylist.
 func (p *YouTubePlaylist) Title() string {
 	return p.title
+}
+
+// PerformGetRequest does all the grunt work for HTTPS GET request.
+func PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
+	jsonString := ""
+
+	if response, err := http.Get(url); err == nil {
+		defer response.Body.Close()
+		if response.StatusCode == 200 {
+			if body, err := ioutil.ReadAll(response.Body); err == nil {
+				jsonString = string(body)
+			}
+		} else {
+			if response.StatusCode == 403 {
+				return nil, errors.New("Invalid API key supplied.")
+			}
+			return nil, errors.New("Invalid ID supplied.")
+		}
+	} else {
+		return nil, errors.New("An error occurred while receiving HTTP GET response.")
+	}
+
+	jsonData := map[string]interface{}{}
+	decoder := json.NewDecoder(strings.NewReader(jsonString))
+	decoder.Decode(&jsonData)
+	jq := jsonq.NewQuery(jsonData)
+
+	return jq, nil
 }

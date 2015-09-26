@@ -105,6 +105,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 
 // parseTime converts from the string youtube returns to a time.Duration
 func (yt YouTube) parseTime(duration, regex string) time.Duration {
+	fmt.Printf("parseTime(%s)", duration)
 	var days, hours, minutes, seconds, totalSeconds int64
 	if duration != "" {
 		timestampExp := regexp.MustCompile(regex)

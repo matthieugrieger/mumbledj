@@ -91,7 +91,7 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 		oldLength := dj.queue.Len()
 		for _, song := range songArray {
 			// Check song is not too long
-			if dj.conf.General.MaxSongDuration == 0 || song.Duration().Seconds() <= dj.conf.General.MaxSongDuration {
+			if dj.conf.General.MaxSongDuration == 0 || int(song.Duration().Seconds()) <= dj.conf.General.MaxSongDuration {
 				if !isNil(song.Playlist()) {
 					title = song.Playlist().Title()
 				} else {

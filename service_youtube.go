@@ -108,7 +108,7 @@ func (yt YouTube) parseTime(duration string) time.Duration {
 	var days, hours, minutes, seconds, totalSeconds int64
 	if duration != "" {
 		timestampExp := regexp.MustCompile(`P(?P<days>\d+D)?T(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
-		timestampMatch := timestampExp.FindStringSubmatch(duration)
+		timestampMatch := timestampExp.FindStringSubmatch(strings.ToUpper(duration))
 		timestampResult := make(map[string]string)
 		for i, name := range timestampExp.SubexpNames() {
 			if i < len(timestampMatch) {

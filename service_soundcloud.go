@@ -36,7 +36,7 @@ func (sc SoundCloud) ServiceName() string {
 }
 
 // TrackName is the human readable version of the service name
-func (sc SoundCloud) TrackName() {
+func (sc SoundCloud) TrackName() string {
 	return "Song"
 }
 
@@ -53,7 +53,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 	timesplit := strings.Split(url, "#t=")
 	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", timesplit[0], os.Getenv("SOUNDCLOUD_API_KEY"))
 	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return "", errors.New(INVALID_API_KEY)
+		return nil, errors.New(INVALID_API_KEY)
 	}
 
 	tracks, err := apiResponse.ArrayOfObjects("tracks")
@@ -69,7 +69,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 
 		// Add all tracks
 		for _, t := range tracks {
-			if song, err = sc.NewSong(user, jsonq.NewQuery(t), 0, playlist); err == nil {
+			if song, err := sc.NewSong(user, jsonq.NewQuery(t), 0, playlist); err == nil {
 				songArray = append(songArray, song)
 			}
 		}
@@ -89,7 +89,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 		}
 
 		// Add the track
-		if song, err = sc.NewSong(user, apiResponse, offset, nil); err != nil {
+		if song, err := sc.NewSong(user, apiResponse, offset, nil); err != nil {
 			return nil, err
 		}
 		return append(songArray, song), err

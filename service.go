@@ -74,7 +74,7 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 	} else {
 		var title string
 		var songsAdded = 0
-		var err error
+		var songArray []Song
 
 		// Get service to create songs
 		if songArray, err := urlService.NewRequest(user, url); err != nil {
@@ -123,6 +123,7 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 				return errors.New(AUDIO_FAIL_MSG)
 			}
 		}
+		return nil
 	}
 }
 

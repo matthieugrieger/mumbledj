@@ -63,13 +63,9 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) ([]Song, error) {
 			if len(matches[0]) == 3 {
 				startOffset = matches[0][2]
 			}
-			song, err := yt.NewSong(user.Name, shortURL, startOffset, nil)
+			song, err := yt.NewSong(user, shortURL, startOffset, nil)
 			if !isNil(song) {
-<<<<<<< HEAD
-				return song.Title(), err
-=======
 				return append(songArray, song), nil
->>>>>>> abf98ad... Song conditions are now checked in Service
 			} else {
 				return nil, err
 			}
@@ -102,125 +98,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 			service:   yt,
 		}
 
-<<<<<<< HEAD
 		return song, nil
-=======
-// Download downloads the song via youtube-dl if it does not already exist on disk.
-// All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
-func (s *YouTubeSong) Download() error {
-	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename())); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--no-mtime", "--output", fmt.Sprintf(`~/.mumbledj/songs/%s`, s.Filename()), "--format", "m4a", "--", s.ID())
-		if err := cmd.Run(); err == nil {
-			if dj.conf.Cache.Enabled {
-				dj.cache.CheckMaximumDirectorySize()
-			}
-			return nil
-		}
-		return errors.New("Song download failed.")
-	}
-	return nil
-}
-
-// Play plays the song. Once the song is playing, a notification is displayed in a text message that features the video
-// thumbnail, URL, title, duration, and submitter.
-func (s *YouTubeSong) Play() {
-	if s.offset != 0 {
-		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", s.offset))
-		dj.audioStream.Offset = offsetDuration
-	}
-	dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, s.Filename()))
-	if err := dj.audioStream.Play(); err != nil {
-		panic(err)
-	} else {
-		if s.Playlist() == nil {
-			message := `
-				<table>
-					<tr>
-						<td align="center"><img src="%s" width=150 /></td>
-					</tr>
-					<tr>
-						<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
-					</tr>
-					<tr>
-						<td align="center">Added by %s</td>
-					</tr>
-				</table>
-			`
-			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(), s.Title(),
-				s.Duration(), s.Submitter()), false)
-		} else {
-			message := `
-				<table>
-					<tr>
-						<td align="center"><img src="%s" width=150 /></td>
-					</tr>
-					<tr>
-						<td align="center"><b><a href="http://youtu.be/%s">%s</a> (%s)</b></td>
-					</tr>
-					<tr>
-						<td align="center">Added by %s</td>
-					</tr>
-					<tr>
-						<td align="center">From playlist "%s"</td>
-					</tr>
-				</table>
-			`
-			dj.client.Self.Channel.Send(fmt.Sprintf(message, s.Thumbnail(), s.ID(),
-				s.Title(), s.Duration(), s.Submitter(), s.Playlist().Title()), false)
-		}
-		go func() {
-			dj.audioStream.Wait()
-			dj.queue.OnSongFinished()
-		}()
-	}
-}
-
-// Delete deletes the song from ~/.mumbledj/songs if the cache is disabled.
-func (s *YouTubeSong) Delete() error {
-	if dj.conf.Cache.Enabled == false {
-		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s.m4a", dj.homeDir, s.ID())
-		if _, err := os.Stat(filePath); err == nil {
-			if err := os.Remove(filePath); err == nil {
-				return nil
-			}
-			return errors.New("Error occurred while deleting audio file.")
-		}
-		return nil
-	}
-	return nil
-}
-
-// AddSkip adds a skip to the skippers slice. If the user is already in the slice, AddSkip
-// returns an error and does not add a duplicate skip.
-func (s *YouTubeSong) AddSkip(username string) error {
-	for _, user := range s.skippers {
-		if username == user {
-			return errors.New("This user has already skipped the current song.")
-		}
-	}
-	s.skippers = append(s.skippers, username)
-	return nil
-}
-
-// RemoveSkip removes a skip from the skippers slice. If username is not in slice, an error is
-// returned.
-func (s *YouTubeSong) RemoveSkip(username string) error {
-	for i, user := range s.skippers {
-		if username == user {
-			s.skippers = append(s.skippers[:i], s.skippers[i+1:]...)
-			return nil
-		}
-	}
-	return errors.New("This user has not skipped the song.")
-}
-
-// SkipReached calculates the current skip ratio based on the number of users within MumbleDJ's
-// channel and the number of usernames in the skippers slice. If the value is greater than or equal
-// to the skip ratio defined in the config, the function returns true, and returns false otherwise.
-func (s *YouTubeSong) SkipReached(channelUsers int) bool {
-	if float32(len(s.skippers))/float32(channelUsers) >= dj.conf.General.SkipRatio {
-		return true
->>>>>>> 2df3613... Fixed cache clearing earlier than expected
 	}
 	return nil, errors.New(fmt.Sprintf(INVALID_API_KEY, yt.ServiceName()))
 }

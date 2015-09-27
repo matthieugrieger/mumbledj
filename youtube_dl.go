@@ -24,8 +24,8 @@ import (
 	"github.com/layeh/gumble/gumble_ffmpeg"
 )
 
-// YouTubeSong implements the Song interface
-type YouTubeSong struct {
+// AudioTrack implements the Song interface
+type AudioTrack struct {
 	id        string
 	title     string
 	thumbnail string
@@ -40,8 +40,8 @@ type YouTubeSong struct {
 	service   Service
 }
 
-// YouTubePlaylist implements the Playlist interface
-type YouTubePlaylist struct {
+// AudioPlaylist implements the Playlist interface
+type AudioPlaylist struct {
 	id    string
 	title string
 }

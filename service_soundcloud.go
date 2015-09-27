@@ -61,7 +61,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 		// Create playlist
 		title, _ := apiResponse.String("title")
 		permalink, _ := apiResponse.String("permalink_url")
-		playlist := &YouTubePlaylist{
+		playlist := &AudioPlaylist{
 			id:    permalink,
 			title: title,
 		}
@@ -108,7 +108,7 @@ func (sc SoundCloud) NewSong(user *gumble.User, trackData *jsonq.JsonQuery, offs
 		thumbnail, _ = jsonq.NewQuery(userObj).String("avatar_url")
 	}
 
-	song := &YouTubeSong{
+	song := &AudioTrack{
 		id:        strconv.Itoa(id),
 		title:     title,
 		url:       url,

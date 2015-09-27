@@ -83,7 +83,7 @@ func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlis
 		thumbnail, _ := apiResponse.String("items", "0", "snippet", "thumbnails", "high", "url")
 		duration, _ := apiResponse.String("items", "0", "contentDetails", "duration")
 
-		song := &YouTubeSong{
+		song := &AudioTrack{
 			submitter: user,
 			title:     title,
 			id:        id,
@@ -149,7 +149,7 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 	}
 	title, _ := apiResponse.String("items", "0", "snippet", "title")
 
-	playlist := &YouTubePlaylist{
+	playlist := &AudioPlaylist{
 		id:    id,
 		title: title,
 	}

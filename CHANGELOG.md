@@ -1,7 +1,7 @@
 MumbleDJ Changelog
 ==================
 
-### October 1, 2015 -- `v2.7.6`
+### October 1, 2015 -- `v2.8.0`
 * Added Soundcloud support (thanks [@MichaelOultram](https://github.com/MichaelOultram)).
 
 ### August 12, 2015 -- `v2.7.5`

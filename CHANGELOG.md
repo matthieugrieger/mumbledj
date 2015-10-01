@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### October 1, 2015 -- `v2.7.6`
+* Added Soundcloud support (thanks [@MichaelOultram](https://github.com/MichaelOultram)).
+
 ### August 12, 2015 -- `v2.7.5`
 * Fixed cache clearing earlier than expected (thanks [@CMahaff](https://github.com/CMahaff)).
 

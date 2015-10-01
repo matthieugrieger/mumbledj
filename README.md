@@ -1,12 +1,13 @@
 MumbleDJ
 ========
-**A Mumble bot that plays music fetched from YouTube videos.**
+**A Mumble bot that plays music fetched from YouTube videos and Soundcloud tracks.**
 
 * [Usage](#usage)
 * [Features](#features)
 * [Commands](#commands)
 * [Installation](#installation)
   * [YouTube API Keys](#youtube-api-keys)
+  * [Soundcloud API Keys](#soundcloud-api-keys)
   * [Setup Guide](#setup-guide)
   * [Update Guide](#update-guide)
 * [Troubleshooting](#troubleshooting)
@@ -30,7 +31,8 @@ All commandline parameters are optional. Below are descriptions of all the avail
 * `-accesstokens`: List of access tokens for the bot separated by spaces. Defaults to no access tokens.
 
 ## FEATURES
-* Plays audio from both YouTube videos and YouTube playlists!
+* Plays audio from YouTube and Soundcloud!
+* Supports playlists and individual videos/tracks.
 * Displays thumbnail, title, duration, submitter, and playlist title (if exists) when a new song is played.
 * Incredible customization options. Nearly everything is able to be tweaked in `~/.mumbledj/mumbledj.gcfg`.
 * A large array of [commands](#commands) that perform a wide variety of functions.
@@ -42,7 +44,7 @@ These are all of the chat commands currently supported by MumbleDJ. All command 
 
 Command | Description | Arguments | Admin | Example
 --------|-------------|-----------|-------|--------
-**add** | Adds a YouTube video's audio to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. YouTube playlists may also be added using this command. Please note, however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue. | youtube_video_url OR youtube_playlist_url | No | `!add https://www.youtube.com/watch?v=5xfEr2Oxdys`
+**add** | Adds audio from a url to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. Playlists may also be added using this command. Please note, however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue. | youtube_video_url OR youtube_playlist_url OR soundcloud_track_url OR soundcloud_playlist_url | No | `!add https://www.youtube.com/watch?v=5xfEr2Oxdys`
 **skip**| Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song. | None | No | `!skip`
 **skipplaylist** | Submits a vote to skip the current playlist. Once the skip ratio target (specified in mumbledj.gcfg) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist. | None | No | `!skipplaylist`
 **forceskip** | An admin command that forces a song skip. | None | Yes | `!forceskip`
@@ -84,7 +86,20 @@ Effective April 20th, 2015, all requests to YouTube's API must use v3 of their A
 
 **7)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export YOUTUBE_API_KEY="<your_key_here>"`. Replace \<your_key_here\> with your API key.
 
-**8)** Close your current terminal window and open another one up. You should be able to use MumbleDJ now!
+**8)** Close your current terminal window and open another one up. You should be able to use Youtube on MumbleDJ now!
+
+###SOUNDCLOUD API KEYS
+A soundcloud API key is required for soundcloud integration. If no soundcloud api key is found, then the service will be disabled (youtube links will still work however).
+
+**1)** Login/signup for a soundcloud account on [https://soundcloud.com](https://soundcloud.com) 
+
+**2)** Now to get the API key create a new app here: [http://soundcloud.com/you/apps/new](http://soundcloud.com/you/apps/new)
+
+**3)** Copy the Client ID (not the Client Secret)
+
+**4)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export SOUNDCLOUD_API_KEY="<your_key_here>"`. Replace \<your_key_here\> with your API key.
+
+**5)** Close your current terminal window and open another one up. You should be able to use soundcloud on MumbleDJ now!
 
 ###SETUP GUIDE  
 **1)** Install and correctly configure [`Go`](https://golang.org/) (1.4 or higher). Specifically, make sure to follow [this guide](https://golang.org/doc/code.html) and set the `GOPATH` environment variable properly.

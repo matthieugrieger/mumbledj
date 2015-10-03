@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -37,35 +36,35 @@ func parseCommand(user *gumble.User, username, command string) {
 	// Add commands
 	case dj.conf.Aliases.AddAlias, dj.conf.Aliases.AddAlias2:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAdd) {
-			add(user, username, argument)
+			add(user, argument)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
-	// Skip command
+		// Skip command
 	case dj.conf.Aliases.SkipAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminSkip) {
-			skip(user, username, false, false)
+			skip(user, false, false)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Skip playlist command
 	case dj.conf.Aliases.SkipPlaylistAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
-			skip(user, username, false, true)
+			skip(user, false, true)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Forceskip command
 	case dj.conf.Aliases.AdminSkipAlias:
 		if dj.HasPermission(username, true) {
-			skip(user, username, true, false)
+			skip(user, true, false)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 	// Playlist forceskip command
 	case dj.conf.Aliases.AdminSkipPlaylistAlias:
 		if dj.HasPermission(username, true) {
-			skip(user, username, true, true)
+			skip(user, true, true)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -79,7 +78,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	// Volume commands
 	case dj.conf.Aliases.VolumeAlias, dj.conf.Aliases.VolumeAlias2:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminVolume) {
-			volume(user, username, argument)
+			volume(user, argument)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -158,108 +157,37 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 }
 
-// add performs !add functionality. Checks input URL for YouTube format, and adds
+
+// add performs !add functionality. Checks input URL for service, and adds
 // the URL to the queue if the format matches.
-func add(user *gumble.User, username, url string) {
+func add(user *gumble.User, url string) error {
 	if url == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
+		return errors.New("NO_ARGUMENT")
 	} else {
-		youtubePatterns := []string{
-			`https?:\/\/www\.youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-			`https?:\/\/youtube\.com\/watch\?v=([\w-]+)(\&t=\d*m?\d*s?)?`,
-			`https?:\/\/youtu.be\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-			`https?:\/\/youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
-			`https?:\/\/www.youtube.com\/v\/([\w-]+)(\?t=\d*m?\d*s?)?`,
+		err := FindServiceAndAdd(user, url)
+		if err != nil {
+			dj.SendPrivateMessage(user, err.Error())
 		}
-		matchFound := false
-		shortURL := ""
-		startOffset := ""
-
-		for _, pattern := range youtubePatterns {
-			if re, err := regexp.Compile(pattern); err == nil {
-				if re.MatchString(url) {
-					matchFound = true
-					matches := re.FindAllStringSubmatch(url, -1)
-					shortURL = matches[0][1]
-					if len(matches[0]) == 3 {
-						startOffset = matches[0][2]
-					}
-					break
-				}
-			}
-		}
-
-		if matchFound {
-			if newSong, err := NewYouTubeSong(username, shortURL, startOffset, nil); err == nil {
-				dj.client.Self.Channel.Send(fmt.Sprintf(SONG_ADDED_HTML, username, newSong.title), false)
-				if dj.queue.Len() == 1 && !dj.audioStream.IsPlaying() {
-					if err := dj.queue.CurrentSong().Download(); err == nil {
-						dj.queue.CurrentSong().Play()
-					} else {
-						dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-						dj.queue.CurrentSong().Delete()
-						dj.queue.OnSongFinished()
-					}
-				} else {
-					if addedSong,err := dj.queue.PeekLast(); err == nil {
-						go addedSong.Download()
-					}
-				}
-			} else if fmt.Sprint(err) == "Song exceeds the maximum allowed duration." {
-				dj.SendPrivateMessage(user, VIDEO_TOO_LONG_MSG)
-			} else if fmt.Sprint(err) == "Invalid API key supplied." {
-				dj.SendPrivateMessage(user, INVALID_API_KEY)
-			} else {
-				dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
-			}
-		} else {
-			// Check to see if we have a playlist URL instead.
-			youtubePlaylistPattern := `https?:\/\/www\.youtube\.com\/playlist\?list=([\w-]+)`
-			if re, err := regexp.Compile(youtubePlaylistPattern); err == nil {
-				if re.MatchString(url) {
-					if dj.HasPermission(username, dj.conf.Permissions.AdminAddPlaylists) {
-						shortURL = re.FindStringSubmatch(url)[1]
-						oldLength := dj.queue.Len()
-						if newPlaylist, err := NewYouTubePlaylist(username, shortURL); err == nil {
-							dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_ADDED_HTML, username, newPlaylist.title), false)
-							if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
-								if err := dj.queue.CurrentSong().Download(); err == nil {
-									dj.queue.CurrentSong().Play()
-								} else {
-									dj.SendPrivateMessage(user, AUDIO_FAIL_MSG)
-									dj.queue.CurrentSong().Delete()
-									dj.queue.OnSongFinished()
-								}
-							}
-						} else {
-							dj.SendPrivateMessage(user, INVALID_YOUTUBE_ID_MSG)
-						}
-					} else {
-						dj.SendPrivateMessage(user, NO_PLAYLIST_PERMISSION_MSG)
-					}
-				} else {
-					dj.SendPrivateMessage(user, INVALID_URL_MSG)
-				}
-			}
-		}
+		return err
 	}
 }
 
 // skip performs !skip functionality. Adds a skip to the skippers slice for the current song, and then
 // evaluates if a skip should be performed. Both skip and forceskip are implemented here.
-func skip(user *gumble.User, username string, admin, playlistSkip bool) {
+func skip(user *gumble.User, admin, playlistSkip bool) {
 	if dj.audioStream.IsPlaying() {
 		if playlistSkip {
 			if dj.queue.CurrentSong().Playlist() != nil {
-				if err := dj.queue.CurrentSong().Playlist().AddSkip(username); err == nil {
+				if err := dj.queue.CurrentSong().Playlist().AddSkip(user.Name); err == nil {
 					submitterSkipped := false
 					if admin {
 						dj.client.Self.Channel.Send(ADMIN_PLAYLIST_SKIP_MSG, false)
-					} else if dj.queue.CurrentSong().Submitter() == username {
-						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SUBMITTER_SKIP_HTML, username), false)
+					} else if dj.queue.CurrentSong().Submitter() == user.Name {
+						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SUBMITTER_SKIP_HTML, user.Name), false)
 						submitterSkipped = true
 					} else {
-						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SKIP_ADDED_HTML, username), false)
+						dj.client.Self.Channel.Send(fmt.Sprintf(PLAYLIST_SKIP_ADDED_HTML, user.Name), false)
 					}
 					if submitterSkipped || dj.queue.CurrentSong().Playlist().SkipReached(len(dj.client.Self.Channel.Users)) || admin {
 						id := dj.queue.CurrentSong().Playlist().ID()
@@ -288,15 +216,15 @@ func skip(user *gumble.User, username string, admin, playlistSkip bool) {
 				dj.SendPrivateMessage(user, NO_PLAYLIST_PLAYING_MSG)
 			}
 		} else {
-			if err := dj.queue.CurrentSong().AddSkip(username); err == nil {
+			if err := dj.queue.CurrentSong().AddSkip(user.Name); err == nil {
 				submitterSkipped := false
 				if admin {
 					dj.client.Self.Channel.Send(ADMIN_SONG_SKIP_MSG, false)
-				} else if dj.queue.CurrentSong().Submitter() == username {
-					dj.client.Self.Channel.Send(fmt.Sprintf(SUBMITTER_SKIP_HTML, username), false)
+				} else if dj.queue.CurrentSong().Submitter() == user.Name {
+					dj.client.Self.Channel.Send(fmt.Sprintf(SUBMITTER_SKIP_HTML, user.Name), false)
 					submitterSkipped = true
 				} else {
-					dj.client.Self.Channel.Send(fmt.Sprintf(SKIP_ADDED_HTML, username), false)
+					dj.client.Self.Channel.Send(fmt.Sprintf(SKIP_ADDED_HTML, user.Name), false)
 				}
 				if submitterSkipped || dj.queue.CurrentSong().SkipReached(len(dj.client.Self.Channel.Users)) || admin {
 					if !(submitterSkipped || admin) {
@@ -321,7 +249,7 @@ func help(user *gumble.User) {
 // volume performs !volume functionality. Checks input value against LowestVolume and HighestVolume from
 // config to determine if the volume should be applied. If in the correct range, the new volume
 // is applied and is immediately in effect.
-func volume(user *gumble.User, username, value string) {
+func volume(user *gumble.User, value string) {
 	if value == "" {
 		dj.client.Self.Channel.Send(fmt.Sprintf(CUR_VOLUME_HTML, dj.audioStream.Volume), false)
 	} else {
@@ -329,7 +257,7 @@ func volume(user *gumble.User, username, value string) {
 			newVolume := float32(parsedVolume)
 			if newVolume >= dj.conf.Volume.LowestVolume && newVolume <= dj.conf.Volume.HighestVolume {
 				dj.audioStream.Volume = newVolume
-				dj.client.Self.Channel.Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, username, dj.audioStream.Volume), false)
+				dj.client.Self.Channel.Send(fmt.Sprintf(VOLUME_SUCCESS_HTML, user.Name, dj.audioStream.Volume), false)
 			} else {
 				dj.SendPrivateMessage(user, fmt.Sprintf(NOT_IN_VOLUME_RANGE_MSG, dj.conf.Volume.LowestVolume, dj.conf.Volume.HighestVolume))
 			}

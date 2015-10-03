@@ -42,10 +42,12 @@ func (q *SongQueue) CurrentSong() Song {
 
 // NextSong moves to the next Song in SongQueue. NextSong() removes the first Song in the queue.
 func (q *SongQueue) NextSong() {
-	if q.CurrentSong().Playlist() != nil {
+	if !isNil(q.CurrentSong().Playlist()) {
 		if s, err := q.PeekNext(); err == nil {
-			if s.Playlist() != nil && (q.CurrentSong().Playlist().ID() != s.Playlist().ID()) {
-				q.CurrentSong().Playlist().DeleteSkippers()
+			if !isNil(s.Playlist()) {
+				if q.CurrentSong().Playlist().ID() != s.Playlist().ID() {
+					q.CurrentSong().Playlist().DeleteSkippers()
+				}
 			}
 		} else {
 			q.CurrentSong().Playlist().DeleteSkippers()

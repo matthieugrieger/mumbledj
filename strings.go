@@ -7,8 +7,8 @@
 
 package main
 
-// Message shown to users when the bot has an invalid YouTube API key.
-const INVALID_API_KEY = "MumbleDJ does not have a valid YouTube API key."
+// Message shown to users when the bot has an invalid API key.
+const INVALID_API_KEY = "MumbleDJ does not have a valid %s API key."
 
 // Message shown to users when they do not have permission to execute a command.
 const NO_PERMISSION_MSG = "You do not have permission to execute that command."
@@ -26,7 +26,7 @@ const CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 const INVALID_URL_MSG = "The URL you submitted does not match the required format."
 
 // Message shown to users when they attempt to add a video that's too long
-const VIDEO_TOO_LONG_MSG = "The video you submitted exceeds the duration allowed by the server."
+const TRACK_TOO_LONG_MSG = "The %s you submitted exceeds the duration allowed by the server."
 
 // Message shown to users when they attempt to perform an action on a song when
 // no song is playing.
@@ -54,10 +54,10 @@ const ADMIN_SONG_SKIP_MSG = "An admin has decided to skip the current song."
 const ADMIN_PLAYLIST_SKIP_MSG = "An admin has decided to skip the current playlist."
 
 // Message shown to users when the audio for a video could not be downloaded.
-const AUDIO_FAIL_MSG = "The audio download for this video failed. YouTube has likely not generated the audio files for this video yet. Skipping to the next song!"
+const AUDIO_FAIL_MSG = "The audio download for this video failed. %s has likely not generated the audio files for this %s yet. Skipping to the next song!"
 
-// Message shown to users when they supply a YouTube URL that does not contain a valid ID.
-const INVALID_YOUTUBE_ID_MSG = "The YouTube URL you supplied did not contain a valid YouTube ID."
+// Message shown to users when they supply an URL that does not contain a valid ID.
+const INVALID_ID_MSG = "The %s URL you supplied did not contain a valid ID."
 
 // Message shown to user when they successfully update the bot's comment.
 const COMMENT_UPDATED_MSG = "The comment for the bot has successfully been updated."
@@ -95,7 +95,7 @@ const PLAYLIST_SKIPPED_HTML = `
 const HELP_HTML = `<br/>
 	<b>User Commands:</b>
 	<p><b>!help</b> - Displays this help.</p>
-	<p><b>!add</b> - Adds songs to queue.</p>
+	<p><b>!add</b> - Adds songs/playlists to queue.</p>
 	<p><b>!volume</b> - Either tells you the current volume or sets it to a new volume.</p>
 	<p><b>!skip</b> - Casts a vote to skip the current song</p>
 	<p> <b>!skipplaylist</b> - Casts a vote to skip over the current playlist.</p>
@@ -168,5 +168,5 @@ const CURRENT_SONG_HTML = `
 // Message shown to users when the currentsong command is issued when a song from a
 // playlist is playing.
 const CURRENT_SONG_PLAYLIST_HTML = `
-	The song currently playing is "%s", added <b>%s</b> from the playlist "%s".
+	The %s currently playing is "%s", added <b>%s</b> from the %s "%s".
 `

@@ -71,6 +71,12 @@ const CACHE_SIZE_MSG = "The cache is currently %g MB in size."
 // Message shown to user when they attempt to issue a cache-related command when caching is not enabled.
 const CACHE_NOT_ENABLED_MSG = "The cache is not currently enabled."
 
+// Message shown to user when they attempt to shuffle the a playlist with less than 2 elements.
+const CANT_SHUFFLE_MSG = "Can't shuffle the playlist if there is less than 2 songs."
+
+// Message shown to user when the playlist has been successfully shuffled.
+const SHUFFLE_SUCCESS_MSG = "The playlist has been successfully shuffled by <b>%s</b> (starting from next song)."
+
 // Message shown to channel when a song is added to the queue by a user.
 const SONG_ADDED_HTML = `
 	<b>%s</b> has added "%s" to the queue.
@@ -107,6 +113,7 @@ const HELP_HTML = `<br/>
 	<p><b>!reset</b> - An admin command that resets the song queue. </p>
 	<p><b>!forceskip</b> - An admin command that forces a song skip. </p>
 	<p><b>!forceskipplaylist</b> - An admin command that forces a playlist skip. </p>
+	<p><b>!shuffle</b> - An admin command that shuffles the playlist. </p>
 	<p><b>!move </b>- Moves MumbleDJ into channel if it exists.</p>
 	<p><b>!reload</b> - Reloads mumbledj.gcfg configuration settings.</p>
 	<p><b>!setcomment</b> - Sets the comment for the bot.</p>

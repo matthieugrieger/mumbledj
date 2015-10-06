@@ -55,7 +55,7 @@ LowestVolume = 0.01
 # DEFAULT VALUE: 0.8
 HighestVolume = 0.8
 
- 
+
 [Aliases]
 
 # Alias used for add command
@@ -126,6 +126,9 @@ CacheSizeAlias = "cachesize"
 # DEFAULT VALUE: "kill"
 KillAlias = "kill"
 
+# Alias used for shuffle command
+# DEFAULT VALUE: "shuffle"
+ShuffleAlias = "shuffle"
 
 [Permissions]
 
@@ -201,3 +204,7 @@ AdminCacheSize = true
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)
 AdminKill = true
+
+# Make shuffle an admin command?
+# DEFAULT VALUE: true
+AdminShuffle = true

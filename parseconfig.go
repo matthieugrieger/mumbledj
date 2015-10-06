@@ -51,6 +51,7 @@ type DjConfig struct {
 		NumCachedAlias         string
 		CacheSizeAlias         string
 		KillAlias              string
+		ShuffleAlias           string
 	}
 	Permissions struct {
 		AdminsEnabled     bool
@@ -70,6 +71,7 @@ type DjConfig struct {
 		AdminNumCached    bool
 		AdminCacheSize    bool
 		AdminKill         bool
+		AdminShuffle	  bool
 	}
 }
 

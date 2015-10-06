@@ -152,6 +152,15 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+
+	// Shuffle command
+	case dj.conf.Aliases.ShuffleAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffle) {
+			shuffleSongs(user, username)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+
 	default:
 		dj.SendPrivateMessage(user, COMMAND_DOESNT_EXIST_MSG)
 	}
@@ -390,4 +399,14 @@ func deleteSongs() error {
 		return errors.New("An error occurred while recreating the songs directory.")
 	}
 	return nil
+}
+
+// shuffles the song list
+func shuffleSongs(user *gumble.User, username string) {
+	if dj.queue.Len() > 1 {
+		dj.queue.ShuffleSongs()
+		dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_SUCCESS_MSG, username), false)
+	} else {
+		dj.SendPrivateMessage(user, CANT_SHUFFLE_MSG)
+	}
 }

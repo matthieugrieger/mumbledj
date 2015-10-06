@@ -11,7 +11,12 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"math/rand"
 )
+
+func init() {
+    rand.Seed(time.Now().UTC().UnixNano())
+}
 
 // SongQueue type declaration.
 type SongQueue struct {
@@ -102,5 +107,13 @@ func (q *SongQueue) PrepareAndPlayNextSong() {
 	} else {
 		dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
 		q.OnSongFinished()
+	}
+}
+
+// Shuffles the songqueue using inside-out algorithm
+func (q *SongQueue) ShuffleSongs() {
+	for i := range q.queue[1:] {	//Don't touch currently playing song
+	    j := rand.Intn(i + 1)
+	    q.queue[i + 1], q.queue[j + 1] = q.queue[j + 1], q.queue[i + 1]
 	}
 }

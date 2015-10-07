@@ -64,6 +64,10 @@ func (q *SongQueue) NextSong() {
 // PeekNext peeks at the next Song and returns it.
 func (q *SongQueue) PeekNext() (Song, error) {
 	if q.Len() > 1 {
+		if (dj.conf.General.AutomaticShuffleOn){		//Shuffle mode is active
+				swapIndex := 1 + rand.Intn(q.Len())
+				q.queue[offset], q.queue[swapIndex] = q.queue[swapIndex], q.queue[offset]
+		}
 		return q.queue[1], nil
 	}
 	return nil, errors.New("There isn't a Song coming up next.")

@@ -74,8 +74,20 @@ const CACHE_NOT_ENABLED_MSG = "The cache is not currently enabled."
 // Message shown to user when they attempt to shuffle the a playlist with less than 2 elements.
 const CANT_SHUFFLE_MSG = "Can't shuffle the playlist if there is less than 2 songs."
 
-// Message shown to user when the playlist has been successfully shuffled.
-const SHUFFLE_SUCCESS_MSG = "The playlist has been successfully shuffled by <b>%s</b> (starting from next song)."
+// Message shown to users when the playlist has been successfully shuffled.
+const SHUFFLE_SUCCESS_MSG = "The current playlist has been successfully shuffled by <b>%s</b> (starting from next song)."
+
+// Message shown to users when automatic shuffle is activated
+const SHUFFLE_ON_MESSAGE = "<b>%s</b> has turned automatic shuffle on."
+
+// Message shown to users when automatic shuffle is deactivated
+const SHUFFLE_OFF_MESSAGE = "<b>%s</b> has turned automatic shuffle off."
+
+// Message shown to user when they attempt to enable automatic shuffle while it's already activated
+const SHUFFLE_ACTIVATED_ERROR_MESSAGE = "Automatic shuffle is already activated."
+
+// Message shown to user when they attempt to disable automatic shuffle while it's already deactivated
+const SHUFFLE_DEACTIVATED_ERROR_MESSAGE = "Automatic shuffle is already deactivated."
 
 // Message shown to channel when a song is added to the queue by a user.
 const SONG_ADDED_HTML = `
@@ -113,7 +125,9 @@ const HELP_HTML = `<br/>
 	<p><b>!reset</b> - An admin command that resets the song queue. </p>
 	<p><b>!forceskip</b> - An admin command that forces a song skip. </p>
 	<p><b>!forceskipplaylist</b> - An admin command that forces a playlist skip. </p>
-	<p><b>!shuffle</b> - An admin command that shuffles the playlist. </p>
+	<p><b>!shuffle</b> - An admin command that shuffles the current playlist. </p>
+	<p><b>!shuffleon</b> - An admin command that enables auto shuffling.</p>
+  <p><b>!shuffleoff</b> - An admin command that disables auto shuffling.</p>
 	<p><b>!move </b>- Moves MumbleDJ into channel if it exists.</p>
 	<p><b>!reload</b> - Reloads mumbledj.gcfg configuration settings.</p>
 	<p><b>!setcomment</b> - Sets the comment for the bot.</p>

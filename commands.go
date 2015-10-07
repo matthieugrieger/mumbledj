@@ -161,6 +161,22 @@ func parseCommand(user *gumble.User, username, command string) {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 
+	// Shuffleon command
+  case dj.conf.Aliases.ShuffleOnAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
+			toggleAutomaticShuffle(true, user, username)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+
+  // Shuffleoff command
+	case dj.conf.Aliases.ShuffleOffAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
+			toggleAutomaticShuffle(false, user, username)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+
 	default:
 		dj.SendPrivateMessage(user, COMMAND_DOESNT_EXIST_MSG)
 	}
@@ -408,5 +424,21 @@ func shuffleSongs(user *gumble.User, username string) {
 		dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_SUCCESS_MSG, username), false)
 	} else {
 		dj.SendPrivateMessage(user, CANT_SHUFFLE_MSG)
+	}
+}
+
+// handles toggling of automatic shuffle playing
+func toggleAutomaticShuffle(activate bool, user *gumble.User, username string){
+	if (dj.conf.General.AutomaticShuffleOn != activate){
+		dj.conf.General.AutomaticShuffleOn = activate
+		if (activate){
+			dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_ON_MESSAGE, username), false)
+		} else{
+			dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_OFF_MESSAGE, username), false)
+		}
+	} else if (activate){
+		dj.SendPrivateMessage(user, SHUFFLE_ACTIVATED_ERROR_MESSAGE)
+	} else{
+		dj.SendPrivateMessage(user, SHUFFLE_DEACTIVATED_ERROR_MESSAGE)
 	}
 }

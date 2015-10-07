@@ -26,6 +26,10 @@ DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
 # Default Value: 0
 MaxSongDuration = 0
 
+# Is playlist shuffling enabled when the bot starts?
+# Default Value: false
+AutomaticShuffleOn = false
+
 [Cache]
 
 # Cache songs as they are downloaded?
@@ -129,6 +133,14 @@ KillAlias = "kill"
 # Alias used for shuffle command
 # DEFAULT VALUE: "shuffle"
 ShuffleAlias = "shuffle"
+
+# Alias used for shuffleon command
+# DEFAULT VALUE: "shuffleon"
+ShuffleOnAlias = "shuffleon"
+
+# Alias used for shuffleoff command
+# DEFAULT VALUE: "shuffleoff"
+ShuffleOffAlias = "shuffleoff"
 
 [Permissions]
 

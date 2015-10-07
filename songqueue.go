@@ -66,7 +66,7 @@ func (q *SongQueue) PeekNext() (Song, error) {
 	if q.Len() > 1 {
 		if (dj.conf.General.AutomaticShuffleOn){		//Shuffle mode is active
 				swapIndex := 1 + rand.Intn(q.Len())
-				q.queue[offset], q.queue[swapIndex] = q.queue[swapIndex], q.queue[offset]
+				q.queue[1], q.queue[swapIndex] = q.queue[swapIndex], q.queue[1]
 		}
 		return q.queue[1], nil
 	}

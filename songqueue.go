@@ -64,9 +64,8 @@ func (q *SongQueue) NextSong() {
 // PeekNext peeks at the next Song and returns it.
 func (q *SongQueue) PeekNext() (Song, error) {
 	if q.Len() > 1 {
-		if (dj.conf.General.AutomaticShuffleOn){		//Shuffle mode is active
-				swapIndex := 1 + rand.Intn(q.Len())
-				q.queue[1], q.queue[swapIndex] = q.queue[swapIndex], q.queue[1]
+		if dj.conf.General.AutomaticShuffleOn{		//Shuffle mode is active
+				q.RandomNextSong(false)
 		}
 		return q.queue[1], nil
 	}
@@ -120,4 +119,15 @@ func (q *SongQueue) ShuffleSongs() {
 	    j := rand.Intn(i + 1)
 	    q.queue[i + 1], q.queue[j + 1] = q.queue[j + 1], q.queue[i + 1]
 	}
+}
+
+// Sets a random song as next song to be played
+// queueWasEmpty wether the queue was empty before adding the last Song
+func (q *SongQueue) RandomNextSong(queueWasEmpty bool){
+	nextSongIndex := 1
+	if queueWasEmpty{
+		nextSongIndex = 0
+	}
+	swapIndex := nextSongIndex + rand.Intn(q.Len())
+	q.queue[nextSongIndex], q.queue[swapIndex] = q.queue[swapIndex], q.queue[nextSongIndex]
 }

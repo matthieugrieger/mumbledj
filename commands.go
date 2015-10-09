@@ -162,14 +162,14 @@ func parseCommand(user *gumble.User, username, command string) {
 		}
 
 	// Shuffleon command
-  case dj.conf.Aliases.ShuffleOnAlias:
+  	case dj.conf.Aliases.ShuffleOnAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
 			toggleAutomaticShuffle(true, user, username)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
 
-  // Shuffleoff command
+  	// Shuffleoff command
 	case dj.conf.Aliases.ShuffleOffAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
 			toggleAutomaticShuffle(false, user, username)

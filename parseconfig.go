@@ -52,7 +52,7 @@ type DjConfig struct {
 		NumCachedAlias         string
 		CacheSizeAlias         string
 		KillAlias              string
-		ShuffleAlias					 string
+		ShuffleAlias           string
 		ShuffleOnAlias         string
 		ShuffleOffAlias        string
 	}
@@ -74,8 +74,8 @@ type DjConfig struct {
 		AdminNumCached      bool
 		AdminCacheSize      bool
 		AdminKill           bool
-		AdminShuffle			  bool
-		AdminShuffleToggle	bool
+		AdminShuffle        bool
+		AdminShuffleToggle  bool
 	}
 }
 

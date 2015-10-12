@@ -115,6 +115,9 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 
 		// Starts playing the new song if nothing else is playing
 		if oldLength == 0 && dj.queue.Len() != 0 && !dj.audioStream.IsPlaying() {
+			if (dj.conf.General.AutomaticShuffleOn){
+				dj.queue.RandomNextSong(true)
+			}
 			if err := dj.queue.CurrentSong().Download(); err == nil {
 				dj.queue.CurrentSong().Play()
 			} else {

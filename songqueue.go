@@ -11,7 +11,12 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"math/rand"
 )
+
+func init() {
+    rand.Seed(time.Now().UTC().UnixNano())
+}
 
 // SongQueue type declaration.
 type SongQueue struct {
@@ -59,6 +64,9 @@ func (q *SongQueue) NextSong() {
 // PeekNext peeks at the next Song and returns it.
 func (q *SongQueue) PeekNext() (Song, error) {
 	if q.Len() > 1 {
+		if dj.conf.General.AutomaticShuffleOn{		//Shuffle mode is active
+			q.RandomNextSong(false)
+		}
 		return q.queue[1], nil
 	}
 	return nil, errors.New("There isn't a Song coming up next.")
@@ -103,4 +111,23 @@ func (q *SongQueue) PrepareAndPlayNextSong() {
 		dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
 		q.OnSongFinished()
 	}
+}
+
+// Shuffles the songqueue using inside-out algorithm
+func (q *SongQueue) ShuffleSongs() {
+	for i := range q.queue[1:] {	//Don't touch currently playing song
+	    j := rand.Intn(i + 1)
+	    q.queue[i + 1], q.queue[j + 1] = q.queue[j + 1], q.queue[i + 1]
+	}
+}
+
+// Sets a random song as next song to be played
+// queueWasEmpty wether the queue was empty before adding the last song
+func (q *SongQueue) RandomNextSong(queueWasEmpty bool){
+	nextSongIndex := 1
+	if queueWasEmpty{
+		nextSongIndex = 0
+	}
+	swapIndex := nextSongIndex + rand.Intn(q.Len())
+	q.queue[nextSongIndex], q.queue[swapIndex] = q.queue[swapIndex], q.queue[nextSongIndex]
 }

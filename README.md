@@ -49,6 +49,9 @@ Command | Description | Arguments | Admin | Example
 **skipplaylist** | Submits a vote to skip the current playlist. Once the skip ratio target (specified in mumbledj.gcfg) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist. | None | No | `!skipplaylist`
 **forceskip** | An admin command that forces a song skip. | None | Yes | `!forceskip`
 **forceskipplaylist** | An admin command that forces a playlist skip. | None | Yes | `!forceskipplaylist`
+**shuffle** | An admin command that shuffles the current queue. | None | Yes | `!shuffle`
+**shuffleon** | An admin command that enables auto shuffling. | None | Yes | `!shuffleon`
+**shuffleoff** | An admin command that disables auto shuffling. | None | Yes | `!shuffleoff`
 **help** | Displays this list of commands in Mumble chat. | None | No | `!help`
 **volume** | Either outputs the current volume or changes the current volume. If desired volume is not provided, the current volume will be displayed in chat. Otherwise, the volume for the bot will be changed to desired volume if it is within the allowed volume range. | None OR desired volume | No | `!volume 0.5`, `!volume`
 **move** | Moves MumbleDJ into channel if it exists. | Channel | Yes | `!move Music`

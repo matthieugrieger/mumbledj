@@ -154,22 +154,27 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 		title: title,
 	}
 
-	// Retrieve items in playlist
-	url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s",
-		id, os.Getenv("YOUTUBE_API_KEY"))
-	if apiResponse, err = PerformGetRequest(url); err != nil {
-		return nil, err
-	}
-	numVideos, _ := apiResponse.Int("pageInfo", "totalResults")
-	if numVideos > 50 {
-		numVideos = 50
-	}
+	morePages := true
+	pageToken := ""
+	for morePages{	//Iterate over the pages
 
-	for i := 0; i < numVideos; i++ {
-		index := strconv.Itoa(i)
-		videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
-		if song, err := yt.NewSong(user, videoID, "", playlist); err == nil {
-			songArray = append(songArray, song)
+		// Retrieve items in this page of the playlist
+		url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s&pageToken=%s",
+			id, os.Getenv("YOUTUBE_API_KEY"), pageToken)
+		if apiResponse, err = PerformGetRequest(url); err != nil {
+			return nil, err
+		}
+
+		songs, _ := apiResponse.Array("items")
+		for j := 0; j < len(songs); j++ {
+			index := strconv.Itoa(j)
+			videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
+			if song, err := yt.NewSong(user, videoID, "", playlist); err == nil {
+				songArray = append(songArray, song)
+			}
+		}
+		if pageToken, err = apiResponse.String("nextPageToken"); err != nil{
+			morePages = false
 		}
 	}
 	return songArray, nil

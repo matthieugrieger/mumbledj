@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### October 12, 2015 -- `v2.8.1`
+* Added !shuffle, !shuffleon, and !shuffleoff commands (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
+
 ### October 1, 2015 -- `v2.8.0`
 * Added Soundcloud support (thanks [@MichaelOultram](https://github.com/MichaelOultram)).
 

@@ -220,3 +220,8 @@ AdminKill = true
 # Make shuffle an admin command?
 # DEFAULT VALUE: true
 AdminShuffle = true
+
+
+# Make shuffleon and shuffleoff admin commands?
+# DEFAULT VALUE: true
+AdminShuffleToggle = true

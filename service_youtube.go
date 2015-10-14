@@ -173,9 +173,17 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 				songArray = append(songArray, song)
 			}
 		}
-		if pageToken, err = apiResponse.String("nextPageToken"); err != nil{
+		if pageToken, err = apiResponse.String("nextPageToken"); err != nil || playlistSizeExceeded(songArray) {
 			morePages = false
 		}
 	}
+	if (dj.conf.General.MaxSongPerPlaylist > 0 && len(songArray) > dj.conf.General.MaxSongPerPlaylist){
+		songArray = songArray[:dj.conf.General.MaxSongPerPlaylist]
+	}
 	return songArray, nil
+}
+
+// checks if the number of songs of the playlist exceeds the configured playlist maximum size
+func playlistSizeExceeded(songs []Song) bool{
+	return dj.conf.General.MaxSongPerPlaylist > 0 && len(songs) > dj.conf.General.MaxSongPerPlaylist
 }

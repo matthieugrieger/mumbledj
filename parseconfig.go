@@ -22,6 +22,7 @@ type DjConfig struct {
 		PlaylistSkipRatio   float32
 		DefaultComment      string
 		MaxSongDuration     int
+		MaxSongPerPlaylist  int
 		AutomaticShuffleOn  bool
 	}
 	Cache struct {

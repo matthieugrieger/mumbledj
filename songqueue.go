@@ -124,10 +124,12 @@ func (q *SongQueue) ShuffleSongs() {
 // Sets a random song as next song to be played
 // queueWasEmpty wether the queue was empty before adding the last song
 func (q *SongQueue) RandomNextSong(queueWasEmpty bool){
-	nextSongIndex := 1
-	if queueWasEmpty{
-		nextSongIndex = 0
+	if (q.Len() > 1){
+		nextSongIndex := 1
+		if queueWasEmpty{
+			nextSongIndex = 0
+		}
+		swapIndex := nextSongIndex + rand.Intn(q.Len() - 1)
+		q.queue[nextSongIndex], q.queue[swapIndex] = q.queue[swapIndex], q.queue[nextSongIndex]
 	}
-	swapIndex := nextSongIndex + rand.Intn(q.Len())
-	q.queue[nextSongIndex], q.queue[swapIndex] = q.queue[swapIndex], q.queue[nextSongIndex]
 }

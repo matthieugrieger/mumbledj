@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### October 14, 2015 -- `v2.8.2`
+* Fixed possible index out of range panic when auto shuffle is on (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
+
 ### October 12, 2015 -- `v2.8.1`
 * Added !shuffle, !shuffleon, and !shuffleoff commands (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
 

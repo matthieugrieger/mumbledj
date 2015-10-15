@@ -15,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"math"
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
@@ -154,9 +155,13 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 		title: title,
 	}
 
-	morePages := true
+
+	maxSongs := math.MaxInt32
+	if (dj.conf.General.MaxSongPerPlaylist > 0){
+		maxSongs = dj.conf.General.MaxSongPerPlaylist
+	}
 	pageToken := ""
-	for morePages{	//Iterate over the pages
+	for len(songArray) < maxSongs{	//Iterate over the pages
 
 		// Retrieve items in this page of the playlist
 		url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s&pageToken=%s",
@@ -166,24 +171,16 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 		}
 
 		songs, _ := apiResponse.Array("items")
-		for j := 0; j < len(songs); j++ {
+		for j := 0; j < len(songs) && len(songArray) < maxSongs ; j++ {
 			index := strconv.Itoa(j)
 			videoID, _ := apiResponse.String("items", index, "snippet", "resourceId", "videoId")
 			if song, err := yt.NewSong(user, videoID, "", playlist); err == nil {
 				songArray = append(songArray, song)
 			}
 		}
-		if pageToken, err = apiResponse.String("nextPageToken"); err != nil || playlistSizeExceeded(songArray) {
-			morePages = false
+		if pageToken, err = apiResponse.String("nextPageToken"); err != nil {
+			break
 		}
 	}
-	if (dj.conf.General.MaxSongPerPlaylist > 0 && len(songArray) > dj.conf.General.MaxSongPerPlaylist){
-		songArray = songArray[:dj.conf.General.MaxSongPerPlaylist]
-	}
 	return songArray, nil
-}
-
-// checks if the number of songs of the playlist exceeds the configured playlist maximum size
-func playlistSizeExceeded(songs []Song) bool{
-	return dj.conf.General.MaxSongPerPlaylist > 0 && len(songs) > dj.conf.General.MaxSongPerPlaylist
 }

@@ -17,11 +17,12 @@ import (
 // DjConfig is a Golang struct representation of mumbledj.gcfg file structure for parsing.
 type DjConfig struct {
 	General struct {
-		CommandPrefix     string
-		SkipRatio         float32
-		PlaylistSkipRatio float32
-		DefaultComment    string
-		MaxSongDuration   int
+		CommandPrefix     	string
+		SkipRatio         	float32
+		PlaylistSkipRatio 	float32
+		DefaultComment    	string
+		MaxSongDuration   	int
+		AutomaticShuffleOn  bool
 	}
 	Cache struct {
 		Enabled     bool
@@ -53,25 +54,30 @@ type DjConfig struct {
 		NumCachedAlias         string
 		CacheSizeAlias         string
 		KillAlias              string
+		ShuffleAlias           string
+		ShuffleOnAlias         string
+		ShuffleOffAlias        string
 	}
 	Permissions struct {
-		AdminsEnabled     bool
-		Admins            []string
-		AdminAdd          bool
-		AdminAddPlaylists bool
-		AdminSkip         bool
-		AdminHelp         bool
-		AdminVolume       bool
-		AdminMove         bool
-		AdminReload       bool
-		AdminReset        bool
-		AdminNumSongs     bool
-		AdminNextSong     bool
-		AdminCurrentSong  bool
-		AdminSetComment   bool
-		AdminNumCached    bool
-		AdminCacheSize    bool
-		AdminKill         bool
+		AdminsEnabled     	bool
+		Admins            	[]string
+		AdminAdd          	bool
+		AdminAddPlaylists 	bool
+		AdminSkip         	bool
+		AdminHelp         	bool
+		AdminVolume       	bool
+		AdminMove         	bool
+		AdminReload       	bool
+		AdminReset        	bool
+		AdminNumSongs     	bool
+		AdminNextSong     	bool
+		AdminCurrentSong  	bool
+		AdminSetComment   	bool
+		AdminNumCached    	bool
+		AdminCacheSize    	bool
+		AdminKill         	bool
+		AdminShuffle        bool
+		AdminShuffleToggle  bool
 	}
 }
 

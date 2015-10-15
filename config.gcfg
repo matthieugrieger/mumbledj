@@ -11,49 +11,53 @@ CommandPrefix = "!"
 
 # Ratio that must be met or exceeded to trigger a song skip
 # DEFAULT VALUE: 0.5
-SkipRatio = 0.5
+SkipRatio = 0
 
 # Ratio that must be met or exceeded to trigger a playlist skip
 # DEFAULT VALUE: 0.5
-PlaylistSkipRatio = 0.5
+PlaylistSkipRatio = 0
 
 # Default comment to be applied to bot.
 # DEFAULT VALUE: "Hello! I am a bot. Type !help for a list of commands."
 # NOTE: If you do not want a comment by default, set the variable equal to an empty string ("").
-DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
+DefaultComment = "Konnichiwa Nii-chan~, type !help to play with me :3"
 
 # Maximum song duration in seconds (0 = unrestricted)
 # Default Value: 0
-MaxSongDuration = 0
+MaxSongDuration = 4200
+
+# Is playlist shuffling enabled when the bot starts?
+# Default Value: false
+AutomaticShuffleOn = false
 
 [Cache]
 
 # Cache songs as they are downloaded?
 # DEFAULT VALUE: false
-Enabled = false
+Enabled = true
 
 # Maximum total file size of cache directory (in MB)
 # DEFAULT VALUE: 512
-MaximumSize = 512
+MaximumSize = 2048
 
 # Period of time that should elapse before a song is cleared from the cache (in hours)
 # DEFAULT VALUE: 24
-ExpireTime = 24
+ExpireTime = 72
 
 
 [Volume]
 
 # Default volume
-# DEFAULT VALUE: 0.2
-DefaultVolume = 0.2
+# DEFAULT VALUE: 0.15
+DefaultVolume = 0.15
 
 # Lowest volume allowed
-# DEFAULT VALUE: 0.01
-LowestVolume = 0.01
+# DEFAULT VALUE: 0
+LowestVolume = 0
 
 # Highest volume allowed
 # DEFAULT VALUE: 0.8
-HighestVolume = 0.8
+HighestVolume = 0.6
 
  
 [Aliases]
@@ -128,6 +132,17 @@ CacheSizeAlias = "cachesize"
 # DEFAULT VALUE: "kill"
 KillAlias = "kill"
 
+# Alias used for shuffle command
+# DEFAULT VALUE: "shuffle"
+ShuffleAlias = "shuffle"
+
+# Alias used for shuffleon command
+# DEFAULT VALUE: "shuffleon"
+ShuffleOnAlias = "shuffleon"
+
+# Alias used for shuffleoff command
+# DEFAULT VALUE: "shuffleoff"
+ShuffleOffAlias = "shuffleoff"
 
 [Permissions]
 
@@ -142,7 +157,8 @@ AdminsEnabled = true
 # SYNTAX: In order to specify multiple admins, repeat the Admins="username"
 # line of code. Each line has one username, and an unlimited amount of usernames may
 # be entered in this matter.
-Admins = "Matt"
+Admins = "Shaan"
+Admins = "Ardris"
 
 # Make add an admin command?
 # DEFAULT VALUE: false
@@ -203,3 +219,7 @@ AdminCacheSize = true
 # Make kill an admin command?
 # DEFAULT VALUE: true (I recommend never changing this to false)
 AdminKill = true
+
+# Make shuffleon and shuffleoff admin commands?
+# DEFAULT VALUE: true
+AdminShuffleToggle = false

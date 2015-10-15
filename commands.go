@@ -40,7 +40,7 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
-		// Skip command
+	// Skip command
 	case dj.conf.Aliases.SkipAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminSkip) {
 			skip(user, false, false)
@@ -149,6 +149,27 @@ func parseCommand(user *gumble.User, username, command string) {
 	case dj.conf.Aliases.KillAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminKill) {
 			kill()
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}	
+	// Shuffle command
+	case dj.conf.Aliases.ShuffleAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffle) {
+			shuffleSongs(user, username)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+	// Shuffleon command
+  	case dj.conf.Aliases.ShuffleOnAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
+			toggleAutomaticShuffle(true, user, username)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+  	// Shuffleoff command
+	case dj.conf.Aliases.ShuffleOffAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
+			toggleAutomaticShuffle(false, user, username)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -391,4 +412,30 @@ func deleteSongs() error {
 		return errors.New("An error occurred while recreating the songs directory.")
 	}
 	return nil
+}
+
+// shuffles the song list
+func shuffleSongs(user *gumble.User, username string) {
+	if dj.queue.Len() > 1 {
+		dj.queue.ShuffleSongs()
+		dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_SUCCESS_MSG, username), false)
+	} else {
+		dj.SendPrivateMessage(user, CANT_SHUFFLE_MSG)
+	}
+}
+
+// handles toggling of automatic shuffle playing
+func toggleAutomaticShuffle(activate bool, user *gumble.User, username string){
+	if (dj.conf.General.AutomaticShuffleOn != activate){
+		dj.conf.General.AutomaticShuffleOn = activate
+		if (activate){
+			dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_ON_MESSAGE, username), false)
+		} else{
+			dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_OFF_MESSAGE, username), false)
+		}
+	} else if (activate){
+		dj.SendPrivateMessage(user, SHUFFLE_ACTIVATED_ERROR_MESSAGE)
+	} else{
+		dj.SendPrivateMessage(user, SHUFFLE_DEACTIVATED_ERROR_MESSAGE)
+	}
 }

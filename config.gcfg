@@ -26,6 +26,10 @@ DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
 # Default Value: 0
 MaxSongDuration = 0
 
+# Maximum songs per playlist (0 = unrestricted)
+# Default Value: 50
+MaxSongPerPlaylist = 50
+
 # Is playlist shuffling enabled when the bot starts?
 # Default Value: false
 AutomaticShuffleOn = false

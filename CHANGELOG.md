@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### October 16, 2015 -- `v2.8.3`
+* Playlists can now be over 50 songs in length (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
+* Added MaxSongPerPlaylist configuration option.
+
 ### October 14, 2015 -- `v2.8.2`
 * Fixed possible index out of range panic when auto shuffle is on (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
 

@@ -10,7 +10,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -78,7 +77,7 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) ([]Song, error) {
 
 // NewSong gathers the metadata for a song extracted from a YouTube video, and returns the song.
 func (yt YouTube) NewSong(user *gumble.User, id, offset string, playlist Playlist) (Song, error) {
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s", id, os.Getenv("YOUTUBE_API_KEY"))
+	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s", id, dj.conf.ServiceKeys.Youtube)
 	if apiResponse, err := PerformGetRequest(url); err == nil {
 		title, _ := apiResponse.String("items", "0", "snippet", "title")
 		thumbnail, _ := apiResponse.String("items", "0", "snippet", "thumbnails", "high", "url")
@@ -144,7 +143,7 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 	var songArray []Song
 	var err error
 	// Retrieve title of playlist
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s", id, os.Getenv("YOUTUBE_API_KEY"))
+	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s", id, dj.conf.ServiceKeys.Youtube)
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, err
 	}
@@ -165,7 +164,7 @@ func (yt YouTube) NewPlaylist(user *gumble.User, id string) ([]Song, error) {
 
 		// Retrieve items in this page of the playlist
 		url = fmt.Sprintf("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=%s&key=%s&pageToken=%s",
-			id, os.Getenv("YOUTUBE_API_KEY"), pageToken)
+			id, dj.conf.ServiceKeys.Youtube, pageToken)
 		if apiResponse, err = PerformGetRequest(url); err != nil {
 			return nil, err
 		}

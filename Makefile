@@ -14,6 +14,8 @@ install:
 	mkdir -p ~/.mumbledj/songs
 	if [ -f ~/.mumbledj/config/mumbledj.gcfg ]; then mv ~/.mumbledj/config/mumbledj.gcfg ~/.mumbledj/config/mumbledj_backup.gcfg; fi;
 	cp -u config.gcfg ~/.mumbledj/config/mumbledj.gcfg
+	sed -i 's/YouTube = \"/YouTube = \"'$(YOUTUBE_API_KEY)'/' ~/.mumbledj/config/mumbledj.gcfg
+	sed -i 's/SoundCloud = \"/SoundCloud = \"'$(SOUNDCLOUD_API_KEY)'/' ~/.mumbledj/config/mumbledj.gcfg
 	if [ -d ~/bin ]; then cp -f mumbledj* ~/bin/mumbledj; else sudo cp -f mumbledj* /usr/local/bin/mumbledj; fi;
 
 build:

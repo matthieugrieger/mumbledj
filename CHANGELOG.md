@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### December 7, 2015 -- `v2.8.4`
+* YouTube and SoundCloud API keys are now stored in the configuration file instead of environment variables. Existing installations with API keys in environment variables will automatically be migrated to the configuration file (thanks [@Gamah](https://github.com/Gamah)).
+
 ### October 16, 2015 -- `v2.8.3`
 * Playlists can now be over 50 songs in length (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
 * Added MaxSongPerPlaylist configuration option.

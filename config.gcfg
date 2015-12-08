@@ -229,3 +229,7 @@ AdminShuffle = true
 # Make shuffleon and shuffleoff admin commands?
 # DEFAULT VALUE: true
 AdminShuffleToggle = true
+
+[ServiceKeys]
+YouTube = ""
+SoundCloud = ""

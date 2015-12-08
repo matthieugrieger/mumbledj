@@ -85,11 +85,7 @@ Effective April 20th, 2015, all requests to YouTube's API must use v3 of their A
 
 **5)** Add the IP address of the machine MumbleDJ will run on in the box that appears. Click "Create".
 
-**6)** You should now see that an API key has been generated. Copy it.
-
-**7)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export YOUTUBE_API_KEY="<your_key_here>"`. Replace \<your_key_here\> with your API key.
-
-**8)** Close your current terminal window and open another one up. You should be able to use Youtube on MumbleDJ now!
+**6)** You should now see that an API key has been generated, make a note of it.
 
 ###SOUNDCLOUD API KEYS
 A SoundCloud API key is required for SoundCloud integration. If no SoundCloud API key is found, then the service will be disabled (YouTube links will still work however).
@@ -98,11 +94,8 @@ A SoundCloud API key is required for SoundCloud integration. If no SoundCloud AP
 
 **2)** Now to get the API key create a new app here: [http://soundcloud.com/you/apps/new](http://soundcloud.com/you/apps/new)
 
-**3)** Copy the Client ID (not the Client Secret).
+**3)** Make a note of the Client ID (not the Client Secret).
 
-**4)** Open up `~/.bashrc` with your favorite text editor (or `~/.zshrc` if you use `zsh`). Add the following line to the bottom: `export SOUNDCLOUD_API_KEY="<your_key_here>"`. Replace \<your_key_here\> with your API key.
-
-**5)** Close your current terminal window and open another one up. You should be able to use SoundCloud on MumbleDJ now!
 
 **NOTE:** If you get errors when trying to play SoundCloud audio, make sure to update `youtube-dl` with `youtube-dl -U`!
 
@@ -124,7 +117,7 @@ $ make
 $ make install
 ```
 
-**7)** Edit `~/.mumbledj/config/mumbledj.gcfg` to your liking. This file will be overwritten if the config file structure is changed in a commit, but a backup is always stored at
+**7)** Edit `~/.mumbledj/config/mumbledj.gcfg` to your liking, make sure to include your API keys! This file will be overwritten if the config file structure is changed in a commit, but a backup is always stored at
 `~/.mumbledj/config/mumbledj_backup.gcfg`.
 
 **8)** Execute the command shown at the top of this `README` document with your credentials, and the bot should be up and running!

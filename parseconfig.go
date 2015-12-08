@@ -78,6 +78,10 @@ type DjConfig struct {
 		AdminShuffle        bool
 		AdminShuffleToggle  bool
 	}
+	ServiceKeys struct {
+		Youtube		string
+		SoundCloud	string
+	}
 }
 
 // Loads mumbledj.gcfg into dj.conf, a variable of type DjConfig.

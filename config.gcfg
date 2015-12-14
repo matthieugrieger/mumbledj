@@ -146,6 +146,10 @@ ShuffleOnAlias = "shuffleon"
 # DEFAULT VALUE: "shuffleoff"
 ShuffleOffAlias = "shuffleoff"
 
+# Alias used for listsongs command
+# DEFAULT_VALUE: "listsongs"
+ListSongsAlias = "listsongs"
+
 [Permissions]
 
 # Enable admins
@@ -225,6 +229,9 @@ AdminKill = true
 # DEFAULT VALUE: true
 AdminShuffle = true
 
+# Make listSongs an admin command?
+# DEFAULT VALUE: false
+AdminListSongs = false
 
 # Make shuffleon and shuffleoff admin commands?
 # DEFAULT VALUE: true

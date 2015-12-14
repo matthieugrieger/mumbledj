@@ -118,6 +118,7 @@ const HELP_HTML = `<br/>
 	<p><b>!skip</b> - Casts a vote to skip the current song</p>
 	<p> <b>!skipplaylist</b> - Casts a vote to skip over the current playlist.</p>
 	<p><b>!numsongs</b> - Shows how many songs are in queue.</p>
+	<p><b>!listsongs</b> - Lists the songs in queue.</p>
 	<p><b>!nextsong</b> - Shows the title and submitter of the next queue item if it exists.</p>
 	<p><b>!currentsong</b> - Shows the title and submitter of the song currently playing.</p>
 	<p style="-qt-paragraph-type:empty"><br/></p>
@@ -190,4 +191,7 @@ const CURRENT_SONG_HTML = `
 // playlist is playing.
 const CURRENT_SONG_PLAYLIST_HTML = `
 	The %s currently playing is "%s", added <b>%s</b> from the %s "%s".
+`
+const SONG_LIST_HTML = `
+	<br>"%s", added by <b>%s</b<.</br>
 `

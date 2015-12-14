@@ -17,13 +17,13 @@ import (
 // DjConfig is a Golang struct representation of mumbledj.gcfg file structure for parsing.
 type DjConfig struct {
 	General struct {
-		CommandPrefix       string
-		SkipRatio           float32
-		PlaylistSkipRatio   float32
-		DefaultComment      string
-		MaxSongDuration     int
-		MaxSongPerPlaylist  int
-		AutomaticShuffleOn  bool
+		CommandPrefix      string
+		SkipRatio          float32
+		PlaylistSkipRatio  float32
+		DefaultComment     string
+		MaxSongDuration    int
+		MaxSongPerPlaylist int
+		AutomaticShuffleOn bool
 	}
 	Cache struct {
 		Enabled     bool
@@ -56,31 +56,33 @@ type DjConfig struct {
 		ShuffleAlias           string
 		ShuffleOnAlias         string
 		ShuffleOffAlias        string
+		ListSongsAlias         string
 	}
 	Permissions struct {
-		AdminsEnabled       bool
-		Admins              []string
-		AdminAdd            bool
-		AdminAddPlaylists   bool
-		AdminSkip           bool
-		AdminHelp           bool
-		AdminVolume         bool
-		AdminMove           bool
-		AdminReload         bool
-		AdminReset          bool
-		AdminNumSongs       bool
-		AdminNextSong       bool
-		AdminCurrentSong    bool
-		AdminSetComment     bool
-		AdminNumCached      bool
-		AdminCacheSize      bool
-		AdminKill           bool
-		AdminShuffle        bool
-		AdminShuffleToggle  bool
+		AdminsEnabled      bool
+		Admins             []string
+		AdminAdd           bool
+		AdminAddPlaylists  bool
+		AdminSkip          bool
+		AdminHelp          bool
+		AdminVolume        bool
+		AdminMove          bool
+		AdminReload        bool
+		AdminReset         bool
+		AdminNumSongs      bool
+		AdminNextSong      bool
+		AdminCurrentSong   bool
+		AdminSetComment    bool
+		AdminNumCached     bool
+		AdminCacheSize     bool
+		AdminKill          bool
+		AdminShuffle       bool
+		AdminShuffleToggle bool
+		AdminListSongs     bool
 	}
 	ServiceKeys struct {
-		Youtube		string
-		SoundCloud	string
+		Youtube    string
+		SoundCloud string
 	}
 }
 

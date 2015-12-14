@@ -136,7 +136,6 @@ func CheckAPIKeys() {
 	anyDisabled := false
 
 	// Checks YouTube API key
-	
 	if dj.conf.ServiceKeys.Youtube == "" {
 		anyDisabled = true
 		fmt.Printf("The youtube service has been disabled as you do not have a YouTube API key defined in your config file!\n")
@@ -230,9 +229,9 @@ func main() {
 	}
 
 	dj.defaultChannel = strings.Split(channel, "/")
-	
+
 	CheckAPIKeys()
-	
+
 	dj.client.Attach(gumbleutil.Listener{
 		Connect:     dj.OnConnect,
 		Disconnect:  dj.OnDisconnect,

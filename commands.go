@@ -41,6 +41,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+	// Addnext command
+	case dj.conf.Aliases.AddNextAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminAddNext) {
+			addNext(user, argument)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
 	// Skip command
 	case dj.conf.Aliases.SkipAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminSkip) {
@@ -202,6 +209,25 @@ func add(user *gumble.User, url string) error {
 			dj.SendPrivateMessage(user, err.Error())
 		}
 		return err
+	}
+}
+
+// addnext performs !addnext functionality. Checks input URL for service, and adds
+// the URL to the queue as the next song if the format matches.
+func addNext(user *gumble.User, url string) error {
+	if !dj.audioStream.IsPlaying() {
+		return add(user, url)
+	} else {
+		if url == "" {
+			dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
+			return errors.New("NO_ARGUMENT")
+		} else {
+			err := FindServiceAndInsertNext(user, url)
+			if err != nil {
+				dj.SendPrivateMessage(user, err.Error())
+			}
+			return err
+		}
 	}
 }
 

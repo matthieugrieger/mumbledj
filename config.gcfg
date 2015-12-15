@@ -70,6 +70,10 @@ HighestVolume = 0.8
 # DEFAULT VALUE: "add"
 AddAlias = "add"
 
+# Alias used for addnext command
+# DEFAULT VALUE: "addnext"
+AddNextAlias = "addnext"
+
 # Alias used for skip command
 # DEFAULT VALUE: "skip"
 SkipAlias = "skip"
@@ -168,6 +172,10 @@ Admins = "Matt"
 # Make add an admin command?
 # DEFAULT VALUE: false
 AdminAdd = false
+
+# Make addnext an admin command?
+# DEFAULT VALUE: true
+AdminAddNext = true
 
 # Make playlist adds an admin only action?
 # DEFAULT VALUE: false

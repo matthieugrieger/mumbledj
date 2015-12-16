@@ -61,7 +61,7 @@ Command | Description | Arguments | Admin | Example
 **numsongs** | Outputs the number of songs in the queue in chat. Individual songs and songs within playlists are both counted. | None | No | `!numsongs`
 **nextsong** | Outputs the title and name of the submitter of the next song in the queue if it exists. | None | No | `!nextsong`
 **currentsong** | Outputs the title and name of the submitter of the song currently playing. | None | No | `!currentsong`
-**listsongs** | Outputs a list of the songs currently in the queue. | None | No | `!listsongs`
+**listsongs** | Outputs a list of the songs currently in the queue. | None or desired number of songs to list | No | `!listsongs`
 **setcomment** | Sets the comment for the bot. If no argument is given, the current comment will be removed. | None OR new_comment | Yes | `!setcomment Hello! I am a bot. Type !help for the available commands.`
 **numcached** | Outputs the number of songs currently cached on disk. | None | Yes | `!numcached`
 **cachesize** | Outputs the total file size of the cache in MB. | None | Yes | `!cachesize`

@@ -203,6 +203,8 @@ const CURRENT_SONG_HTML = `
 const CURRENT_SONG_PLAYLIST_HTML = `
 	The %s currently playing is "%s", added <b>%s</b> from the %s "%s".
 `
+
+// Message shown to user when the listsongs command is issued
 const SONG_LIST_HTML = `
-	<br>"%s", added by <b>%s</b<.</br>
+	<br>%d: "%s", added by <b>%s</b<.</br>
 `

@@ -44,9 +44,10 @@ These are all of the chat commands currently supported by MumbleDJ. All command 
 
 Command | Description | Arguments | Admin | Example
 --------|-------------|-----------|-------|--------
-**add** | Adds audio from a url to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. Playlists may also be added using this command. Please note, however, that if a YouTube playlist contains over 25 videos only the first 25 videos will be placed in the song queue. | youtube_video_url OR youtube_playlist_url OR soundcloud_track_url OR soundcloud_playlist_url | No | `!add https://www.youtube.com/watch?v=5xfEr2Oxdys`
+**add** | Adds audio from a url to the song queue. If no songs are currently in the queue, the audio will begin playing immediately. Playlists may also be added using this command. The maximum amount of songs that can be added from a playlist is specified in `mumbledj.gcfg`. | youtube_video_url OR youtube_playlist_url OR soundcloud_track_url OR soundcloud_playlist_url | No | `!add https://www.youtube.com/watch?v=5xfEr2Oxdys`
+**addnext** | Adds audio from a url to the song queue after the current song. If no songs are currently in the queue, the audio will begin playing immediately. Playlists may also be added using this command. The maximum amount of songs that can be added from a playlist is specified in `mumbledj.gcfg`. | youtube_video_url OR youtube_playlist_url OR soundcloud_track_url OR soundcloud_playlist_url | Yes | `!addnext https://www.youtube.com/watch?v=5xfEr2Oxdys`
 **skip**| Submits a vote to skip the current song. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the song will be skipped and the next will start playing. Each user may only submit one skip per song. | None | No | `!skip`
-**skipplaylist** | Submits a vote to skip the current playlist. Once the skip ratio target (specified in mumbledj.gcfg) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist. | None | No | `!skipplaylist`
+**skipplaylist** | Submits a vote to skip the current playlist. Once the skip ratio target (specified in `mumbledj.gcfg`) is met, the playlist will be skipped and the next song/playlist will start playing. Each user may only submit one skip per playlist. | None | No | `!skipplaylist`
 **forceskip** | An admin command that forces a song skip. | None | Yes | `!forceskip`
 **forceskipplaylist** | An admin command that forces a playlist skip. | None | Yes | `!forceskipplaylist`
 **shuffle** | An admin command that shuffles the current queue. | None | Yes | `!shuffle`
@@ -60,7 +61,7 @@ Command | Description | Arguments | Admin | Example
 **numsongs** | Outputs the number of songs in the queue in chat. Individual songs and songs within playlists are both counted. | None | No | `!numsongs`
 **nextsong** | Outputs the title and name of the submitter of the next song in the queue if it exists. | None | No | `!nextsong`
 **currentsong** | Outputs the title and name of the submitter of the song currently playing. | None | No | `!currentsong`
-**listsongs** | Outputs a list of the songs currently in the queue. | None | No | `!listsongs`
+**listsongs** | Outputs a list of the songs currently in the queue. | None or desired number of songs to list | No | `!listsongs`
 **setcomment** | Sets the comment for the bot. If no argument is given, the current comment will be removed. | None OR new_comment | Yes | `!setcomment Hello! I am a bot. Type !help for the available commands.`
 **numcached** | Outputs the number of songs currently cached on disk. | None | Yes | `!numcached`
 **cachesize** | Outputs the total file size of the cache in MB. | None | Yes | `!cachesize`

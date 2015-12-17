@@ -41,6 +41,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+	// Addnext command
+	case dj.conf.Aliases.AddNextAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminAddNext) {
+			addNext(user, argument)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
 	// Skip command
 	case dj.conf.Aliases.SkipAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminSkip) {
@@ -181,7 +188,7 @@ func parseCommand(user *gumble.User, username, command string) {
 	// ListSongs command
 	case dj.conf.Aliases.ListSongsAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminListSongs) {
-			listSongs(user)
+			listSongs(user, argument)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -202,6 +209,25 @@ func add(user *gumble.User, url string) error {
 			dj.SendPrivateMessage(user, err.Error())
 		}
 		return err
+	}
+}
+
+// addnext performs !addnext functionality. Checks input URL for service, and adds
+// the URL to the queue as the next song if the format matches.
+func addNext(user *gumble.User, url string) error {
+	if !dj.audioStream.IsPlaying() {
+		return add(user, url)
+	} else {
+		if url == "" {
+			dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
+			return errors.New("NO_ARGUMENT")
+		} else {
+			err := FindServiceAndInsertNext(user, url)
+			if err != nil {
+				dj.SendPrivateMessage(user, err.Error())
+			}
+			return err
+		}
 	}
 }
 
@@ -452,11 +478,23 @@ func toggleAutomaticShuffle(activate bool, user *gumble.User, username string) {
 }
 
 // listSongs handles !listSongs functionality. Sends a private message to the user a list of all songs in the queue
-func listSongs(user *gumble.User) {
+func listSongs(user *gumble.User, value string) {
 	if dj.audioStream.IsPlaying() {
+		num := 0
+		if value == "" {
+			num = dj.queue.Len()
+		} else {
+			if parsedNum, err := strconv.Atoi(value); err != nil {
+				num = dj.queue.Len()
+			} else {
+				num = parsedNum
+			}
+		}
 		var buffer bytes.Buffer
 		dj.queue.Traverse(func(i int, song Song) {
-			buffer.WriteString(fmt.Sprintf(SONG_LIST_HTML, song.Title(), song.Submitter()))
+			if i < num {
+				buffer.WriteString(fmt.Sprintf(SONG_LIST_HTML, i+1, song.Title(), song.Submitter()))
+			}
 		})
 		dj.SendPrivateMessage(user, buffer.String())
 	} else {

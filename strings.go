@@ -99,6 +99,16 @@ const PLAYLIST_ADDED_HTML = `
 	<b>%s</b> has added the playlist "%s" to the queue.
 `
 
+// Message shown to channel when a song is added to the queue by a user after the current song.
+const NEXT_SONG_ADDED_HTML = `
+	<b>%s</b> has added "%s" to the queue after the current song.
+`
+
+// Message shown to channel when a playlist is added to the queue by a user after the current song.
+const NEXT_PLAYLIST_ADDED_HTML = `
+	<b>%s</b> has added the playlist "%s" to the queue after the current song.
+`
+
 // Message shown to channel when a song has been skipped.
 const SONG_SKIPPED_HTML = `
 	The number of votes required for a skip has been met. <b>Skipping song!</b>
@@ -123,6 +133,7 @@ const HELP_HTML = `<br/>
 	<p><b>!currentsong</b> - Shows the title and submitter of the song currently playing.</p>
 	<p style="-qt-paragraph-type:empty"><br/></p>
 	<p><b>Admin Commands:</b></p>
+	<p><b>!addnext</b> - Adds songs/playlists to queue after the current song.</p>
 	<p><b>!reset</b> - An admin command that resets the song queue. </p>
 	<p><b>!forceskip</b> - An admin command that forces a song skip. </p>
 	<p><b>!forceskipplaylist</b> - An admin command that forces a playlist skip. </p>
@@ -192,6 +203,8 @@ const CURRENT_SONG_HTML = `
 const CURRENT_SONG_PLAYLIST_HTML = `
 	The %s currently playing is "%s", added <b>%s</b> from the %s "%s".
 `
+
+// Message shown to user when the listsongs command is issued
 const SONG_LIST_HTML = `
-	<br>"%s", added by <b>%s</b<.</br>
+	<br>%d: "%s", added by <b>%s</b<.</br>
 `

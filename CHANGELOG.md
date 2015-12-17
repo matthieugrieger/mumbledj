@@ -1,8 +1,12 @@
 MumbleDJ Changelog
 ==================
 
+### December 16, 2015 -- `v2.8.6`
+* Added !addnext command (thanks [@nkhoit](https://github.com/nkhoit)).
+* Added argument to !listsongs command to specify how many songs to list (thanks [@nkhoit](https://github.com/nkhoit)).
+
 ### December 14, 2015 -- `v2.8.5`
-* Added !listsongs command (thanks [@nkhoit] (https://github.com/nkhoit)). 
+* Added !listsongs command (thanks [@nkhoit](https://github.com/nkhoit)). 
 
 ### December 7, 2015 -- `v2.8.4`
 * YouTube and SoundCloud API keys are now stored in the configuration file instead of environment variables. Existing installations with API keys in environment variables will automatically be migrated to the configuration file (thanks [@Gamah](https://github.com/Gamah)).

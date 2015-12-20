@@ -34,6 +34,10 @@ MaxSongPerPlaylist = 50
 # Default Value: false
 AutomaticShuffleOn = false
 
+# Announce song information at start of track
+# Default Value: true
+AnnounceNewTrack = true
+
 [Cache]
 
 # Cache songs as they are downloaded?

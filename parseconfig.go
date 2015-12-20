@@ -24,6 +24,7 @@ type DjConfig struct {
 		MaxSongDuration    int
 		MaxSongPerPlaylist int
 		AutomaticShuffleOn bool
+		AnnounceNewTrack   bool
 	}
 	Cache struct {
 		Enabled     bool

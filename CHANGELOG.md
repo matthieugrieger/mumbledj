@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### December 19, 2015 -- `v2.8.7`
+* Added AnnounceNewTracks config option (thanks [@HowIChrgeLazer](https://github.com/HowIChrgeLazer)).
+
 ### December 16, 2015 -- `v2.8.6`
 * Added !addnext command (thanks [@nkhoit](https://github.com/nkhoit)).
 * Added argument to !listsongs command to specify how many songs to list (thanks [@nkhoit](https://github.com/nkhoit)).

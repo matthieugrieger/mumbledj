@@ -91,7 +91,7 @@ func (dl *AudioTrack) Play() {
 		if !isNil(dl.playlist) {
 			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.Playlist().Title())
 		}
-		if dj.conf.General.AnnounceNewTrack == true {
+		if dj.conf.General.AnnounceNewTrack {
 			dj.client.Self.Channel.Send(message+`</table>`, false)
 		}
 		go func() {

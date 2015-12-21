@@ -206,5 +206,5 @@ const CURRENT_SONG_PLAYLIST_HTML = `
 
 // Message shown to user when the listsongs command is issued
 const SONG_LIST_HTML = `
-	<br>%d: "%s", added by <b>%s</b<.</br>
+	<br>%d: "%s", added by <b>%s</b>.</br>
 `

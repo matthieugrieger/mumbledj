@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### December 21, 2015 -- `v2.8.8`
+* Fixed a typo in song list HTML (thanks [@mkody](https://github.com/mkody)).
+
 ### December 19, 2015 -- `v2.8.7`
 * Added AnnounceNewTracks config option (thanks [@HowIChrgeLazer](https://github.com/HowIChrgeLazer)).
 

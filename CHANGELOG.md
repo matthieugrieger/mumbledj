@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### December 26, 2015 -- `v2.8.9`
+* Fixed an incorrect `!currentsong` message for songs within playlists.
+
 ### December 21, 2015 -- `v2.8.8`
 * Fixed a typo in song list HTML (thanks [@mkody](https://github.com/mkody)).
 

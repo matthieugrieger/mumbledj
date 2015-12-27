@@ -201,7 +201,7 @@ const CURRENT_SONG_HTML = `
 // Message shown to users when the currentsong command is issued when a song from a
 // playlist is playing.
 const CURRENT_SONG_PLAYLIST_HTML = `
-	The %s currently playing is "%s", added <b>%s</b> from the %s "%s".
+	The song currently playing is "%s", added <b>%s</b> from the playlist "%s".
 `
 
 // Message shown to user when the listsongs command is issued

@@ -51,6 +51,12 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	dj.audioStream = gumble_ffmpeg.New(dj.client)
 	dj.audioStream.Volume = dj.conf.Volume.DefaultVolume
 
+	if dj.conf.General.PlayerCommand == "ffmpeg" || dj.conf.General.PlayerCommand == "avconv" {
+		dj.audioStream.Command = dj.conf.General.PlayerCommand
+	} else {
+		fmt.Println("Invalid PlayerCommand configuration value. Only \"ffmpeg\" and \"avconv\" are supported. Defaulting to ffmpeg...")
+	}
+
 	dj.client.AudioEncoder.SetApplication(gopus.Audio)
 
 	dj.client.Self.SetComment(dj.conf.General.DefaultComment)

@@ -38,6 +38,10 @@ AutomaticShuffleOn = false
 # Default Value: true
 AnnounceNewTrack = true
 
+# Command to use to play audio files. The two supported choices are "ffmpeg" and "avconv".
+# Default Value: "ffmpeg"
+PlayerCommand = "ffmpeg"
+
 [Cache]
 
 # Cache songs as they are downloaded?

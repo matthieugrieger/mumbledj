@@ -10,7 +10,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
@@ -50,7 +49,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 	var songArray []Song
 	var err error
 	timesplit := strings.Split(url, "#t=")
-	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", timesplit[0], os.Getenv("SOUNDCLOUD_API_KEY"))
+	url = fmt.Sprintf("http://api.soundcloud.com/resolve?url=%s&client_id=%s", timesplit[0], dj.conf.ServiceKeys.SoundCloud)
 	if apiResponse, err = PerformGetRequest(url); err != nil {
 		return nil, errors.New(fmt.Sprintf(INVALID_API_KEY, sc.ServiceName()))
 	}
@@ -66,6 +65,9 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 			title: title,
 		}
 
+		if (dj.conf.General.MaxSongPerPlaylist > 0 && len(tracks) > dj.conf.General.MaxSongPerPlaylist){
+		   tracks = tracks[:dj.conf.General.MaxSongPerPlaylist]
+		}
 		// Add all tracks
 		for _, t := range tracks {
 			if song, err := sc.NewSong(user, jsonq.NewQuery(t), 0, playlist); err == nil {

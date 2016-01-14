@@ -54,7 +54,6 @@ type AudioPlaylist struct {
 // Download downloads the song via youtube-dl if it does not already exist on disk.
 // All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
 func (dl *AudioTrack) Download() error {
-	fmt.Sprintf("downloading")
 	dl.waitgroup.Wait()
 	// Checks to see if song is already downloaded
 	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())); os.IsNotExist(err) {
@@ -95,8 +94,9 @@ func (dl *AudioTrack) Play() {
 		if !isNil(dl.playlist) {
 			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, dl.Playlist().Title())
 		}
-		dj.client.Self.Channel.Send(message+`</table>`, false)
-
+		if dj.conf.General.AnnounceNewTrack {
+			dj.client.Self.Channel.Send(message+`</table>`, false)
+		}
 		go func() {
 			dj.audioStream.Wait()
 			dj.queue.OnSongFinished()

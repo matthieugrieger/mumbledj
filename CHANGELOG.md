@@ -1,6 +1,45 @@
 MumbleDJ Changelog
 ==================
 
+### January 14, 2015 -- `v2.8.11`
+* Fixed: Unable to use offsets if it's formatted as &t vs ?t in the URL (thanks [@fiveofeight](https://github.com/fiveofeight)).
+
+### January 11, 2015 -- `v2.8.10`
+* Created a new configuration value in the General section called PlayerCommand. This allows the user to change between "ffmpeg" and "avconv" for playing audio files.
+* Added check for valid PlayerCommand value. If the value is invalid the bot will default to `ffmpeg`.
+
+### December 26, 2015 -- `v2.8.9`
+* Fixed an incorrect `!currentsong` message for songs within playlists.
+
+### December 21, 2015 -- `v2.8.8`
+* Fixed a typo in song list HTML (thanks [@mkody](https://github.com/mkody)).
+
+### December 19, 2015 -- `v2.8.7`
+* Added AnnounceNewTracks config option (thanks [@HowIChrgeLazer](https://github.com/HowIChrgeLazer)).
+
+### December 16, 2015 -- `v2.8.6`
+* Added !addnext command (thanks [@nkhoit](https://github.com/nkhoit)).
+* Added argument to !listsongs command to specify how many songs to list (thanks [@nkhoit](https://github.com/nkhoit)).
+
+### December 14, 2015 -- `v2.8.5`
+* Added !listsongs command (thanks [@nkhoit](https://github.com/nkhoit)).
+
+### December 7, 2015 -- `v2.8.4`
+* YouTube and SoundCloud API keys are now stored in the configuration file instead of environment variables. Existing installations with API keys in environment variables will automatically be migrated to the configuration file (thanks [@Gamah](https://github.com/Gamah)).
+
+### October 16, 2015 -- `v2.8.3`
+* Playlists can now be over 50 songs in length (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
+* Added MaxSongPerPlaylist configuration option.
+
+### October 14, 2015 -- `v2.8.2`
+* Fixed possible index out of range panic when auto shuffle is on (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
+
+### October 12, 2015 -- `v2.8.1`
+* Added !shuffle, !shuffleon, and !shuffleoff commands (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
+
+### October 1, 2015 -- `v2.8.0`
+* Added Soundcloud support (thanks [@MichaelOultram](https://github.com/MichaelOultram)).
+
 ### August 12, 2015 -- `v2.7.5`
 * Fixed cache clearing earlier than expected (thanks [@CMahaff](https://github.com/CMahaff)).
 

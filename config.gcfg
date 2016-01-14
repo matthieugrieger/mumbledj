@@ -20,52 +20,67 @@ PlaylistSkipRatio = 0
 # Default comment to be applied to bot.
 # DEFAULT VALUE: "Hello! I am a bot. Type !help for a list of commands."
 # NOTE: If you do not want a comment by default, set the variable equal to an empty string ("").
-DefaultComment = "Konnichiwa Nii-chan~, type !help to play with me :3"
+DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
 
 # Maximum song duration in seconds (0 = unrestricted)
 # Default Value: 0
-MaxSongDuration = 4200
+MaxSongDuration = 5000
+
+# Maximum songs per playlist (0 = unrestricted)
+# Default Value: 50
+MaxSongPerPlaylist = 50
 
 # Is playlist shuffling enabled when the bot starts?
 # Default Value: false
 AutomaticShuffleOn = false
 
+# Announce song information at start of track
+# Default Value: true
+AnnounceNewTrack = true
+
+# Command to use to play audio files. The two supported choices are "ffmpeg" and "avconv".
+# Default Value: "ffmpeg"
+PlayerCommand = "ffmpeg"
+
 [Cache]
 
 # Cache songs as they are downloaded?
 # DEFAULT VALUE: false
-Enabled = true
+Enabled = false
 
 # Maximum total file size of cache directory (in MB)
 # DEFAULT VALUE: 512
-MaximumSize = 2048
+MaximumSize = 512
 
 # Period of time that should elapse before a song is cleared from the cache (in hours)
 # DEFAULT VALUE: 24
-ExpireTime = 72
+ExpireTime = 24
 
 
 [Volume]
 
 # Default volume
-# DEFAULT VALUE: 0.15
+# DEFAULT VALUE: 0.2
 DefaultVolume = 0.15
 
 # Lowest volume allowed
-# DEFAULT VALUE: 0
+# DEFAULT VALUE: 0.01
 LowestVolume = 0
 
 # Highest volume allowed
 # DEFAULT VALUE: 0.8
 HighestVolume = 0.6
 
- 
+
 [Aliases]
 
 # Alias used for add command
 # DEFAULT VALUE: "add"
 AddAlias = "add"
-AddAlias2 = "ADD"
+
+# Alias used for addnext command
+# DEFAULT VALUE: "addnext"
+AddNextAlias = "addnext"
 
 # Alias used for skip command
 # DEFAULT VALUE: "skip"
@@ -90,7 +105,7 @@ HelpAlias = "help"
 # Alias used for volume command
 # DEFAULT VALUE: "volume"
 VolumeAlias = "volume"
-VolumeAlias2 = "v"
+VolumeAliasTwo = "v"
 
 # Alias used for move command
 # DEFAULT VALUE: "move"
@@ -144,6 +159,10 @@ ShuffleOnAlias = "shuffleon"
 # DEFAULT VALUE: "shuffleoff"
 ShuffleOffAlias = "shuffleoff"
 
+# Alias used for listsongs command
+# DEFAULT_VALUE: "listsongs"
+ListSongsAlias = "listsongs"
+
 [Permissions]
 
 # Enable admins
@@ -163,6 +182,10 @@ Admins = "Ardris"
 # Make add an admin command?
 # DEFAULT VALUE: false
 AdminAdd = false
+
+# Make addnext an admin command?
+# DEFAULT VALUE: true
+AdminAddNext = true
 
 # Make playlist adds an admin only action?
 # DEFAULT VALUE: false
@@ -220,6 +243,18 @@ AdminCacheSize = true
 # DEFAULT VALUE: true (I recommend never changing this to false)
 AdminKill = true
 
+# Make shuffle an admin command?
+# DEFAULT VALUE: true
+AdminShuffle = true
+
+# Make listSongs an admin command?
+# DEFAULT VALUE: false
+AdminListSongs = false
+
 # Make shuffleon and shuffleoff admin commands?
 # DEFAULT VALUE: true
-AdminShuffleToggle = false
+AdminShuffleToggle = true
+
+[ServiceKeys]
+YouTube = ""
+SoundCloud = ""

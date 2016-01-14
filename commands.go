@@ -8,6 +8,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -33,10 +34,17 @@ func parseCommand(user *gumble.User, username, command string) {
 	}
 
 	switch com {
-	// Add commands
-	case dj.conf.Aliases.AddAlias, dj.conf.Aliases.AddAlias2:
+	// Add command
+	case dj.conf.Aliases.AddAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAdd) {
 			add(user, argument)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+	// Addnext command
+	case dj.conf.Aliases.AddNextAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminAddNext) {
+			addNext(user, argument)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -75,8 +83,8 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
-	// Volume commands
-	case dj.conf.Aliases.VolumeAlias, dj.conf.Aliases.VolumeAlias2:
+	// Volume command
+	case dj.conf.Aliases.VolumeAlias, dj.conf.Aliases.VolumeAliasTwo:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminVolume) {
 			volume(user, argument)
 		} else {
@@ -151,7 +159,8 @@ func parseCommand(user *gumble.User, username, command string) {
 			kill()
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
-		}	
+		}
+
 	// Shuffle command
 	case dj.conf.Aliases.ShuffleAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffle) {
@@ -159,17 +168,27 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+
 	// Shuffleon command
-  	case dj.conf.Aliases.ShuffleOnAlias:
+	case dj.conf.Aliases.ShuffleOnAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
 			toggleAutomaticShuffle(true, user, username)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
-  	// Shuffleoff command
+
+	// Shuffleoff command
 	case dj.conf.Aliases.ShuffleOffAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminShuffleToggle) {
 			toggleAutomaticShuffle(false, user, username)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
+
+	// ListSongs command
+	case dj.conf.Aliases.ListSongsAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminListSongs) {
+			listSongs(user, argument)
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
@@ -177,7 +196,6 @@ func parseCommand(user *gumble.User, username, command string) {
 		dj.SendPrivateMessage(user, COMMAND_DOESNT_EXIST_MSG)
 	}
 }
-
 
 // add performs !add functionality. Checks input URL for service, and adds
 // the URL to the queue if the format matches.
@@ -191,6 +209,25 @@ func add(user *gumble.User, url string) error {
 			dj.SendPrivateMessage(user, err.Error())
 		}
 		return err
+	}
+}
+
+// addnext performs !addnext functionality. Checks input URL for service, and adds
+// the URL to the queue as the next song if the format matches.
+func addNext(user *gumble.User, url string) error {
+	if !dj.audioStream.IsPlaying() {
+		return add(user, url)
+	} else {
+		if url == "" {
+			dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
+			return errors.New("NO_ARGUMENT")
+		} else {
+			err := FindServiceAndInsertNext(user, url)
+			if err != nil {
+				dj.SendPrivateMessage(user, err.Error())
+			}
+			return err
+		}
 	}
 }
 
@@ -425,17 +462,42 @@ func shuffleSongs(user *gumble.User, username string) {
 }
 
 // handles toggling of automatic shuffle playing
-func toggleAutomaticShuffle(activate bool, user *gumble.User, username string){
-	if (dj.conf.General.AutomaticShuffleOn != activate){
+func toggleAutomaticShuffle(activate bool, user *gumble.User, username string) {
+	if dj.conf.General.AutomaticShuffleOn != activate {
 		dj.conf.General.AutomaticShuffleOn = activate
-		if (activate){
+		if activate {
 			dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_ON_MESSAGE, username), false)
-		} else{
+		} else {
 			dj.client.Self.Channel.Send(fmt.Sprintf(SHUFFLE_OFF_MESSAGE, username), false)
 		}
-	} else if (activate){
+	} else if activate {
 		dj.SendPrivateMessage(user, SHUFFLE_ACTIVATED_ERROR_MESSAGE)
-	} else{
+	} else {
 		dj.SendPrivateMessage(user, SHUFFLE_DEACTIVATED_ERROR_MESSAGE)
+	}
+}
+
+// listSongs handles !listSongs functionality. Sends a private message to the user a list of all songs in the queue
+func listSongs(user *gumble.User, value string) {
+	if dj.audioStream.IsPlaying() {
+		num := 0
+		if value == "" {
+			num = dj.queue.Len()
+		} else {
+			if parsedNum, err := strconv.Atoi(value); err != nil {
+				num = dj.queue.Len()
+			} else {
+				num = parsedNum
+			}
+		}
+		var buffer bytes.Buffer
+		dj.queue.Traverse(func(i int, song Song) {
+			if i < num {
+				buffer.WriteString(fmt.Sprintf(SONG_LIST_HTML, i+1, song.Title(), song.Submitter()))
+			}
+		})
+		dj.SendPrivateMessage(user, buffer.String())
+	} else {
+		dj.SendPrivateMessage(user, NO_MUSIC_PLAYING_MSG)
 	}
 }

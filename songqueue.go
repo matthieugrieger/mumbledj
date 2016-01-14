@@ -10,13 +10,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"time"
 	"math/rand"
+	"time"
 )
 
-// Initialize the random seed.
 func init() {
-    rand.Seed(time.Now().UTC().UnixNano())
+	rand.Seed(time.Now().UTC().UnixNano())
 }
 
 // SongQueue type declaration.
@@ -39,6 +38,16 @@ func (q *SongQueue) AddSong(s Song) error {
 		return nil
 	}
 	return errors.New("Could not add Song to the SongQueue.")
+}
+
+// InsertSong inserts a Song to the SongQueue at a location.
+func (q *SongQueue) InsertSong(s Song, i int) error {
+	beforeLen := q.Len()
+	q.queue = append(q.queue[:i], append([]Song{s}, q.queue[i:]...)...)
+	if len(q.queue) == beforeLen+1 {
+		return nil
+	}
+	return errors.New("Could not insert Song to the SongQueue.")
 }
 
 // CurrentSong returns the current Song.
@@ -65,7 +74,7 @@ func (q *SongQueue) NextSong() {
 // PeekNext peeks at the next Song and returns it.
 func (q *SongQueue) PeekNext() (Song, error) {
 	if q.Len() > 1 {
-		if dj.conf.General.AutomaticShuffleOn{		//Shuffle mode is active
+		if dj.conf.General.AutomaticShuffleOn { //Shuffle mode is active
 			q.RandomNextSong(false)
 		}
 		return q.queue[1], nil
@@ -124,21 +133,21 @@ func (q *SongQueue) PrepareAndPlayNextSong() {
 
 // Shuffles the songqueue using inside-out algorithm
 func (q *SongQueue) ShuffleSongs() {
-	for i := range q.queue[1:] {	//Don't touch currently playing song
-	    j := rand.Intn(i + 1)
-	    q.queue[i + 1], q.queue[j + 1] = q.queue[j + 1], q.queue[i + 1]
+	for i := range q.queue[1:] { //Don't touch currently playing song
+		j := rand.Intn(i + 1)
+		q.queue[i+1], q.queue[j+1] = q.queue[j+1], q.queue[i+1]
 	}
 }
 
 // Sets a random song as next song to be played
 // queueWasEmpty wether the queue was empty before adding the last song
-func (q *SongQueue) RandomNextSong(queueWasEmpty bool){
-	if (q.Len() > 1){
+func (q *SongQueue) RandomNextSong(queueWasEmpty bool) {
+	if q.Len() > 1 {
 		nextSongIndex := 1
-		if queueWasEmpty{
+		if queueWasEmpty {
 			nextSongIndex = 0
 		}
-		swapIndex := nextSongIndex + rand.Intn(q.Len() - 1)
+		swapIndex := nextSongIndex + rand.Intn(q.Len()-1)
 		q.queue[nextSongIndex], q.queue[swapIndex] = q.queue[swapIndex], q.queue[nextSongIndex]
 	}
 }

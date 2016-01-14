@@ -51,6 +51,12 @@ func (dj *mumbledj) OnConnect(e *gumble.ConnectEvent) {
 	dj.audioStream = gumble_ffmpeg.New(dj.client)
 	dj.audioStream.Volume = dj.conf.Volume.DefaultVolume
 
+	if dj.conf.General.PlayerCommand == "ffmpeg" || dj.conf.General.PlayerCommand == "avconv" {
+		dj.audioStream.Command = dj.conf.General.PlayerCommand
+	} else {
+		fmt.Println("Invalid PlayerCommand configuration value. Only \"ffmpeg\" and \"avconv\" are supported. Defaulting to ffmpeg...")
+	}
+
 	dj.client.AudioEncoder.SetApplication(gopus.Audio)
 
 	dj.client.Self.SetComment(dj.conf.General.DefaultComment)
@@ -136,17 +142,17 @@ func CheckAPIKeys() {
 	anyDisabled := false
 
 	// Checks YouTube API key
-	if os.Getenv("YOUTUBE_API_KEY") == "" {
+	if dj.conf.ServiceKeys.Youtube == "" {
 		anyDisabled = true
-		fmt.Printf("The youtube service has been disabled as you do not have a YouTube API key defined in your environment variables.\n")
+		fmt.Printf("The youtube service has been disabled as you do not have a YouTube API key defined in your config file!\n")
 	} else {
 		services = append(services, YouTube{})
 	}
 
 	// Checks Soundcloud API key
-	if os.Getenv("SOUNDCLOUD_API_KEY") == "" {
+	if dj.conf.ServiceKeys.SoundCloud == "" {
 		anyDisabled = true
-		fmt.Printf("The soundcloud service has been disabled as you do not have a Soundcloud API key defined in your environment variables.\n")
+		fmt.Printf("The soundcloud service has been disabled as you do not have a Soundcloud API key defined in your config file!\n")
 	} else {
 		services = append(services, SoundCloud{})
 	}
@@ -180,8 +186,6 @@ var dj = mumbledj{
 // main primarily performs startup tasks. Grabs and parses commandline
 // args, sets up the gumble client and its listeners, and then connects to the server.
 func main() {
-
-	CheckAPIKeys()
 
 	if currentUser, err := user.Current(); err == nil {
 		dj.homeDir = currentUser.HomeDir
@@ -231,6 +235,8 @@ func main() {
 	}
 
 	dj.defaultChannel = strings.Split(channel, "/")
+
+	CheckAPIKeys()
 
 	dj.client.Attach(gumbleutil.Listener{
 		Connect:     dj.OnConnect,

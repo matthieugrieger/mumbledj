@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 14, 2015 -- `v2.8.11`
+* Fixed: Unable to use offsets if it's formatted as &t vs ?t in the URL (thanks [@fiveofeight](https://github.com/fiveofeight)).
+
 ### January 11, 2015 -- `v2.8.10`
 * Created a new configuration value in the General section called PlayerCommand. This allows the user to change between "ffmpeg" and "avconv" for playing audio files.
 * Added check for valid PlayerCommand value. If the value is invalid the bot will default to `ffmpeg`.

@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### January 26, 2015 -- `v2.8.12`
+* Temporarily fixed discontinued code.google.com imports.
+
 ### January 14, 2015 -- `v2.8.11`
 * Fixed: Unable to use offsets if it's formatted as &t vs ?t in the URL (thanks [@fiveofeight](https://github.com/fiveofeight)).
 

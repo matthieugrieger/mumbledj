@@ -11,7 +11,7 @@ import (
 	"errors"
 	"fmt"
 
-	"code.google.com/p/gcfg"
+	"github.com/scalingdata/gcfg"
 )
 
 // DjConfig is a Golang struct representation of mumbledj.gcfg file structure for parsing.

@@ -192,6 +192,14 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+
+        // Version command
+        case dj.conf.Aliases.VersionAlias:
+                if dj.HasPermission(username, dj.conf.Permissions.AdminVersion) {
+                        version(user)
+                } else {
+                        dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+                }
 	default:
 		dj.SendPrivateMessage(user, COMMAND_DOESNT_EXIST_MSG)
 	}
@@ -501,3 +509,9 @@ func listSongs(user *gumble.User, value string) {
 		dj.SendPrivateMessage(user, NO_MUSIC_PLAYING_MSG)
 	}
 }
+
+// version handles !version functionality. Sends a private message to the user with the most recent version of MumbleDJ 
+func version(user *gumble.User) {
+        dj.SendPrivateMessage(user, DJ_VERSION)
+}
+  

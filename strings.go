@@ -8,10 +8,10 @@
 package main
 
 // Current version of the bot 
-const VERSION = "v2.8.12"
+const VERSION = "v2.8.13"
 
 // Message shown to users when they request the version of the bot 
-const DJ_VERSION = "I'm currently running version MumbleDJ <b>" + VERSION + "</b>."
+const DJ_VERSION = "MumbleDJ <b>" + VERSION + "</b>"
 
 // Message shown to users when the bot has an invalid API key.
 const INVALID_API_KEY = "MumbleDJ does not have a valid %s API key."

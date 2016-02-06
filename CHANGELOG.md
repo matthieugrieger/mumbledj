@@ -1,13 +1,17 @@
 MumbleDJ Changelog
 ==================
 
-### January 26, 2015 -- `v2.8.12`
+### February 6, 2016 -- `v2.8.13`
+* Added `!version` command to display the version of MumbleDJ that is running (thanks [@zeblau](https://github.com/zeblau)).
+* Added `version` commandline argument to display the version of MumbleDJ that is running (thanks [@zeblau](https://github.com/zeblau)).
+
+### January 26, 2016 -- `v2.8.12`
 * Temporarily fixed discontinued code.google.com imports.
 
-### January 14, 2015 -- `v2.8.11`
+### January 14, 2016 -- `v2.8.11`
 * Fixed: Unable to use offsets if it's formatted as &t vs ?t in the URL (thanks [@fiveofeight](https://github.com/fiveofeight)).
 
-### January 11, 2015 -- `v2.8.10`
+### January 11, 2016 -- `v2.8.10`
 * Created a new configuration value in the General section called PlayerCommand. This allows the user to change between "ffmpeg" and "avconv" for playing audio files.
 * Added check for valid PlayerCommand value. If the value is invalid the bot will default to `ffmpeg`.
 

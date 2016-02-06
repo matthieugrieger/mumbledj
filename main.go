@@ -199,6 +199,7 @@ func main() {
 
 	var address, port, username, password, channel, pemCert, pemKey, accesstokens string
 	var insecure bool
+	var version bool
 
 	flag.StringVar(&address, "server", "localhost", "address for Mumble server")
 	flag.StringVar(&port, "port", "64738", "port for Mumble server")
@@ -209,7 +210,13 @@ func main() {
 	flag.StringVar(&pemKey, "key", "", "path to user PEM key for MumbleDJ")
 	flag.StringVar(&accesstokens, "accesstokens", "", "list of access tokens for channel auth")
 	flag.BoolVar(&insecure, "insecure", false, "skip certificate checking")
+	flag.BoolVar(&version, "version", false, "show version")
 	flag.Parse()
+
+        if version {
+		fmt.Printf("MumbleDJ version %s\n", VERSION)
+		os.Exit(0)
+        }
 
 	dj.config = gumble.Config{
 		Username: username,

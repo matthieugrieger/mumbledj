@@ -7,6 +7,12 @@
 
 package main
 
+// Current version of the bot 
+const VERSION = "v2.8.12"
+
+// Message shown to users when they request the version of the bot 
+const DJ_VERSION = "I'm currently running version MumbleDJ <b>" + VERSION + "</b>."
+
 // Message shown to users when the bot has an invalid API key.
 const INVALID_API_KEY = "MumbleDJ does not have a valid %s API key."
 
@@ -131,6 +137,7 @@ const HELP_HTML = `<br/>
 	<p><b>!listsongs</b> - Lists the songs in queue.</p>
 	<p><b>!nextsong</b> - Shows the title and submitter of the next queue item if it exists.</p>
 	<p><b>!currentsong</b> - Shows the title and submitter of the song currently playing.</p>
+	<p><b>!version</b> - Shows the version of the bot.</p>
 	<p style="-qt-paragraph-type:empty"><br/></p>
 	<p><b>Admin Commands:</b></p>
 	<p><b>!addnext</b> - Adds songs/playlists to queue after the current song.</p>

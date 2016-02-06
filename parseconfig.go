@@ -60,6 +60,7 @@ type DjConfig struct {
 		ShuffleOnAlias         string
 		ShuffleOffAlias        string
 		ListSongsAlias         string
+		VersionAlias           string
 	}
 	Permissions struct {
 		AdminsEnabled      bool
@@ -83,6 +84,7 @@ type DjConfig struct {
 		AdminShuffle       bool
 		AdminShuffleToggle bool
 		AdminListSongs     bool
+		AdminVersion       bool
 	}
 	ServiceKeys struct {
 		Youtube    string

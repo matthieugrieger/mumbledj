@@ -46,6 +46,7 @@ func (sc SoundCloud) URLRegex(url string) bool {
 	return RegexpFromURL(url, []string{soundcloudSongPattern, soundcloudPlaylistPattern}) != nil
 }
 
+// SearchRegex checks to see if service will accept the searchString 
 func (sc SoundCloud) SearchRegex(searchService string) bool {
 	return searchService == soundcloudSearchServiceName
 }
@@ -104,7 +105,7 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 	}
 }
 
-// SearchSong searches for a Song and adds the first hit
+// SearchSong searches for a Song and returns the Songs URL
 func (sc SoundCloud) SearchSong(searchString string) (string, error) {
 	var returnString string
 	url := fmt.Sprintf("https://api.soundcloud.com/tracks?q=%s&client_id=%s&limit=1", searchString, dj.conf.ServiceKeys.SoundCloud)

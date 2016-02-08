@@ -247,8 +247,8 @@ func addNext(user *gumble.User, url string) error {
 	}
 }
 
-// searchSong performs !addnext functionality. Checks input searchString for service, and adds
-// the found song to the queue as the next song if the format matches.
+// searchSong performs !search functionality. Checks input searchString for service, and searches
+// for a song or video and tries to add the first result to the playlist.
 func searchSong(user *gumble.User, searchString string) error {
 	if searchString == "" {
 		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)

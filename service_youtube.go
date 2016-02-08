@@ -33,8 +33,8 @@ var youtubeVideoPatterns = []string{
 // SearchService name
 var youtubeSearchServiceName = "yt"
 
-// SearchService vidoe UTL prefix
-var videoURLprefix = "https://www.youtube.com/watch?v="
+// SearchService video URL prefix
+var youtubeVideoURLprefix = "https://www.youtube.com/watch?v="
 
 // YouTube implements the Service interface
 type YouTube struct{}
@@ -54,6 +54,7 @@ func (yt YouTube) URLRegex(url string) bool {
 	return RegexpFromURL(url, append(youtubeVideoPatterns, []string{youtubePlaylistPattern}...)) != nil
 }
 
+// SearchRegex checks to see if service will accept the searchString 
 func (yt YouTube) SearchRegex(searchService string) bool {
 	return searchService == youtubeSearchServiceName
 }
@@ -85,14 +86,14 @@ func (yt YouTube) NewRequest(user *gumble.User, url string) ([]Song, error) {
 	}
 }
 
-// SearchSong searches for a Song and adds the first hit
+// SearchSong searches for a Song and returns the Songs URL
 func (yt YouTube) SearchSong(searchString string) (string, error) {
 	var returnString, apiStringValue string
 	searchURL := fmt.Sprintf("https://www.googleapis.com/youtube/v3/search?part=snippet&q=%s&key=%s&maxResults=1&type=video", searchString, dj.conf.ServiceKeys.Youtube)
 
 	if apiResponse, err := PerformGetRequest(searchURL); err == nil {
 		apiStringValue, _ = apiResponse.String("items", "0", "id", "videoId")
-		returnString = videoURLprefix + apiStringValue
+		returnString = youtubeVideoURLprefix + apiStringValue
 		return returnString, nil
 	}
 	return "", errors.New(fmt.Sprintf(INVALID_API_KEY, yt.ServiceName()))

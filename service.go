@@ -134,6 +134,8 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 	}
 }
 
+// FindServiceAndSearch tries to find the right service and gives the url escaped query to it.
+// The resulting string is a URL to the video/song and its supplied to the function FindServiceAndAdd
 func FindServiceAndSearch(user *gumble.User, searchString string) error {
 	var searchService Service
 
@@ -148,7 +150,7 @@ func FindServiceAndSearch(user *gumble.User, searchString string) error {
 		return errors.New("NO_ARGUMENT")
 	}
 
-	// Checks all services to see if any can take the URL
+	// Checks all services to see if any can take the searchString
 	for _, service := range services {
 		if service.SearchRegex(serviceProvider) {
 			searchService = service
@@ -161,7 +163,7 @@ func FindServiceAndSearch(user *gumble.User, searchString string) error {
 		var songURL string
 		var err error
 
-		// Get service to create songs
+		// Get song/video URL
 		if songURL, err = searchService.SearchSong(argument); err != nil {
 			return err
 		}

@@ -39,6 +39,7 @@ type DjConfig struct {
 	}
 	Aliases struct {
 		AddAlias               string
+		SearchAlias            string
 		AddNextAlias           string
 		SkipAlias              string
 		SkipPlaylistAlias      string
@@ -66,6 +67,7 @@ type DjConfig struct {
 		AdminsEnabled      bool
 		Admins             []string
 		AdminAdd           bool
+		AdminSearch        bool
 		AdminAddNext       bool
 		AdminAddPlaylists  bool
 		AdminSkip          bool

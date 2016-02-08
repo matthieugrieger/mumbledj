@@ -21,6 +21,9 @@ import (
 var soundcloudSongPattern = `https?:\/\/(www\.)?soundcloud\.com\/([\w-]+)\/([\w-]+)(#t=\n\n?(:\n\n)*)?`
 var soundcloudPlaylistPattern = `https?:\/\/(www\.)?soundcloud\.com\/([\w-]+)\/sets\/([\w-]+)`
 
+// SearchService name
+var soundcloudSearchServiceName = "sc"
+
 // SoundCloud implements the Service interface
 type SoundCloud struct{}
 
@@ -41,6 +44,10 @@ func (sc SoundCloud) TrackName() string {
 // URLRegex checks to see if service will accept URL
 func (sc SoundCloud) URLRegex(url string) bool {
 	return RegexpFromURL(url, []string{soundcloudSongPattern, soundcloudPlaylistPattern}) != nil
+}
+
+func (sc SoundCloud) SearchRegex(searchService string) bool {
+	return searchService == soundcloudSearchServiceName
 }
 
 // NewRequest creates the requested song/playlist and adds to the queue
@@ -95,6 +102,18 @@ func (sc SoundCloud) NewRequest(user *gumble.User, url string) ([]Song, error) {
 		}
 		return nil, err
 	}
+}
+
+// SearchSong searches for a Song and adds the first hit
+func (sc SoundCloud) SearchSong(searchString string) (string, error) {
+	var returnString string
+	url := fmt.Sprintf("https://api.soundcloud.com/tracks?q=%s&client_id=%s&limit=1", searchString, dj.conf.ServiceKeys.SoundCloud)
+
+	if apiResponse, err := PerformGetRequest(url); err == nil {
+		returnString, _ = apiResponse.String("json", "0", "permalink_url");
+		return returnString, nil
+	}
+	return "", errors.New(fmt.Sprintf(INVALID_API_KEY, sc.ServiceName()))
 }
 
 // NewSong creates a track and adds to the queue

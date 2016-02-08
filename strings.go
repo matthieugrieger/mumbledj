@@ -31,6 +31,9 @@ const CHANNEL_DOES_NOT_EXIST_MSG = "The channel you specified does not exist."
 // Message shown to users when they attempt to add an invalid URL to the queue.
 const INVALID_URL_MSG = "The URL you submitted does not match the required format."
 
+// Message shown to users when they attempt to search on an invalid platform.
+const INVALID_SEARCH_PROVIDER  = "The Search provider you submitted does not match the required format."
+
 // Message shown to users when they attempt to add a video that's too long
 const TRACK_TOO_LONG_MSG = "The %s you submitted exceeds the duration allowed by the server."
 
@@ -129,6 +132,7 @@ const PLAYLIST_SKIPPED_HTML = `
 const HELP_HTML = `<br/>
 	<b>User Commands:</b>
 	<p><b>!help</b> - Displays this help.</p>
+	<p><b>!search (yt|sc) query</b> - Search on Youtube or Soundcloud for a query and add first hit.</p>
 	<p><b>!add</b> - Adds songs/playlists to queue.</p>
 	<p><b>!volume</b> - Either tells you the current volume or sets it to a new volume.</p>
 	<p><b>!skip</b> - Casts a vote to skip the current song</p>

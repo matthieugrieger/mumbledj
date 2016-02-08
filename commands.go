@@ -41,6 +41,14 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+
+	// Search command
+	case dj.conf.Aliases.SearchAlias:
+		if dj.HasPermission(username, dj.conf.Permissions.AdminSearch) {
+			searchSong(user, argument)
+		} else {
+			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+		}
 	// Addnext command
 	case dj.conf.Aliases.AddNextAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminAddNext) {
@@ -236,6 +244,21 @@ func addNext(user *gumble.User, url string) error {
 			}
 			return err
 		}
+	}
+}
+
+// searchSong performs !addnext functionality. Checks input searchString for service, and adds
+// the found song to the queue as the next song if the format matches.
+func searchSong(user *gumble.User, searchString string) error {
+	if searchString == "" {
+		dj.SendPrivateMessage(user, NO_ARGUMENT_MSG)
+		return errors.New("NO_ARGUMENT")
+	} else {
+		err := FindServiceAndSearch(user, searchString)
+		if err != nil {
+			dj.SendPrivateMessage(user, err.Error())
+		}
+		return err
 	}
 }
 
@@ -514,4 +537,3 @@ func listSongs(user *gumble.User, value string) {
 func version(user *gumble.User) {
         dj.SendPrivateMessage(user, DJ_VERSION)
 }
-  

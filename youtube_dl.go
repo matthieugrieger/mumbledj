@@ -167,7 +167,7 @@ func (dl *AudioTrack) ID() string {
 
 // Filename returns the filename of the Song.
 func (dl *AudioTrack) Filename() string {
-	return dl.id + ".m4a"
+	return dl.id + "." + dl.format
 }
 
 // Duration returns duration for the Song.

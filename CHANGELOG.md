@@ -1,6 +1,12 @@
 MumbleDJ Changelog
 ==================
 
+### February 14, 2016 -- `v2.8.15`
+* Fixed an incorrectly formatted error message (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
+
+### February 12, 2016 -- `v2.8.14`
+* Audio is now downloaded using the `bestaudio` format. This prevents situations in which some audio would not play because an `.m4a` file was not available (thanks [@mpacella88](https://github.com/mpacella88)).
+
 ### February 6, 2016 -- `v2.8.13`
 * Added `!version` command to display the version of MumbleDJ that is running (thanks [@zeblau](https://github.com/zeblau)).
 * Added `version` commandline argument to display the version of MumbleDJ that is running (thanks [@zeblau](https://github.com/zeblau)).

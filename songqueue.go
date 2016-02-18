@@ -118,7 +118,7 @@ func (q *SongQueue) PrepareAndPlayNextSong() {
 	if err := q.CurrentSong().Download(); err == nil {
 		q.CurrentSong().Play()
 	} else {
-		dj.client.Self.Channel.Send(AUDIO_FAIL_MSG, false)
+		dj.client.Self.Channel.Send(fmt.Sprintf(AUDIO_FAIL_MSG, q.CurrentSong().Title()), false)
 		q.OnSongFinished()
 	}
 }

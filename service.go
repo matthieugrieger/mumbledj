@@ -125,9 +125,10 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 			if err := dj.queue.CurrentSong().Download(); err == nil {
 				dj.queue.CurrentSong().Play()
 			} else {
+				var failMessage = fmt.Sprintf(AUDIO_FAIL_MSG, dj.queue.CurrentSong().Title())
 				dj.queue.CurrentSong().Delete()
 				dj.queue.OnSongFinished()
-				return errors.New(AUDIO_FAIL_MSG)
+				return errors.New(failMessage)
 			}
 		}
 		return nil

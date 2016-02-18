@@ -8,7 +8,7 @@
 package main
 
 // Current version of the bot 
-const VERSION = "v2.8.13"
+const VERSION = "v2.8.15"
 
 // Message shown to users when they request the version of the bot 
 const DJ_VERSION = "MumbleDJ <b>" + VERSION + "</b>"
@@ -63,7 +63,7 @@ const ADMIN_SONG_SKIP_MSG = "An admin has decided to skip the current song."
 const ADMIN_PLAYLIST_SKIP_MSG = "An admin has decided to skip the current playlist."
 
 // Message shown to users when the audio for a video could not be downloaded.
-const AUDIO_FAIL_MSG = "The audio download for this video failed. %s has likely not generated the audio files for this %s yet. Skipping to the next song!"
+const AUDIO_FAIL_MSG = "The audio download for this video failed. <b>%s</b> has likely not generated the audio files for this track yet. Skipping to the next song!"
 
 // Message shown to users when they supply an URL that does not contain a valid ID.
 const INVALID_ID_MSG = "The %s URL you supplied did not contain a valid ID."

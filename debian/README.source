@@ -1,0 +1,14 @@
+Debian packing of mumbledj
+==========================
+
+To build the package, first install the packages listed in the Build-Depends
+field of the `debian/control` file; then run `debian/rules clean`; finally run
+`dpkg-buildpackage`. `mumbledj_${version}_${arch}.deb` will then be created in
+the parent directory.
+
+After installing the deb, see the README.Debian file for information about
+configuring mumbledj's launch arguments, API keys, etc.
+
+Note that network access is required during the package build in order to
+download dependencies; if building with pbuilder, you will have to set
+USENETWORK=yes to prevent pbuilder from blocking network access.

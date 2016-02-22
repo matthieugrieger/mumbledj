@@ -1,0 +1,13 @@
+[Unit]
+Documentation=man:mumbledj(1) file:/usr/share/doc/mumbledj/README.Debian file:/usr/share/doc/mumbledj/README.md.gz https://github.com/matthieugrieger/mumbledj
+After=mumble-server.service
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/sbin/mumbledj
+User=mumbledj
+Environment=XDG_CACHE_HOME=/var/cache/mumbledj
+
+[Install]
+WantedBy=multi-user.target

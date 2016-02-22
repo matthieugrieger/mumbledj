@@ -1,0 +1,25 @@
+#!/usr/bin/make -f
+
+GOPATH := $(abspath $(CURDIR)/.go)
+
+%:
+	dh $@ --with systemd
+
+clean:
+	rm -f debian/changelog
+	EDITOR=true VISUAL=true dch --create --package=mumbledj --newversion=$$(git describe --tags) 'Auto-generated changelog entry; do not commit'
+	dh clean --with systemd
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf '$(GOPATH)' .vendor
+
+override_dh_auto_build:
+	GOPATH='$(GOPATH)' PATH="$(GOPATH)/bin:$$PATH" make
+
+override_dh_auto_install:
+	:
+
+override_dh_install:
+	dh_install
+	install -m 0640 -T config.gcfg debian/mumbledj/etc/mumbledj.gcfg

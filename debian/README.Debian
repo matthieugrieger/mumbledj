@@ -1,0 +1,21 @@
+mumbledj
+========
+
+You must configure your YouTube and/or SoundCloud API keys by editing
+/etc/mumbledj.gcfg, as described in /usr/share/doc/mumbledj/README.md.gz.
+
+If you want to launch mumbledj with any command line arguments, the easiest
+way is to create
+/etc/systemd/system/mumbledj.service.d/local.conf containing the following:
+
+    [Service]
+    ExecStart=
+    ExecStart=/usr/sbin/mumbledj -server=mumble.example.com -password=secret "-channel=The Lounge" -username=mumbledj
+    #Environment=PATH=/var/lib/mumbledj/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+And then run `systemctl daemon-reload` before starting the mumbledj service.
+See systemd.unit(5) for more information on such “drop-in” configuration files.
+
+If you prefer to install youtube-dl from pip, rather than from the Debian
+repositories, then you can run `sudo -u mumbledj pip install youtube-dl
+--user`, and then uncomment the definition of PATH above.

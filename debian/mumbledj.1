@@ -1,0 +1,76 @@
+.TH MUMBLEDJ 1 2016-02-23
+.SH NAME
+mumbledj \- a Mumble bot that plays music fetched from YouTube videos and SoundCloud tracks
+.SH SYNOPSIS
+.SY mumbledj
+.OP \-server address
+.OP \-port port
+.OP \-username username
+.OP \-password password
+.OP \-channel channel
+.OP \-cert pemCert
+.OP \-key pemKey
+.OP \-accesstokens accesstokens
+.OP \-insecure
+.SY
+.SY mumbledj
+.OP \-help
+.YS
+.SY mumbledj
+.OP \-version
+.YS
+.SH OPTIONS
+.TP
+.BI \-server \ address
+.TQ
+.BI \-port \ port
+Address and port number for Mumble server; default to
+.B localhost
+and
+.BR 64738 ,
+respectively.
+.TP
+.B \-username
+.I username
+Defaults to
+.B MumbleDJ
+.TP
+.B \-password
+.I password
+The password for the Mumble server. Defaults to no password.
+.TP
+.B \-channel
+.I channel
+Channel joined by the bot. Defaults to the root channel.
+.TP
+.B \-cert
+.I pemCert
+.TQ
+.B \-key
+.I pemKey
+Paths to files containing a client certificate and key in PEM format.
+If unspecified, no client certificate will be presented.
+.TP
+.B \-accesstokens
+.I accesstokens
+List of access tokens for channel authentication.
+Separated by spaces--take care to use correct quoting when launching
+.B mumbledj
+from a shell.
+.TP
+.B \-insecure
+Causes the bot to not check the server certificate.
+Try using this if you have having connection issues.
+.TP
+.B \-help
+Prints a summary of options and then exits.
+.TP
+.B \-version
+Prints the version number and then exits.
+.SH SEE ALSO
+Full documentation can be found at
+.UR https://github.com/matthieugrieger/mumbledj
+.UE ,
+a copy of which can be found at /usr/share/doc/mumbledj/README.md.gz.
+The file README.Debian in the same directory contains notes about how to configure systemd to pass the options above when running
+.BR mumbledj .

@@ -66,7 +66,7 @@ Command | Description | Arguments | Admin | Example
 **setcomment** | Sets the comment for the bot. If no argument is given, the current comment will be removed. | None OR new_comment | Yes | `!setcomment Hello! I am a bot. Type !help for the available commands.`
 **numcached** | Outputs the number of songs currently cached on disk. | None | Yes | `!numcached`
 **cachesize** | Outputs the total file size of the cache in MB. | None | Yes | `!cachesize`
-**kill** | Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the `~/.mumbledj/songs` directory. | None | Yes | `!kill`
+**kill** | Safely cleans the bot environment and disconnects from the server. Please use this command to stop the bot instead of force closing, as the kill command deletes any remaining songs in the song cache directory. | None | Yes | `!kill`
 
 
 

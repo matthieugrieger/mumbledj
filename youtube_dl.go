@@ -51,12 +51,12 @@ type AudioPlaylist struct {
 // ------------
 
 // Download downloads the song via youtube-dl if it does not already exist on disk.
-// All downloaded songs are stored in ~/.mumbledj/songs and should be automatically cleaned.
+// All downloaded songs are stored in the song cache and should be automatically cleaned.
 func (dl *AudioTrack) Download() error {
 
 	// Checks to see if song is already downloaded
-	if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())); os.IsNotExist(err) {
-		cmd := exec.Command("youtube-dl", "--verbose", "--no-mtime", "--output", fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()), "--format", dl.format, "--prefer-ffmpeg", dl.url)
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", dj.songCacheDir, dl.Filename())); os.IsNotExist(err) {
+		cmd := exec.Command("youtube-dl", "--verbose", "--no-mtime", "--output", fmt.Sprintf("%s/%s", dj.songCacheDir, dl.Filename()), "--format", dl.format, "--prefer-ffmpeg", dl.url)
 		output, err := cmd.CombinedOutput()
 		if err == nil {
 			if dj.conf.Cache.Enabled {
@@ -82,7 +82,7 @@ func (dl *AudioTrack) Play() {
 		offsetDuration, _ := time.ParseDuration(fmt.Sprintf("%ds", dl.offset))
 		dj.audioStream.Offset = offsetDuration
 	}
-	dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename()))
+	dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/%s", dj.songCacheDir, dl.Filename()))
 	if err := dj.audioStream.Play(); err != nil {
 		panic(err)
 	} else {
@@ -101,10 +101,10 @@ func (dl *AudioTrack) Play() {
 	}
 }
 
-// Delete deletes the song from ~/.mumbledj/songs if the cache is disabled.
+// Delete deletes the song from the song cache if the cache is disabled.
 func (dl *AudioTrack) Delete() error {
 	if dj.conf.Cache.Enabled == false {
-		filePath := fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, dl.Filename())
+		filePath := fmt.Sprintf("%s/%s", dj.songCacheDir, dl.Filename())
 		if _, err := os.Stat(filePath); err == nil {
 			if err := os.Remove(filePath); err == nil {
 				return nil

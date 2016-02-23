@@ -21,6 +21,7 @@ import (
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumble_ffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
+	"github.com/mildred/go-xdg"
 )
 
 // mumbledj is a struct that keeps track of all aspects of the bot's current
@@ -34,6 +35,7 @@ type mumbledj struct {
 	queue          *SongQueue
 	audioStream    *gumble_ffmpeg.Stream
 	homeDir        string
+	songCacheDir   string
 	playlistSkips  map[string][]string
 	cache          *SongCache
 }
@@ -189,6 +191,9 @@ func main() {
 
 	if currentUser, err := user.Current(); err == nil {
 		dj.homeDir = currentUser.HomeDir
+	}
+	if songCacheDir, err := xdg.Cache.EnsureDir("mumbledj/songs"); err == nil {
+		dj.songCacheDir = songCacheDir
 	}
 
 	if err := loadConfiguration(); err == nil {

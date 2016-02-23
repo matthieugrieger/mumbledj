@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -355,7 +356,7 @@ func reload(user *gumble.User) {
 }
 
 // reset performs !reset functionality. Clears the song queue, stops playing audio, and deletes all
-// remaining songs in the ~/.mumbledj/songs directory.
+// remaining songs in the song cache directory.
 func reset(username string) {
 	dj.queue.queue = dj.queue.queue[:0]
 	if dj.audioStream.IsPlaying() {
@@ -413,7 +414,7 @@ func setComment(user *gumble.User, comment string) {
 	dj.SendPrivateMessage(user, COMMENT_UPDATED_MSG)
 }
 
-// numCached performs !numcached functionality. Displays the number of songs currently cached on disk at ~/.mumbledj/songs.
+// numCached performs !numcached functionality. Displays the number of songs currently cached on disk.
 func numCached(user *gumble.User) {
 	if dj.conf.Cache.Enabled {
 		dj.cache.Update()
@@ -433,7 +434,7 @@ func cacheSize(user *gumble.User) {
 	}
 }
 
-// kill performs !kill functionality. First cleans the ~/.mumbledj/songs directory to get rid of any
+// kill performs !kill functionality. First cleans the song cache directory to get rid of any
 // excess m4a files. The bot then safely disconnects from the server.
 func kill() {
 	if err := deleteSongs(); err != nil {
@@ -447,14 +448,16 @@ func kill() {
 	}
 }
 
-// deleteSongs deletes songs from ~/.mumbledj/songs.
+// deleteSongs deletes songs from the song cache.
 func deleteSongs() error {
-	songsDir := fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir)
-	if err := os.RemoveAll(songsDir); err != nil {
-		return errors.New("An error occurred while deleting the audio files.")
+	songs, err := ioutil.ReadDir(dj.songCacheDir)
+	if err != nil {
+		return errors.New(fmt.Sprintf("An error occured while clearing %q: %v", dj.songCacheDir, err))
 	}
-	if err := os.Mkdir(songsDir, 0777); err != nil {
-		return errors.New("An error occurred while recreating the songs directory.")
+	for _, file := range songs {
+		if err2 := os.Remove(fmt.Sprintf("%s/%s", dj.songCacheDir, file.Name())); err2 != nil {
+			return errors.New(fmt.Sprintf("An error occurred while removing %q: %v", file.Name(), err2))
+		}
 	}
 	return nil
 }

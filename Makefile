@@ -4,7 +4,7 @@ mumbledj: main.go commands.go parseconfig.go strings.go service.go youtube_dl.go
 	go get github.com/karmakaze/goop
 	rm -rf Goopfile.lock
 	goop install
-	goop go build
+	goop go build -o mumbledj -ldflags '-X strings.VERSION $(shell git describe --tags --dirty)'
 
 clean:
 	rm -f mumbledj*

@@ -1,0 +1,29 @@
+Source: mumbledj
+Maintainer: Sam Morris <sam@robots.org.uk>
+Section: sound
+Priority: optional
+Build-Depends:
+ ca-certificates,
+ debhelper (>= 9),
+ devscripts,
+ dh-systemd,
+ ffmpeg,
+ golang (>= 2:1.4),
+ git,
+ libopus-dev,
+ pkg-config,
+Standards-Version: 3.9.7
+Homepage: https://github.com/matthieugrieger/mumbledj/
+
+Package: mumbledj
+Architecture: any
+Depends:
+ adduser,
+ ${misc:Depends},
+ ${shlibs:Depends},
+Recommends:
+ youtube-dl,
+Description: Mumble bot that plays music fetched from YouTube/SoundCloud
+ Note: this package is not intended for Debian upstream; it is suitable only
+ for end users who want to manage their mumbledj instance via the system package
+ manager.

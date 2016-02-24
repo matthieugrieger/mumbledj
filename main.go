@@ -214,7 +214,7 @@ func main() {
 	flag.Parse()
 
         if version {
-		fmt.Printf("MumbleDJ %s\n", VERSION)
+		fmt.Printf("MumbleDJ v%s\n", VERSION)
 		os.Exit(0)
         }
 

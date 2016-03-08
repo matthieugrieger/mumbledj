@@ -41,6 +41,9 @@ const NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
 // Message shown to users when they attempt to skip a playlist when there is no playlist playing.
 const NO_PLAYLIST_PLAYING_MSG = "There is no playlist playing at the moment."
 
+// Message shown to users when they try to play a playlist from a source which doesn't support playlists.
+const NO_PLAYLISTS_SUPPORTED_MSG = "Playlists from %s are not supported."
+
 // Message shown to users when they attempt to use the nextsong command when there is no song coming up.
 const NO_SONG_NEXT_MSG = "There are no songs queued at the moment."
 

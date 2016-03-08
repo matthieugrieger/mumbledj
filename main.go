@@ -243,6 +243,7 @@ func main() {
 
 	dj.defaultChannel = strings.Split(channel, "/")
 
+	services = append(services, Mixcloud{})
 	CheckAPIKeys()
 
 	dj.client.Attach(gumbleutil.Listener{

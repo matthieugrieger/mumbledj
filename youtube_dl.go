@@ -21,7 +21,7 @@ import (
 
 	"github.com/jmoiron/jsonq"
 	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumble_ffmpeg"
+	"github.com/layeh/gumble/gumbleffmpeg"
 )
 
 // AudioTrack implements the Song interface

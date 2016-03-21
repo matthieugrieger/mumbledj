@@ -19,7 +19,7 @@ import (
 
 	"github.com/layeh/gopus"
 	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumble_ffmpeg"
+	"github.com/layeh/gumble/gumbleffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
 )
 

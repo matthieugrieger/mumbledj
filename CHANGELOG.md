@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### April 9, 2016 -- `v2.9.0`
+* Added support for Mixcloud (thanks [@benklett](https://github.com/benklett)).
+
 ### February 14, 2016 -- `v2.8.15`
 * Fixed an incorrectly formatted error message (thanks [@GabrielPlassard](https://github.com/GabrielPlassard)).
 

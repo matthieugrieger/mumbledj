@@ -1,6 +1,6 @@
 MumbleDJ
 ========
-**A Mumble bot that plays music fetched from YouTube videos and SoundCloud tracks.**
+**A Mumble bot that plays music fetched from YouTube, SoundCloud, and Mixcloud.**
 
 * [Usage](#usage)
 * [Features](#features)

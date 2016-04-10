@@ -32,7 +32,7 @@ All commandline parameters are optional. Below are descriptions of all the avail
 * `-version`: Outputs the version of MumbleDJ currently being used and then exits.
 
 ## FEATURES
-* Plays audio from YouTube and SoundCloud!
+* Plays audio from YouTube, SoundCloud, and Mixcloud!
 * Supports playlists and individual videos/tracks.
 * Displays thumbnail, title, duration, submitter, and playlist title (if exists) when a new song is played.
 * Incredible customization options. Nearly everything is able to be tweaked in `~/.mumbledj/mumbledj.gcfg`.

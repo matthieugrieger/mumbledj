@@ -47,7 +47,7 @@ func NewSongCache() *SongCache {
 
 // GetNumSongs returns the number of songs currently cached.
 func (c *SongCache) GetNumSongs() int {
-	songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+	songs, _ := ioutil.ReadDir(dj.songCacheDir)
 	return len(songs)
 }
 
@@ -55,7 +55,7 @@ func (c *SongCache) GetNumSongs() int {
 // the cache and returns it.
 func (c *SongCache) GetCurrentTotalFileSize() int64 {
 	var totalSize int64
-	songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+	songs, _ := ioutil.ReadDir(dj.songCacheDir)
 	for _, song := range songs {
 		totalSize += song.Size()
 	}
@@ -83,16 +83,16 @@ func (c *SongCache) Update() {
 // the user configuration.
 func (c *SongCache) ClearExpired() {
 	for range time.Tick(5 * time.Minute) {
-		songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+		songs, _ := ioutil.ReadDir(dj.songCacheDir)
 		for _, song := range songs {
 			hours := time.Since(song.ModTime()).Hours()
 			if hours >= dj.conf.Cache.ExpireTime {
 				if dj.queue.Len() > 0 {
 					if (dj.queue.CurrentSong().Filename()) != song.Name() {
-						os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, song.Name()))
+						os.Remove(fmt.Sprintf("%s/%s", dj.songCacheDir, song.Name()))
 					}
 				} else {
-					os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, song.Name()))
+					os.Remove(fmt.Sprintf("%s/%s", dj.songCacheDir, song.Name()))
 				}
 			}
 		}
@@ -101,13 +101,13 @@ func (c *SongCache) ClearExpired() {
 
 // ClearOldest deletes the oldest item in the cache.
 func (c *SongCache) ClearOldest() error {
-	songs, _ := ioutil.ReadDir(fmt.Sprintf("%s/.mumbledj/songs", dj.homeDir))
+	songs, _ := ioutil.ReadDir(dj.songCacheDir)
 	sort.Sort(ByAge(songs))
 	if dj.queue.Len() > 0 {
 		if (dj.queue.CurrentSong().Filename()) != songs[0].Name() {
-			return os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, songs[0].Name()))
+			return os.Remove(fmt.Sprintf("%s/%s", dj.songCacheDir, songs[0].Name()))
 		}
 		return errors.New("Song is currently playing.")
 	}
-	return os.Remove(fmt.Sprintf("%s/.mumbledj/songs/%s", dj.homeDir, songs[0].Name()))
+	return os.Remove(fmt.Sprintf("%s/%s", dj.songCacheDir, songs[0].Name()))
 }

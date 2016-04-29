@@ -1,7 +1,7 @@
 all: mumbledj
 
-mumbledj: main.go commands.go parseconfig.go strings.go service.go youtube_dl.go service_youtube.go service_soundcloud.go songqueue.go cache.go
-	go get github.com/nitrous-io/goop
+mumbledj: main.go commands.go parseconfig.go strings.go service.go youtube_dl.go service_youtube.go service_soundcloud.go service_mixcloud.go songqueue.go cache.go
+	go get github.com/karmakaze/goop
 	rm -rf Goopfile.lock
 	goop install
 	goop go build

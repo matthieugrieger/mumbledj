@@ -24,7 +24,7 @@ DefaultComment = "Hello! I am a bot. Type !help for a list of commands."
 
 # Maximum song duration in seconds (0 = unrestricted)
 # Default Value: 0
-MaxSongDuration = 5000
+MaxSongDuration = 8000
 
 # Maximum songs per playlist (0 = unrestricted)
 # Default Value: 50
@@ -163,6 +163,9 @@ ShuffleOffAlias = "shuffleoff"
 # DEFAULT_VALUE: "listsongs"
 ListSongsAlias = "listsongs"
 
+# Alias used for version command
+# DEFAULT_VALUE: "version"
+VersionAlias = "version"
 [Permissions]
 
 # Enable admins
@@ -250,6 +253,10 @@ AdminShuffle = true
 # Make listSongs an admin command?
 # DEFAULT VALUE: false
 AdminListSongs = false
+
+# Make version an admin command?
+# DEFAULT VALUE: false
+AdminVersion = false
 
 # Make shuffleon and shuffleoff admin commands?
 # DEFAULT VALUE: true

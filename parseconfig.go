@@ -11,7 +11,7 @@ import (
 	"errors"
 	"fmt"
 
-	"code.google.com/p/gcfg"
+	"github.com/scalingdata/gcfg"
 )
 
 // DjConfig is a Golang struct representation of mumbledj.gcfg file structure for parsing.
@@ -61,6 +61,7 @@ type DjConfig struct {
 		ShuffleOnAlias         string
 		ShuffleOffAlias        string
 		ListSongsAlias         string
+		VersionAlias           string
 	}
 	Permissions struct {
 		AdminsEnabled      bool
@@ -84,6 +85,7 @@ type DjConfig struct {
 		AdminShuffle       bool
 		AdminShuffleToggle bool
 		AdminListSongs     bool
+		AdminVersion       bool
 	}
 	ServiceKeys struct {
 		Youtube    string

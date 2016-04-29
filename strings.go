@@ -7,6 +7,12 @@
 
 package main
 
+// Current version of the bot 
+const VERSION = "v2.9.0"
+
+// Message shown to users when they request the version of the bot 
+const DJ_VERSION = "MumbleDJ <b>" + VERSION + "</b>"
+
 // Message shown to users when the bot has an invalid API key.
 const INVALID_API_KEY = "MumbleDJ does not have a valid %s API key."
 
@@ -35,6 +41,9 @@ const NO_MUSIC_PLAYING_MSG = "There is no music playing at the moment."
 // Message shown to users when they attempt to skip a playlist when there is no playlist playing.
 const NO_PLAYLIST_PLAYING_MSG = "There is no playlist playing at the moment."
 
+// Message shown to users when they try to play a playlist from a source which doesn't support playlists.
+const NO_PLAYLISTS_SUPPORTED_MSG = "Playlists from %s are not supported."
+
 // Message shown to users when they attempt to use the nextsong command when there is no song coming up.
 const NO_SONG_NEXT_MSG = "There are no songs queued at the moment."
 
@@ -54,7 +63,7 @@ const ADMIN_SONG_SKIP_MSG = "An admin has decided to skip the current song."
 const ADMIN_PLAYLIST_SKIP_MSG = "An admin has decided to skip the current playlist."
 
 // Message shown to users when the audio for a video could not be downloaded.
-const AUDIO_FAIL_MSG = "The audio download for this video failed. %s has likely not generated the audio files for this %s yet. Skipping to the next song!"
+const AUDIO_FAIL_MSG = "The audio download for this video failed. <b>%s</b> has likely not generated the audio files for this track yet. Skipping to the next song!"
 
 // Message shown to users when they supply an URL that does not contain a valid ID.
 const INVALID_ID_MSG = "The %s URL you supplied did not contain a valid ID."
@@ -131,6 +140,7 @@ const HELP_HTML = `<br/>
 	<p><b>!listsongs</b> - Lists the songs in queue.</p>
 	<p><b>!nextsong</b> - Shows the title and submitter of the next queue item if it exists.</p>
 	<p><b>!currentsong</b> - Shows the title and submitter of the song currently playing.</p>
+	<p><b>!version</b> - Shows the version of the bot.</p>
 	<p style="-qt-paragraph-type:empty"><br/></p>
 	<p><b>Admin Commands:</b></p>
 	<p><b>!addnext</b> - Adds songs/playlists to queue after the current song.</p>

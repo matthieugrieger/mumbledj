@@ -112,8 +112,32 @@ func (dj *mumbledj) OnUserChange(e *gumble.UserChangeEvent) {
 			}
 			dj.queue.CurrentSong().RemoveSkip(e.User.Name)
 		}
-	}
+	} else if ((e.Type.Has(gumble.UserChangeConnected) || e.Type.Has(gumble.UserChangeChannel)) && e.User.Channel == dj.client.Self.Channel) { // Play welcome message
+		if !dj.audioStream.IsPlaying() {
+			var filename = ""
+			if _, err := os.Stat(dj.homeDir+"/.mumbledj/greetings/"+e.User.Name+".mp3"); os.IsNotExist(err) { // Check for custom welcome message
+				filename = "default.mp3" // If file does not exist
+			} else{
+				filename = e.User.Name+".mp3" // If file exists
+			}
+			if _, err := os.Stat(fmt.Sprintf("%s/.mumbledj/greetings/%s", dj.homeDir, filename)); os.IsNotExist(err){
+			} else{
+				dj.audioStream.Source = gumble_ffmpeg.SourceFile(fmt.Sprintf("%s/.mumbledj/greetings/%s", dj.homeDir, filename))
+				if err := dj.audioStream.Play(); err != nil {
+					panic(err)
+				} else{
+					go func() {
+						dj.audioStream.Wait()
+						if(dj.queue.Len() >= 1){
+							dj.queue.PrepareAndPlayNextSong()
+						}
+					}()
+				}
+			}
+		}
+    }
 }
+
 
 // HasPermission checks if username has the permissions to execute a command. Permissions are specified in
 // mumbledj.gcfg.

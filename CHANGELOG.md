@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### May 24, 2016 -- `v2.9.1`
+* Fixed player command configuration setting not being applied to youtube-dl calls.
+
 ### April 9, 2016 -- `v2.9.0`
 * Added support for Mixcloud (thanks [@benklett](https://github.com/benklett)).
 

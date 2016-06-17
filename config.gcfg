@@ -106,6 +106,10 @@ HelpAlias = "help"
 # DEFAULT VALUE: "volume"
 VolumeAlias = "volume"
 
+# Alias used for joinme
+# DEFAULT VALUE : "joinme"
+JoinMeAlias = "joinme"
+
 # Alias used for move command
 # DEFAULT VALUE: "move"
 MoveAlias = "move"
@@ -208,6 +212,10 @@ AdminVolume = false
 # Make move an admin command?
 # DEFAULT VALUE: true
 AdminMove = true
+
+# Make joinme a admin command?
+# DEFAULT VALUE: true
+AdminJoinMe = true
 
 # Make reload an admin command?
 # DEFAULT VALUE: true

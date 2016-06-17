@@ -98,8 +98,8 @@ const SHUFFLE_ACTIVATED_ERROR_MESSAGE = "Automatic shuffle is already activated.
 // Message shown to user when they attempt to disable automatic shuffle while it's already deactivated
 const SHUFFLE_DEACTIVATED_ERROR_MESSAGE = "Automatic shuffle is already deactivated."
 
-// Message show to user when they attempt to move it and it is already playing music to people
-const PEOPLE_ARE_LISTENING_TO_ME = "I'm already busy."
+// Message shown to user when they attempt to move the bot and it is already playing audio to others.
+const PEOPLE_ARE_LISTENING_TO_ME = "Users in another channel are listening to me."
 
 // Message shown to channel when a song is added to the queue by a user.
 const SONG_ADDED_HTML = `
@@ -154,7 +154,7 @@ const HELP_HTML = `<br/>
 	<p><b>!shuffleon</b> - An admin command that enables auto shuffling.</p>
   	<p><b>!shuffleoff</b> - An admin command that disables auto shuffling.</p>
 	<p><b>!move </b>- Moves MumbleDJ into channel if it exists.</p>
-    	<p><b>!joinme </b>- Move into your channel (MP)</p>
+    	<p><b>!joinme </b>- Moves MumbleDJ into your current channel if not playing audio to someone else.</p>
 	<p><b>!reload</b> - Reloads mumbledj.gcfg configuration settings.</p>
 	<p><b>!setcomment</b> - Sets the comment for the bot.</p>
 	<p><b>!numcached</b></p> - Outputs the number of songs cached on disk.</p>

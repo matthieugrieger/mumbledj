@@ -354,8 +354,8 @@ func move(user *gumble.User, channel string) {
 	}
 }
 
-// move performance !joinme functionality. Found the channel and move the bot. The bot don't move
-// if it already play music to people
+// joinMe performs !joinme functionality. Finds the channel and moves the bot.
+// The bot does not move if it is already playing audio to others.
 func joinMe(user *gumble.User) {
         if dj.audioStream.IsPlaying() && len(dj.client.Self.Channel.Users) > 1 {
                 user.Send(PEOPLE_ARE_LISTENING_TO_ME)

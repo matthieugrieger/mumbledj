@@ -106,7 +106,7 @@ HelpAlias = "help"
 # DEFAULT VALUE: "volume"
 VolumeAlias = "volume"
 
- Alias used for join a user
+ Alias used for joinme
 # DEFAULT VALUE : "joinme"
 JoinMeAlias = "joinme"
 
@@ -214,8 +214,8 @@ AdminVolume = false
 AdminMove = true
 
 # Make joinme a admin command?
-# DEFUALT VALUE: true
-AdminJoinMe = false
+# DEFAULT VALUE: true
+AdminJoinMe = true
 
 # Make reload an admin command?
 # DEFAULT VALUE: true

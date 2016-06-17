@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 17, 2016 -- `v2.10.0`
+* Added `!joinme` command (thanks [@azlux](https://github.com/azlux)).
+
 ### May 24, 2016 -- `v2.9.1`
 * Fixed player command configuration setting not being applied to youtube-dl calls.
 

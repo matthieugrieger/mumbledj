@@ -97,13 +97,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
-    // JoinMe command
-    case dj.conf.Aliases.JoinMeAlias:
-        if dj.HasPermission(username, dj.conf.Permissions.AdminJoinMe) {
-            joinMe(user)
-        } else {
-            dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
-        }
+    	// JoinMe command
+    	case dj.conf.Aliases.JoinMeAlias:
+        	if dj.HasPermission(username, dj.conf.Permissions.AdminJoinMe) {
+            		joinMe(user)
+        	} else {
+            		dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+        	}
 	// Reload command
 	case dj.conf.Aliases.ReloadAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminReload) {

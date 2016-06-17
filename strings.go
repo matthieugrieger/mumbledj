@@ -154,7 +154,7 @@ const HELP_HTML = `<br/>
 	<p><b>!shuffleon</b> - An admin command that enables auto shuffling.</p>
   	<p><b>!shuffleoff</b> - An admin command that disables auto shuffling.</p>
 	<p><b>!move </b>- Moves MumbleDJ into channel if it exists.</p>
-    <p><b>!joinme </b>- Move into your channel (MP)</p>
+    	<p><b>!joinme </b>- Move into your channel (MP)</p>
 	<p><b>!reload</b> - Reloads mumbledj.gcfg configuration settings.</p>
 	<p><b>!setcomment</b> - Sets the comment for the bot.</p>
 	<p><b>!numcached</b></p> - Outputs the number of songs cached on disk.</p>

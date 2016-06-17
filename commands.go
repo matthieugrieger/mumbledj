@@ -97,6 +97,13 @@ func parseCommand(user *gumble.User, username, command string) {
 		} else {
 			dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
 		}
+    // JoinMe command
+    case dj.conf.Aliases.JoinMeAlias:
+        if dj.HasPermission(username, dj.conf.Permissions.AdminJoinMe) {
+            joinMe(user)
+        } else {
+            dj.SendPrivateMessage(user, NO_PERMISSION_MSG)
+        }
 	// Reload command
 	case dj.conf.Aliases.ReloadAlias:
 		if dj.HasPermission(username, dj.conf.Permissions.AdminReload) {
@@ -345,6 +352,16 @@ func move(user *gumble.User, channel string) {
 			dj.SendPrivateMessage(user, CHANNEL_DOES_NOT_EXIST_MSG+" "+channel)
 		}
 	}
+}
+
+// move performance !joinme functionality. Found the channel and move the bot. The bot don't move
+// if it already play music to people
+func joinMe(user *gumble.User) {
+        if dj.audioStream.IsPlaying() && len(dj.client.Self.Channel.Users) > 1 {
+                user.Send(PEOPLE_ARE_LISTENING_TO_ME)
+        } else {
+                dj.client.Self.Move(user.Channel)
+        }
 }
 
 // reload performs !reload functionality. Tells command submitter if the reload completed successfully.

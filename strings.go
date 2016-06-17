@@ -8,7 +8,7 @@
 package main
 
 // Current version of the bot 
-const VERSION = "v2.9.1"
+const VERSION = "v2.10.0"
 
 // Message shown to users when they request the version of the bot 
 const DJ_VERSION = "MumbleDJ <b>" + VERSION + "</b>"

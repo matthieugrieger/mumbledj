@@ -78,6 +78,10 @@ HighestVolume = 0.8
 # DEFAULT VALUE: "add"
 AddAlias = "add"
 
+# Alias used for search command
+# DEFAULT VALUE: "search"
+SearchAlias = "search"
+
 # Alias used for addnext command
 # DEFAULT VALUE: "addnext"
 AddNextAlias = "addnext"
@@ -188,6 +192,10 @@ Admins = "Matt"
 # Make add an admin command?
 # DEFAULT VALUE: false
 AdminAdd = false
+
+# Make search an admin command?
+# DEFAULT VALUE: false
+AdminSearch = false
 
 # Make addnext an admin command?
 # DEFAULT VALUE: true

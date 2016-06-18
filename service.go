@@ -12,6 +12,8 @@ import (
 	"fmt"
 	"regexp"
 	"time"
+	"net/url"
+	"strings"
 
 	"github.com/layeh/gumble/gumble"
 )
@@ -21,7 +23,9 @@ type Service interface {
 	ServiceName() string
 	TrackName() string
 	URLRegex(string) bool
+	SearchRegex(string) bool
 	NewRequest(*gumble.User, string) ([]Song, error)
+	SearchSong(string) (string, error)
 }
 
 // Song interface. Each service will implement these
@@ -127,6 +131,48 @@ func FindServiceAndAdd(user *gumble.User, url string) error {
 				return errors.New(failMessage)
 			}
 		}
+		return nil
+	}
+}
+
+// FindServiceAndSearch tries to find the right service and gives the url escaped query to it.
+// The resulting string is a URL to the video/song and its supplied to the function FindServiceAndAdd
+func FindServiceAndSearch(user *gumble.User, searchString string) error {
+	var searchService Service
+
+	var serviceProvider, argument string
+	split := strings.Split(searchString, "\n")
+	splitString := split[0]
+	if strings.Contains(splitString, " ") {
+		index := strings.Index(splitString, " ")
+		serviceProvider, argument = splitString[0:index], splitString[(index+1):]
+		argument = url.QueryEscape(argument)
+	} else {
+		return errors.New("NO_ARGUMENT")
+	}
+
+	// Checks all services to see if any can take the searchString
+	for _, service := range services {
+		if service.SearchRegex(serviceProvider) {
+			searchService = service
+		}
+	}
+
+	if searchService == nil {
+		return errors.New(INVALID_SEARCH_PROVIDER)
+	} else {
+		var songURL string
+		var err error
+
+		// Get song/video URL
+		if songURL, err = searchService.SearchSong(argument); err != nil {
+			return err
+		}
+
+		if err = FindServiceAndAdd(user, songURL); err != nil {
+			return err
+		}
+
 		return nil
 	}
 }

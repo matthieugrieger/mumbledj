@@ -261,6 +261,9 @@ func PerformGetRequest(url string) (*jsonq.JsonQuery, error) {
 		if response.StatusCode == 200 {
 			if body, err := ioutil.ReadAll(response.Body); err == nil {
 				jsonString = string(body)
+				if jsonString[0] == '[' {
+					jsonString = "{\"json\":" + jsonString + "}"
+				}
 			}
 		} else {
 			if response.StatusCode == 403 {

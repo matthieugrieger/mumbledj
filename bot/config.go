@@ -108,7 +108,7 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.help.is_admin", false)
 	viper.SetDefault("commands.help.description", "Outputs this list of commands.")
 	viper.SetDefault("commands.help.messages.commands_header", "<br><b>Commands:</b><br>")
-	viper.SetDefault("commands.help.messages.admin_commands.header", "<br><b>Admin Commands:</b><br>")
+	viper.SetDefault("commands.help.messages.admin_commands_header", "<br><b>Admin Commands:</b><br>")
 
 	viper.SetDefault("commands.joinme.aliases", []string{"joinme", "join"})
 	viper.SetDefault("commands.joinme.is_admin", true)

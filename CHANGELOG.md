@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 21, 2016 -- `v3.0.2`
+* Fixed typo on admin command header message selector.
+
 ### June 21, 2016 -- `v3.0.1`
 * Added all strings that are output by commands to `config.yaml` for easier translation and tweaking.
 

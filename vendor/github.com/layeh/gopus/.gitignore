@@ -1,0 +1,10 @@
+*.deps/
+config.log
+config.status
+doc/
+libtool
+*.pc
+*.s
+Makefile
+!/Makefile
+stamp-h1

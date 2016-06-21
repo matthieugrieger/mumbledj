@@ -8,7 +8,9 @@ owners:
 import:
 - package: github.com/ChannelMeter/iso8601duration
 - package: github.com/Sirupsen/logrus
+  version: v0.10.0
 - package: github.com/antonholmquist/jason
+  version: v1.0.0
 - package: github.com/layeh/gumble
   subpackages:
   - gumble
@@ -17,5 +19,12 @@ import:
   - opus
 - package: github.com/spf13/viper
 - package: github.com/urfave/cli
+  version: v1.17.0
 - package: github.com/stretchr/testify
+  version: v1.1.3
 - package: github.com/BurntSushi/toml
+  version: v0.2.0
+- package: github.com/nicksnyder/go-i18n
+  version: v1.4.0
+  subpackages:
+  - i18n

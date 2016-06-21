@@ -8,12 +8,11 @@ import (
 	"path/filepath"
 	"reflect"
 	"sort"
-	"strings"
 	"time"
 )
 
 var (
-	changeLogURL                    = "https://github.com/urfave/cli/blob/master/CHANGELOG.md"
+	changeLogURL                    = "https://github.com/codegangsta/cli/blob/master/CHANGELOG.md"
 	appActionDeprecationURL         = fmt.Sprintf("%s#deprecated-cli-app-action-signature", changeLogURL)
 	runAndExitOnErrorDeprecationURL = fmt.Sprintf("%s#deprecated-cli-app-runandexitonerror", changeLogURL)
 
@@ -465,13 +464,11 @@ func (a Author) String() string {
 func HandleAction(action interface{}, context *Context) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			// Try to detect a known reflection error from *this scope*, rather than
-			// swallowing all panics that may happen when calling an Action func.
-			s := fmt.Sprintf("%v", r)
-			if strings.HasPrefix(s, "reflect: ") && strings.Contains(s, "too many input arguments") {
-				err = NewExitError(fmt.Sprintf("ERROR unknown Action error: %v.  See %s", r, appActionDeprecationURL), 2)
-			} else {
-				panic(r)
+			switch r.(type) {
+			case error:
+				err = r.(error)
+			default:
+				err = NewExitError(fmt.Sprintf("ERROR unknown Action error: %v. See %s", r, appActionDeprecationURL), 2)
 			}
 		}
 	}()

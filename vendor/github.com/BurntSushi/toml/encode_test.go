@@ -36,7 +36,7 @@ func TestEncodeRoundTrip(t *testing.T) {
 	}
 	var outputs Config
 	if _, err := Decode(firstBuffer.String(), &outputs); err != nil {
-		t.Logf("Could not decode:\n-----\n%s\n-----\n",
+		log.Printf("Could not decode:\n-----\n%s\n-----\n",
 			firstBuffer.String())
 		t.Fatal(err)
 	}
@@ -515,44 +515,19 @@ func TestEncodeOmitemptyWithEmptyName(t *testing.T) {
 		v, expected, nil)
 }
 
-func TestEncodeAnonymousStruct(t *testing.T) {
-	type Inner struct{ N int }
-	type Outer0 struct{ Inner }
-	type Outer1 struct {
-		Inner `toml:"inner"`
-	}
-
-	v0 := Outer0{Inner{3}}
-	expected := "N = 3\n"
-	encodeExpected(t, "embedded anonymous untagged struct", v0, expected, nil)
-
-	v1 := Outer1{Inner{3}}
-	expected = "[inner]\n  N = 3\n"
-	encodeExpected(t, "embedded anonymous tagged struct", v1, expected, nil)
-}
-
 func TestEncodeAnonymousStructPointerField(t *testing.T) {
-	type Inner struct{ N int }
-	type Outer0 struct{ *Inner }
-	type Outer1 struct {
-		*Inner `toml:"inner"`
+	type Sub struct{}
+	type simple struct {
+		*Sub
 	}
 
-	v0 := Outer0{}
+	value := simple{}
 	expected := ""
-	encodeExpected(t, "nil anonymous untagged struct pointer field", v0, expected, nil)
+	encodeExpected(t, "nil anonymous struct pointer field", value, expected, nil)
 
-	v0 = Outer0{&Inner{3}}
-	expected = "N = 3\n"
-	encodeExpected(t, "non-nil anonymous untagged struct pointer field", v0, expected, nil)
-
-	v1 := Outer1{}
+	value = simple{Sub: &Sub{}}
 	expected = ""
-	encodeExpected(t, "nil anonymous tagged struct pointer field", v1, expected, nil)
-
-	v1 = Outer1{&Inner{3}}
-	expected = "[inner]\n  N = 3\n"
-	encodeExpected(t, "non-nil anonymous tagged struct pointer field", v1, expected, nil)
+	encodeExpected(t, "non-nil anonymous struct pointer field", value, expected, nil)
 }
 
 func TestEncodeIgnoredFields(t *testing.T) {

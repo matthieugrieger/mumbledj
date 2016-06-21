@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/urfave/cli"
+	"github.com/codegangsta/cli"
 )
 
 // FlagInputSourceExtension is an extension interface of cli.Flag that

@@ -50,32 +50,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 )
-
-// Error values returned when validation functions fail
-var (
-	ErrNotNull        = errors.New("is not null")
-	ErrNotArray       = errors.New("Not an array")
-	ErrNotNumber      = errors.New("not a number")
-	ErrNotBool        = errors.New("no bool")
-	ErrNotObject      = errors.New("not an object")
-	ErrNotObjectArray = errors.New("not an object array")
-	ErrNotString      = errors.New("not a string")
-)
-
-type KeyNotFoundError struct {
-	Key string
-}
-
-func (k KeyNotFoundError) Error() string {
-	if k.Key != "" {
-		return fmt.Sprintf("key '%s' not found", k.Key)
-	}
-
-	return "key not found"
-}
 
 // Value represents an arbitrary JSON value.
 // It may contain a bool, number, string, object, array or null.
@@ -145,11 +121,6 @@ func (v *Value) Marshal() ([]byte, error) {
 	return json.Marshal(v.data)
 }
 
-// Get the interyling data as interface
-func (v *Value) Interface() interface{} {
-	return v.data
-}
-
 // Private Get
 func (v *Value) get(key string) (*Value, error) {
 
@@ -161,7 +132,7 @@ func (v *Value) get(key string) (*Value, error) {
 		if ok {
 			return child, nil
 		} else {
-			return nil, KeyNotFoundError{key}
+			return nil, errors.New("key not found")
 		}
 	}
 
@@ -211,6 +182,8 @@ func (v *Object) GetObject(keys ...string) (*Object, error) {
 		}
 
 	}
+
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a string.
@@ -225,6 +198,8 @@ func (v *Object) GetString(keys ...string) (string, error) {
 	} else {
 		return child.String()
 	}
+
+	return "", nil
 }
 
 // Gets the value at key path and attempts to typecast the value into null.
@@ -260,6 +235,8 @@ func (v *Object) GetNumber(keys ...string) (json.Number, error) {
 			return n, nil
 		}
 	}
+
+	return "", nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a float64.
@@ -281,6 +258,8 @@ func (v *Object) GetFloat64(keys ...string) (float64, error) {
 			return n, nil
 		}
 	}
+
+	return 0, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a float64.
@@ -302,20 +281,8 @@ func (v *Object) GetInt64(keys ...string) (int64, error) {
 			return n, nil
 		}
 	}
-}
 
-// Gets the value at key path and attempts to typecast the value into a float64.
-// Returns error if the value is not a json number.
-// Example:
-//		v, err := GetInterface("address", "anything")
-func (v *Object) GetInterface(keys ...string) (interface{}, error) {
-	child, err := v.getPath(keys)
-
-	if err != nil {
-		return nil, err
-	} else {
-		return child.Interface(), nil
-	}
+	return 0, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a bool.
@@ -350,6 +317,8 @@ func (v *Object) GetValueArray(keys ...string) ([]*Value, error) {
 		return child.Array()
 
 	}
+
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of objects.
@@ -388,6 +357,8 @@ func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
 			return typedArray, nil
 		}
 	}
+
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of string.
@@ -427,6 +398,7 @@ func (v *Object) GetStringArray(keys ...string) ([]string, error) {
 			return typedArray, nil
 		}
 	}
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of numbers.
@@ -464,6 +436,7 @@ func (v *Object) GetNumberArray(keys ...string) ([]json.Number, error) {
 			return typedArray, nil
 		}
 	}
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of floats.
@@ -496,6 +469,7 @@ func (v *Object) GetFloat64Array(keys ...string) ([]float64, error) {
 			return typedArray, nil
 		}
 	}
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of ints.
@@ -528,6 +502,7 @@ func (v *Object) GetInt64Array(keys ...string) ([]int64, error) {
 			return typedArray, nil
 		}
 	}
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of bools.
@@ -560,6 +535,7 @@ func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
 			return typedArray, nil
 		}
 	}
+	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of nulls.
@@ -592,6 +568,8 @@ func (v *Object) GetNullArray(keys ...string) (int64, error) {
 			return length, nil
 		}
 	}
+
+	return 0, nil
 }
 
 // Returns an error if the value is not actually null
@@ -609,7 +587,7 @@ func (v *Value) Null() error {
 		return nil
 	}
 
-	return ErrNotNull
+	return errors.New("is not null")
 
 }
 
@@ -640,7 +618,7 @@ func (v *Value) Array() ([]*Value, error) {
 		return slice, nil
 	}
 
-	return slice, ErrNotArray
+	return slice, errors.New("Not an array")
 
 }
 
@@ -662,7 +640,7 @@ func (v *Value) Number() (json.Number, error) {
 		return v.data.(json.Number), nil
 	}
 
-	return "", ErrNotNumber
+	return "", errors.New("not a number")
 }
 
 // Attempts to typecast the current value into a float64.
@@ -711,7 +689,7 @@ func (v *Value) Boolean() (bool, error) {
 		return v.data.(bool), nil
 	}
 
-	return false, ErrNotBool
+	return false, errors.New("no bool")
 }
 
 // Attempts to typecast the current value into an object.
@@ -736,6 +714,7 @@ func (v *Value) Object() (*Object, error) {
 		m := make(map[string]*Value)
 
 		if valid {
+
 			for key, element := range v.data.(map[string]interface{}) {
 				m[key] = &Value{element, true}
 
@@ -748,44 +727,7 @@ func (v *Value) Object() (*Object, error) {
 		return obj, nil
 	}
 
-	return nil, ErrNotObject
-}
-
-// Attempts to typecast the current value into an object arrau.
-// Returns error if the current value is not an array of json objects
-// Example:
-//		friendObjects, err := friendValues.ObjectArray()
-func (v *Value) ObjectArray() ([]*Object, error) {
-
-	var valid bool
-
-	// Check the type of this data
-	switch v.data.(type) {
-	case []interface{}:
-		valid = true
-		break
-	}
-
-	// Unsure if this is a good way to use slices, it's probably not
-	var slice []*Object
-
-	if valid {
-
-		for _, element := range v.data.([]interface{}) {
-			childValue := Value{element, true}
-			childObject, err := childValue.Object()
-
-			if err != nil {
-				return nil, ErrNotObjectArray
-			}
-			slice = append(slice, childObject)
-		}
-
-		return slice, nil
-	}
-
-	return nil, ErrNotObjectArray
-
+	return nil, errors.New("not an object")
 }
 
 // Attempts to typecast the current value into a string.
@@ -806,7 +748,7 @@ func (v *Value) String() (string, error) {
 		return v.data.(string), nil
 	}
 
-	return "", ErrNotString
+	return "", errors.New("not a string")
 }
 
 // Returns the value a json formatted string.

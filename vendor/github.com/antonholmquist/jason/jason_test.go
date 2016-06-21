@@ -73,18 +73,11 @@ func TestFirst(t *testing.T) {
 	//log.Println("s: ", s.String())
 
 	_, err = j.GetNumber("age")
+	log.Println("error: ", err)
 	assert.True(err == nil, "age should be a number")
 
 	n, err := j.GetInt64("age")
 	assert.True(n == 29 && err == nil, "age mismatch")
-
-	ageInterface, err := j.GetInterface("age")
-	assert.True(ageInterface != nil, "should be defined")
-	assert.True(err == nil, "age interface error")
-
-	invalidInterface, err := j.GetInterface("not_existing")
-	assert.True(invalidInterface == nil, "should not give error here")
-	assert.True(err != nil, "should give error here")
 
 	age, err := j.GetValue("age")
 	assert.True(age != nil && err == nil, "age should exist")
@@ -126,13 +119,6 @@ func TestFirst(t *testing.T) {
 	list2Array, err := j.GetValueArray("list2")
 	assert.True(err == nil, "List2 should not return error on AsArray")
 	assert.True(len(list2Array) == 2, "List2 should should have length 2")
-
-	list2Value, err := j.GetValue("list2")
-	assert.True(err == nil, "List2 should not return error on value")
-
-	list2ObjectArray, err := list2Value.ObjectArray()
-	assert.True(err == nil, "list2Value should not return error on ObjectArray")
-	assert.True(len(list2ObjectArray) == 2, "list2ObjectArray should should have length 2")
 
 	for _, elementValue := range list2Array {
 		//assert.True(element.IsObject() == true, "first fail")
@@ -240,56 +226,6 @@ func TestSecond(t *testing.T) {
 			assert.True(id == "X998_Y998" && err == nil, "item id mismatch")
 		}
 
-	}
-
-}
-
-func TestErrors(t *testing.T) {
-	json := `
-  {
-    "string": "hello",
-    "number": 1,
-    "array": [1,2,3]
-  }`
-
-	errstr := "expected an error getting %s, but got '%s'"
-
-	j, err := NewObjectFromBytes([]byte(json))
-	if err != nil {
-		t.Fatal("failed to parse json")
-	}
-
-	if _, err = j.GetObject("string"); err != ErrNotObject {
-		t.Errorf(errstr, "object", err)
-	}
-
-	if err = j.GetNull("string"); err != ErrNotNull {
-		t.Errorf(errstr, "null", err)
-	}
-
-	if _, err = j.GetStringArray("string"); err != ErrNotArray {
-		t.Errorf(errstr, "array", err)
-	}
-
-	if _, err = j.GetStringArray("array"); err != ErrNotString {
-		t.Errorf(errstr, "string array", err)
-	}
-
-	if _, err = j.GetNumber("array"); err != ErrNotNumber {
-		t.Errorf(errstr, "number", err)
-	}
-
-	if _, err = j.GetBoolean("array"); err != ErrNotBool {
-		t.Errorf(errstr, "boolean", err)
-	}
-
-	if _, err = j.GetString("number"); err != ErrNotString {
-		t.Errorf(errstr, "string", err)
-	}
-
-	_, err = j.GetString("not_found")
-	if e, ok := err.(KeyNotFoundError); !ok {
-		t.Errorf(errstr, "key not found error", e)
 	}
 
 }

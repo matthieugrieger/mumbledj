@@ -3,12 +3,14 @@ package toml
 import (
 	"fmt"
 	"log"
-	"math"
 	"reflect"
-	"strings"
 	"testing"
 	"time"
 )
+
+func init() {
+	log.SetFlags(0)
+}
 
 func TestDecodeSimple(t *testing.T) {
 	var testSimple = `
@@ -181,49 +183,6 @@ name = "Born in the USA"
 	}
 }
 
-func TestTableNesting(t *testing.T) {
-	for _, tt := range []struct {
-		t    string
-		want []string
-	}{
-		{"[a.b.c]", []string{"a", "b", "c"}},
-		{`[a."b.c"]`, []string{"a", "b.c"}},
-		{`[a.'b.c']`, []string{"a", "b.c"}},
-		{`[a.' b ']`, []string{"a", " b "}},
-		{"[ d.e.f ]", []string{"d", "e", "f"}},
-		{"[ g . h . i ]", []string{"g", "h", "i"}},
-		{`[ j . "ʞ" . 'l' ]`, []string{"j", "ʞ", "l"}},
-	} {
-		var m map[string]interface{}
-		if _, err := Decode(tt.t, &m); err != nil {
-			t.Errorf("Decode(%q): got error: %s", tt.t, err)
-			continue
-		}
-		if keys := extractNestedKeys(m); !reflect.DeepEqual(keys, tt.want) {
-			t.Errorf("Decode(%q): got nested keys %#v; want %#v",
-				tt.t, keys, tt.want)
-		}
-	}
-}
-
-func extractNestedKeys(v map[string]interface{}) []string {
-	var result []string
-	for {
-		if len(v) != 1 {
-			return result
-		}
-		for k, m := range v {
-			result = append(result, k)
-			var ok bool
-			v, ok = m.(map[string]interface{})
-			if !ok {
-				return result
-			}
-		}
-
-	}
-}
-
 // Case insensitive matching tests.
 // A bit more comprehensive than needed given the current implementation,
 // but implementations change.
@@ -343,54 +302,14 @@ Description = "da base"
 	}
 }
 
-func TestDecodeDatetime(t *testing.T) {
-	const noTimestamp = "2006-01-02T15:04:05"
-	for _, tt := range []struct {
-		s      string
-		t      string
-		format string
-	}{
-		{"1979-05-27T07:32:00Z", "1979-05-27T07:32:00Z", time.RFC3339},
-		{"1979-05-27T00:32:00-07:00", "1979-05-27T00:32:00-07:00", time.RFC3339},
-		{
-			"1979-05-27T00:32:00.999999-07:00",
-			"1979-05-27T00:32:00.999999-07:00",
-			time.RFC3339,
-		},
-		{"1979-05-27T07:32:00", "1979-05-27T07:32:00", noTimestamp},
-		{
-			"1979-05-27T00:32:00.999999",
-			"1979-05-27T00:32:00.999999",
-			noTimestamp,
-		},
-		{"1979-05-27", "1979-05-27T00:00:00", noTimestamp},
-	} {
-		var x struct{ D time.Time }
-		input := "d = " + tt.s
-		if _, err := Decode(input, &x); err != nil {
-			t.Errorf("Decode(%q): got error: %s", input, err)
-			continue
-		}
-		want, err := time.ParseInLocation(tt.format, tt.t, time.Local)
-		if err != nil {
-			panic(err)
-		}
-		if !x.D.Equal(want) {
-			t.Errorf("Decode(%q): got %s; want %s", input, x.D, want)
-		}
+func TestDecodeBadTimestamp(t *testing.T) {
+	var x struct {
+		T time.Time
 	}
-}
-
-func TestDecodeBadDatetime(t *testing.T) {
-	var x struct{ T time.Time }
 	for _, s := range []string{
-		"123",
-		"2006-01-50T00:00:00Z",
-		"2006-01-30T00:00",
-		"2006-01-30T",
+		"T = 123", "T = 2006-01-50T00:00:00Z", "T = 2006-01-30T00:00:00",
 	} {
-		input := "T = " + s
-		if _, err := Decode(input, &x); err == nil {
+		if _, err := Decode(s, &x); err == nil {
 			t.Errorf("Expected invalid DateTime error for %q", s)
 		}
 	}
@@ -484,111 +403,6 @@ func TestDecodeSizedInts(t *testing.T) {
 	}
 }
 
-func TestDecodeInts(t *testing.T) {
-	for _, tt := range []struct {
-		s    string
-		want int64
-	}{
-		{"0", 0},
-		{"+99", 99},
-		{"-10", -10},
-		{"1_234_567", 1234567},
-		{"1_2_3_4", 1234},
-		{"-9_223_372_036_854_775_808", math.MinInt64},
-		{"9_223_372_036_854_775_807", math.MaxInt64},
-	} {
-		var x struct{ N int64 }
-		input := "n = " + tt.s
-		if _, err := Decode(input, &x); err != nil {
-			t.Errorf("Decode(%q): got error: %s", input, err)
-			continue
-		}
-		if x.N != tt.want {
-			t.Errorf("Decode(%q): got %d; want %d", input, x.N, tt.want)
-		}
-	}
-}
-
-func TestDecodeFloats(t *testing.T) {
-	for _, tt := range []struct {
-		s    string
-		want float64
-	}{
-		{"+1.0", 1},
-		{"3.1415", 3.1415},
-		{"-0.01", -0.01},
-		{"5e+22", 5e22},
-		{"1e6", 1e6},
-		{"-2E-2", -2e-2},
-		{"6.626e-34", 6.626e-34},
-		{"9_224_617.445_991_228_313", 9224617.445991228313},
-		{"9_876.54_32e1_0", 9876.5432e10},
-	} {
-		var x struct{ N float64 }
-		input := "n = " + tt.s
-		if _, err := Decode(input, &x); err != nil {
-			t.Errorf("Decode(%q): got error: %s", input, err)
-			continue
-		}
-		if x.N != tt.want {
-			t.Errorf("Decode(%q): got %d; want %d", input, x.N, tt.want)
-		}
-	}
-}
-
-func TestDecodeMalformedNumbers(t *testing.T) {
-	for _, tt := range []struct {
-		s    string
-		want string
-	}{
-		{"++99", "Expected a digit"},
-		{"0..1", "must be followed by one or more digits"},
-		{"0.1.2", "Invalid float value"},
-		{"1e2.3", "Invalid float value"},
-		{"1e2e3", "Invalid float value"},
-		{"_123", "Expected value"},
-		{"123_", "surrounded by digits"},
-		{"1._23", "surrounded by digits"},
-		{"1e__23", "surrounded by digits"},
-		{"123.", "must be followed by one or more digits"},
-		{"1.e2", "must be followed by one or more digits"},
-	} {
-		var x struct{ N interface{} }
-		input := "n = " + tt.s
-		_, err := Decode(input, &x)
-		if err == nil {
-			t.Errorf("Decode(%q): got nil, want error containing %q",
-				input, tt.want)
-			continue
-		}
-		if !strings.Contains(err.Error(), tt.want) {
-			t.Errorf("Decode(%q): got %q, want error containing %q",
-				input, err, tt.want)
-		}
-	}
-}
-
-func TestDecodeBadValues(t *testing.T) {
-	for _, tt := range []struct {
-		v    interface{}
-		want string
-	}{
-		{3, "non-pointer type"},
-		{(*int)(nil), "nil"},
-	} {
-		_, err := Decode(`x = 3`, tt.v)
-		if err == nil {
-			t.Errorf("Decode(%v): got nil; want error containing %q",
-				tt.v, tt.want)
-			continue
-		}
-		if !strings.Contains(err.Error(), tt.want) {
-			t.Errorf("Decode(%v): got %q; want error containing %q",
-				tt.v, err, tt.want)
-		}
-	}
-}
-
 func TestUnmarshaler(t *testing.T) {
 
 	var tomlBlob = `
@@ -623,7 +437,7 @@ name = "Rice"
 `
 	m := &menu{}
 	if _, err := Decode(tomlBlob, m); err != nil {
-		t.Fatal(err)
+		log.Fatal(err)
 	}
 
 	if len(m.Dishes) != 2 {
@@ -659,7 +473,7 @@ name = "Rice"
 	// test on a value - must be passed as *
 	o := menu{}
 	if _, err := Decode(tomlBlob, &o); err != nil {
-		t.Fatal(err)
+		log.Fatal(err)
 	}
 
 }

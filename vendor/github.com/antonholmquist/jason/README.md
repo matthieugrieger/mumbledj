@@ -45,7 +45,7 @@ v, err := jason.NewObjectFromBytes(b)
 
 ```
 
-If the root object is unknown or not an object, use `NewValueFromBytes` instead. It can then be typecasted using one of the conversion methods provided by the library, for instance `Array()` or `String()`.
+If the root object is not an array, use this method instead. It can then be cased to the expected type with one of the As-Methods.
 
 ```go
 v, err := jason.NewValueFromBytes(b)
@@ -174,7 +174,7 @@ func main() {
 
 ## Documentation
 
-Documentation can be found on godoc:
+Documentation can be found a godoc:
 
 https://godoc.org/github.com/antonholmquist/jason
 
@@ -191,7 +191,7 @@ Go 1.1 and up.
 
 ## Where does the name come from?
 
-I remembered it from an email one of our projects managers sent a couple of years ago.
+I remebered it from an email one of our projects managers sent a couple of years ago.
 
 > "Don't worry. We can handle both XML and Jason"
 

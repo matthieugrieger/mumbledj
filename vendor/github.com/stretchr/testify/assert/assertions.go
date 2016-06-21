@@ -832,11 +832,11 @@ func InEpsilonSlice(t TestingT, expected, actual interface{}, epsilon float64, m
 //
 // Returns whether the assertion was successful (true) or not (false).
 func NoError(t TestingT, err error, msgAndArgs ...interface{}) bool {
-	if err != nil {
-		return Fail(t, fmt.Sprintf("Received unexpected error %q", err), msgAndArgs...)
+	if isNil(err) {
+		return true
 	}
 
-	return true
+	return Fail(t, fmt.Sprintf("Received unexpected error %q", err), msgAndArgs...)
 }
 
 // Error asserts that a function returned an error (i.e. not `nil`).
@@ -850,11 +850,8 @@ func NoError(t TestingT, err error, msgAndArgs ...interface{}) bool {
 func Error(t TestingT, err error, msgAndArgs ...interface{}) bool {
 
 	message := messageFromMsgAndArgs(msgAndArgs...)
-	if err == nil {
-		return Fail(t, "An error is expected but got nil. %s", message)
-	}
+	return NotNil(t, err, "An error is expected but got nil. %s", message)
 
-	return true
 }
 
 // EqualError asserts that a function returned an error (i.e. not `nil`)

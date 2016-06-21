@@ -1,10 +1,10 @@
-hash: 58b946577727dc003cc7efacfff614b6f47602a136e8bf501bd39a18bd3c768c
-updated: 2016-06-20T17:29:39.656363943-07:00
+hash: 90b4d676820ec357d9eac7be23afe091897035f8e22579f32bef93f9e1971e42
+updated: 2016-06-21T09:01:11.596780617-07:00
 imports:
 - name: github.com/antonholmquist/jason
-  version: 423803175a265e07c3f35cd8faf009eac345efb8
+  version: c23cef7eaa75a6a5b8810120e167bd590d8fd2ab
 - name: github.com/BurntSushi/toml
-  version: f0aeabca5a127c4078abb8c8d64298b147264b55
+  version: bbd5bb678321a0d6e58f1099321dfa73391c1b6f
 - name: github.com/ChannelMeter/iso8601duration
   version: 8da3af7a2a61a4eb5ae9bddec06bf637fa9593da
 - name: github.com/fsnotify/fsnotify
@@ -39,8 +39,12 @@ imports:
   version: c265cfa48dda6474e208715ca93e987829f572f8
 - name: github.com/mitchellh/mapstructure
   version: d2dd0262208475919e1a362f675cfc0e7c10e905
+- name: github.com/nicksnyder/go-i18n
+  version: 37e5c2de3e03e4b82693e3fcb4a6aa2cc4eb07e3
+  subpackages:
+  - i18n
 - name: github.com/Sirupsen/logrus
-  version: f3cfb454f4c209e6668c95216c4744b8fddb2356
+  version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
 - name: github.com/spf13/cast
   version: 27b586b42e29bec072fe7379259cc719e1289da6
 - name: github.com/spf13/jwalterweatherman
@@ -50,9 +54,9 @@ imports:
 - name: github.com/spf13/viper
   version: c1ccc378a054ea8d4e38d8c67f6938d4760b53dd
 - name: github.com/stretchr/testify
-  version: d77da356e56a7428ad25149ca77381849a6a5232
+  version: f390dcf405f7b83c997eac1b06768bb9f44dec18
 - name: github.com/urfave/cli
-  version: 6011f165dc288c72abd8acd7722f837c5c64198d
+  version: 01857ac33766ce0c93856370626f9799281c14f4
 - name: golang.org/x/sys
   version: 62bee037599929a6e9146f29d10dd5208c43507d
   subpackages:

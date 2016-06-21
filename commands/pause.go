@@ -8,6 +8,7 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/layeh/gumble/gumble"
@@ -45,7 +46,7 @@ func (c *PauseCommand) IsAdminCommand() bool {
 func (c *PauseCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	err := DJ.Queue.PauseCurrent()
 	if err != nil {
-		return "", true, err
+		return "", true, errors.New(viper.GetString("commands.pause.messages.no_audio_error"))
 	}
-	return fmt.Sprintf("<b>%s</b> has paused audio playback.", user.Name), false, nil
+	return fmt.Sprintf(viper.GetString("commands.pause.messages.paused"), user.Name), false, nil
 }

@@ -8,6 +8,7 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/layeh/gumble/gumble"
@@ -45,7 +46,7 @@ func (c *ResumeCommand) IsAdminCommand() bool {
 func (c *ResumeCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	err := DJ.Queue.ResumeCurrent()
 	if err != nil {
-		return "", true, err
+		return "", true, errors.New(viper.GetString("commands.resume.messages.audio_error"))
 	}
-	return fmt.Sprintf("<b>%s</b> has resumed audio playback.", user.Name), false, nil
+	return fmt.Sprintf(viper.GetString("commands.resume.messages.resumed"), user.Name), false, nil
 }

@@ -140,17 +140,31 @@ commands:
     # NOTE: Only one character (the first) is used.
     prefix: "!"
 
+    common_messages:
+        no_tracks_error: "There are no tracks in the queue."
+        caching_disabled_error: "Caching is currently disabled."
+
     # Below is a list of the commands supported by MumbleDJ. Each command has
     # three configurable options:
     # aliases: A list of names that can be used to execute the command.
     # is_admin: true = only admins can execute the command, false = anyone can execute the command.
     # description: Description shown for the command when the help command is executed.
+    # messages: Various messages that may be sent as a text message from the command. Useful for translating
+    #           strings to other languages. Do NOT remove strings that begin with "%" (such as "%s", "%d", etc.)
+    #           as they substituted with runtime data. Removing these strings will cause the bot to misbehave.
     add:
         aliases:
             - "add"
             - "a"
         is_admin: false
         description: "Adds a track or playlist from a media site to the queue."
+        messages:
+            no_url_error: "A URL must be supplied with the add command."
+            no_valid_tracks_error: "No valid tracks were found with the provided URL(s)."
+            tracks_too_long_error: "Your track(s) were either too long or an error occurred while processing them. No track(s) have been added."
+            one_track_added: "<b>%s</b> added <b>1</b> track to the queue:<br><i>%s</i> from %s"
+            many_tracks_added: "<b>%s</b> added <b>%d</b> tracks to the queue."
+            num_tracks_too_long: "<br><b>%d</b> tracks could not be added due to error or because they are too long."
 
     addnext:
         aliases:
@@ -158,6 +172,7 @@ commands:
             - "an"
         is_admin: true
         description: "Adds a track or playlist from a media site as the next item in the queue."
+        # addnext uses the messages defined for add.
 
     cachesize:
         aliases:
@@ -165,6 +180,8 @@ commands:
             - "cs"
         is_admin: true
         description: "Outputs the file size of the cache in MiB if caching is enabled."
+        messages:
+            current_size: "The current size of the cache is <b>%.2v MiB</b>."
 
     currenttrack:
         aliases:
@@ -173,6 +190,8 @@ commands:
             - "current"
         is_admin: false
         description: "Outputs information about the current track in the queue if one exists."
+        messages:
+            current_track: "The current track is <i>%s</i>, added by <b>%s</b>."
 
     forceskip:
         aliases:
@@ -180,6 +199,8 @@ commands:
             - "fs"
         is_admin: true
         description: "Immediately skips the current track."
+        messages:
+            track_skipped: "The current track has been forcibly skipped by <b>%s</b>."
 
     forceskipplaylist:
         aliases:
@@ -187,6 +208,9 @@ commands:
             - "fsp"
         is_admin: true
         description: "Immediately skips the current playlist."
+        messages:
+            no_playlist_error: "The current track is not part of a playlist."
+            playlist_skipped: "The current playlist has been forcibly skipped by <b>%s</b>."
 
     help:
         aliases:
@@ -194,6 +218,9 @@ commands:
             - "h"
         is_admin: false
         description: "Outputs this list of commands."
+        messages:
+            commands_header: "<br><b>Commands:</b><br>"
+            admin_commands_header: "<br><b>Admin Commands:</b><br>"
 
     joinme:
         aliases:
@@ -201,6 +228,9 @@ commands:
             - "join"
         is_admin: true
         description: "Moves MumbleDJ into your current channel if not playing audio to someone else."
+        messages:
+            others_are_listening_error: "Users in another channel are listening to me."
+            in_your_channel: "I am now in your channel!"
 
     kill:
         aliases:
@@ -217,6 +247,9 @@ commands:
             - "l"
         is_admin: false
         description: "Outputs a list of the tracks currently in the queue."
+        messages:
+            invalid_integer_error: "An invalid integer was supplied."
+            track_listing: "<b>%d</b>: <i>%s</i>, added by <b>%s</b>.<br>"
 
     move:
         aliases:
@@ -224,6 +257,10 @@ commands:
             - "m"
         is_admin: true
         description: "Moves the bot into the Mumble channel provided via argument."
+        messages:
+            no_channel_provided_error: "A destination channel must be supplied to move the bot."
+            channel_doesnt_exist_error: "The provided channel does not exist."
+            move_successful: "You have successfully moved the bot to <b>%s</b>." 
 
     nexttrack:
         aliases:
@@ -232,6 +269,9 @@ commands:
             - "next"
         is_admin: false
         description: "Outputs information about the next track in the queue if one exists."
+        messages:
+            current_track_only_error: "The current track is the only track in the queue."
+            next_track: "The next track is <i>%s</i>, added by <b>%s</b>."
 
     numcached:
         aliases:
@@ -239,6 +279,8 @@ commands:
             - "nc"
         is_admin: true
         description: "Outputs the number of tracks cached on disk if caching is enabled."
+        messages:
+            num_cached: "There are currently <b>%d</b> items stored in the cache."
 
     numtracks:
         aliases:
@@ -247,12 +289,18 @@ commands:
             - "nt"
         is_admin: false
         description: "Outputs the number of tracks currently in the queue."
+        messages:
+            one_track: "There is currently <b>1</b> track in the queue."
+            plural_tracks: "There are currently <b>%d</b> tracks in the queue."
 
     pause:
         aliases:
             - "pause"
         is_admin: false
         description: "Pauses audio playback."
+        messages:
+            no_audio_error: "Either the audio is already paused, or there are no tracks in the queue."
+            paused: "<b>%s</b> has paused audio playback."
 
     reload:
         aliases:
@@ -260,6 +308,8 @@ commands:
             - "r"
         is_admin: true
         description: "Reloads the configuration file."
+        messages:
+            reloaded: "The configuration file has been successfully reloaded."
 
     reset:
         aliases:
@@ -267,12 +317,17 @@ commands:
             - "re"
         is_admin: true
         description: "Resets the queue by removing all queue items."
+        messages:
+            queue_reset: "<b>%s</b> has reset the queue."
 
     resume:
         aliases:
             - "resume"
         is_admin: false
         description: "Resumes audio playback."
+        messages:
+            audio_error: "Either the audio is already playing, or there are no tracks in the queue."
+            resumed: "<b>%s</b> has resumed audio playback."
 
     setcomment:
         aliases:
@@ -281,6 +336,9 @@ commands:
             - "sc"
         is_admin: true
         description: "Sets the comment displayed next to MumbleDJ's username in Mumble."
+        messages:
+            comment_removed: "The comment for the bot has been successfully removed."
+            comment_changed: "The comment for the bot has been successfully changed to the following: %s"
 
     shuffle:
         aliases:
@@ -289,6 +347,9 @@ commands:
             - "sh"
         is_admin: true
         description: "Randomizes the tracks currently in the queue."
+        messages:
+            not_enough_tracks_error: "There are not enough tracks in the queue to execute a shuffle."
+            shuffled: "The audio queue has been shuffled."
 
     skip:
         aliases:
@@ -296,6 +357,9 @@ commands:
             - "s"
         is_admin: false
         description: "Places a vote to skip the current track."
+        messages:
+            already_voted_error: "You have already voted to skip this track."
+            voted: "<b>%s</b> has voted to skip the current track."
 
     skipplaylist:
         aliases:
@@ -303,6 +367,10 @@ commands:
             - "sp"
         is_admin: false
         description: "Places a vote to skip the current playlist."
+        messages:
+            no_playlist_error: "The current track is not part of a playlist."
+            already_voted_error: "You have already voted to skip this playlist."
+            voted: "<b>%s</b> has voted to skip the current playlist."
 
     toggleshuffle:
         aliases:
@@ -312,6 +380,10 @@ commands:
             - "tsh"
         is_admin: true
         description: "Toggles automatic track shuffling on/off."
+        messages:
+            toggled_off: "Automatic shuffling has been toggled off."
+            toggled_on: "Automatic shuffling has been toggled on."
+
 
     version:
         aliases:
@@ -319,6 +391,8 @@ commands:
             - "v"
         is_admin: false
         description: "Outputs the current version of MumbleDJ."
+        messages:
+            version: "MumbleDJ version: <b>%s</b>"
 
     volume:
         aliases:
@@ -326,3 +400,8 @@ commands:
             - "vol"
         is_admin: false
         description: "Changes the volume if an argument is provided, outputs the current volume otherwise."
+        messages:
+            parsing_error: "The requested volume could not be parsed."
+            out_of_range_error: "Volumes must be between the values <b>%.2f</b> and <b>%.2f</b>."
+            current_volume: "The current volume is <b>%.2f</b>."
+            volume_changed: "<b>%s</b> has changed the volume to <b>%.2f</b>."

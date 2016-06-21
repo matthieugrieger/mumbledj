@@ -55,7 +55,7 @@ func (c *AddNextCommand) Execute(user *gumble.User, args ...string) (string, boo
 	)
 
 	if len(args) == 0 {
-		return "", true, errors.New("A URL must be supplied with the addnext command")
+		return "", true, errors.New(viper.GetString("commands.add.messages.no_url_error"))
 	}
 
 	for _, arg := range args {
@@ -68,7 +68,7 @@ func (c *AddNextCommand) Execute(user *gumble.User, args ...string) (string, boo
 	}
 
 	if len(allTracks) == 0 {
-		return "", true, errors.New("No valid tracks were found with the provided URL(s)")
+		return "", true, errors.New(viper.GetString("commands.add.messages.no_valid_tracks_error"))
 	}
 
 	numTooLong := 0
@@ -84,15 +84,15 @@ func (c *AddNextCommand) Execute(user *gumble.User, args ...string) (string, boo
 	}
 
 	if numAdded == 0 {
-		return "", true, errors.New("Your track(s) were either too long or an error occurred while processing them. No track(s) have been added.")
+		return "", true, errors.New(viper.GetString("commands.add.messages.tracks_too_long_error"))
 	} else if numAdded == 1 {
-		return fmt.Sprintf("<b>%s</b> added <b>1</b> track to the queue:<br>\"%s\" from %s",
+		return fmt.Sprintf(viper.GetString("commands.add.messages.one_track_added"),
 			user.Name, lastTrackAdded.GetTitle(), lastTrackAdded.GetService()), false, nil
 	}
 
-	retString := fmt.Sprintf("<b>%s</b> added <b>%d</b> tracks to the queue.", user.Name, numAdded)
+	retString := fmt.Sprintf(viper.GetString("commands.add.messages.many_tracks_added"), user.Name, numAdded)
 	if numTooLong != 0 {
-		retString += fmt.Sprintf("<br><b>%d</b> tracks could not be added due to error or because they are too long.", numTooLong)
+		retString += fmt.Sprintf(viper.GetString("commands.add.messages.num_tracks_too_long"), numTooLong)
 	}
 	return retString, false, nil
 }

@@ -43,5 +43,5 @@ func (c *VersionCommand) IsAdminCommand() bool {
 // Example return statement:
 //    return "This is a private message!", true, nil
 func (c *VersionCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
-	return fmt.Sprintf("MumbleDJ version: <b>%s</b>", DJ.Version), true, nil
+	return fmt.Sprintf(viper.GetString("commands.version.messages.version"), DJ.Version), true, nil
 }

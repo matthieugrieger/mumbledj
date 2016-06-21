@@ -52,9 +52,9 @@ func (c *CurrentTrackCommand) Execute(user *gumble.User, args ...string) (string
 	)
 
 	if currentTrack, err = DJ.Queue.CurrentTrack(); err != nil {
-		return "", true, errors.New("There are no tracks in the queue")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
-	return fmt.Sprintf("The current track is \"%s\", added by <b>%s</b>.",
+	return fmt.Sprintf(viper.GetString("commands.currenttrack.messages.current_track"),
 		currentTrack.GetTitle(), currentTrack.GetSubmitter()), true, nil
 }

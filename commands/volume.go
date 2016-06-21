@@ -47,16 +47,16 @@ func (c *VolumeCommand) IsAdminCommand() bool {
 func (c *VolumeCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if len(args) == 0 {
 		// Send the user the current volume level.
-		return fmt.Sprintf("The current volume is <b>%.2f</b>.", DJ.Volume), true, nil
+		return fmt.Sprintf(viper.GetString("commands.volume.messages.current_volume"), DJ.Volume), true, nil
 	}
 
 	newVolume, err := strconv.ParseFloat(args[0], 32)
 	if err != nil {
-		return "", true, errors.New("An error occurred while parsing the requested volume")
+		return "", true, errors.New(viper.GetString("commands.volume.messages.parsing_error"))
 	}
 
 	if newVolume < viper.GetFloat64("volume.lowest") || newVolume > viper.GetFloat64("volume.highest") {
-		return "", true, fmt.Errorf("Volumes must be between the values <b>%.2f</b> and <b>%.2f</b>",
+		return "", true, fmt.Errorf(viper.GetString("commands.volume.messages.out_of_range_error"),
 			viper.GetFloat64("volume.lowest"), viper.GetFloat64("volume.highest"))
 	}
 
@@ -67,6 +67,6 @@ func (c *VolumeCommand) Execute(user *gumble.User, args ...string) (string, bool
 	}
 	DJ.Volume = newVolume32
 
-	return fmt.Sprintf("<b>%s</b> has changed the volume to <b>%.2f</b>.",
+	return fmt.Sprintf(viper.GetString("commands.volume.messages.volume_changed"),
 		user.Name, newVolume32), false, nil
 }

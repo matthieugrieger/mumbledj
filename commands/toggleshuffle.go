@@ -43,8 +43,8 @@ func (c *ToggleShuffleCommand) IsAdminCommand() bool {
 func (c *ToggleShuffleCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if viper.GetBool("queue.automatic_shuffle_on") {
 		viper.Set("queue.automatic_shuffle_on", false)
-		return "Automatic shuffling has been toggled off.", false, nil
+		return viper.GetString("commands.toggleshuffle.messages.toggled_off"), false, nil
 	}
 	viper.Set("queue.automatic_shuffle_on", true)
-	return "Automatic shuffling has been toggled on.", false, nil
+	return viper.GetString("commands.toggleshuffle.messages.toggled_on"), false, nil
 }

@@ -47,6 +47,6 @@ func (c *ReloadCommand) Execute(user *gumble.User, args ...string) (string, bool
 		return "", true, err
 	}
 
-	return "The configuration in the configuration file has been reloaded successfully.",
+	return viper.GetString("commands.reload.messages.reloaded"),
 		true, nil
 }

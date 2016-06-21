@@ -47,14 +47,14 @@ func (c *NextTrackCommand) IsAdminCommand() bool {
 func (c *NextTrackCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	length := DJ.Queue.Length()
 	if length == 0 {
-		return "", true, errors.New("There are no tracks in the queue")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 	if length == 1 {
-		return "", true, errors.New("The current track is the only track in the queue")
+		return "", true, errors.New(viper.GetString("commands.nexttrack.messages.current_track_only_error"))
 	}
 
 	nextTrack, _ := DJ.Queue.PeekNextTrack()
 
-	return fmt.Sprintf("The next track is \"%s\", added by <b>%s</b>.",
+	return fmt.Sprintf(viper.GetString("commands.nexttrack.messages.next_track"),
 		nextTrack.GetTitle(), nextTrack.GetSubmitter()), true, nil
 }

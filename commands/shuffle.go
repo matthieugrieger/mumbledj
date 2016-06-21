@@ -45,13 +45,13 @@ func (c *ShuffleCommand) IsAdminCommand() bool {
 func (c *ShuffleCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	length := DJ.Queue.Length()
 	if length == 0 {
-		return "", true, errors.New("There are no tracks currently in the queue")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 	if length <= 2 {
-		return "", true, errors.New("There are not enough tracks in the queue to execute a shuffle")
+		return "", true, errors.New(viper.GetString("commands.shuffle.messages.not_enough_tracks_error"))
 	}
 
 	DJ.Queue.ShuffleTracks()
 
-	return "The audio queue has been shuffled.", false, nil
+	return viper.GetString("commands.shuffle.messages.shuffled"), false, nil
 }

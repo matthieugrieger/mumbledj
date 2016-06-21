@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 21, 2016 -- `v3.0.1`
+* Added all strings that are output by commands to `config.yaml` for easier translation and tweaking.
+
 ### June 20, 2016 -- `v3.0.0`
 * Significantly simplified installation process, now installable via `go install`.
 * Commands may now have multiple aliases, configurable via config file.

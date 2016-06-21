@@ -48,7 +48,7 @@ func (c *SetCommentCommand) Execute(user *gumble.User, args ...string) (string, 
 		DJ.Client.Do(func() {
 			DJ.Client.Self.SetComment("")
 		})
-		return "The comment for the bot has been successfully removed.", true, nil
+		return viper.GetString("commands.setcomment.messages.comment_removed"), true, nil
 	}
 
 	var newComment string
@@ -61,6 +61,6 @@ func (c *SetCommentCommand) Execute(user *gumble.User, args ...string) (string, 
 		DJ.Client.Self.SetComment(newComment)
 	})
 
-	return fmt.Sprintf("The comment for the bot has been successfully changed to the following: %s",
+	return fmt.Sprintf(viper.GetString("commands.setcomment.messages.comment_changed"),
 		newComment), true, nil
 }

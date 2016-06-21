@@ -46,8 +46,8 @@ func (c *NumTracksCommand) IsAdminCommand() bool {
 func (c *NumTracksCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	length := DJ.Queue.Length()
 	if length == 1 {
-		return "There is currently <b>1</b> track in the queue.", true, nil
+		return viper.GetString("commands.numtracks.messages.one_track"), true, nil
 	}
 
-	return fmt.Sprintf("There are currently <b>%d</b> tracks in the queue.", length), true, nil
+	return fmt.Sprintf(viper.GetString("commands.numtracks.messages.plural_tracks"), length), true, nil
 }

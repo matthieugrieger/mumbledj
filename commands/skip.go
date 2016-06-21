@@ -45,11 +45,11 @@ func (c *SkipCommand) IsAdminCommand() bool {
 //    return "This is a private message!", true, nil
 func (c *SkipCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if DJ.Queue.Length() == 0 {
-		return "", true, errors.New("The queue is currently empty. There is no track to skip")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 	if err := DJ.Skips.AddTrackSkip(user); err != nil {
-		return "", true, errors.New("You have already voted to skip this track")
+		return "", true, errors.New(viper.GetString("commands.skip.messages.already_voted_error"))
 	}
 
-	return fmt.Sprintf("<b>%s</b> has voted to skip the current track.", user.Name), false, nil
+	return fmt.Sprintf(viper.GetString("commands.skip.messages.voted"), user.Name), false, nil
 }

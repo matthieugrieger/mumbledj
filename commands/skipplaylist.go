@@ -52,15 +52,15 @@ func (c *SkipPlaylistCommand) Execute(user *gumble.User, args ...string) (string
 	)
 
 	if currentTrack, err = DJ.Queue.CurrentTrack(); err != nil {
-		return "", true, errors.New("The queue is currently empty. There is no playlist to skip")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
 	if playlist := currentTrack.GetPlaylist(); playlist == nil {
-		return "", true, errors.New("The current track is not part of a playlist")
+		return "", true, errors.New(viper.GetString("commands.skipplaylist.messages.no_playlist_error"))
 	}
 	if err := DJ.Skips.AddPlaylistSkip(user); err != nil {
-		return "", true, errors.New("You have already voted to skip this playlist")
+		return "", true, errors.New(viper.GetString("commands.skipplaylist.messages.already_voted_error"))
 	}
 
-	return fmt.Sprintf("<b>%s</b> has voted to skip the current playlist.", user.Name), false, nil
+	return fmt.Sprintf(viper.GetString("commands.skipplaylist.messages.voted"), user.Name), false, nil
 }

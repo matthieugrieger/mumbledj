@@ -49,7 +49,7 @@ func (c *ListTracksCommand) IsAdminCommand() bool {
 //    return "This is a private message!", true, nil
 func (c *ListTracksCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if DJ.Queue.Length() == 0 {
-		return "", true, errors.New("There are no tracks currently in the queue")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
 	numTracksToList := DJ.Queue.Length()
@@ -57,14 +57,14 @@ func (c *ListTracksCommand) Execute(user *gumble.User, args ...string) (string, 
 		if parsedNum, err := strconv.Atoi(args[0]); err == nil {
 			numTracksToList = parsedNum
 		} else {
-			return "", true, errors.New("An invalid integer was supplied")
+			return "", true, errors.New(viper.GetString("commands.listtracks.messages.invalid_integer_error"))
 		}
 	}
 
 	var buffer bytes.Buffer
 	DJ.Queue.Traverse(func(i int, track interfaces.Track) {
 		if i < numTracksToList {
-			buffer.WriteString(fmt.Sprintf("<b>%d</b>: \"%s\", added by <b>%s</b>.<br>",
+			buffer.WriteString(fmt.Sprintf(viper.GetString("commands.listtracks.messages.track_listing"),
 				i+1, track.GetTitle(), track.GetSubmitter()))
 		}
 	})

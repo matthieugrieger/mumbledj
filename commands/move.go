@@ -46,7 +46,7 @@ func (c *MoveCommand) IsAdminCommand() bool {
 //    return "This is a private message!", true, nil
 func (c *MoveCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if len(args) == 0 {
-		return "", true, errors.New("A destination channel must be supplied to move the bot")
+		return "", true, errors.New(viper.GetString("commands.move.messages.no_channel_provided_error"))
 	}
 	channel := ""
 	for _, arg := range args {
@@ -58,8 +58,8 @@ func (c *MoveCommand) Execute(user *gumble.User, args ...string) (string, bool, 
 			DJ.Client.Self.Move(DJ.Client.Channels.Find(channels...))
 		})
 	} else {
-		return "", true, errors.New("The provided channel does not exist")
+		return "", true, errors.New(viper.GetString("commands.move.messages.channel_doesnt_exist_error"))
 	}
 
-	return fmt.Sprintf("You have successfully moved the bot to <b>%s</b>.", channel), true, nil
+	return fmt.Sprintf(viper.GetString("commands.move.messages.move_successful"), channel), true, nil
 }

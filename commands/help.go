@@ -58,7 +58,7 @@ func (c *HelpCommand) Execute(user *gumble.User, args ...string) (string, bool, 
 		}
 	}
 
-	totalString = "<br><b>Commands:</b><br>" + regularCommands
+	totalString = viper.GetString("commands.help.messages.commands_header") + regularCommands
 
 	isAdmin := false
 	if viper.GetBool("admins.enabled") {
@@ -68,7 +68,7 @@ func (c *HelpCommand) Execute(user *gumble.User, args ...string) (string, bool, 
 	}
 
 	if isAdmin {
-		totalString += "<br><b>Admin Commands:</b><br>" + adminCommands
+		totalString += viper.GetString("commands.help.messages.admin_commands_header") + adminCommands
 	}
 
 	return totalString, true, nil

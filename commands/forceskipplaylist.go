@@ -52,15 +52,15 @@ func (c *ForceSkipPlaylistCommand) Execute(user *gumble.User, args ...string) (s
 	)
 
 	if currentTrack, err = DJ.Queue.CurrentTrack(); err != nil {
-		return "", true, errors.New("The queue is currently empty. There are no playlists to skip")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
 	if playlist := currentTrack.GetPlaylist(); playlist == nil {
-		return "", true, errors.New("The current track is not part of a playlist")
+		return "", true, errors.New(viper.GetString("commands.forceskipplaylist.messages.no_playlist_error"))
 	}
 
 	DJ.Queue.SkipPlaylist()
 
-	return fmt.Sprintf("The current playlist has been forcibly skipped by <b>%s</b>.",
+	return fmt.Sprintf(viper.GetString("commands.forceskipplaylist.messages.playlist_skipped"),
 		user.Name), false, nil
 }

@@ -47,12 +47,12 @@ func (c *JoinMeCommand) IsAdminCommand() bool {
 func (c *JoinMeCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if DJ.AudioStream != nil && DJ.AudioStream.State() == gumbleffmpeg.StatePlaying &&
 		len(DJ.Client.Self.Channel.Users) > 1 {
-		return "", true, errors.New("Users in another channel are listening to me.")
+		return "", true, errors.New(viper.GetString("commands.joinme.messages.others_are_listening_error"))
 	}
 
 	DJ.Client.Do(func() {
 		DJ.Client.Self.Move(user.Channel)
 	})
 
-	return "I am now in your channel!", true, nil
+	return viper.GetString("commands.joinme.messages.in_your_channel"), true, nil
 }

@@ -47,9 +47,9 @@ func (c *CacheSizeCommand) Execute(user *gumble.User, args ...string) (string, b
 	const bytesInMiB = 1048576
 
 	if !viper.GetBool("cache.enabled") {
-		return "", true, errors.New("Caching is currently disabled")
+		return "", true, errors.New(viper.GetString("commands.common_messages.caching_disabled_error"))
 	}
 
 	DJ.Cache.UpdateStatistics()
-	return fmt.Sprintf("The current size of the cache is <b>%.2v MiB</b>.", DJ.Cache.TotalFileSize/bytesInMiB), true, nil
+	return fmt.Sprintf(viper.GetString("commands.cachesize.messages.current_size"), DJ.Cache.TotalFileSize/bytesInMiB), true, nil
 }

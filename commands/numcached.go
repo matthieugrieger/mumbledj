@@ -46,10 +46,10 @@ func (c *NumCachedCommand) IsAdminCommand() bool {
 //    return "This is a private message!", true, nil
 func (c *NumCachedCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if !viper.GetBool("cache.enabled") {
-		return "", true, errors.New("Caching is currently disabled")
+		return "", true, errors.New(viper.GetString("commands.common_messages.caching_disabled_error"))
 	}
 
 	DJ.Cache.UpdateStatistics()
-	return fmt.Sprintf("There are currently <b>%d</b> items stored in the cache.",
+	return fmt.Sprintf(viper.GetString("commands.numcached.messages.num_cached"),
 		DJ.Cache.NumAudioFiles), true, nil
 }

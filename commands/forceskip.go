@@ -45,11 +45,11 @@ func (c *ForceSkipCommand) IsAdminCommand() bool {
 //    return "This is a private message!", true, nil
 func (c *ForceSkipCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if DJ.Queue.Length() == 0 {
-		return "", true, errors.New("The queue is currently empty. There are no tracks to skip")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
 	DJ.Queue.Skip()
 
-	return fmt.Sprintf("The current track has been forcibly skipped by <b>%s</b>.",
+	return fmt.Sprintf(viper.GetString("commands.forceskip.messages.track_skipped"),
 		user.Name), false, nil
 }

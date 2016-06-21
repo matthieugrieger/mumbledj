@@ -45,7 +45,7 @@ func (c *ResetCommand) IsAdminCommand() bool {
 //    return "This is a private message!", true, nil
 func (c *ResetCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if DJ.Queue.Length() == 0 {
-		return "", true, errors.New("The queue is already empty")
+		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
 	if DJ.AudioStream != nil {
@@ -59,5 +59,5 @@ func (c *ResetCommand) Execute(user *gumble.User, args ...string) (string, bool,
 		return "", true, err
 	}
 
-	return fmt.Sprintf("<b>%s</b> has reset the queue.", user.Name), false, nil
+	return fmt.Sprintf(viper.GetString("commands.reset.messages.queue_reset"), user.Name), false, nil
 }

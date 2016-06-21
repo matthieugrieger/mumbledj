@@ -1,7 +1,7 @@
 
 <h1 align="center">MumbleDJ</h1>
 <p align="center"><b>A Mumble bot that plays audio fetched from various media websites.</b></p>
-<p align="center"><a href="https://travis-ci.org/matthieugrieger/mumbledj"><img src="https://img.shields.io/travis/matthieugrieger/mumbledj.svg?style=flat-square"/></a> <a href="https://raw.githubusercontent.com/matthieugrieger/mumbledj/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square"/></a> <a href="https://github.com/matthieugrieger/mumbledj/releases"><img src="https://img.shields.io/github/release/matthieugrieger/mumbledj.svg?style=flat-square"/></a></p>
+<p align="center"><a href="https://travis-ci.org/matthieugrieger/mumbledj"><img src="https://travis-ci.org/matthieugrieger/mumbledj.svg?branch=master"/></a> <a href="https://raw.githubusercontent.com/matthieugrieger/mumbledj/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"/></a> <a href="https://github.com/matthieugrieger/mumbledj/releases"><img src="https://img.shields.io/github/release/matthieugrieger/mumbledj.svg"/></a> <a href="https://goreportcard.com/report/github.com/matthieugrieger/mumbledj"><img src="https://goreportcard.com/badge/github.com/matthieugrieger/mumbledj"/></a></p>
 
 ## Table of Contents
 

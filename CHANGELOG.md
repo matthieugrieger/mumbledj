@@ -1,6 +1,35 @@
 MumbleDJ Changelog
 ==================
 
+### June 20, 2016 -- `v3.0.0`
+* Significantly simplified installation process, now installable via `go install`.
+* Commands may now have multiple aliases, configurable via config file.
+* Command aliases are checked for duplicates and closes the bot if duplicates are found.
+* Added new commands: `!resume`, `!pause`. These commands allow you to resume and pause audio streams respectively.
+* `!add` and `!addnext` can now take any number of space-separated URLs as arguments.
+* Commands are now executed asynchronously for better performance and responsiveness.
+* Restructured project into subpackages: `bot`, `commands`, `interfaces`, `services`.
+* Config file is now in `.yaml` format and is written to `$HOME/.config/mumbledj/config.yaml`.
+* Altered config file layout to make it easier to read.
+* When an updated config file is available it is written to `$HOME/.config/mumbledj/config.yaml.new`.
+* Alternate config file locations can be supplied via `--config` commandline flag.
+* Added logging for easier monitoring and issue debugging.
+* Added `--debug` flag for more verbose logging when debugging an issue.
+* Access tokens in config file and `--accesstokens` commandline flag are now comma-separated instead of space-separated.
+* Mixcloud now requires the installation of `aria2` to work properly due to download throttling.
+* Startup checks are performed before the bot connects to the server to determine if any required software is missing or misconfigured.
+* API startup checks are performed before the bot connects to the server to determine if any services have missing/invalid API keys.
+* Dependencies are now vendored via `/vendor` folder for more reproducible builds.
+* `glide` has replaced `goop` as the dependency management tool.
+* Added `CONTRIBUTING.md` and templates for GitHub Issues and Pull Requests.
+* Revamped `Makefile` and made it less complicated.
+* Implemented continuous integration support with [Travis CI](https://travis-ci.org).
+* Builds for `linux/arm64` and `linux/386` are now provided as downloads for each release.
+* Implemented many unit tests to test functionality of bot subsystems.
+* Much more not listed here!
+
+I hope you guys enjoy this update, it has been in the works for a few months. :)
+
 ### June 17, 2016 -- `v2.10.0`
 * Added `!joinme` command (thanks [@azlux](https://github.com/azlux)).
 

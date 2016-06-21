@@ -1,0 +1,62 @@
+hash: 88cf7cf13ff239e97d3193606989de2e2972438e4ea17ad31755531f13acef50
+updated: 2016-06-18T00:18:25.756228464-07:00
+imports:
+- name: github.com/antonholmquist/jason
+  version: 423803175a265e07c3f35cd8faf009eac345efb8
+- name: github.com/BurntSushi/toml
+  version: f0aeabca5a127c4078abb8c8d64298b147264b55
+- name: github.com/ChannelMeter/iso8601duration
+  version: 8da3af7a2a61a4eb5ae9bddec06bf637fa9593da
+- name: github.com/fsnotify/fsnotify
+  version: 30411dbcefb7a1da7e84f75530ad3abe4011b4f8
+- name: github.com/golang/protobuf
+  version: 0c1f6d65b5a189c2250d10e71a5506f06f9fa0a0
+  subpackages:
+  - proto
+- name: github.com/hashicorp/hcl
+  version: aa7699b7b62c5f410f4cf7b58f3f9b17a71fb4ad
+  subpackages:
+  - hcl/ast
+  - hcl/parser
+  - hcl/token
+  - json/parser
+  - hcl/scanner
+  - hcl/strconv
+  - json/scanner
+  - json/token
+- name: github.com/layeh/gopus
+  version: 867541549ca5f8b4db2b92fd1dded8711256a27d
+- name: github.com/layeh/gumble
+  version: b26208eca4b75d9efdacb068241c68912437bd69
+  subpackages:
+  - gumble
+  - gumbleffmpeg
+  - gumbleutil
+  - opus
+  - gumble/MumbleProto
+  - gumble/varint
+- name: github.com/magiconair/properties
+  version: c265cfa48dda6474e208715ca93e987829f572f8
+- name: github.com/mitchellh/mapstructure
+  version: d2dd0262208475919e1a362f675cfc0e7c10e905
+- name: github.com/Sirupsen/logrus
+  version: f3cfb454f4c209e6668c95216c4744b8fddb2356
+- name: github.com/spf13/cast
+  version: 27b586b42e29bec072fe7379259cc719e1289da6
+- name: github.com/spf13/jwalterweatherman
+  version: 33c24e77fb80341fe7130ee7c594256ff08ccc46
+- name: github.com/spf13/pflag
+  version: 367864438f1b1a3c7db4da06a2f55b144e6784e0
+- name: github.com/spf13/viper
+  version: c1ccc378a054ea8d4e38d8c67f6938d4760b53dd
+- name: github.com/stretchr/testify
+  version: d77da356e56a7428ad25149ca77381849a6a5232
+- name: github.com/urfave/cli
+  version: b438abf775124d32be72016935a9553dbffe8473
+- name: golang.org/x/sys
+  version: 62bee037599929a6e9146f29d10dd5208c43507d
+  subpackages:
+  - unix
+- name: gopkg.in/yaml.v2
+  version: a83829b6f1293c91addabc89d0571c246397bbf4
+devImports: []

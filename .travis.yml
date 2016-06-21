@@ -1,0 +1,27 @@
+language: go
+
+sudo: false
+
+go:
+  - 1.5
+  - 1.6
+  - tip
+
+before_install:
+  - go get github.com/Masterminds/glide
+  - glide install
+  - go get github.com/mattn/goveralls
+  - go get golang.org/x/tools/cmd/cover
+
+branches:
+  only:
+    - refactor
+
+script:
+  - make test
+  - "$HOME/gopath/bin/goveralls -service=travis-ci"
+
+env:
+  global:
+    - GO15VENDOREXPERIMENT="1"
+    - secure: Ma6Htm+/fuCX9Wp5JEjA8qpRfsOSkveuSdegF9qbfdTjRL1GsaW7lU3IvFleUR9gclWaIhQYnAL0ZfELjcGGCLCV8b6hhK3TQ285ja3ue7/Ny5oaqwsej+MkdGQ1ZOGwIJi0KTwXHj0mgR6jrtjTSaMJ9ooQZ2DLizZ6FsQd5aXByQxz0cLLzg54ii1lXaV6XN+HCNXuWJfO/bH8KXI5aBU8QfoOkSCg7FUbkgckGnvCUpJkbs/cjpBOlnIRid7QiHHydwbERYTfJd7VOpY7wv+4rR2V4PB8OhpIWTA1Q/Z/6PEORq3r2P2IyMRpoJdCiEI1mKq9++OVP5GbxXWfND7P6n+o0wg5i/gp40witEMSarFtdoYOFaHBLHX+/Gf1TtqAR35pYW9rXCCzzul1r6DEDXUYZ4Z+N750Pwp+vSYsaDqGpl28btEwgK7jNF5cI3zj7ewwFodsOS+iXHYf9D2Lb8lCnmZjIrcP9RPOBm7xpiMI3eXD+gBcP/jk8+M92aroVmerK+QLLK5sGqdmLf9DzqJ8PqyqvGJMyk2WB40fNLNjHt2Zv/UU28Y2oXy9940Q77OkJZ5HVIixzYXL1hCF1+Mxb2hwZqFtrYDUj/Gficy+DKfpYAuTgD2gCSaCSq5tQpC2goFSg7oIY/R14Bfe6fyDuaBEtodkFZJ3B1E=

@@ -1,0 +1,20 @@
+package: github.com/matthieugrieger/mumbledj
+homepage: https://github.com/matthieugrieger/mumbledj
+license: MIT
+owners:
+- name: Matthieu Grieger
+  email: me@matthieugrieger.com
+  homepage: https://matthieugrieger.com
+import:
+- package: github.com/ChannelMeter/iso8601duration
+- package: github.com/Sirupsen/logrus
+- package: github.com/antonholmquist/jason
+- package: github.com/layeh/gumble
+  subpackages:
+  - gumble
+  - gumbleffmpeg
+  - gumbleutil
+  - opus
+- package: github.com/spf13/viper
+- package: github.com/urfave/cli
+- package: github.com/stretchr/testify

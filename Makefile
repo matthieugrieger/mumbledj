@@ -1,22 +1,26 @@
+dirs = ./interfaces/... ./commands/... ./services/... ./bot/... .
+
 all: mumbledj
 
-mumbledj: main.go commands.go parseconfig.go strings.go service.go youtube_dl.go service_youtube.go service_soundcloud.go service_mixcloud.go songqueue.go cache.go
-	go get github.com/karmakaze/goop
-	rm -rf Goopfile.lock
-	goop install
-	goop go build
+mumbledj: ## Default action. Builds MumbleDJ.
+	@env GO15VENDOREXPERIMENT="1" go build .
 
-clean:
-	rm -f mumbledj*
+test: ## Runs unit tests for MumbleDJ.
+	@env GO15VENDOREXPERIMENT="1" go test $(dirs)
 
-install:
-	mkdir -p ~/.mumbledj/config
-	mkdir -p ~/.mumbledj/songs
-	if [ -f ~/.mumbledj/config/mumbledj.gcfg ]; then mv ~/.mumbledj/config/mumbledj.gcfg ~/.mumbledj/config/mumbledj_backup.gcfg; fi;
-	cp -u config.gcfg ~/.mumbledj/config/mumbledj.gcfg
-	sed -i 's/YouTube = \"/YouTube = \"'$(YOUTUBE_API_KEY)'/' ~/.mumbledj/config/mumbledj.gcfg
-	sed -i 's/SoundCloud = \"/SoundCloud = \"'$(SOUNDCLOUD_API_KEY)'/' ~/.mumbledj/config/mumbledj.gcfg
-	if [ -d ~/bin ]; then cp -f mumbledj* ~/bin/mumbledj; else sudo cp -f mumbledj* /usr/local/bin/mumbledj; fi;
+clean: ## Removes compiled MumbleDJ binaries.
+	@rm -f mumbledj*
 
-build:
-	goop go build
+install: ## Copies MumbleDJ binary to /usr/local/bin for easy execution.
+	@cp -f mumbledj* /usr/local/bin/mumbledj
+
+dist: ## Performs cross-platform builds via gox for multiple Linux platforms.
+	@go get -u github.com/mitchellh/gox
+	@gox -cgo -osarch="linux/amd64 linux/386"
+
+bindata: ## Regenerates bindata.go with an updated configuration file.
+	@go get -u github.com/jteeuwen/go-bindata/...
+	@go-bindata config.yaml
+
+help: ## Shows this helptext.
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

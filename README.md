@@ -69,10 +69,13 @@ A SoundCloud client ID must be present in your configuration file in order to us
 
 
 ### Via `go install` (recommended)
-After verifying that the [requirements](#requirements) are installed, simply issue the following command:
+After verifying that the [requirements](#requirements) are installed, simply issue the following commands:
 ```
+go get -u github.com/matthieugrieger/mumbledj
 go install github.com/matthieugrieger/mumbledj
 ```
+
+If you see errors but `go install` properly installs MumbleDJ, don't worry about it.
 
 This will place a binary in `$GOPATH/bin` that can be used to start the bot.
 

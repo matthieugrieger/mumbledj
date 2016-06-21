@@ -1,5 +1,5 @@
-hash: 88cf7cf13ff239e97d3193606989de2e2972438e4ea17ad31755531f13acef50
-updated: 2016-06-18T00:18:25.756228464-07:00
+hash: 58b946577727dc003cc7efacfff614b6f47602a136e8bf501bd39a18bd3c768c
+updated: 2016-06-20T17:29:39.656363943-07:00
 imports:
 - name: github.com/antonholmquist/jason
   version: 423803175a265e07c3f35cd8faf009eac345efb8
@@ -14,7 +14,7 @@ imports:
   subpackages:
   - proto
 - name: github.com/hashicorp/hcl
-  version: aa7699b7b62c5f410f4cf7b58f3f9b17a71fb4ad
+  version: da486364306ed66c218be9b7953e19173447c18b
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -52,7 +52,7 @@ imports:
 - name: github.com/stretchr/testify
   version: d77da356e56a7428ad25149ca77381849a6a5232
 - name: github.com/urfave/cli
-  version: b438abf775124d32be72016935a9553dbffe8473
+  version: 6011f165dc288c72abd8acd7722f837c5c64198d
 - name: golang.org/x/sys
   version: 62bee037599929a6e9146f29d10dd5208c43507d
   subpackages:

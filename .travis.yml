@@ -9,14 +9,12 @@ go:
 
 before_install:
   - go get github.com/Masterminds/glide
-  - go get github.com/mattn/goveralls
-  - go get golang.org/x/tools/cmd/cover
 
 script:
   - make test
 
 after_success:
-  - make coveralls
+  - bash <(curl -s https://codecov.io/bash)
 
 env:
   global:

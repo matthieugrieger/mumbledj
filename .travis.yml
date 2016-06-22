@@ -9,6 +9,7 @@ go:
 
 before_install:
   - go get github.com/Masterminds/glide
+  - go get github.com/go-playground/overalls
 
 script:
   - make test

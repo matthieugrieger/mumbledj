@@ -10,7 +10,7 @@
   * [Requirements](#requirements)
     * [YouTube API Key](#youtube-api-key)
     * [SoundCloud API Key](#soundcloud-api-key)
-  * [Via `go install`](#via-go-install-recommended)
+  * [Via `go get`](#via-go-get-recommended)
   * [Pre-compiled Binaries](#pre-compiled-binaries-easiest)
   * [From Source](#from-source)
 * [Usage](#usage)
@@ -42,6 +42,7 @@
 **If installing via `go install` or from source, the following must be installed:**
 * [Go 1.5+](https://golang.org)
   * __NOTE__: Extra installation steps are required for a working Go installation. Once Go is installed, type `go help gopath` for more information.
+  * If the repositories for your distro contain a version of Go older than 1.5, try using [`gvm`](https://github.com/moovweb/gvm) to install Go 1.5 or newer.
 
 #### YouTube API Key
 A YouTube API key must be present in your configuration file in order to use the YouTube service within the bot. Below is a guide for retrieving an API key:
@@ -68,18 +69,15 @@ A SoundCloud client ID must be present in your configuration file in order to us
 **3)** You should now see that a client ID has been generated. Copy/paste this ID (NOT the client secret) into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
 
 
-### Via `go install` (recommended)
-After verifying that the [requirements](#requirements) are installed, simply issue the following commands:
+### Via `go get` (recommended)
+After verifying that the [requirements](#requirements) are installed, simply issue the following command:
 ```
 go get -u github.com/matthieugrieger/mumbledj
-go install github.com/matthieugrieger/mumbledj
 ```
 
-If you see errors but `go install` properly installs MumbleDJ, don't worry about it.
+This should place a binary in `$GOPATH/bin` that can be used to start the bot.
 
-This will place a binary in `$GOPATH/bin` that can be used to start the bot.
-
-**NOTE:** If using Go 1.5, you MUST execute the following for `go install` to work:
+**NOTE:** If using Go 1.5, you MUST execute the following for `go get` to work:
 ```
 export GO15VENDOREXPERIMENT=1
 ```

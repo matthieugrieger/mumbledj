@@ -8,6 +8,8 @@
 package commands
 
 import (
+	"testing"
+
 	"github.com/layeh/gumble/gumbleffmpeg"
 	"github.com/matthieugrieger/mumbledj/bot"
 	"github.com/spf13/viper"
@@ -67,4 +69,8 @@ func (suite *CurrentTrackCommandTestSuite) TestExecuteWhenQueueNotEmpty() {
 	suite.NotEqual("", message, "A message should be returned with the current track information.")
 	suite.True(isPrivateMessage, "This should be a private message.")
 	suite.Nil(err, "No error should be returned.")
+}
+
+func TestCurrentTrackCommandTestSuite(t *testing.T) {
+	suite.Run(t, new(CurrentTrackCommandTestSuite))
 }

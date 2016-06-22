@@ -8,9 +8,11 @@
 package commands
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/layeh/gumble/gumble"
+	"github.com/layeh/gumble/gumbleffmpeg"
 	"github.com/matthieugrieger/mumbledj/bot"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
@@ -68,6 +70,23 @@ func (suite *VolumeCommandTestSuite) TestExecuteWithValidArg() {
 	suite.Nil(err, "No error should be returned.")
 	suite.Contains(message, "0.6", "The returned string should contain the new volume.")
 	suite.Contains(message, "test", "The returned string should contain the username of whomever changed the volume.")
+}
+
+func (suite *VolumeCommandTestSuite) TestExecuteWithValidArgAndNonNilStream() {
+	dummyUser := &gumble.User{
+		Name: "test",
+	}
+	DJ.AudioStream = new(gumbleffmpeg.Stream)
+	DJ.AudioStream.Volume = 0.2
+
+	message, isPrivateMessage, err := suite.Command.Execute(dummyUser, "0.6")
+
+	suite.NotEqual("", message, "A message should be returned.")
+	suite.False(isPrivateMessage, "This should not be a private message.")
+	suite.Nil(err, "No error should be returned.")
+	suite.Contains(message, "0.6", "The returned string should contain the new volume.")
+	suite.Contains(message, "test", "The returned string should contain the username of whomever changed the volume.")
+	suite.Equal("0.60", fmt.Sprintf("%.2f", DJ.AudioStream.Volume), "The audio stream value should match the new volume.")
 }
 
 func (suite *VolumeCommandTestSuite) TestExecuteWithArgOutOfRange() {

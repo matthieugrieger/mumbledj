@@ -10,6 +10,7 @@ package commands
 import (
 	"testing"
 
+	"github.com/layeh/gumble/gumble"
 	"github.com/matthieugrieger/mumbledj/bot"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
@@ -44,14 +45,34 @@ func (suite *HelpCommandTestSuite) TestIsAdminCommand() {
 	suite.False(suite.Command.IsAdminCommand())
 }
 
-// TODO: Implement this test.
 func (suite *HelpCommandTestSuite) TestExecuteWhenPermissionsEnabledAndUserIsNotAdmin() {
+	viper.Set("admins.names", []string{"SuperUser"})
+	user := new(gumble.User)
+	user.Name = "Test"
 
+	message, isPrivateMessage, err := suite.Command.Execute(user)
+
+	suite.NotEqual("", message, "A message should be returned.")
+	suite.True(isPrivateMessage, "This should be a private message.")
+	suite.Nil(err, "No error should be returned.")
+	suite.Contains(message, "help", "The returned message should contain command descriptions.")
+	suite.Contains(message, "add", "The returned message should contain command descriptions.")
+	suite.NotContains(message, "Admin Commands", "The returned message should not contain admin command descriptions.")
 }
 
-// TODO: Implement this test.
 func (suite *HelpCommandTestSuite) TestExecuteWhenPermissionsEnabledAndUserIsAdmin() {
+	viper.Set("admins.names", []string{"SuperUser"})
+	user := new(gumble.User)
+	user.Name = "SuperUser"
 
+	message, isPrivateMessage, err := suite.Command.Execute(user)
+
+	suite.NotEqual("", message, "A message should be returned.")
+	suite.True(isPrivateMessage, "This should be a private message.")
+	suite.Nil(err, "No error should be returned.")
+	suite.Contains(message, "help", "The returned message should contain command descriptions.")
+	suite.Contains(message, "add", "The returned message should contain command descriptions.")
+	suite.Contains(message, "Admin Commands", "The returned message should contain admin command descriptions.")
 }
 
 func (suite *HelpCommandTestSuite) TestExecuteWhenPermissionsDisabled() {

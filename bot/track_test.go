@@ -21,21 +21,29 @@ type TrackTestSuite struct {
 
 func (suite *TrackTestSuite) SetupTest() {
 	duration, _ := time.ParseDuration("1s")
+	offset, _ := time.ParseDuration("2ms")
 	suite.Track = Track{
-		ID:           "id",
-		Title:        "title",
-		Author:       "author",
-		Submitter:    "submitter",
-		Service:      "service",
-		Filename:     "filename",
-		ThumbnailURL: "thumbnailurl",
-		Duration:     duration,
-		Playlist:     new(Playlist),
+		ID:             "id",
+		URL:            "url",
+		Title:          "title",
+		Author:         "author",
+		AuthorURL:      "author_url",
+		Submitter:      "submitter",
+		Service:        "service",
+		Filename:       "filename",
+		ThumbnailURL:   "thumbnailurl",
+		Duration:       duration,
+		PlaybackOffset: offset,
+		Playlist:       new(Playlist),
 	}
 }
 
 func (suite *TrackTestSuite) TestGetID() {
 	suite.Equal("id", suite.Track.GetID())
+}
+
+func (suite *TrackTestSuite) TestGetURL() {
+	suite.Equal("url", suite.Track.GetURL())
 }
 
 func (suite *TrackTestSuite) TestGetTitle() {
@@ -44,6 +52,10 @@ func (suite *TrackTestSuite) TestGetTitle() {
 
 func (suite *TrackTestSuite) TestGetAuthor() {
 	suite.Equal("author", suite.Track.GetAuthor())
+}
+
+func (suite *TrackTestSuite) TestGetAuthorURL() {
+	suite.Equal("author_url", suite.Track.GetAuthorURL())
 }
 
 func (suite *TrackTestSuite) TestGetSubmitter() {
@@ -86,6 +98,12 @@ func (suite *TrackTestSuite) TestGetDuration() {
 	duration, _ := time.ParseDuration("1s")
 
 	suite.Equal(duration, suite.Track.GetDuration())
+}
+
+func (suite *TrackTestSuite) TestGetPlaybackOffset() {
+	duration, _ := time.ParseDuration("2ms")
+
+	suite.Equal(duration, suite.Track.GetPlaybackOffset())
 }
 
 func (suite *TrackTestSuite) TestGetPlaylistWhenExists() {

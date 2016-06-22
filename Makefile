@@ -7,6 +7,10 @@ mumbledj: ## Default action. Builds MumbleDJ.
 
 .PHONY: test
 test: ## Runs unit tests for MumbleDJ.
+	@env GO15VENDOREXPERIMENT="1" go test $(dirs)
+
+.PHONY: coverage
+coverage: ## Runs coverage tests for MumbleDJ.
 	@env GO15VENDOREXPERIMENT="1" overalls -project=github.com/matthieugrieger/mumbledj -covermode=atomic
 	@mv overalls.coverprofile coverage.txt
 

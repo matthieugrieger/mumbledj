@@ -12,7 +12,7 @@ before_install:
   - go get github.com/go-playground/overalls
 
 script:
-  - make test
+  - make coverage
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

@@ -287,7 +287,7 @@ func (q *Queue) PlayCurrent() error {
 
 	if viper.GetBool("queue.announce_new_tracks") {
 		message :=
-			`<table
+			`<table>
 			 	<tr>
 					<td align="center"><img src="%s" width=150 /></td>
 				</tr>

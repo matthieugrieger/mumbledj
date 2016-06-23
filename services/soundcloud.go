@@ -53,7 +53,7 @@ func (sc *SoundCloud) CheckAPIKey() error {
 		return errors.New("No SoundCloud API key has been provided")
 	}
 	url := "http://api.soundcloud.com/tracks/vjflzpbkmerb?client_id=%s"
-	response, err := http.Get(fmt.Sprintf(url, viper.GetString("api.soundcloud")))
+	response, err := http.Get(fmt.Sprintf(url, viper.GetString("api_keys.soundcloud")))
 	defer response.Body.Close()
 	if err != nil {
 		return err

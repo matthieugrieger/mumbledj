@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 22, 2016 -- `v3.0.3`
+* Fixed SoundCloud API startup check (thanks [@alucardRD](https://github.com/alucardRD)).
+
 ### June 21, 2016 -- `v3.0.2`
 * Fixed typo on admin command header message selector.
 

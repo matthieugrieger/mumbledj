@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 25, 2016 -- `v3.0.5`
+* Fixed admin settings not being respected.
+
 ### June 25, 2016 -- `v3.0.4`
 * Fixed a crash on `!forceskip`.
 

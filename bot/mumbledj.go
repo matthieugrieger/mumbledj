@@ -268,7 +268,7 @@ func (dj *MumbleDJ) findCommand(message string) (interfaces.Command, error) {
 
 func (dj *MumbleDJ) executeCommand(user *gumble.User, message string, command interfaces.Command) (string, bool, error) {
 	canExecute := false
-	if viper.GetBool("permissions.enabled") && command.IsAdminCommand() {
+	if viper.GetBool("admins.enabled") && command.IsAdminCommand() {
 		canExecute = dj.IsAdmin(user)
 	} else {
 		canExecute = true

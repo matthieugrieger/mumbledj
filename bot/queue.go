@@ -189,9 +189,8 @@ func (q *Queue) RandomNextTrack(queueWasEmpty bool) {
 // Skip performs the necessary actions that take place when a track is skipped
 // via a command.
 func (q *Queue) Skip() {
-	// Stop audio stream if one exists.
+	// Set AudioStream to nil if it isn't already.
 	if DJ.AudioStream != nil {
-		q.StopCurrent()
 		DJ.AudioStream = nil
 	}
 
@@ -346,7 +345,6 @@ func (q *Queue) StopCurrent() error {
 		return errors.New("The audio stream is nil")
 	}
 	DJ.AudioStream.Stop()
-	DJ.AudioStream = nil
 	return nil
 }
 

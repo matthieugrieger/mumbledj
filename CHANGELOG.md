@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 25, 2016 -- `v3.0.4`
+* Fixed a crash on `!forceskip`.
+
 ### June 22, 2016 -- `v3.0.3`
 * Fixed SoundCloud API startup check (thanks [@alucardRD](https://github.com/alucardRD)).
 

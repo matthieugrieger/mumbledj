@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 25, 2016 -- `v3.0.6`
+* Fixed an issue with `!forceskip` not stopping audio playback.
+
 ### June 25, 2016 -- `v3.0.5`
 * Fixed admin settings not being respected.
 

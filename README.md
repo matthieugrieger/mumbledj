@@ -5,6 +5,8 @@
 
 ## Table of Contents
 
+[![Join the chat at https://gitter.im/matthieugrieger/mumbledj](https://badges.gitter.im/matthieugrieger/mumbledj.svg)](https://gitter.im/matthieugrieger/mumbledj?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 * [Features](#features)
 * [Installation](#installation)
   * [Requirements](#requirements)

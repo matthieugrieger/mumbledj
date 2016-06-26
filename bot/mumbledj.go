@@ -122,7 +122,7 @@ func (dj *MumbleDJ) OnTextMessage(e *gumble.TextMessageEvent) {
 						"user":    e.Sender.Name,
 						"message": err.Error(),
 					}).Warnln("Sending an error message...")
-					dj.SendPrivateMessage(e.Sender, fmt.Sprintf("<b>Error:</b> %s.", err.Error()))
+					dj.SendPrivateMessage(e.Sender, fmt.Sprintf("<b>Error:</b> %s", err.Error()))
 				} else {
 					if isPrivateMessage {
 						logrus.WithFields(logrus.Fields{

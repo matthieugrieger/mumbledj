@@ -1,6 +1,12 @@
 MumbleDJ Changelog
 ==================
 
+### June 25, 2016 -- `v3.0.7`
+* Volume can now be set to `volume.lowest` and `volume.highest` (in other words, the range is inclusive now instead of exclusive).
+* All configuration values can now be overriden via commandline arguments. For example: `mumbledj --admins.names="SuperUser,Matt" --volume.default="0.5" --commands.add.is_admin="false"`
+  * __NOTE__: Configuration settings that contain commas (",") are interpreted as string slices (or arrays if you aren't familiar with Go).
+* Removed an extra period that was sometimes output in error messages.
+
 ### June 25, 2016 -- `v3.0.6`
 * Fixed an issue with `!forceskip` not stopping audio playback.
 

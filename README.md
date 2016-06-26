@@ -136,6 +136,14 @@ GLOBAL OPTIONS:
 
 ```
 
+__NOTE__: You can also override all settings found within `config.yaml` directly from the commandline. Here's an example:
+
+```
+mumbledj --admins.names="SuperUser,Matt" --volume.default="0.5" --volume.lowest="0.2" --queue.automatic_shuffle_on="true"
+```
+
+Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will be interpreted as string slices, or arrays if you are not familiar with Go. If you want your value to be interpreted as a normal string, it is best to avoid commas for now.
+
 ## Commands
 
 ### add

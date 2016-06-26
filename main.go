@@ -32,7 +32,7 @@ func init() {
 	services.DJ = DJ
 	bot.DJ = DJ
 
-	DJ.Version = "v3.0.6"
+	DJ.Version = "v3.0.7"
 
 	logrus.SetLevel(logrus.WarnLevel)
 }
@@ -97,9 +97,29 @@ func main() {
 			Usage: "if present, all debug messages will be shown",
 		},
 	}
+
+	hiddenFlags := make([]cli.Flag, len(viper.AllKeys()))
+	for i, configValue := range viper.AllKeys() {
+		hiddenFlags[i] = cli.StringFlag{
+			Name:   configValue,
+			Hidden: true,
+		}
+	}
+	app.Flags = append(app.Flags, hiddenFlags...)
+
 	app.Action = func(c *cli.Context) error {
 		if c.Bool("debug") {
 			logrus.SetLevel(logrus.InfoLevel)
+		}
+
+		for _, configValue := range viper.AllKeys() {
+			if c.GlobalIsSet(configValue) {
+				if strings.Contains(c.String(configValue), ",") {
+					viper.Set(configValue, strings.Split(c.String(configValue), ","))
+				} else {
+					viper.Set(configValue, c.String(configValue))
+				}
+			}
 		}
 
 		viper.SetConfigFile(c.String("config"))

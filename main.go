@@ -199,7 +199,7 @@ func createConfigWhenNotExists() {
 		logrus.Warnln("An error occurred while accessing config binary data. A new config file will not be written.")
 	} else {
 		filePath := os.ExpandEnv("$HOME/.config/mumbledj/config.yaml")
-		os.Mkdir(os.ExpandEnv("$HOME/.config/mumbledj"), 0777)
+		os.MkdirAll(os.ExpandEnv("$HOME/.config/mumbledj"), 0777)
 		writeErr := ioutil.WriteFile(filePath, configFile, 0644)
 		if writeErr == nil {
 			logrus.WithFields(logrus.Fields{

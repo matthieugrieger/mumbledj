@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### June 26, 2016 -- `v3.0.8`
+* Fixed hang on setting `max_tracks_per_playlist` to a value larger than 50 (thanks [@mattikus](https://github.com/mattikus)).
+* Fixed full directory path not being created properly for config file (thanks [@DanielMarquard](https://github.com/DanielMarquard)).
+
 ### June 25, 2016 -- `v3.0.7`
 * Volume can now be set to `volume.lowest` and `volume.highest` (in other words, the range is inclusive now instead of exclusive).
 * All configuration values can now be overridden via commandline arguments. For example: `mumbledj --admins.names="SuperUser,Matt" --volume.default="0.5" --commands.add.is_admin="false"`

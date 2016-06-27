@@ -134,9 +134,15 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 			maxItems = viper.GetInt("queue.max_tracks_per_playlist")
 		}
 
+		// YouTube playlist searches return a max of 50 results per page
+		maxResults := 50
+		if maxResults > maxItems {
+			maxResults = maxItems
+		}
+
 		pageToken := ""
 		for len(tracks) < maxItems {
-			curResp, curErr := http.Get(fmt.Sprintf(playlistItemsURL, id, maxItems, viper.GetString("api_keys.youtube"), pageToken))
+			curResp, curErr := http.Get(fmt.Sprintf(playlistItemsURL, id, maxResults, viper.GetString("api_keys.youtube"), pageToken))
 			defer curResp.Body.Close()
 			if curErr != nil {
 				// An error occurred, simply skip this track.
@@ -162,6 +168,11 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 				if len(tracks) >= maxItems {
 					break
 				}
+			}
+
+			pageToken, _ = v.GetString("nextPageToken")
+			if pageToken == "" {
+				break
 			}
 		}
 

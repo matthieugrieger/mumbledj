@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 28, 2016 -- `v3.0.9`
+* Queue is now reset after disconnecting from the server to avoid unpredictable behavior.
+
 ### June 26, 2016 -- `v3.0.8`
 * Fixed hang on setting `max_tracks_per_playlist` to a value larger than 50 (thanks [@mattikus](https://github.com/mattikus)).
 * Fixed full directory path not being created properly for config file (thanks [@DanielMarquard](https://github.com/DanielMarquard)).

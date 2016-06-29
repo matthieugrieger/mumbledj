@@ -80,6 +80,7 @@ func (dj *MumbleDJ) OnConnect(e *gumble.ConnectEvent) {
 // OnDisconnect event. Terminates MumbleDJ process or retries connection if
 // automatic connection retries are enabled.
 func (dj *MumbleDJ) OnDisconnect(e *gumble.DisconnectEvent) {
+	dj.Queue.Reset()
 	if viper.GetBool("connection.retry_enabled") &&
 		(e.Type == gumble.DisconnectError || e.Type == gumble.DisconnectKicked) {
 		logrus.WithFields(logrus.Fields{

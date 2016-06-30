@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### June 29, 2016 -- `v3.0.10`
+* Fixed issue related to PEM keys being overwritten by PEM certs.
+
 ### June 28, 2016 -- `v3.0.9`
 * Queue is now reset after disconnecting from the server to avoid unpredictable behavior.
 

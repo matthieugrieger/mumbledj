@@ -195,7 +195,7 @@ func (dj *MumbleDJ) Connect() error {
 		dj.TLSConfig.InsecureSkipVerify = true
 	}
 	if viper.GetString("connection.cert") != "" {
-		if viper.GetString("connection.key") != "" {
+		if viper.GetString("connection.key") == "" {
 			viper.Set("connection.key", viper.GetString("connection.cert"))
 		}
 

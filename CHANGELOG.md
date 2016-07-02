@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### July 1, 2016 -- `v3.0.11`
+* Potential fix for an issue with IP SANs on PEM certs.
+
 ### June 29, 2016 -- `v3.0.10`
 * Fixed issue related to PEM keys being overwritten by PEM certs.
 

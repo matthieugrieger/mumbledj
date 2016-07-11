@@ -11,7 +11,10 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net"
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -193,15 +196,48 @@ func (dj *MumbleDJ) Connect() error {
 	// Initialize key pair if needed.
 	if viper.GetBool("connection.insecure") {
 		dj.TLSConfig.InsecureSkipVerify = true
-	}
-	dj.TLSConfig.ServerName = viper.GetString("connection.address")
+	} else {
+		dj.TLSConfig.ServerName = viper.GetString("connection.address")
 
-	if viper.GetString("connection.cert") != "" {
-		if viper.GetString("connection.key") == "" {
-			viper.Set("connection.key", viper.GetString("connection.cert"))
+		if viper.GetString("connection.cert") != "" {
+			if viper.GetString("connection.key") == "" {
+				viper.Set("connection.key", viper.GetString("connection.cert"))
+			}
+
+			if certificate, err := tls.LoadX509KeyPair(viper.GetString("connection.cert"), viper.GetString("connection.key")); err == nil {
+				dj.TLSConfig.Certificates = append(dj.TLSConfig.Certificates, certificate)
+			} else {
+				return err
+			}
+		}
+	}
+
+	// Add user p12 cert if needed.
+	if viper.GetString("connection.user_p12") != "" {
+		if _, err := os.Stat(viper.GetString("connection.user_p12")); os.IsNotExist(err) {
+			return err
 		}
 
-		if certificate, err := tls.LoadX509KeyPair(viper.GetString("connection.cert"), viper.GetString("connection.key")); err == nil {
+		// Create temporary directory for converted p12 file.
+		dir, err := ioutil.TempDir("", "mumbledj")
+		if err != nil {
+			return err
+		}
+		defer os.RemoveAll(dir)
+
+		// Create temporary mumbledj.crt.pem from p12 file.
+		command := exec.Command("openssl", "pkcs12", "-password", "pass:", "-in", viper.GetString("connection.user_p12"), "-out", dir+"/mumbledj.crt.pem", "-clcerts", "-nokeys")
+		if err := command.Run(); err != nil {
+			return err
+		}
+
+		// Create temporary mumbledj.key.pem from p12 file.
+		command = exec.Command("openssl", "pkcs12", "-password", "pass:", "-in", viper.GetString("connection.user_p12"), "-out", dir+"/mumbledj.key.pem", "-nocerts", "-nodes")
+		if err := command.Run(); err != nil {
+			return err
+		}
+
+		if certificate, err := tls.LoadX509KeyPair(dir+"/mumbledj.crt.pem", dir+"/mumbledj.key.pem"); err == nil {
 			dj.TLSConfig.Certificates = append(dj.TLSConfig.Certificates, certificate)
 		} else {
 			return err

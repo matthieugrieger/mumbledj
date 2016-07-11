@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### July 10, 2016 -- `v3.1.0`
+* File path for user `p12` certificate can now be provided for authenticating as a registered user via the `--p12` commandline flag or the `connection.user_p12` configuration value.
+
 ### July 1, 2016 -- `v3.0.11`
 * Potential fix for an issue with IP SANs on PEM certs.
 

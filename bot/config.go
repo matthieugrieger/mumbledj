@@ -40,6 +40,7 @@ func SetDefaultConfig() {
 	viper.SetDefault("connection.port", 64738)
 	viper.SetDefault("connection.password", "")
 	viper.SetDefault("connection.username", "MumbleDJ")
+	viper.SetDefault("connection.user_p12", "")
 	viper.SetDefault("connection.insecure", false)
 	viper.SetDefault("connection.cert", "")
 	viper.SetDefault("connection.key", "")

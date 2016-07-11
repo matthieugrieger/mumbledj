@@ -58,6 +58,10 @@ func PerformStartupChecks() {
 	if err := checkAria2Installation(); err != nil {
 		logrus.Warnln("aria2 is not installed or is not discoverable in $PATH. The bot will still partially work, but some services will not work properly.")
 	}
+
+	if err := checkOpenSSLInstallation(); err != nil {
+		logrus.Warnln("openssl is not installed or is not discoverable in $PATH. p12 certificate files will not work.")
+	}
 }
 
 func checkYouTubeDLInstallation() error {
@@ -92,6 +96,15 @@ func checkAria2Installation() error {
 	command := exec.Command("aria2c", "-v")
 	if err := command.Run(); err != nil {
 		return errors.New("aria2c is not properly installed")
+	}
+	return nil
+}
+
+func checkOpenSSLInstallation() error {
+	logrus.Infoln("Checking openssl installation...")
+	command := exec.Command("openssl", "version")
+	if err := command.Run(); err != nil {
+		return errors.New("openssl is not properly installed")
 	}
 	return nil
 }

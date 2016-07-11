@@ -116,23 +116,24 @@ USAGE:
    mumbledj [global options] command [command options] [arguments...]
    
 VERSION:
-   3.0.0-alpha
+   v3.1.0
    
 COMMANDS:
 GLOBAL OPTIONS:
-   --config value, -c value        location of MumbleDJ configuration file (default: "$HOME/.config/mumbledj/mumbledj.yaml")
-   --server value, -s value        address of Mumble server to connect to (default: "127.0.0.1")
-   --port value, -o value          port of Mumble server to connect to (default: "64738")
-   --username value, -u value      username for the bot (default: "MumbleDJ")
-   --password value, -p value      password for the Mumble server
-   --channel value, -n value       channel the bot enters after connecting to the Mumble server
-   --cert value, -e value          path to PEM certificate
-   --key value, -k value           path to PEM key
-   --accesstokens value, -a value  list of access tokens separated by spaces
-   --insecure, -i                  if present, the bot will not check Mumble certs for consistency
-   --debug, -d                     if present, all debug messages will be shown
-   --help, -h                      show help
-   --version, -v                   print the version
+   --config value, -c value		location of MumbleDJ configuration file (default: "/home/matthieu/.config/mumbledj/config.yaml")
+   --server value, -s value		address of Mumble server to connect to (default: "127.0.0.1")
+   --port value, -o value		port of Mumble server to connect to (default: "64738")
+   --username value, -u value		username for the bot (default: "MumbleDJ")
+   --password value, -p value		password for the Mumble server
+   --channel value, -n value		channel the bot enters after connecting to the Mumble server
+   --p12 value				path to user p12 file for authenticating as a registered user
+   --cert value, -e value		path to PEM certificate
+   --key value, -k value		path to PEM key
+   --accesstokens value, -a value	list of access tokens separated by spaces
+   --insecure, -i			if present, the bot will not check Mumble certs for consistency
+   --debug, -d				if present, all debug messages will be shown
+   --help, -h				show help
+   --version, -v			print the version
 
 ```
 

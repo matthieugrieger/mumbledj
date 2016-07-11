@@ -32,7 +32,7 @@ func init() {
 	services.DJ = DJ
 	bot.DJ = DJ
 
-	DJ.Version = "v3.0.11"
+	DJ.Version = "v3.1.0"
 
 	logrus.SetLevel(logrus.WarnLevel)
 }
@@ -72,6 +72,11 @@ func main() {
 			Name:  "channel, n",
 			Value: "",
 			Usage: "channel the bot enters after connecting to the Mumble server",
+		},
+		cli.StringFlag{
+			Name:  "p12",
+			Value: "",
+			Usage: "path to user p12 file for authenticating as a registered user",
 		},
 		cli.StringFlag{
 			Name:  "cert, e",
@@ -155,6 +160,9 @@ func main() {
 		}
 		if c.GlobalIsSet("channel") {
 			viper.Set("defaults.channel", c.String("channel"))
+		}
+		if c.GlobalIsSet("p12") {
+			viper.Set("connection.user_p12", c.String("p12"))
 		}
 		if c.GlobalIsSet("cert") {
 			viper.Set("connection.cert", c.String("cert"))

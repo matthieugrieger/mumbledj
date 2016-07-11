@@ -63,6 +63,10 @@ connection:
     # Username for MumbleDJ.
     username: "MumbleDJ"
 
+    # Filepath to user p12 file for authenticating as a registered user.
+    # NOTE: If no p12 file is needed, set to empty string ("").
+    user_p12: ""
+
     # Should the bot attempt an insecure connection?
     # An insecure connection does not verify the certificate of the server for
     # consistency. It is best to leave this on, but disable it if you are having

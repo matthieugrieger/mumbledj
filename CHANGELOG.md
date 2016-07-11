@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### July 11, 2016 -- `v3.1.1`
+* Updated vendored dependencies to hopefully address the following issue: https://github.com/matthieugrieger/mumbledj/issues/169.
+
 ### July 10, 2016 -- `v3.1.0`
 * File path for user `p12` certificate can now be provided for authenticating as a registered user via the `--p12` commandline flag or the `connection.user_p12` configuration value.
 * Added `!register` command for registering the bot on the server.

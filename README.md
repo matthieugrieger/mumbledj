@@ -106,14 +106,14 @@ sudo make install
 
 ### Docker
 
-You can also use [docker](https://www.docker.com) to run mumbledj.
+You can also use [Docker](https://www.docker.com) to run MumbleDJ.
 
 First you need to clone the MumbleDJ repository to your machine:
 ```
 git clone https://github.com/matthieugrieger/mumbledj.git
 ```
 
-Assuming you have [docker installed](https://www.docker.com/products/docker), you will have to build the image:
+Assuming you have [Docker installed](https://www.docker.com/products/docker), you will have to build the image:
 ```
 docker build -t mumbledj .
 ```
@@ -123,12 +123,12 @@ And then you can run it, passing the configuration through the command line:
 docker run --rm --name=mumbledj mumbledj --server=SERVER --api_keys.youtube=YOUR_YOUTUBE_API_KEY --api_keys.soundcloud=YOUR_SOUNDCLOUD_API_KEY
 ```
 
-In order to run the process as a deamon and restart it automatically on reboot you can use:
+In order to run the process as a daemon and restart it automatically on reboot you can use:
 ```
 docker run -d --restart=unless-stopped --name=mumbledj mumbledj --server=SERVER --api_keys.youtube=YOUR_YOUTUBE_API_KEY --api_keys.soundcloud=YOUR_SOUNDCLOUD_API_KEY
 ```
 
-You can also install docker on a [raspberry pi](https://www.raspberrypi.org/) for instance with [hypriot](http://blog.hypriot.com/getting-started-with-docker-on-your-arm-device/) or with [archlinux](https://archlinuxarm.org/packages/arm/docker). You just need to build the arm image:
+You can also install Docker on a [Raspberry Pi](https://www.raspberrypi.org/) for instance with [hypriot](http://blog.hypriot.com/getting-started-with-docker-on-your-arm-device/) or with [archlinux](https://archlinuxarm.org/packages/arm/docker). You just need to build the ARM image:
 ```
 docker build -f raspberry.Dockerfile -t mumbledj .
 ```

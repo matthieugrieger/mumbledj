@@ -306,6 +306,16 @@ commands:
             no_audio_error: "Either the audio is already paused, or there are no tracks in the queue."
             paused: "<b>%s</b> has paused audio playback."
 
+    register:
+        aliases:
+            - "register"
+            - "reg"
+        is_admin: true
+        description: "Registers the bot on the server."
+        messages:
+            already_registered_error: "I am already registered on the server."
+            registered: "I am now registered on the server."
+
     reload:
         aliases:
             - "reload"

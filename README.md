@@ -252,6 +252,13 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 * __Admin-only by default__: No
 * __Example__: `!pause`
 
+### register
+* __Description__: Registers the bot on the server.
+* __Default Aliases__: register, reg
+* __Arguments__: None
+* __Admin-only by default__: Yes
+* __Example__: `!register`
+
 ### reload
 * __Description__: Reloads the configuration file.
 * __Default Aliases__: reload, r

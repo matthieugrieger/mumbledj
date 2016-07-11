@@ -35,6 +35,7 @@ func init() {
 		new(NumCachedCommand),
 		new(NumTracksCommand),
 		new(PauseCommand),
+		new(RegisterCommand),
 		new(ReloadCommand),
 		new(ResetCommand),
 		new(ResumeCommand),

@@ -157,6 +157,12 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.pause.messages.no_audio_error", "Either the audio is already paused, or there are no tracks in the queue.")
 	viper.SetDefault("commands.pause.messages.paused", "<b>%s</b> has paused audio playback.")
 
+	viper.SetDefault("commands.register.aliases", []string{"register", "reg"})
+	viper.SetDefault("commands.register.is_admin", true)
+	viper.SetDefault("commands.register.description", "Registers the bot on the server.")
+	viper.SetDefault("commands.register.messages.already_registered_error", "I am already registered on the server.")
+	viper.SetDefault("commands.register.messages.registered", "I am now registered on the server.")
+
 	viper.SetDefault("commands.reload.aliases", []string{"reload", "r"})
 	viper.SetDefault("commands.reload.is_admin", true)
 	viper.SetDefault("commands.reload.description", "Reloads the configuration file.")

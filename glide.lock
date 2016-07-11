@@ -53,10 +53,6 @@ imports:
   version: f390dcf405f7b83c997eac1b06768bb9f44dec18
 - name: github.com/urfave/cli
   version: 01857ac33766ce0c93856370626f9799281c14f4
-- name: golang.org/x/crypto
-  version: 0c565bf13221fb55497d7ae2bb95694db1fd1bff
-  subpackages:
-  - pkcs12
 - name: golang.org/x/sys
   version: a408501be4d17ee978c04a618e7a1b22af058c0e
   subpackages:

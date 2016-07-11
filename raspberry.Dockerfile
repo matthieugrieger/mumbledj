@@ -1,7 +1,8 @@
-FROM alpine:3.3
+FROM hypriot/rpi-alpine-scratch:v3.3
 
 ENV GOPATH=/
 
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.3/community" >> /etc/apk/repositories
 RUN apk add --update ca-certificates go ffmpeg make build-base opus-dev python
 RUN apk upgrade
 

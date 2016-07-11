@@ -13,6 +13,7 @@
   * [Via `go get`](#via-go-get-recommended)
   * [Pre-compiled Binaries](#pre-compiled-binaries-easiest)
   * [From Source](#from-source)
+  * [Docker](#docker)
 * [Usage](#usage)
 * [Commands](#commands)
 * [Contributing](#contributing)
@@ -57,7 +58,7 @@ A YouTube API key must be present in your configuration file in order to use the
 
 **5)** Add the IP address of the machine MumbleDJ will run on in the box that appears (this is optional, but improves security). Click "Create".
 
-**6)** You should now see that an API key has been generated. Copy/paste this API key into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`. 
+**6)** You should now see that an API key has been generated. Copy/paste this API key into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
 
 #### SoundCloud API Key
 A SoundCloud client ID must be present in your configuration file in order to use the SoundCloud service within the bot. Below is a guide for retrieving a client ID:
@@ -103,6 +104,35 @@ This will place a compiled `mumbledj` binary in the cloned directory if successf
 sudo make install
 ```
 
+### Docker
+
+You can also use [docker](https://www.docker.com) to run mumbledj.
+
+First you need to clone the MumbleDJ repository to your machine:
+```
+git clone https://github.com/matthieugrieger/mumbledj.git
+```
+
+Assuming you have [docker installed](https://www.docker.com/products/docker), you will have to build the image:
+```
+docker build -t mumbledj .
+```
+
+And then you can run it, passing the configuration through the command line:
+```
+docker run --rm --name=mumbledj mumbledj --server=SERVER --api_keys.youtube=YOUR_YOUTUBE_API_KEY --api_keys.soundcloud=YOUR_SOUNDCLOUD_API_KEY
+```
+
+In order to run the process as a deamon and restart it automatically on reboot you can use:
+```
+docker run -d --restart=unless-stopped --name=mumbledj mumbledj --server=SERVER --api_keys.youtube=YOUR_YOUTUBE_API_KEY --api_keys.soundcloud=YOUR_SOUNDCLOUD_API_KEY
+```
+
+You can also install docker on a [raspberry pi](https://www.raspberrypi.org/) for instance with [hypriot](http://blog.hypriot.com/getting-started-with-docker-on-your-arm-device/) or with [archlinux](https://archlinuxarm.org/packages/arm/docker). You just need to build the arm image:
+```
+docker build -f raspberry.Dockerfile -t mumbledj .
+```
+
 ## Usage
 MumbleDJ is a compiled program that is executed via a terminal.
 
@@ -114,10 +144,10 @@ NAME:
 
 USAGE:
    mumbledj [global options] command [command options] [arguments...]
-   
+
 VERSION:
    v3.1.0
-   
+
 COMMANDS:
 GLOBAL OPTIONS:
    --config value, -c value		location of MumbleDJ configuration file (default: "/home/matthieu/.config/mumbledj/config.yaml")

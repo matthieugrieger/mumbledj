@@ -199,7 +199,7 @@ func (q *Queue) Skip() {
 
 	q.mutex.Lock()
 	// If caching is disabled, delete the track from disk.
-	if !viper.GetBool("cache.enabled") {
+	if q.Length() != 0 && !viper.GetBool("cache.enabled") {
 		DJ.YouTubeDL.Delete(q.Queue[0])
 	}
 

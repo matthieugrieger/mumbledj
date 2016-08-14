@@ -32,7 +32,7 @@ func init() {
 	services.DJ = DJ
 	bot.DJ = DJ
 
-	DJ.Version = "v3.1.1"
+	DJ.Version = "v3.1.2"
 
 	logrus.SetLevel(logrus.WarnLevel)
 }

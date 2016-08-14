@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### August 14, 2016 -- `v3.1.2`
+* Fixed an index out of range crash in the queue skipping function.
+
 ### July 11, 2016 -- `v3.1.1`
 * Updated vendored dependencies to hopefully address the following issue: https://github.com/matthieugrieger/mumbledj/issues/169.
 

@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### August 21, 2016 -- `v3.1.3`
+* Fixed a deadlock that would occur during the transition from the first to second track in a queue.
+
 ### August 14, 2016 -- `v3.1.2`
 * Fixed an index out of range crash in the queue skipping function.
 

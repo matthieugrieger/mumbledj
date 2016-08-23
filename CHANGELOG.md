@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### August 22, 2016 -- `v3.1.4`
+* Fixed a SoundCloud API response parsing issue that would result in empty IDs for tracks.
+* Fixed the startup check for SoundCloud API.
+
 ### August 21, 2016 -- `v3.1.3`
 * Fixed a deadlock that would occur during the transition from the first to second track in a queue.
 

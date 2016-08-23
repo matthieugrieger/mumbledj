@@ -52,7 +52,7 @@ func (sc *SoundCloud) CheckAPIKey() error {
 	if viper.GetString("api_keys.soundcloud") == "" {
 		return errors.New("No SoundCloud API key has been provided")
 	}
-	url := "http://api.soundcloud.com/tracks/vjflzpbkmerb?client_id=%s"
+	url := "http://api.soundcloud.com/tracks/13158665?client_id=%s"
 	response, err := http.Get(fmt.Sprintf(url, viper.GetString("api_keys.soundcloud")))
 	defer response.Body.Close()
 	if err != nil {
@@ -162,7 +162,8 @@ func (sc *SoundCloud) GetTracks(url string, submitter *gumble.User) ([]interface
 
 func (sc *SoundCloud) getTrack(obj *jason.Object, offset time.Duration, submitter *gumble.User) (bot.Track, error) {
 	title, _ := obj.GetString("title")
-	id, _ := obj.GetString("id")
+	idInt, _ := obj.GetInt64("id")
+	id := strconv.FormatInt(idInt, 10)
 	url, _ := obj.GetString("permalink_url")
 	author, _ := obj.GetString("user", "username")
 	authorURL, _ := obj.GetString("user", "permalink_url")

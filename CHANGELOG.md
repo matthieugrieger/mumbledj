@@ -1,6 +1,9 @@
 MumbleDJ Changelog
 ==================
 
+### November 5, 2016 -- `v3.2.1`
+* Fixed YouTube video offsets. Now YouTube URLs with `?t=<timestamp>` at the end will start the audio playback at the appropriate position.
+
 ### November 5, 2016 -- `v3.2.0`
 * Fixed a Go panic that would occur when a YouTube playlist contained a private video.
 * Added back immediate skipping for tracks/playlists that are skipped by the submitter. This was a feature that was present in the last major version of MumbleDJ but was forgotten when rewriting the bot (sorry!).

@@ -13,6 +13,8 @@ import (
 	"math"
 	"net/http"
 	"regexp"
+	"strings"
+	"time"
 
 	"github.com/ChannelMeter/iso8601duration"
 	"github.com/antonholmquist/jason"
@@ -98,9 +100,12 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 		tracks           []interfaces.Track
 	)
 
+	dummyOffset, _ := time.ParseDuration("0s")
+	urlSplit := strings.Split(url, "?t=")
+
 	playlistURL = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s"
 	playlistItemsURL = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=%s&maxResults=%d&key=%s&pageToken=%s"
-	id, err = yt.getID(url)
+	id, err = yt.getID(urlSplit[0])
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +166,7 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 
 				// Unfortunately we have to execute another API call for each video as the YouTube API does not
 				// return video durations from the playlistItems endpoint...
-				newTrack, _ := yt.getTrack(videoID, submitter)
+				newTrack, _ := yt.getTrack(videoID, submitter, dummyOffset)
 				newTrack.Playlist = playlist
 				tracks = append(tracks, newTrack)
 
@@ -182,7 +187,13 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 		return tracks, nil
 	}
 
-	track, err = yt.getTrack(id, submitter)
+	// Submitter added a track!
+	offset := dummyOffset
+	if len(urlSplit) == 2 {
+		offset, _ = time.ParseDuration(urlSplit[1])
+	}
+
+	track, err = yt.getTrack(id, submitter, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +201,7 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 	return tracks, nil
 }
 
-func (yt *YouTube) getTrack(id string, submitter *gumble.User) (bot.Track, error) {
+func (yt *YouTube) getTrack(id string, submitter *gumble.User, offset time.Duration) (bot.Track, error) {
 	var (
 		resp *http.Response
 		err  error
@@ -221,15 +232,16 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User) (bot.Track, error
 	duration := durationConverted.ToDuration()
 
 	return bot.Track{
-		ID:           id,
-		URL:          "https://youtube.com/watch?v=" + id,
-		Title:        title,
-		Author:       author,
-		Submitter:    submitter.Name,
-		Service:      yt.ReadableName,
-		Filename:     id + ".track",
-		ThumbnailURL: thumbnail,
-		Duration:     duration,
-		Playlist:     nil,
+		ID:             id,
+		URL:            "https://youtube.com/watch?v=" + id,
+		Title:          title,
+		Author:         author,
+		Submitter:      submitter.Name,
+		Service:        yt.ReadableName,
+		Filename:       id + ".track",
+		ThumbnailURL:   thumbnail,
+		Duration:       duration,
+		PlaybackOffset: offset,
+		Playlist:       nil,
 	}, nil
 }

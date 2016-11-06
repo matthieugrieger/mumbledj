@@ -1,6 +1,10 @@
 MumbleDJ Changelog
 ==================
 
+### November 5, 2016 -- `v3.2.0`
+* Fixed a Go panic that would occur when a YouTube playlist contained a private video.
+* Added back immediate skipping for tracks/playlists that are skipped by the submitter. This was a feature that was present in the last major version of MumbleDJ but was forgotten when rewriting the bot (sorry!).
+
 ### August 22, 2016 -- `v3.1.4`
 * Fixed a SoundCloud API response parsing issue that would result in empty IDs for tracks.
 * Fixed the startup check for SoundCloud API.

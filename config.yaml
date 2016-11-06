@@ -264,7 +264,7 @@ commands:
         messages:
             no_channel_provided_error: "A destination channel must be supplied to move the bot."
             channel_doesnt_exist_error: "The provided channel does not exist."
-            move_successful: "You have successfully moved the bot to <b>%s</b>." 
+            move_successful: "You have successfully moved the bot to <b>%s</b>."
 
     nexttrack:
         aliases:
@@ -374,6 +374,7 @@ commands:
         messages:
             already_voted_error: "You have already voted to skip this track."
             voted: "<b>%s</b> has voted to skip the current track."
+            submitter_voted: "<b>%s</b>, the submitter of this track, has voted to skip. Skipping immediately."
 
     skipplaylist:
         aliases:
@@ -385,6 +386,7 @@ commands:
             no_playlist_error: "The current track is not part of a playlist."
             already_voted_error: "You have already voted to skip this playlist."
             voted: "<b>%s</b> has voted to skip the current playlist."
+            submitter_voted: "<b>%s</b>, the submitter of this playlist, has voted to skip. Skipping immediately."
 
     toggleshuffle:
         aliases:

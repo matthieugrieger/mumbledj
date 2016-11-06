@@ -196,6 +196,7 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.skip.description", "Places a vote to skip the current track.")
 	viper.SetDefault("commands.skip.messages.already_voted_error", "You have already voted to skip this track.")
 	viper.SetDefault("commands.skip.messages.voted", "<b>%s</b> has voted to skip the current track.")
+	viper.SetDefault("commands.skip.messages.submitter_voted", "<b>%s</b>, the submitter of this track, has voted to skip. Skipping immediately.")
 
 	viper.SetDefault("commands.skipplaylist.aliases", []string{"skipplaylist", "sp"})
 	viper.SetDefault("commands.skipplaylist.is_admin", false)
@@ -203,6 +204,7 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.skipplaylist.messages.no_playlist_error", "The current track is not part of a playlist.")
 	viper.SetDefault("commands.skipplaylist.messages.already_voted_error", "You have already voted to skip this playlist.")
 	viper.SetDefault("commands.skipplaylist.messages.voted", "<b>%s</b> has voted to skip the current playlist.")
+	viper.SetDefault("commands.skipplaylist.messages.submitter_voted", "<b>%s</b>, the submitter of this playlist, has voted to skip. Skipping immediately.")
 
 	viper.SetDefault("commands.toggleshuffle.aliases", []string{"toggleshuffle", "toggleshuf", "togshuf", "tsh"})
 	viper.SetDefault("commands.toggleshuffle.is_admin", true)

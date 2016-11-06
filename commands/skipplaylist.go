@@ -58,6 +58,10 @@ func (c *SkipPlaylistCommand) Execute(user *gumble.User, args ...string) (string
 	if playlist := currentTrack.GetPlaylist(); playlist == nil {
 		return "", true, errors.New(viper.GetString("commands.skipplaylist.messages.no_playlist_error"))
 	}
+	if currentTrack.GetPlaylist().GetSubmitter() == user.Name {
+		DJ.Queue.SkipPlaylist()
+		return fmt.Sprintf(viper.GetString("commands.skipplaylist.messages.submitter_voted"), user.Name), false, nil
+	}
 	if err := DJ.Skips.AddPlaylistSkip(user); err != nil {
 		return "", true, errors.New(viper.GetString("commands.skipplaylist.messages.already_voted_error"))
 	}

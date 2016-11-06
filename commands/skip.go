@@ -47,6 +47,11 @@ func (c *SkipCommand) Execute(user *gumble.User, args ...string) (string, bool, 
 	if DJ.Queue.Length() == 0 {
 		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
+	if DJ.Queue.GetTrack(0).GetSubmitter() == user.Name {
+		// The user who submitted the track is skipping, this means we skip this track immediately.
+		DJ.Queue.StopCurrent()
+		return fmt.Sprintf(viper.GetString("commands.skip.messages.submitter_voted"), user.Name), false, nil
+	}
 	if err := DJ.Skips.AddTrackSkip(user); err != nil {
 		return "", true, errors.New(viper.GetString("commands.skip.messages.already_voted_error"))
 	}

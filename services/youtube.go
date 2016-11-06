@@ -209,6 +209,9 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User) (bot.Track, error
 		return bot.Track{}, err
 	}
 	items, _ := v.GetObjectArray("items")
+	if len(items) == 0 {
+		return bot.Track{}, errors.New("This YouTube video is private")
+	}
 	item := items[0]
 	title, _ := item.GetString("snippet", "title")
 	thumbnail, _ := item.GetString("snippet", "thumbnails", "high", "url")

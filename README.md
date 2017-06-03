@@ -10,8 +10,6 @@
   * [Requirements](#requirements)
     * [YouTube API Key](#youtube-api-key)
     * [SoundCloud API Key](#soundcloud-api-key)
-  * [Via `go get`](#via-go-get-recommended)
-  * [Pre-compiled Binaries](#pre-compiled-binaries-easiest)
   * [From Source](#from-source)
   * [Docker](#docker)
 * [Usage](#usage)
@@ -43,7 +41,7 @@ This is a fork of the original MumbleDJ made by Matthieu Grieger.
 * [`ffmpeg`](https://ffmpeg.org) OR [`avconv`](https://libav.org)
 * [`aria2`](https://aria2.github.io/) if you plan on using services that throttle download speeds (like Mixcloud)
 
-**If installing via `go install` or from source, the following must be installed:**
+**If installing from source, the following must be installed:**
 * [Go 1.5+](https://golang.org)
   * __NOTE__: Extra installation steps are required for a working Go installation. Once Go is installed, type `go help gopath` for more information.
   * If the repositories for your distro contain a version of Go older than 1.5, try using [`gvm`](https://github.com/moovweb/gvm) to install Go 1.5 or newer.

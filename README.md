@@ -10,6 +10,7 @@
   * [Requirements](#requirements)
     * [YouTube API Key](#youtube-api-key)
     * [SoundCloud API Key](#soundcloud-api-key)
+  * [Via `go get`](#via-go-get-recommended)
   * [From Source](#from-source)
   * [Docker](#docker)
 * [Usage](#usage)
@@ -69,6 +70,19 @@ A SoundCloud client ID must be present in your configuration file in order to us
 **2)** Create a new app: https://soundcloud.com/you/apps/new.
 
 **3)** You should now see that a client ID has been generated. Copy/paste this ID (NOT the client secret) into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
+
+### Via `go get` (recommended)
+After verifying that the [requirements](#requirements) are installed, simply issue the following command:
+```
+go get -u github.com/matthieugrieger/mumbledj
+```
+
+This should place a binary in `$GOPATH/bin` that can be used to start the bot.
+
+**NOTE:** If using Go 1.5, you MUST execute the following for `go get` to work:
+```
+export GO15VENDOREXPERIMENT=1
+```
 
 ### From Source
 First, clone the MumbleDJ repository to your machine:

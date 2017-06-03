@@ -28,7 +28,7 @@
 // for transmitting and receiving audio. It can be enabled by importing the
 // following package for its side effect:
 //  import (
-//      _ "github.com/layeh/gumble/opus"
+//      _ "layeh.com/gumble/opus"
 //  )
 //
 // To ensure that gumble clients can always transmit and receive audio to and

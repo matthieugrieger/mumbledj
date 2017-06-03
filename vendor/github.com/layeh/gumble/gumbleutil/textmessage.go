@@ -5,7 +5,7 @@ import (
 	"encoding/xml"
 	"strings"
 
-	"github.com/layeh/gumble/gumble"
+	"layeh.com/gumble/gumble"
 )
 
 // PlainText returns the Message string without HTML tags or entities.

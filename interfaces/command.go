@@ -7,7 +7,7 @@
 
 package interfaces
 
-import "github.com/layeh/gumble/gumble"
+import "layeh.com/gumble/gumble"
 
 // Command is an interface that all commands must implement.
 type Command interface {

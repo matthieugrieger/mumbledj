@@ -10,8 +10,8 @@ package commands
 import (
 	"errors"
 
-	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumbleffmpeg"
+	"layeh.com/gumble/gumble"
+	"layeh.com/gumble/gumbleffmpeg"
 	"github.com/spf13/viper"
 )
 

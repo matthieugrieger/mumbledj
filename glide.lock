@@ -24,7 +24,7 @@ imports:
   - hcl/strconv
   - json/scanner
   - json/token
-- name: github.com/layeh/gopus
+- name: layeh.com/gopus
   version: 867541549ca5f8b4db2b92fd1dded8711256a27d
 - name: github.com/layeh/gumble
   version: f0a4a2992fa9a969ef90d673374bc63a9b7948ad

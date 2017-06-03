@@ -1,4 +1,4 @@
-package gumble
+package gumble // import "layeh.com/gumble/gumble"
 
 import (
 	"crypto/x509"
@@ -22,11 +22,7 @@ var (
 	errNoCodec              = errors.New("gumble: no audio codec")
 )
 
-type handlerFunc func(*Client, []byte) error
-
-const handlerCount = 26
-
-var handlers = [handlerCount]handlerFunc{
+var handlers = [...]func(*Client, []byte) error{
 	(*Client).handleVersion,
 	(*Client).handleUDPTunnel,
 	(*Client).handleAuthenticate,
@@ -193,7 +189,39 @@ func (c *Client) handlePing(buffer []byte) error {
 	if err := proto.Unmarshal(buffer, &packet); err != nil {
 		return err
 	}
-	atomic.AddUint32(&c.pingStats.TCPPackets, 1)
+
+	atomic.AddUint32(&c.tcpPacketsReceived, 1)
+
+	if packet.Timestamp != nil {
+		diff := time.Since(time.Unix(0, int64(*packet.Timestamp)))
+
+		index := int(c.tcpPacketsReceived) - 1
+		if index >= len(c.tcpPingTimes) {
+			for i := 1; i < len(c.tcpPingTimes); i++ {
+				c.tcpPingTimes[i-1] = c.tcpPingTimes[i]
+			}
+			index = len(c.tcpPingTimes) - 1
+		}
+
+		// average is in milliseconds
+		ping := float32(diff.Seconds() * 1000)
+		c.tcpPingTimes[index] = ping
+
+		var sum float32
+		for i := 0; i <= index; i++ {
+			sum += c.tcpPingTimes[i]
+		}
+		avg := sum / float32(index+1)
+
+		sum = 0
+		for i := 0; i <= index; i++ {
+			sum += (avg - c.tcpPingTimes[i]) * (avg - c.tcpPingTimes[i])
+		}
+		variance := sum / float32(index+1)
+
+		atomic.StoreUint32(&c.tcpPingAvg, math.Float32bits(avg))
+		atomic.StoreUint32(&c.tcpPingVar, math.Float32bits(variance))
+	}
 	return nil
 }
 
@@ -1088,6 +1116,54 @@ func (c *Client) handleUserStats(buffer []byte) error {
 			User: user,
 		}
 		stats := user.Stats
+
+		if packet.FromClient != nil {
+			if packet.FromClient.Good != nil {
+				stats.FromClient.Good = *packet.FromClient.Good
+			}
+			if packet.FromClient.Late != nil {
+				stats.FromClient.Late = *packet.FromClient.Late
+			}
+			if packet.FromClient.Lost != nil {
+				stats.FromClient.Lost = *packet.FromClient.Lost
+			}
+			if packet.FromClient.Resync != nil {
+				stats.FromClient.Resync = *packet.FromClient.Resync
+			}
+		}
+		if packet.FromServer != nil {
+			if packet.FromServer.Good != nil {
+				stats.FromServer.Good = *packet.FromServer.Good
+			}
+			if packet.FromClient.Late != nil {
+				stats.FromServer.Late = *packet.FromServer.Late
+			}
+			if packet.FromClient.Lost != nil {
+				stats.FromServer.Lost = *packet.FromServer.Lost
+			}
+			if packet.FromClient.Resync != nil {
+				stats.FromServer.Resync = *packet.FromServer.Resync
+			}
+		}
+
+		if packet.UdpPackets != nil {
+			stats.UDPPackets = *packet.UdpPackets
+		}
+		if packet.UdpPingAvg != nil {
+			stats.UDPPingAverage = *packet.UdpPingAvg
+		}
+		if packet.UdpPingVar != nil {
+			stats.UDPPingVariance = *packet.UdpPingVar
+		}
+		if packet.TcpPackets != nil {
+			stats.TCPPackets = *packet.TcpPackets
+		}
+		if packet.TcpPingAvg != nil {
+			stats.TCPPingAverage = *packet.TcpPingAvg
+		}
+		if packet.TcpPingVar != nil {
+			stats.TCPPingVariance = *packet.TcpPingVar
+		}
 
 		if packet.Version != nil {
 			stats.Version = parseVersion(packet.Version)

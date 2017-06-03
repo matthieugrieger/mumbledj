@@ -1,4 +1,4 @@
-package gumble
+package gumble // import "layeh.com/gumble/gumble"
 
 import (
 	"encoding/binary"
@@ -16,7 +16,7 @@ import (
 // DefaultPort is the default port on which Mumble servers listen.
 const DefaultPort = 64738
 
-// Conn represents a connection to a Mumble client/server.
+// Conn represents a control protocol connection to a Mumble client/server.
 type Conn struct {
 	sync.Mutex
 	net.Conn

@@ -1,4 +1,4 @@
-package gumble
+package gumble // import "layeh.com/gumble/gumble"
 
 import (
 	"crypto/tls"
@@ -50,7 +50,11 @@ type Client struct {
 	permissions map[uint32]*Permission
 	tmpACL      *ACL
 
-	pingStats pingStats
+	// Ping stats
+	tcpPacketsReceived uint32
+	tcpPingTimes       [12]float32
+	tcpPingAvg         uint32
+	tcpPingVar         uint32
 
 	// A collection containing the server's context actions.
 	ContextActions ContextActions
@@ -109,9 +113,7 @@ func DialWithDialer(dialer *net.Dialer, addr string, config *Config, tlsConfig *
 		end:     make(chan struct{}),
 	}
 
-	// Background workers
 	go client.readRoutine()
-	go client.pingRoutine()
 
 	// Initial packets
 	versionPacket := MumbleProto.Version{
@@ -128,6 +130,8 @@ func DialWithDialer(dialer *net.Dialer, addr string, config *Config, tlsConfig *
 	}
 	client.Conn.WriteProto(&versionPacket)
 	client.Conn.WriteProto(&authenticationPacket)
+
+	go client.pingRoutine()
 
 	var deadline time.Time
 	if !dialer.Deadline.IsZero() {
@@ -190,21 +194,31 @@ func (c *Client) AudioOutgoing() chan<- AudioBuffer {
 
 // pingRoutine sends ping packets to the server at regular intervals.
 func (c *Client) pingRoutine() {
-	ticker := time.NewTicker(time.Second * 10)
+	ticker := time.NewTicker(time.Second * 5)
 	defer ticker.Stop()
 
+	var timestamp uint64
+	var tcpPingAvg float32
+	var tcpPingVar float32
 	packet := MumbleProto.Ping{
-		Timestamp:  proto.Uint64(0),
-		TcpPackets: &c.pingStats.TCPPackets,
+		Timestamp:  &timestamp,
+		TcpPackets: &c.tcpPacketsReceived,
+		TcpPingAvg: &tcpPingAvg,
+		TcpPingVar: &tcpPingVar,
 	}
 
+	t := time.Now()
 	for {
+		timestamp = uint64(t.UnixNano())
+		tcpPingAvg = math.Float32frombits(atomic.LoadUint32(&c.tcpPingAvg))
+		tcpPingVar = math.Float32frombits(atomic.LoadUint32(&c.tcpPingVar))
+		c.Conn.WriteProto(&packet)
+
 		select {
 		case <-c.end:
 			return
-		case time := <-ticker.C:
-			*packet.Timestamp = uint64(time.Unix())
-			c.Conn.WriteProto(&packet)
+		case t = <-ticker.C:
+			// continue to top of loop
 		}
 	}
 }
@@ -221,7 +235,7 @@ func (c *Client) readRoutine() {
 		if err != nil {
 			break
 		}
-		if pType < handlerCount {
+		if int(pType) < len(handlers) {
 			handlers[pType](c, data)
 		}
 	}

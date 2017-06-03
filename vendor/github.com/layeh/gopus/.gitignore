@@ -8,3 +8,4 @@ libtool
 Makefile
 !/Makefile
 stamp-h1
+/.idea/

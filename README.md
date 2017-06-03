@@ -1,7 +1,6 @@
 
 <h1 align="center">MumbleDJ</h1>
 <p align="center"><b>A Mumble bot that plays audio fetched from various media websites.</b></p>
-<p align="center"><a href="https://travis-ci.org/matthieugrieger/mumbledj"><img src="https://travis-ci.org/matthieugrieger/mumbledj.svg?branch=master"/></a> <a href="https://raw.githubusercontent.com/matthieugrieger/mumbledj/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"/></a> <a href="https://github.com/RichardNysater/mumbledj/releases"><img src="https://img.shields.io/github/release/matthieugrieger/mumbledj.svg"/></a> <a href="https://goreportcard.com/report/github.com/RichardNysater/mumbledj"><img src="https://goreportcard.com/badge/github.com/RichardNysater/mumbledj"/></a> <a href="https://codecov.io/gh/matthieugrieger/mumbledj"><img src="https://img.shields.io/codecov/c/github/matthieugrieger/mumbledj.svg"/></a> <a href="https://gitter.im/matthieugrieger/mumbledj"><img src="https://img.shields.io/gitter/room/matthieugrieger/mumbledj.svg" /></a></p>
 
 ## Table of Contents
 
@@ -74,7 +73,7 @@ A SoundCloud client ID must be present in your configuration file in order to us
 ### Via `go get` (recommended)
 After verifying that the [requirements](#requirements) are installed, simply issue the following command:
 ```
-go get -u github.com/matthieugrieger/mumbledj
+go get -u github.com/RichardNysater/mumbledj
 ```
 
 This should place a binary in `$GOPATH/bin` that can be used to start the bot.

@@ -1,4 +1,4 @@
-package gumbleutil
+package gumbleutil // import "layeh.com/gumble/gumbleutil"
 
 import (
 	"bytes"

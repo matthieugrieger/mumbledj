@@ -32,9 +32,9 @@
 
 ## Related projects
 
-- [barnard](https://github.com/layeh/barnard)
+- [barnard](https://layeh.com/barnard)
     - terminal-based Mumble client
-- [piepan](https://github.com/layeh/piepan)
+- [piepan](https://layeh.com/piepan)
     - an easy to use framework for writing Mumble bots using Lua
 
 ## License

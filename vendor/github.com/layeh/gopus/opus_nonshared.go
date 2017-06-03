@@ -1,6 +1,6 @@
 // +build amd64,cgo 386,cgo
 
-package gopus
+package gopus // import "layeh.com/gopus"
 
 // #cgo linux darwin freebsd LDFLAGS: -lm
 //

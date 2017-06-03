@@ -1,6 +1,6 @@
 // +build !amd64,!386,cgo
 
-package gopus
+package gopus // import "layeh.com/gopus"
 
 // #cgo !nopkgconfig pkg-config: opus
 //

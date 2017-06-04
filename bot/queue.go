@@ -272,7 +272,7 @@ func (q *Queue) PlayCurrent() error {
 	currentTrack := q.GetTrack(0)
 	filepath := os.ExpandEnv(viper.GetString("cache.directory") + "/" + currentTrack.GetFilename())
 	if _, err := os.Stat(filepath); os.IsNotExist(err) {
-		logrus.Infoln("Downloading track...")
+		logrus.Infoln("Track does not exist, need to download it...")
 		if err := DJ.YouTubeDL.Download(q.GetTrack(0)); err != nil {
 			return err
 		}

@@ -45,11 +45,12 @@ func (yt *YouTubeDL) Download(t interfaces.Track) error {
 		var cmd *exec.Cmd
 		logrus.WithFields(logrus.Fields{
 			"url": t.GetURL(),
-			"target filepath": filepath,
+			"download-path": filepath,
 			"format" : format,
 			"player" : player,
-		}).Infoln("Downloading song...")
+		}).Infoln("Downloading track...")
 		if t.GetService() == "Mixcloud" {
+			logrus.Infoln("Downloading from Mixcloud...")
 			cmd = exec.Command("youtube-dl", "--verbose", "--no-mtime", "--output", filepath, "--format", format, "--external-downloader", "aria2c", player, t.GetURL())
 		} else {
 			cmd = exec.Command("youtube-dl", "--verbose", "--no-mtime", "--output", filepath, "--format", format, player, t.GetURL())

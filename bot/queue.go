@@ -19,6 +19,7 @@ import (
 	_ "layeh.com/gumble/opus"
 	"github.com/RichardNysater/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"github.com/Sirupsen/logrus"
 )
 
 // Queue holds the audio queue itself along with useful methods for
@@ -271,10 +272,14 @@ func (q *Queue) PlayCurrent() error {
 	currentTrack := q.GetTrack(0)
 	filepath := os.ExpandEnv(viper.GetString("cache.directory") + "/" + currentTrack.GetFilename())
 	if _, err := os.Stat(filepath); os.IsNotExist(err) {
+		logrus.Infoln("Downloading track...")
 		if err := DJ.YouTubeDL.Download(q.GetTrack(0)); err != nil {
 			return err
 		}
 	}
+	logrus.WithFields(logrus.Fields{
+		"filepath": filepath,
+	}).Infoln("Preparing to play track...")
 	source := gumbleffmpeg.SourceFile(filepath)
 	DJ.AudioStream = gumbleffmpeg.New(DJ.Client, source)
 	DJ.AudioStream.Offset = currentTrack.GetPlaybackOffset()
@@ -306,6 +311,7 @@ func (q *Queue) PlayCurrent() error {
 		DJ.Client.Self.Channel.Send(message, false)
 	}
 
+	logrus.Infoln("Playing track...")
 	DJ.AudioStream.Play()
 	go func() {
 		DJ.AudioStream.Wait()

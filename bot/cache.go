@@ -60,10 +60,10 @@ func NewCache() *Cache {
 // of the files within exceed the user-specified size limit. If so, the oldest
 // files are cleared until it is no longer exceeding the limit.
 func (c *Cache) CheckDirectorySize() {
-	const bytesInMiB int = 1048576
+	const bytesInMiB int64 = 1048576
 
 	c.UpdateStatistics()
-	for c.TotalFileSize > int64(viper.GetInt("cache.maximum_size")*bytesInMiB) {
+	for c.TotalFileSize > (int64(viper.GetInt("cache.maximum_size"))*bytesInMiB) {
 		if err := c.DeleteOldest(); err != nil {
 			break
 		}

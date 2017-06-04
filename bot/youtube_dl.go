@@ -43,6 +43,12 @@ func (yt *YouTubeDL) Download(t interfaces.Track) error {
 	// Check to see if track is already downloaded.
 	if _, err := os.Stat(filepath); os.IsNotExist(err) {
 		var cmd *exec.Cmd
+		logrus.WithFields(logrus.Fields{
+			"url": t.GetURL(),
+			"target filepath": filepath,
+			"format" : format,
+			"player" : player,
+		}).Infoln("Downloading song...")
 		if t.GetService() == "Mixcloud" {
 			cmd = exec.Command("youtube-dl", "--verbose", "--no-mtime", "--output", filepath, "--format", format, "--external-downloader", "aria2c", player, t.GetURL())
 		} else {

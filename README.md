@@ -342,14 +342,14 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 
 ### version
 * __Description__: Outputs the current version of MumbleDJ.
-* __Default Aliases__: version, v
+* __Default Aliases__: version
 * __Arguments__: None
 * __Admin-only by default__: No
 * __Example__: `!version`
 
 ### volume
 * __Description__: Changes the volume if an argument is provided, outputs the current volume otherwise.
-* __Default Aliases__: volume, vol
+* __Default Aliases__: volume, vol, v
 * __Arguments__: (Optional) New volume
 * __Admin-only by default__: No
 * __Example__: `!volume 0.5`

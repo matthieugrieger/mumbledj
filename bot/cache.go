@@ -63,7 +63,7 @@ func (c *Cache) CheckDirectorySize() {
 	const bytesInMiB int64 = 1048576
 
 	c.UpdateStatistics()
-	for c.TotalFileSize > (int64(viper.GetInt("cache.maximum_size"))*bytesInMiB) {
+	for c.TotalFileSize > int64(viper.GetInt("cache.maximum_size"))*bytesInMiB {
 		if err := c.DeleteOldest(); err != nil {
 			break
 		}

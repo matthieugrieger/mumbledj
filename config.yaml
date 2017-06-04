@@ -404,7 +404,6 @@ commands:
     version:
         aliases:
             - "version"
-            - "v"
         is_admin: false
         description: "Outputs the current version of MumbleDJ."
         messages:

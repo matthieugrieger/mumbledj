@@ -21,6 +21,7 @@ import (
 	"github.com/RichardNysater/mumbledj/bot"
 	"github.com/RichardNysater/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"sync"
 )
 
 // SoundCloud is a wrapper around the SoundCloud API.
@@ -174,7 +175,7 @@ func (sc *SoundCloud) getTrack(obj *jason.Object, offset time.Duration, submitte
 		// Track has no artwork, using profile avatar instead.
 		thumbnail, _ = obj.GetString("user", "avatar_url")
 	}
-
+	var wg sync.WaitGroup
 	return bot.Track{
 		ID:             id,
 		URL:            url,
@@ -188,5 +189,6 @@ func (sc *SoundCloud) getTrack(obj *jason.Object, offset time.Duration, submitte
 		Duration:       duration,
 		PlaybackOffset: offset,
 		Playlist:       nil,
+		WaitGroup:	wg,
 	}, nil
 }

@@ -81,6 +81,9 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 			lastTrackAdded = track
 		}
 	}
+	if DJ.Queue.Length() > 1{ // If the newly added song is not the next to be played then download it
+		go DJ.YouTubeDL.Download(lastTrackAdded)
+	}
 
 	if numAdded == 0 {
 		return "", true, errors.New(viper.GetString("commands.add.messages.tracks_too_long_error"))

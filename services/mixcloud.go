@@ -18,6 +18,7 @@ import (
 	"layeh.com/gumble/gumble"
 	"github.com/RichardNysater/mumbledj/bot"
 	"github.com/RichardNysater/mumbledj/interfaces"
+	"sync"
 )
 
 // Mixcloud is a wrapper around the Mixcloud API.
@@ -92,7 +93,7 @@ func (mc *Mixcloud) GetTracks(url string, submitter *gumble.User) ([]interfaces.
 		// Track has no artwork, using profile avatar instead.
 		thumbnail, _ = v.GetString("user", "pictures", "large")
 	}
-
+	var wg sync.WaitGroup
 	track := bot.Track{
 		ID:             id,
 		URL:            trackURL,
@@ -106,6 +107,7 @@ func (mc *Mixcloud) GetTracks(url string, submitter *gumble.User) ([]interfaces.
 		Duration:       duration,
 		PlaybackOffset: offset,
 		Playlist:       nil,
+		WaitGroup:	wg,
 	}
 
 	tracks = append(tracks, track)

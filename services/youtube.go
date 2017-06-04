@@ -22,6 +22,7 @@ import (
 	"github.com/RichardNysater/mumbledj/bot"
 	"github.com/RichardNysater/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"sync"
 )
 
 // YouTube is a wrapper around the YouTube Data API.
@@ -230,6 +231,7 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User, offset time.Durat
 	durationString, _ := item.GetString("contentDetails", "duration")
 	durationConverted, _ := duration.FromString(durationString)
 	duration := durationConverted.ToDuration()
+	var wg sync.WaitGroup
 
 	return bot.Track{
 		ID:             id,
@@ -243,5 +245,6 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User, offset time.Durat
 		Duration:       duration,
 		PlaybackOffset: offset,
 		Playlist:       nil,
+		WaitGroup:	wg,
 	}, nil
 }

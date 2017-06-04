@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/RichardNysater/mumbledj/interfaces"
+	"sync"
 )
 
 // Track stores all metadata related to an audio track.
@@ -27,6 +28,7 @@ type Track struct {
 	Duration       time.Duration
 	PlaybackOffset time.Duration
 	Playlist       interfaces.Playlist
+	WaitGroup      sync.WaitGroup
 }
 
 // GetID returns the ID of the track.
@@ -91,4 +93,9 @@ func (t Track) GetPlaybackOffset() time.Duration {
 // the track is not associated with a playlist a nil playlist and error are returned.
 func (t Track) GetPlaylist() interfaces.Playlist {
 	return t.Playlist
+}
+
+// GetWaitGroup returns the WaitGroup the track is associated with.
+func(t Track) GetWaitGroup() sync.WaitGroup {
+	return t.WaitGroup
 }

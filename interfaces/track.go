@@ -7,7 +7,10 @@
 
 package interfaces
 
-import "time"
+import (
+	"time"
+	"sync"
+)
 
 // Track is an interface of methods that must be implemented by tracks.
 type Track interface {
@@ -23,4 +26,5 @@ type Track interface {
 	GetDuration() time.Duration
 	GetPlaybackOffset() time.Duration
 	GetPlaylist() Playlist
+	GetWaitGroup() sync.WaitGroup
 }

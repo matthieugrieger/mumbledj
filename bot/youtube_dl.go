@@ -42,13 +42,16 @@ func (yt *YouTubeDL) Download(t interfaces.Track) error {
 
 	// Check to see if track is already downloaded.
 	if _, err := os.Stat(filepath); os.IsNotExist(err) {
-		var cmd *exec.Cmd
+		t.GetWaitGroup().Wait()
+		//waitgroup.wait here
 		logrus.WithFields(logrus.Fields{
 			"url": t.GetURL(),
 			"download-path": filepath,
 			"format" : format,
 			"player" : player,
 		}).Infoln("Downloading track...")
+
+		var cmd *exec.Cmd
 		if t.GetService() == "Mixcloud" {
 			logrus.Infoln("Downloading from Mixcloud...")
 			cmd = exec.Command("youtube-dl", "--verbose", "--no-mtime", "--output", filepath, "--format", format, "--external-downloader", "aria2c", player, t.GetURL())
@@ -64,7 +67,7 @@ func (yt *YouTubeDL) Download(t interfaces.Track) error {
 			logrus.Warnf("%s\n%s\nyoutube-dl: %s", args, string(output), err.Error())
 			return errors.New("Track download failed")
 		}
-
+		t.GetWaitGroup().Done()
 		if viper.GetBool("cache.enabled") {
 			DJ.Cache.CheckDirectorySize()
 		}

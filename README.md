@@ -1,7 +1,6 @@
 
 <h1 align="center">MumbleDJ</h1>
 <p align="center"><b>A Mumble bot that plays audio fetched from various media websites.</b></p>
-<p align="center"><a href="https://travis-ci.org/matthieugrieger/mumbledj"><img src="https://travis-ci.org/matthieugrieger/mumbledj.svg?branch=master"/></a> <a href="https://raw.githubusercontent.com/matthieugrieger/mumbledj/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"/></a> <a href="https://github.com/matthieugrieger/mumbledj/releases"><img src="https://img.shields.io/github/release/matthieugrieger/mumbledj.svg"/></a> <a href="https://goreportcard.com/report/github.com/matthieugrieger/mumbledj"><img src="https://goreportcard.com/badge/github.com/matthieugrieger/mumbledj"/></a> <a href="https://codecov.io/gh/matthieugrieger/mumbledj"><img src="https://img.shields.io/codecov/c/github/matthieugrieger/mumbledj.svg"/></a> <a href="https://gitter.im/matthieugrieger/mumbledj"><img src="https://img.shields.io/gitter/room/matthieugrieger/mumbledj.svg" /></a></p>
 
 ## Table of Contents
 
@@ -393,7 +392,7 @@ THE SOFTWARE.
 
 ## Thanks
 * [All those who contribute to Mumble](https://github.com/mumble-voip/mumble/graphs/contributors)
-* [Tim Cooper](https://github.com/bontibon) for [gumble, gumbleffmpeg, and gumbleutil](https://github.com/layeh/gumble)
+* [Tim Cooper](https://github.com/bontibon) for [gumble, gumbleffmpeg, and gumbleutil](https://layeh.com/gumble)
 * [Jeremy Saenz](https://github.com/codegangsta) for [cli](https://github.com/urfave/cli)
 * [Anton Holmquist](https://github.com/antonholmquist) for [jason](https://github.com/antonholmquist/jason)
 * [Stretchr, Inc.](https://github.com/stretchr) for [testify](https://github.com/stretchr/testify)

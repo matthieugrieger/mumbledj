@@ -9,7 +9,7 @@ package commands
 
 import (
 	"github.com/layeh/gumble/gumble"
-	"github.com/matthieugrieger/mumbledj/bot"
+	"reik.pl/mumbledj/bot"
 	"github.com/spf13/viper"
 )
 

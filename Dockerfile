@@ -7,10 +7,10 @@ RUN apk upgrade
 
 RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /bin/youtube-dl && chmod a+x /bin/youtube-dl
 
-COPY . /src/github.com/matthieugrieger/mumbledj
+COPY . /src/reik.pl/mumbledj
 COPY config.yaml /root/.config/mumbledj/config.yaml
 
-WORKDIR /src/github.com/matthieugrieger/mumbledj
+WORKDIR /src/reik.pl/mumbledj
 
 RUN make
 RUN make install

@@ -46,8 +46,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/layeh/gumble/gumble"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
+	"reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 )
 
@@ -98,8 +98,8 @@ package commands
 import (
 	"testing"
 
-	"github.com/layeh/gumble/gumbleffmpeg"
-	"github.com/matthieugrieger/mumbledj/bot"
+	"layeh.com/gumble/gumbleffmpeg"
+	"reik.pl/mumbledj/bot"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 )
@@ -147,7 +147,7 @@ func TestYourNewCommandTestSuite(t *testing.T) {
 ### Implement your new command
 Now the fun starts! Write the implementation for your command in the `Execute()` method. Then, write tests for your new command, making sure to test each possible execution flow of your command.
 
-For writing the implementation and unit tests for your new command, it may be helpful to [look at previously created commands](https://github.com/matthieugrieger/mumbledj/blob/master/commands).
+For writing the implementation and unit tests for your new command, it may be helpful to [look at previously created commands](https://reik.pl/mumbledj/blob/master/commands).
 
 **Make sure to rename the example names to represent your new command!**
 
@@ -198,9 +198,9 @@ import (
 	"time"
 
 	"github.com/antonholmquist/jason"
-	"github.com/layeh/gumble/gumble"
-	"github.com/matthieugrieger/mumbledj/bot"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
+	"reik.pl/mumbledj/bot"
+	"reik.pl/mumbledj/interfaces"
 )
 
 // YourNewService is a... (description here)
@@ -242,7 +242,7 @@ func (yn *YourNewService) GetTracks(url string, submitter *gumble.User) ([]inter
 ### Implement your new service
 Now the fun starts! Implement `CheckAPIKey()` and `GetTracks()`.
 
-For writing the implementation for your new service, it may be helpful to [look at previously created service wrappers](https://github.com/matthieugrieger/mumbledj/blob/master/services).
+For writing the implementation for your new service, it may be helpful to [look at previously created service wrappers](https://reik.pl/mumbledj/blob/master/services).
 
 **Make sure to rename the example names to represent your new service!**
 

@@ -8,12 +8,16 @@
 package commands
 
 import (
-	"github.com/matthieugrieger/mumbledj/bot"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"reik.pl/mumbledj/asset"
+	"reik.pl/mumbledj/bot"
+	"reik.pl/mumbledj/interfaces"
 )
 
 // DJ is an injected MumbleDJ struct.
 var DJ *bot.MumbleDJ
+
+// Assets embedded in binary
+var Assets = asset.Assets
 
 // Commands is a slice of all enabled commands.
 var Commands []interfaces.Command
@@ -46,5 +50,7 @@ func init() {
 		new(ToggleShuffleCommand),
 		new(VersionCommand),
 		new(VolumeCommand),
+		// mine
+		new(OhohohoCommand),
 	}
 }

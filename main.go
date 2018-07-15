@@ -13,15 +13,19 @@ import (
 	"strings"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/matthieugrieger/mumbledj/bot"
-	"github.com/matthieugrieger/mumbledj/commands"
-	"github.com/matthieugrieger/mumbledj/services"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
+	"reik.pl/mumbledj/asset"
+	"reik.pl/mumbledj/bot"
+	"reik.pl/mumbledj/commands"
+	"reik.pl/mumbledj/services"
 )
 
 // DJ is a global variable that holds various details about the bot's state.
 var DJ = bot.NewMumbleDJ()
+
+// Assets is global variable that allows access to config and sound assets
+var Assets = asset.Assets
 
 func init() {
 	DJ.Commands = commands.Commands
@@ -202,7 +206,7 @@ func main() {
 }
 
 func createConfigWhenNotExists() {
-	configFile, err := Asset("config.yaml")
+	configFile, err := Assets.MustBytes("config.yaml")
 	if err != nil {
 		logrus.Warnln("An error occurred while accessing config binary data. A new config file will not be written.")
 	} else {
@@ -225,8 +229,11 @@ func createNewConfigIfNeeded() {
 	newConfigPath := os.ExpandEnv("$HOME/.config/mumbledj/config.yaml.new")
 
 	// Check if we should write an updated config file to config.yaml.new.
-	if assetInfo, err := AssetInfo("config.yaml"); err == nil {
-		asset, _ := Asset("config.yaml")
+	if asset, err := Assets.MustBytes("config.yaml"); err == nil {
+
+		assetF, _ := Assets.Open("config.yaml")
+		defer assetF.Close()
+		assetInfo, _ := assetF.Stat()
 		if configFile, err := os.Open(os.ExpandEnv("$HOME/.config/mumbledj/config.yaml")); err == nil {
 			configInfo, _ := configFile.Stat()
 			defer configFile.Close()

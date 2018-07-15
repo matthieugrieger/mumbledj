@@ -18,8 +18,8 @@ import (
 
 	"github.com/antonholmquist/jason"
 	"github.com/layeh/gumble/gumble"
-	"github.com/matthieugrieger/mumbledj/bot"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"reik.pl/mumbledj/bot"
+	"reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 )
 

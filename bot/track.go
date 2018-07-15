@@ -10,7 +10,7 @@ package bot
 import (
 	"time"
 
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"reik.pl/mumbledj/interfaces"
 )
 
 // Track stores all metadata related to an audio track.

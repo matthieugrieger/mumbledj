@@ -17,8 +17,8 @@ import (
 
 	"github.com/layeh/gumble/gumbleffmpeg"
 	_ "github.com/layeh/gumble/opus"
-	"github.com/matthieugrieger/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"reik.pl/mumbledj/interfaces"
 )
 
 // Queue holds the audio queue itself along with useful methods for

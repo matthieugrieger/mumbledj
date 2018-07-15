@@ -224,6 +224,13 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.volume.messages.out_of_range_error", "Volumes must be between the values <b>%.2f</b> and <b>%.2f</b>.")
 	viper.SetDefault("commands.volume.messages.current_volume", "The current volume is <b>%.2f</b>.")
 	viper.SetDefault("commands.volume.messages.volume_changed", "<b>%s</b> has changed the volume to <b>%.2f</b>.")
+
+	// mine
+	viper.SetDefault("commands.ohohoho.aliases", []string{"ohohoho"})
+	viper.SetDefault("commands.ohohoho.is_admin", false)
+	viper.SetDefault("commands.ohohoho.description", "Frieza ohohoho")
+	viper.SetDefault("commands.ohohoho.messages.how_many_times_error", "The argument must be in range from 1 to 10")
+	viper.SetDefault("commands.ohohoho.messages.internal_sample_error", "FATAL: Internal sample <b>%d</b> not found!")
 }
 
 // ReadConfigFile reads in the config file and updates the configuration accordingly.

@@ -12,7 +12,7 @@ import (
 	"fmt"
 
 	"github.com/layeh/gumble/gumble"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 )
 

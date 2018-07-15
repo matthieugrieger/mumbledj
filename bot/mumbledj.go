@@ -22,7 +22,7 @@ import (
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumbleffmpeg"
 	"github.com/layeh/gumble/gumbleutil"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 )
 

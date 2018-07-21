@@ -75,7 +75,11 @@ func (c *AddNextCommand) Execute(user *gumble.User, args ...string) (string, boo
 	numAdded := 0
 	// We must loop backwards here to preserve the track order when inserting tracks.
 	for i := len(allTracks) - 1; i >= 0; i-- {
-		if err = DJ.Queue.InsertTrack(1, allTracks[i]); err != nil {
+		insertIndex := 1
+		if DJ.Queue.Length() == 0 {
+			insertIndex = 0
+		}
+		if err = DJ.Queue.InsertTrack(insertIndex, allTracks[i]); err != nil {
 			numTooLong++
 		} else {
 			numAdded++

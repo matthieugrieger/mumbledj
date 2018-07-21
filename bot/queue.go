@@ -85,6 +85,11 @@ func (q *Queue) InsertTrack(i int, t interfaces.Track) error {
 	q.mutex.Lock()
 	beforeLen := len(q.Queue)
 
+	if i < 0 || i > beforeLen {
+		q.mutex.Unlock()
+		return errors.New("Adding at invalid index in queue")
+	}
+
 	// An error should never occur here since maxTrackDuration is restricted to
 	// ints. Any error in the configuration will be caught during yaml load.
 	maxTrackDuration, _ := time.ParseDuration(fmt.Sprintf("%ds",

@@ -211,22 +211,24 @@ func (q *Queue) Skip() {
 	}
 
 	// Remove all playlist skips if this is the last track of the playlist still in the queue.
-	if playlist := q.Queue[0].GetPlaylist(); playlist != nil {
-		id := playlist.GetID()
-		playlistIsFinished := true
+	if len(q.Queue) > 0 {
+		if playlist := q.Queue[0].GetPlaylist(); playlist != nil {
+			id := playlist.GetID()
+			playlistIsFinished := true
 
-		q.mutex.Unlock()
-		q.Traverse(func(i int, t interfaces.Track) {
-			if i != 0 && t.GetPlaylist() != nil {
-				if t.GetPlaylist().GetID() == id {
-					playlistIsFinished = false
+			q.mutex.Unlock()
+			q.Traverse(func(i int, t interfaces.Track) {
+				if i != 0 && t.GetPlaylist() != nil {
+					if t.GetPlaylist().GetID() == id {
+						playlistIsFinished = false
+					}
 				}
-			}
-		})
-		q.mutex.Lock()
+			})
+			q.mutex.Lock()
 
-		if playlistIsFinished {
-			DJ.Skips.ResetPlaylistSkips()
+			if playlistIsFinished {
+				DJ.Skips.ResetPlaylistSkips()
+			}
 		}
 	}
 

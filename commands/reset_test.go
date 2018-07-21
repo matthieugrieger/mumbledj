@@ -10,6 +10,7 @@ package commands
 import (
 	"testing"
 
+	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumbleffmpeg"
 	"github.com/matthieugrieger/mumbledj/bot"
 	"github.com/spf13/viper"
@@ -43,16 +44,16 @@ func (suite *ResetCommandTestSuite) TestAliases() {
 }
 
 func (suite *ResetCommandTestSuite) TestDescription() {
-	suite.Equal("reset", suite.Command.Description())
+	suite.Equal("Resets the queue by removing all queue items.", suite.Command.Description())
 }
 
 func (suite *ResetCommandTestSuite) TestIsAdminCommand() {
-	suite.False(suite.Command.IsAdminCommand())
+	suite.True(suite.Command.IsAdminCommand())
 }
 
 func (suite *ResetCommandTestSuite) TestResetWorksOnEmpty() {
 	// TODO: Assuming the Queue is currently empty, is that the case?
-	suite.Command.Execute(nil)
+	suite.Command.Execute(new(gumble.User))
 	suite.Zero(DJ.Queue.Length())
 }
 
@@ -62,7 +63,9 @@ func (suite *ResetCommandTestSuite) TestResetWorksOneTrack() {
 	track.Title = "test"
 
 	DJ.Queue.AppendTrack(track)
-	suite.Command.Execute(nil)
+	// If this is non-nil, an error will occur the stream is not valid.
+	DJ.AudioStream = nil
+	suite.Command.Execute(new(gumble.User))
 	suite.Zero(DJ.Queue.Length())
 }
 
@@ -76,8 +79,11 @@ func (suite *ResetCommandTestSuite) TestResetWorksMultipleTracks() {
 
 	DJ.Queue.AppendTrack(track1)
 	DJ.Queue.AppendTrack(track2)
-	suite.Command.Execute(nil)
+	// If this is non-nil, an error will occur the stream is not valid.
+	DJ.AudioStream = nil
+	suite.Command.Execute(new(gumble.User))
 	suite.Zero(DJ.Queue.Length())
+	DJ.AudioStream = new(gumbleffmpeg.Stream)
 }
 
 func TestResetCommandTestSuite(t *testing.T) {

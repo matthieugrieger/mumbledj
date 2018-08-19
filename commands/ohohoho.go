@@ -64,7 +64,7 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 		return waitForRandomOhohoho()
 	} else {
 		howMany, err := strconv.Atoi(args[0])
-		if err != nil || (howMany > 10 && howMany < 1) {
+		if err != nil || howMany < 1 || howMany > 10 {
 			return "", true, errors.New(viper.GetString("commands.ohohoho.messages.how_many_times_error"))
 		}
 

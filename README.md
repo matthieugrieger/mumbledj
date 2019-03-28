@@ -3,8 +3,6 @@
 <p align="center"><b>A Mumble bot that plays audio fetched from various media websites.</b></p>
 <p align="center"><a href="https://travis-ci.org/matthieugrieger/mumbledj"><img src="https://travis-ci.org/matthieugrieger/mumbledj.svg?branch=master"/></a> <a href="https://raw.githubusercontent.com/matthieugrieger/mumbledj/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"/></a> <a href="https://github.com/matthieugrieger/mumbledj/releases"><img src="https://img.shields.io/github/release/matthieugrieger/mumbledj.svg"/></a> <a href="https://goreportcard.com/report/github.com/matthieugrieger/mumbledj"><img src="https://goreportcard.com/badge/github.com/matthieugrieger/mumbledj"/></a> <a href="https://codecov.io/gh/matthieugrieger/mumbledj"><img src="https://img.shields.io/codecov/c/github/matthieugrieger/mumbledj.svg"/></a> <a href="https://gitter.im/matthieugrieger/mumbledj"><img src="https://img.shields.io/gitter/room/matthieugrieger/mumbledj.svg" /></a></p>
 
-<p align="center"><b>Unfortunately, this project is no longer maintained. Don't expect any responses on bug reports, feature requests, etc. Forks are welcome!</b></p>
-
 ## Table of Contents
 
 * [Features](#features)

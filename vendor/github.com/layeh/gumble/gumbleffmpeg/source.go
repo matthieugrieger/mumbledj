@@ -44,7 +44,7 @@ func SourceReader(r io.ReadCloser) Source {
 	return &sourceReader{r}
 }
 
-func (s *sourceReader) arguments() []string {
+func (*sourceReader) arguments() []string {
 	return []string{"-i", "-"}
 }
 

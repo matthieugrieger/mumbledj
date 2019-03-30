@@ -398,6 +398,6 @@ THE SOFTWARE.
 * [Stretchr, Inc.](https://github.com/stretchr) for [testify](https://github.com/stretchr/testify)
 * [ChannelMeter](https://github.com/ChannelMeter) for [iso8601duration](https://github.com/ChannelMeter/iso8601duration)
 * [Steve Francia](https://github.com/spf13) for [viper](https://github.com/spf13/viper)
-* [Simon Eskildsen](https://github.com/Sirupsen) for [logrus](https://github.com/Sirupsen/logrus)
+* [Simon Eskildsen](https://github.com/sirupsen) for [logrus](https://github.com/sirupsen/logrus)
 * [Mitchell Hashimoto](https://github.com/mitchellh) for [gox](https://github.com/mitchellh/gox)
 * [Jim Teeuwen](https://github.com/jteeuwen) for [go-bindata](https://github.com/jteeuwen/go-bindata)

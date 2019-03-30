@@ -12,9 +12,9 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/Sirupsen/logrus"
-	"reik.pl/mumbledj/interfaces"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"reik.pl/mumbledj/interfaces"
 )
 
 // YouTubeDL is a struct that gathers all methods related to the youtube-dl

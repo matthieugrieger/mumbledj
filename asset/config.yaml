@@ -425,9 +425,12 @@ commands:
     ohohoho:
         aliases:
             - "ohohoho"
+            - "oh"
         is_admin: false
-        description: "Frieza ohohoho"
+        description: "Ohohoho and the others samples"
         messages:
+            available_samples: "<br><b>Available samples:</b> %s"
+            sample_not_exists_error: "Specified sample <i>%s</i> doesn't exist."
             how_many_times_error: "The argument must be in range from 1 to 10"
             internal_sample_error: "FATAL: Internal sample <b>%d</b> not found!"
 

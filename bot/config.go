@@ -226,9 +226,11 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.volume.messages.volume_changed", "<b>%s</b> has changed the volume to <b>%.2f</b>.")
 
 	// mine
-	viper.SetDefault("commands.ohohoho.aliases", []string{"ohohoho"})
+	viper.SetDefault("commands.ohohoho.aliases", []string{"ohohoho", "oh"})
 	viper.SetDefault("commands.ohohoho.is_admin", false)
-	viper.SetDefault("commands.ohohoho.description", "Frieza ohohoho")
+	viper.SetDefault("commands.ohohoho.description", "Ohohoho and the others samples")
+	viper.SetDefault("commands.ohohoho.messages.sample_not_exists_error", "Specified sample <i>%s</i> doesn't exist.")
+	viper.SetDefault("commands.ohohoho.messages.available_samples", "<br><b>Available samples:</b> %s")
 	viper.SetDefault("commands.ohohoho.messages.how_many_times_error", "The argument must be in range from 1 to 10")
 	viper.SetDefault("commands.ohohoho.messages.internal_sample_error", "FATAL: Internal sample <b>%d</b> not found!")
 }

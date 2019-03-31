@@ -1,8 +1,8 @@
 /*
  * MumbleDJ
  * By Matthieu Grieger
- * commands/add.go
- * Copyright (c) 2016 Matthieu Grieger (MIT License)
+ * commands/ohohoho.go
+ * Copyright (c) 2019 Reikion (MIT License)
  */
 
 package commands
@@ -12,13 +12,32 @@ import (
 	"fmt"
 	"math/rand"
 	"path"
+	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/layeh/gumble/gumble"
 	"github.com/layeh/gumble/gumbleffmpeg"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
+
+var samplesList = map[string]int{}
+
+func init() {
+	assetsDirs := Assets.List()
+	//match dirs
+	// ex. ohohoho/1.flac and ohohoho is [0][1] submatch
+	reg := regexp.MustCompile("(.+?)/.*")
+	for _, el := range assetsDirs {
+		matches := reg.FindAllStringSubmatch(el, -1)
+		if matches != nil && Assets.HasDir(matches[0][1]) {
+			// count files in folder by the way
+			samplesList[matches[0][1]]++
+		}
+	}
+}
 
 var errAnotherSteamActive = errors.New("Stream is playing already")
 var mutex sync.Mutex
@@ -61,18 +80,31 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 	mutex.Unlock()
 
 	if len(args) == 0 {
-		return waitForRandomOhohoho()
-	} else {
-		howMany, err := strconv.Atoi(args[0])
+		var sb strings.Builder
+		for k := range samplesList {
+			sb.WriteString("<br>")
+			sb.WriteString(" - ")
+			sb.WriteString(k)
+		}
+		logrus.Println(fmt.Sprintf(viper.GetString("commands.ohohoho.messages.available_samples"), sb.String()))
+		return fmt.Sprintf(viper.GetString("commands.ohohoho.messages.available_samples"), sb.String()), true, nil
+	} else if len(args) == 1 {
+		msg, pub, err := waitForRandomOhohoho(args[0])
+		if err != nil {
+			return msg, pub, err
+		}
+	} else if len(args) == 2 {
+
+		howMany, err := strconv.Atoi(args[1])
 		if err != nil || howMany < 1 || howMany > 10 {
 			return "", true, errors.New(viper.GetString("commands.ohohoho.messages.how_many_times_error"))
 		}
 
 		for i := 0; i < howMany; i++ {
-			msg, pub, err := waitForRandomOhohoho()
+			msg, pub, err := waitForRandomOhohoho(args[0])
 			if err != nil {
 				if err == errAnotherSteamActive {
-					// it's ok, don't inform user, that it's request is interrupted
+					// it's ok, don't inform user, that its request is interrupted
 					return "", true, nil
 				}
 				return msg, pub, err
@@ -82,7 +114,7 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 
 	return "", true, nil
 }
-func waitForRandomOhohoho() (string, bool, error) {
+func waitForRandomOhohoho(whichSample string) (string, bool, error) {
 	mutex.Lock()
 	// ensure that Ohohoho hasn't started in the meantime
 	if DJ.AudioStream != nil && DJ.AudioStream.State() != gumbleffmpeg.StateStopped {
@@ -90,7 +122,7 @@ func waitForRandomOhohoho() (string, bool, error) {
 		mutex.Unlock()
 		return "", true, errAnotherSteamActive
 	}
-	err := playRandomOhohoho()
+	err := playRandomOhohoho(whichSample)
 	if err != nil {
 		mutex.Unlock()
 		return "", true, err
@@ -109,10 +141,16 @@ func waitForRandomOhohoho() (string, bool, error) {
 	return "", true, nil
 }
 
-func playRandomOhohoho() error {
-	// there are 56 files hohoho files from 1.flac to 56.flac
-	chosenRandom := strconv.Itoa(rand.Intn(55) + 1)
-	ohohohoSample, err := Assets.Open(path.Join("hohoho", chosenRandom+".flac"))
+func playRandomOhohoho(whichSample string) error {
+	//check is sample exists
+	if _, ok := samplesList[whichSample]; !ok {
+		return fmt.Errorf(viper.GetString("commands.ohohoho.messages.sample_not_exists_error"), whichSample)
+	}
+
+	noOfSamples := samplesList[whichSample]
+	// rand rands from [0;n), so we need +1 to scale to [1;n]
+	chosenRandom := strconv.Itoa(rand.Intn(noOfSamples) + 1)
+	ohohohoSample, err := Assets.Open(path.Join(whichSample, chosenRandom+".flac"))
 	if err != nil {
 		return fmt.Errorf(viper.GetString("commands.ohohoho.messages.internal_sample_error"), chosenRandom)
 	}

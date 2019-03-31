@@ -206,7 +206,7 @@ func main() {
 }
 
 func createConfigWhenNotExists() {
-	configFile, err := Assets.MustBytes("config.yaml")
+	configFile, err := Assets.Find("config.yaml")
 	if err != nil {
 		logrus.Warnln("An error occurred while accessing config binary data. A new config file will not be written.")
 	} else {
@@ -229,7 +229,7 @@ func createNewConfigIfNeeded() {
 	newConfigPath := os.ExpandEnv("$HOME/.config/mumbledj/config.yaml.new")
 
 	// Check if we should write an updated config file to config.yaml.new.
-	if asset, err := Assets.MustBytes("config.yaml"); err == nil {
+	if asset, err := Assets.Find("config.yaml"); err == nil {
 
 		assetF, _ := Assets.Open("config.yaml")
 		defer assetF.Close()

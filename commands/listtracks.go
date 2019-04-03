@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/layeh/gumble/gumble"
+	"layeh.com/gumble/gumble"
 	"reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 )

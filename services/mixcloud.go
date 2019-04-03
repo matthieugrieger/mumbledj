@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/antonholmquist/jason"
-	"github.com/layeh/gumble/gumble"
+	"layeh.com/gumble/gumble"
 	"reik.pl/mumbledj/bot"
 	"reik.pl/mumbledj/interfaces"
 )

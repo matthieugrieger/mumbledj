@@ -8,20 +8,24 @@
 package services
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"math"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/ChannelMeter/iso8601duration"
+	"github.com/sirupsen/logrus"
+
+	duration "github.com/ChannelMeter/iso8601duration"
 	"github.com/antonholmquist/jason"
-	"github.com/layeh/gumble/gumble"
+	"layeh.com/gumble/gumble"
+	"github.com/spf13/viper"
 	"reik.pl/mumbledj/bot"
 	"reik.pl/mumbledj/interfaces"
-	"github.com/spf13/viper"
 )
 
 // YouTube is a wrapper around the YouTube Data API.

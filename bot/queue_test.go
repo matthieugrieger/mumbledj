@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/layeh/gumble/gumbleffmpeg"
+	"layeh.com/gumble/gumbleffmpeg"
 	"reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"

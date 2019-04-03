@@ -17,10 +17,10 @@ import (
 	"time"
 
 	"github.com/antonholmquist/jason"
-	"github.com/layeh/gumble/gumble"
+	"layeh.com/gumble/gumble"
+	"github.com/spf13/viper"
 	"reik.pl/mumbledj/bot"
 	"reik.pl/mumbledj/interfaces"
-	"github.com/spf13/viper"
 )
 
 // SoundCloud is a wrapper around the SoundCloud API.

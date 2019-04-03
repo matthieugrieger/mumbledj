@@ -17,8 +17,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumbleffmpeg"
+	"layeh.com/gumble/gumble"
+	"layeh.com/gumble/gumbleffmpeg"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )

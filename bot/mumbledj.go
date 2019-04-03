@@ -19,11 +19,11 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumbleffmpeg"
-	"github.com/layeh/gumble/gumbleutil"
-	"reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
+	"layeh.com/gumble/gumbleffmpeg"
+	"layeh.com/gumble/gumbleutil"
+	"reik.pl/mumbledj/interfaces"
 )
 
 // MumbleDJ is a struct that keeps track of all aspects of the bot's state.

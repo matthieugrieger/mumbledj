@@ -295,7 +295,7 @@ func (q *Queue) PlayCurrent() error {
 		message :=
 			`<table>
 			 	<tr>
-					<td align="center"><img src="%s" width=150 /></td>
+					<td align="center"><img src="data:image/JPEG;base64,%s" width=150 /></td>
 				</tr>
 				<tr>
 					<td align="center"><b><a href="%s">%s</a> (%s)</b></td>
@@ -304,10 +304,10 @@ func (q *Queue) PlayCurrent() error {
 					<td align="center">Added by %s</td>
 				</tr>
 			`
-		message = fmt.Sprintf(message, currentTrack.GetThumbnailURL(), currentTrack.GetURL(),
+		message = fmt.Sprintf(message, url.QueryEscape(currentTrack.GetThumbnailBase64()), currentTrack.GetURL(),
 			currentTrack.GetTitle(), currentTrack.GetDuration().String(), currentTrack.GetSubmitter())
 		if currentTrack.GetPlaylist() != nil {
-			message = fmt.Sprintf(message+`<tr><td align="center">From playlist "%s"</td></tr>`, currentTrack.GetPlaylist().GetTitle())
+			message = message + fmt.Sprintf(`<tr><td align="center">From playlist "%s"</td></tr>`, currentTrack.GetPlaylist().GetTitle())
 		}
 		message += `</table>`
 		DJ.Client.Self.Channel.Send(message, false)

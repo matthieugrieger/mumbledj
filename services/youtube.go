@@ -69,10 +69,10 @@ func (yt *YouTube) CheckAPIKey() error {
 	}
 	url := "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=KQY9zrjPBjo&key=%s"
 	response, err = http.Get(fmt.Sprintf(url, viper.GetString("api_keys.youtube")))
-	defer response.Body.Close()
 	if err != nil {
 		return err
 	}
+	defer response.Body.Close()
 
 	if v, err = jason.NewObjectFromReader(response.Body); err != nil {
 		return err
@@ -116,10 +116,10 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 
 	if yt.isPlaylist(url) {
 		resp, err = http.Get(fmt.Sprintf(playlistURL, id, viper.GetString("api_keys.youtube")))
-		defer resp.Body.Close()
 		if err != nil {
 			return nil, err
 		}
+		defer resp.Body.Close()
 
 		v, err = jason.NewObjectFromReader(resp.Body)
 		if err != nil {
@@ -152,11 +152,11 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 		pageToken := ""
 		for len(tracks) < maxItems {
 			curResp, curErr := http.Get(fmt.Sprintf(playlistItemsURL, id, maxResults, viper.GetString("api_keys.youtube"), pageToken))
-			defer curResp.Body.Close()
 			if curErr != nil {
 				// An error occurred, simply skip this track.
 				continue
 			}
+			defer curResp.Body.Close()
 
 			v, err = jason.NewObjectFromReader(curResp.Body)
 			if err != nil {
@@ -214,10 +214,10 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User, offset time.Durat
 
 	videoURL := "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s"
 	resp, err = http.Get(fmt.Sprintf(videoURL, id, viper.GetString("api_keys.youtube")))
-	defer resp.Body.Close()
 	if err != nil {
 		return bot.Track{}, err
 	}
+	defer resp.Body.Close()
 
 	v, err = jason.NewObjectFromReader(resp.Body)
 	if err != nil {

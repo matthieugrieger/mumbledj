@@ -54,10 +54,10 @@ func (sc *SoundCloud) CheckAPIKey() error {
 	}
 	url := "http://api.soundcloud.com/tracks/13158665?client_id=%s"
 	response, err := http.Get(fmt.Sprintf(url, viper.GetString("api_keys.soundcloud")))
-	defer response.Body.Close()
 	if err != nil {
 		return err
 	}
+	defer response.Body.Close()
 	if response.StatusCode != 200 {
 		return errors.New(response.Status)
 	}
@@ -84,10 +84,10 @@ func (sc *SoundCloud) GetTracks(url string, submitter *gumble.User) ([]interface
 	if sc.isPlaylist(url) {
 		// Submitter has added a playlist!
 		resp, err = http.Get(fmt.Sprintf(apiURL, urlSplit[0], viper.GetString("api_keys.soundcloud")))
-		defer resp.Body.Close()
 		if err != nil {
 			return nil, err
 		}
+		defer resp.Body.Close()
 
 		v, err = jason.NewObjectFromReader(resp.Body)
 		if err != nil {
@@ -142,10 +142,10 @@ func (sc *SoundCloud) GetTracks(url string, submitter *gumble.User) ([]interface
 	playbackOffset, _ := time.ParseDuration(fmt.Sprintf("%ds", offset))
 
 	resp, err = http.Get(fmt.Sprintf(apiURL, urlSplit[0], viper.GetString("api_keys.soundcloud")))
-	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	v, err = jason.NewObjectFromReader(resp.Body)
 	if err != nil {

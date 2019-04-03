@@ -70,10 +70,10 @@ func (mc *Mixcloud) GetTracks(url string, submitter *gumble.User) ([]interfaces.
 	offset, _ := time.ParseDuration("0s")
 
 	resp, err = http.Get(apiURL)
-	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	v, err = jason.NewObjectFromReader(resp.Body)
 	if err != nil {

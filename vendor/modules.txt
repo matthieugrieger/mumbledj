@@ -49,15 +49,6 @@ github.com/joho/godotenv
 github.com/karrick/godirwalk
 # github.com/konsorten/go-windows-terminal-sequences v1.0.2
 github.com/konsorten/go-windows-terminal-sequences
-# github.com/layeh/gopus v0.0.0-20160824205406-3b3b051ce828
-github.com/layeh/gopus
-# github.com/layeh/gumble v0.0.0-20160711221831-f0a4a2992fa9
-github.com/layeh/gumble/gumble
-github.com/layeh/gumble/gumbleffmpeg
-github.com/layeh/gumble/gumbleutil
-github.com/layeh/gumble/opus
-github.com/layeh/gumble/gumble/MumbleProto
-github.com/layeh/gumble/gumble/varint
 # github.com/magiconair/properties v0.0.0-20160705171333-e2f061ecfdac
 github.com/magiconair/properties
 # github.com/markbates/oncer v0.0.0-20181203154359-bf2de49a0be2
@@ -108,3 +99,12 @@ golang.org/x/tools/internal/fastwalk
 golang.org/x/tools/go/internal/gcimporter
 # gopkg.in/yaml.v2 v2.0.0-20160301204022-a83829b6f129
 gopkg.in/yaml.v2
+# layeh.com/gopus v0.0.0-20161224163843-0ebf989153aa
+layeh.com/gopus
+# layeh.com/gumble v0.0.0-20180508205105-1ea1159c4956
+layeh.com/gumble/gumble
+layeh.com/gumble/gumbleffmpeg
+layeh.com/gumble/gumbleutil
+layeh.com/gumble/opus
+layeh.com/gumble/gumble/MumbleProto
+layeh.com/gumble/gumble/varint

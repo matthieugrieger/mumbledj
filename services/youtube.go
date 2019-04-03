@@ -229,23 +229,38 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User, offset time.Durat
 	}
 	item := items[0]
 	title, _ := item.GetString("snippet", "title")
-	thumbnail, _ := item.GetString("snippet", "thumbnails", "high", "url")
+	thumbnail, _ := item.GetString("snippet", "thumbnails", "medium", "url")
+	// download and convert thumbnail to base64
+	thumbnailBinary, err := http.Get(thumbnail)
+	var thumbnailBase64 string
+	defer thumbnailBinary.Body.Close()
+	if err != nil {
+		logrus.WithField("url", thumbnail).Error("Unable to get thumbnail")
+	} else {
+		respThumbnailBase64Body, err := ioutil.ReadAll(thumbnailBinary.Body)
+		if err != nil {
+			logrus.WithField("url", thumbnail).Error("Unable to read response body")
+		} else {
+			thumbnailBase64 = base64.StdEncoding.EncodeToString(respThumbnailBase64Body)
+		}
+	}
 	author, _ := item.GetString("snippet", "channelTitle")
 	durationString, _ := item.GetString("contentDetails", "duration")
 	durationConverted, _ := duration.FromString(durationString)
 	duration := durationConverted.ToDuration()
 
 	return bot.Track{
-		ID:             id,
-		URL:            "https://youtube.com/watch?v=" + id,
-		Title:          title,
-		Author:         author,
-		Submitter:      submitter.Name,
-		Service:        yt.ReadableName,
-		Filename:       id + ".track",
-		ThumbnailURL:   thumbnail,
-		Duration:       duration,
-		PlaybackOffset: offset,
-		Playlist:       nil,
+		ID:              id,
+		URL:             "https://youtube.com/watch?v=" + id,
+		Title:           title,
+		Author:          author,
+		Submitter:       submitter.Name,
+		Service:         yt.ReadableName,
+		Filename:        id + ".track",
+		ThumbnailURL:    thumbnail,
+		ThumbnailBase64: thumbnailBase64,
+		Duration:        duration,
+		PlaybackOffset:  offset,
+		Playlist:        nil,
 	}, nil
 }

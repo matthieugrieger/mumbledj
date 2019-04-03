@@ -213,7 +213,12 @@ func (q *Queue) Skip() {
 	}
 
 	// Remove all playlist skips if this is the last track of the playlist still in the queue.
-	if playlist := q.Queue[0].GetPlaylist(); playlist != nil {
+	if len(q.Queue) > 0 {
+		playlist := q.Queue[0].GetPlaylist()
+		// woops, it is empty, better return than panic
+		if playlist == nil {
+			return
+		}
 		id := playlist.GetID()
 		playlistIsFinished := true
 

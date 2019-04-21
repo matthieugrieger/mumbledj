@@ -36,6 +36,7 @@ type MumbleDJ struct {
 	Queue             interfaces.Queue
 	Cache             *Cache
 	Skips             interfaces.SkipTracker
+	Ohohoho           interfaces.Ohohoho
 	Commands          []interfaces.Command
 	Version           string
 	Volume            float32
@@ -56,6 +57,7 @@ func NewMumbleDJ() *MumbleDJ {
 		Queue:             NewQueue(),
 		Cache:             NewCache(),
 		Skips:             NewSkipTracker(),
+		Ohohoho:           NewOhohohoPlayer(),
 		Commands:          make([]interfaces.Command, 0),
 		YouTubeDL:         new(YouTubeDL),
 		KeepAlive:         make(chan bool),

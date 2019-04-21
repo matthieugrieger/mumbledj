@@ -22,8 +22,8 @@ import (
 
 	duration "github.com/ChannelMeter/iso8601duration"
 	"github.com/antonholmquist/jason"
-	"layeh.com/gumble/gumble"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 	"reik.pl/mumbledj/bot"
 	"reik.pl/mumbledj/interfaces"
 )

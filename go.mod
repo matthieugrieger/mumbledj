@@ -12,8 +12,7 @@ require (
 	github.com/golang/protobuf v0.0.0-20160629211053-3852dcfda249 // indirect
 	github.com/hashicorp/hcl v0.0.0-20160708141338-364df430845a // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/layeh/gopus v0.0.0-20161224163843-0ebf989153aa // indirect
-	github.com/layeh/gumble v0.0.0-20180508205105-1ea1159c4956 // indirect
+	github.com/layeh/gumble v0.0.0-20180508205105-1ea1159c4956
 	github.com/magiconair/properties v0.0.0-20160705171333-e2f061ecfdac // indirect
 	github.com/mitchellh/mapstructure v0.0.0-20160212031839-d2dd02622084 // indirect
 	github.com/sirupsen/logrus v1.4.0

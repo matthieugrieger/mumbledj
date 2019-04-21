@@ -46,8 +46,6 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/layeh/gopus v0.0.0-20161224163843-0ebf989153aa h1:jCNvcB4EDuQflwb0f9CZ0Xmo1v257PFyYWWlq03DezA=
-github.com/layeh/gopus v0.0.0-20161224163843-0ebf989153aa/go.mod h1:l3amQeFtdEiZjPsh58I61tySy8v+DC9rDxp4nHyG3uM=
 github.com/layeh/gumble v0.0.0-20180508205105-1ea1159c4956 h1:KEnUbfPJta+JG4na6RytZ6HALJGnXwctpQxOI+addbo=
 github.com/layeh/gumble v0.0.0-20180508205105-1ea1159c4956/go.mod h1:fFNDjYExS2/KiVg9/RY+Al8mRNkmcraQ3O4ghyiYWAE=
 github.com/magiconair/properties v0.0.0-20160705171333-e2f061ecfdac h1:/xI6aRnY4BgjSWHDIScMwMzkJdrW0YCy86RvOAzxs9o=
@@ -110,7 +108,5 @@ gopkg.in/yaml.v2 v2.0.0-20160301204022-a83829b6f129 h1:RBgb9aPUbZ9nu66ecQNIBNsA7
 gopkg.in/yaml.v2 v2.0.0-20160301204022-a83829b6f129/go.mod h1:JAlM8MvJe8wmxCU4Bli9HhUf9+ttbYbLASfIpnQbh74=
 layeh.com/gopus v0.0.0-20161224163843-0ebf989153aa h1:WNU4LYsgD2UHxgKgB36mL6iMAMOvr127alafSlgBbiA=
 layeh.com/gopus v0.0.0-20161224163843-0ebf989153aa/go.mod h1:AOef7vHz0+v4sWwJnr0jSyHiX/1NgsMoaxl+rEPz/I0=
-layeh.com/gumble v0.0.0-20160711221831-f0a4a2992fa9 h1:JA3bIxDRFEFKA3oW+RlDDgBTxVjhz4aJEoftOAe9T3g=
-layeh.com/gumble v0.0.0-20160711221831-f0a4a2992fa9/go.mod h1:ZWnZxbDNsg1uFq6Zu7mRdCi7xechwiqWYsFdedd0GUc=
 layeh.com/gumble v0.0.0-20180508205105-1ea1159c4956 h1:TaQ2ECrcAom2bkjRvOxhsUkD6l5iiCJ/++lHHZ42zII=
 layeh.com/gumble v0.0.0-20180508205105-1ea1159c4956/go.mod h1:ZWnZxbDNsg1uFq6Zu7mRdCi7xechwiqWYsFdedd0GUc=

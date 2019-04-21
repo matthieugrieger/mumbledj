@@ -316,6 +316,10 @@ func (q *Queue) PlayCurrent() error {
 	DJ.AudioStream.Play()
 	go func() {
 		DJ.AudioStream.Wait()
+		if DJ.Ohohoho.IsInterrupting() {
+			// do not skip item from queue
+			return
+		}
 		q.Skip()
 	}()
 

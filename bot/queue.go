@@ -336,6 +336,7 @@ func (q *Queue) PauseCurrent() error {
 
 // ResumeCurrent resumes playback of the current audio stream if it exists and is paused.
 func (q *Queue) ResumeCurrent() error {
+	logrus.WithField("djaudio", DJ.AudioStream).Debug("Djaudio state")
 	if DJ.AudioStream == nil {
 		return errors.New("There is no track to resume")
 	}
@@ -352,6 +353,9 @@ func (q *Queue) StopCurrent() error {
 		return errors.New("The audio stream is nil")
 	}
 	DJ.AudioStream.Stop()
+	logrus.WithField("djaudio", DJ.AudioStream).Debug("Djaudio state")
+	DJ.AudioStream = nil
+
 	return nil
 }
 

@@ -17,9 +17,11 @@ import (
 	"sync"
 	"time"
 
-	"layeh.com/gumble/gumbleffmpeg"
-	_ "layeh.com/gumble/opus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumbleffmpeg"
+	// needed for loading opus codes needed by gumble
+	_ "layeh.com/gumble/opus"
 	"reik.pl/mumbledj/interfaces"
 )
 
@@ -215,25 +217,23 @@ func (q *Queue) Skip() {
 	// Remove all playlist skips if this is the last track of the playlist still in the queue.
 	if len(q.Queue) > 0 {
 		playlist := q.Queue[0].GetPlaylist()
-		// woops, it is empty, better return than panic
-		if playlist == nil {
-			return
-		}
-		id := playlist.GetID()
-		playlistIsFinished := true
+		// make sure that it's playlist
+		if playlist != nil {
+			id := playlist.GetID()
+			playlistIsFinished := true
 
-		q.mutex.Unlock()
-		q.Traverse(func(i int, t interfaces.Track) {
-			if i != 0 && t.GetPlaylist() != nil {
-				if t.GetPlaylist().GetID() == id {
-					playlistIsFinished = false
+			q.mutex.Unlock()
+			q.Traverse(func(i int, t interfaces.Track) {
+				if i != 0 && t.GetPlaylist() != nil {
+					if t.GetPlaylist().GetID() == id {
+						playlistIsFinished = false
+					}
 				}
+			})
+			q.mutex.Lock()
+			if playlistIsFinished {
+				DJ.Skips.ResetPlaylistSkips()
 			}
-		})
-		q.mutex.Lock()
-
-		if playlistIsFinished {
-			DJ.Skips.ResetPlaylistSkips()
 		}
 	}
 

@@ -11,8 +11,10 @@ import (
 	"errors"
 	"fmt"
 
-	"layeh.com/gumble/gumble"
+	"github.com/sirupsen/logrus"
+
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 )
 
 // SkipCommand is a command that places a vote to skip the current track.
@@ -49,6 +51,7 @@ func (c *SkipCommand) Execute(user *gumble.User, args ...string) (string, bool, 
 	}
 	if DJ.Queue.GetTrack(0).GetSubmitter() == user.Name {
 		// The user who submitted the track is skipping, this means we skip this track immediately.
+		logrus.WithField("url", DJ.Queue.GetTrack(0).GetURL()).Info("Skipping")
 		DJ.Queue.StopCurrent()
 		return fmt.Sprintf(viper.GetString("commands.skip.messages.submitter_voted"), user.Name), false, nil
 	}

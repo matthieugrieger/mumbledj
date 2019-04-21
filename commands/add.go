@@ -10,15 +10,18 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"sync"
 
+	"github.com/spf13/viper"
 	"layeh.com/gumble/gumble"
 	"reik.pl/mumbledj/interfaces"
-	"github.com/spf13/viper"
 )
 
 // AddCommand is a command that adds an audio track associated with a supported
 // URL to the queue.
-type AddCommand struct{}
+type AddCommand struct {
+	mutex sync.Mutex
+}
 
 // Aliases returns the current aliases for the command.
 func (c *AddCommand) Aliases() []string {
@@ -74,12 +77,14 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 	numTooLong := 0
 	numAdded := 0
 	for _, track := range allTracks {
+		c.mutex.Lock()
 		if err = DJ.Queue.AppendTrack(track); err != nil {
 			numTooLong++
 		} else {
 			numAdded++
 			lastTrackAdded = track
 		}
+		c.mutex.Unlock()
 	}
 
 	if numAdded == 0 {

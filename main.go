@@ -118,7 +118,8 @@ func main() {
 
 	app.Action = func(c *cli.Context) error {
 		if c.Bool("debug") {
-			logrus.SetLevel(logrus.InfoLevel)
+			logrus.SetLevel(logrus.DebugLevel)
+			//logrus.SetReportCaller(true)
 		}
 
 		for _, configValue := range viper.AllKeys() {

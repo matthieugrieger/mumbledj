@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"layeh.com/gumble/gumbleffmpeg"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 )

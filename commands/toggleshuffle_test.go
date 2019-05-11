@@ -10,7 +10,7 @@ package commands
 import (
 	"testing"
 
-	"reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/bot"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 )

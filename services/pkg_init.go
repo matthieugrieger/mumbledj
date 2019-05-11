@@ -8,8 +8,8 @@
 package services
 
 import (
-	"reik.pl/mumbledj/bot"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // DJ is an injected MumbleDJ struct.

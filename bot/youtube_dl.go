@@ -14,7 +14,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // YouTubeDL is a struct that gathers all methods related to the youtube-dl

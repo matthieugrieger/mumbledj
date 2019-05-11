@@ -22,7 +22,7 @@ import (
 	"layeh.com/gumble/gumbleffmpeg"
 	// needed for loading opus codes needed by gumble
 	_ "layeh.com/gumble/opus"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // Queue holds the audio queue itself along with useful methods for

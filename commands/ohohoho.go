@@ -11,7 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/bot"
 	"strconv"
 	"strings"
 	"sync"

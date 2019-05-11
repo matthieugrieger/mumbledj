@@ -14,7 +14,7 @@ import (
 	"os"
 	"path"
 	"regexp"
-	"reik.pl/mumbledj/asset"
+	"go.reik.pl/mumbledj/asset"
 	"strconv"
 	"sync"
 	"time"

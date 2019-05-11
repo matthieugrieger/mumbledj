@@ -8,9 +8,9 @@
 package commands
 
 import (
-	"reik.pl/mumbledj/asset"
-	"reik.pl/mumbledj/bot"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/asset"
+	"go.reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // DJ is an injected MumbleDJ struct.

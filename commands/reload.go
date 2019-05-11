@@ -9,7 +9,7 @@ package commands
 
 import (
 	"layeh.com/gumble/gumble"
-	"reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/bot"
 	"github.com/spf13/viper"
 )
 

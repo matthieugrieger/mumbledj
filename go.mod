@@ -1,4 +1,4 @@
-module reik.pl/mumbledj
+module go.reik.pl/mumbledj
 
 go 1.12
 

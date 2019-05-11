@@ -12,7 +12,7 @@ import (
 	"fmt"
 
 	"layeh.com/gumble/gumble"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
 )
 

@@ -14,7 +14,7 @@ import (
 
 	"github.com/spf13/viper"
 	"layeh.com/gumble/gumble"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // AddCommand is a command that adds an audio track associated with a supported

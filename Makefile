@@ -11,7 +11,7 @@ test: ## Runs unit tests for MumbleDJ.
 
 .PHONY: coverage
 coverage: ## Runs coverage tests for MumbleDJ.
-	@env GO15VENDOREXPERIMENT="1" overalls -project=reik.pl/mumbledj -covermode=atomic
+	@env GO15VENDOREXPERIMENT="1" overalls -project=go.reik.pl/mumbledj -covermode=atomic
 	@mv overalls.coverprofile coverage.txt
 
 .PHONY: clean

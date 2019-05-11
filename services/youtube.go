@@ -24,8 +24,8 @@ import (
 	"github.com/antonholmquist/jason"
 	"github.com/spf13/viper"
 	"layeh.com/gumble/gumble"
-	"reik.pl/mumbledj/bot"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // YouTube is a wrapper around the YouTube Data API.

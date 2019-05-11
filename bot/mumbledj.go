@@ -23,7 +23,7 @@ import (
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleffmpeg"
 	"layeh.com/gumble/gumbleutil"
-	"reik.pl/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // MumbleDJ is a struct that keeps track of all aspects of the bot's state.

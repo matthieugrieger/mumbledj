@@ -1,17 +1,17 @@
 dirs = ./interfaces/... ./commands/... ./services/... ./bot/... .
 
-all: mumbledj
+all: asset mumbledj
 
 mumbledj: ## Default action. Builds MumbleDJ.
-	@env GO15VENDOREXPERIMENT="1" go build .
+	@env go build .
 
 .PHONY: test
 test: ## Runs unit tests for MumbleDJ.
-	@env GO15VENDOREXPERIMENT="1" go test $(dirs)
+	@env go test $(dirs)
 
 .PHONY: coverage
 coverage: ## Runs coverage tests for MumbleDJ.
-	@env GO15VENDOREXPERIMENT="1" overalls -project=go.reik.pl/mumbledj -covermode=atomic
+	@env overalls -project=go.reik.pl/mumbledj -covermode=atomic
 	@mv overalls.coverprofile coverage.txt
 
 .PHONY: clean
@@ -27,10 +27,10 @@ dist: ## Performs cross-platform builds via gox for multiple Linux platforms.
 	@go get -u github.com/mitchellh/gox
 	@gox -cgo -osarch="linux/amd64 linux/386"
 
-.PHONY: bindata
-bindata: ## Regenerates bindata.go with an updated configuration file.
-	@go get -u github.com/jteeuwen/go-bindata/...
-	@go-bindata config.yaml
+.PHONY: asset
+asset: ## Regenerates assets which will be bundled with binary
+	@go get -u github.com/gobuffalo/packr/v2
+	@packr2
 
 .PHONY: help
 help: ## Shows this helptext.

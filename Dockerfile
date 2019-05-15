@@ -1,16 +1,14 @@
-FROM alpine:3.3
+FROM golang:1.12-alpine3.9
 
-ENV GOPATH=/
+ENV GO111MODULE=on
 
-RUN apk add --update ca-certificates go ffmpeg make build-base opus-dev python aria2
+RUN apk add --update ca-certificates ffmpeg make git build-base opus-dev python aria2
 RUN apk upgrade
 
 RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /bin/youtube-dl && chmod a+x /bin/youtube-dl
 
-COPY . /src/go.reik.pl/mumbledj
-COPY config.yaml /root/.config/mumbledj/config.yaml
-
-WORKDIR /src/go.reik.pl/mumbledj
+RUN git clone https://github.com/Reikion/mumbledj.git $GOPATH/src/go.reik.pl/mumbledj
+WORKDIR $GOPATH/src/go.reik.pl/mumbledj
 
 RUN make
 RUN make install

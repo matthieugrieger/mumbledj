@@ -12,6 +12,8 @@ WORKDIR $GOPATH/src/go.reik.pl/mumbledj
 
 RUN make
 RUN make install
+COPY asset/config.yaml /root/.config/mumbledj/config.yaml
+
 RUN apk del go make build-base && rm -rf /var/cache/apk/*
 
 ENTRYPOINT ["/usr/local/bin/mumbledj"]

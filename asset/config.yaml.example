@@ -136,7 +136,6 @@ admins:
     # server so that imposters cannot execute admin commands.
     names:
         - "SuperUser"
-        - "unnamed"
 
 
 commands:

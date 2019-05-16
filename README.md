@@ -40,9 +40,9 @@
 * [`aria2`](https://aria2.github.io/) if you plan on using services that throttle download speeds (like Mixcloud)
 
 **If installing via `go install` or from source, the following must be installed:**
-* [Go 1.5+](https://golang.org)
+* [Go 1.11+](https://golang.org)
   * __NOTE__: Extra installation steps are required for a working Go installation. Once Go is installed, type `go help gopath` for more information.
-  * If the repositories for your distro contain a version of Go older than 1.5, try using [`gvm`](https://github.com/moovweb/gvm) to install Go 1.5 or newer.
+  * If the repositories for your distro contain a version of Go older than 1.11, try using [`gvm`](https://github.com/moovweb/gvm) to install Go 1.11 or newer.
 
 #### YouTube API Key
 A YouTube API key must be present in your configuration file in order to use the YouTube service within the bot. Below is a guide for retrieving an API key:
@@ -69,28 +69,10 @@ A SoundCloud client ID must be present in your configuration file in order to us
 **3)** You should now see that a client ID has been generated. Copy/paste this ID (NOT the client secret) into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
 
 
-### Via `go get` (recommended)
-After verifying that the [requirements](#requirements) are installed, simply issue the following command:
-```
-go get -u github.com/matthieugrieger/mumbledj
-```
-
-This should place a binary in `$GOPATH/bin` that can be used to start the bot.
-
-**NOTE:** If using Go 1.5, you MUST execute the following for `go get` to work:
-```
-export GO15VENDOREXPERIMENT=1
-```
-
-### Pre-compiled Binaries (easiest)
-Pre-compiled binaries are provided for convenience. Overall, I do not recommend using these unless you cannot get `go install` to work properly. Binaries compiled on your own machine are likely more efficient as these binaries are cross-compiled from a 64-bit Linux system.
-
-After verifying that the [requirements](#requirements) are installed, simply visit the [releases page](https://github.com/matthieugrieger/mumbledj/releases) and download the appropriate binary for your platform.
-
-### From Source
+### From Source (recommended)
 First, clone the MumbleDJ repository to your machine:
 ```
-git clone https://github.com/matthieugrieger/mumbledj.git
+git clone https://github.com/reikion/mumbledj
 ```
 
 Install the required software as described in the [requirements section](#requirements), and execute the following:
@@ -103,13 +85,19 @@ This will place a compiled `mumbledj` binary in the cloned directory if successf
 sudo make install
 ```
 
+### Pre-compiled Binaries (easiest)
+Pre-compiled binaries are provided for convenience. Overall, I do not recommend using these unless you cannot get `go install` to work properly. Binaries compiled on your own machine are likely more efficient as these binaries are cross-compiled from a 64-bit Linux system.
+
+After verifying that the [requirements](#requirements) are installed, simply visit the [releases page](https://github.com/reikion/mumbledj/releases) and download the appropriate binary for your platform.
+
+
 ### Docker
 
 You can also use [Docker](https://www.docker.com) to run MumbleDJ.
 
 First you need to clone the MumbleDJ repository to your machine:
 ```
-git clone https://github.com/matthieugrieger/mumbledj.git
+git clone https://github.com/reikion/mumbledj
 ```
 
 Assuming you have [Docker installed](https://www.docker.com/products/docker), you will have to build the image:
@@ -127,11 +115,6 @@ In order to run the process as a daemon and restart it automatically on reboot y
 docker run -d --restart=unless-stopped --name=mumbledj mumbledj --server=SERVER --api_keys.youtube=YOUR_YOUTUBE_API_KEY --api_keys.soundcloud=YOUR_SOUNDCLOUD_API_KEY
 ```
 
-You can also install Docker on a [Raspberry Pi](https://www.raspberrypi.org/) for instance with [hypriot](http://blog.hypriot.com/getting-started-with-docker-on-your-arm-device/) or with [archlinux](https://archlinuxarm.org/packages/arm/docker). You just need to build the ARM image:
-```
-docker build -f raspberry.Dockerfile -t mumbledj .
-```
-
 ## Usage
 MumbleDJ is a compiled program that is executed via a terminal.
 
@@ -145,11 +128,11 @@ USAGE:
    mumbledj [global options] command [command options] [arguments...]
 
 VERSION:
-   v3.1.0
+   v3.3.1
 
 COMMANDS:
 GLOBAL OPTIONS:
-   --config value, -c value		location of MumbleDJ configuration file (default: "/home/matthieu/.config/mumbledj/config.yaml")
+   --config value, -c value		location of MumbleDJ configuration file (default: "$HOME/.config/mumbledj/config.yaml")
    --server value, -s value		address of Mumble server to connect to (default: "127.0.0.1")
    --port value, -o value		port of Mumble server to connect to (default: "64738")
    --username value, -u value		username for the bot (default: "MumbleDJ")
@@ -360,10 +343,13 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 
 ## Contributing
 
-Contributions to MumbleDJ are always welcome! Please see the [contribution guidelines](https://github.com/matthieugrieger/mumbledj/blob/master/CONTRIBUTING.md) for instructions and suggestions!
+Contributions to MumbleDJ are always welcome! 
 
 ## Author
 [Matthieu Grieger](https://github.com/matthieugrieger)
+
+## Maintainer
+[Reikion](https://github.com/Reikion)
 
 ## License
 ```

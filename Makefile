@@ -29,7 +29,7 @@ dist: ## Performs cross-platform builds via gox for multiple Linux platforms.
 
 .PHONY: asset
 asset: ## Regenerates assets which will be bundled with binary
-	@go get -u github.com/gobuffalo/packr/v2/packr2
+	@go get github.com/gobuffalo/packr/v2/packr2
 	@packr2
 
 .PHONY: help

@@ -10,8 +10,8 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"go.reik.pl/mumbledj/bot"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -92,6 +92,7 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 	}
 
 	if len(args) == 2 {
+		/* uncomment for additional debug remote commands for channels communication
 		if args[0] == "s" {
 			if args[1] == "stop" {
 				logrus.Debugln("Stopping via cmd...")
@@ -104,18 +105,20 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 				return "Emptying stop...", true, nil
 			}
 		}
+		*/
 		howMany, err := strconv.Atoi(args[1])
-		// second argument is empty, probably space, play once
 		if args[1] == "" {
+			// second argument is empty, probably space, play once
 			err := DJ.Ohohoho.PlaySample(args[0], 1)
 			if err != nil {
 				return "", true, err
 			}
 		} else if err != nil || howMany < 1 || howMany > 10 {
+			// second argument is number, restrict how many random playes can user request at once
 			return "", true, errors.New(viper.GetString("commands.ohohoho.messages.how_many_times_error"))
 		} else {
+			// second argument is number and is in allowed range of how many random samples can be played
 			err := DJ.Ohohoho.PlaySample(args[0], howMany)
-			//msg, pub, err := c.waitForRandomOhohoho(args[0])
 			if err != nil {
 				return "", true, err
 			}

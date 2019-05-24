@@ -2,7 +2,7 @@ FROM golang:1.12-alpine3.9
 
 ENV GO111MODULE=on
 
-RUN apk add --update ca-certificates ffmpeg make git build-base opus-dev python aria2
+RUN apk add --update ca-certificates ffmpeg make git build-base opus-dev python aria2 openssl
 RUN apk upgrade
 
 RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /bin/youtube-dl && chmod a+x /bin/youtube-dl

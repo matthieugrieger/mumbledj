@@ -38,10 +38,10 @@
 * [`youtube-dl`](https://rg3.github.io/youtube-dl/download.html)
 * [`ffmpeg`](https://ffmpeg.org) OR [`avconv`](https://libav.org)
 * [`aria2`](https://aria2.github.io/) if you plan on using services that throttle download speeds (like Mixcloud)
+* [`openssl`](https://www.openssl.org/) if you plan using p12 certificates for authentication
 
 **If installing via `go install` or from source, the following must be installed:**
 * [Go 1.11+](https://golang.org)
-  * __NOTE__: Extra installation steps are required for a working Go installation. Once Go is installed, type `go help gopath` for more information.
   * If the repositories for your distro contain a version of Go older than 1.11, try using [`gvm`](https://github.com/moovweb/gvm) to install Go 1.11 or newer.
 
 #### YouTube API Key

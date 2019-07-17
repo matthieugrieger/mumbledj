@@ -15,7 +15,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
-	"go.reik.pl/mumbledj/asset"
+	"go.reik.pl/mumbledj/assets"
 	"go.reik.pl/mumbledj/bot"
 	"go.reik.pl/mumbledj/commands"
 	"go.reik.pl/mumbledj/services"
@@ -25,7 +25,7 @@ import (
 var DJ = bot.NewMumbleDJ()
 
 // Assets is global variable that allows access to config and sound assets
-var Assets = asset.Assets
+var Assets = assets.Assets
 
 func init() {
 	DJ.Commands = commands.Commands

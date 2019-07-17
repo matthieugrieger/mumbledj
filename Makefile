@@ -1,8 +1,8 @@
 dirs = ./interfaces/... ./commands/... ./services/... ./bot/... .
 
-all: asset mumbledj
+all: assets build ## Default action. Compile resources and builds MumbleDJ.
 
-mumbledj: ## Default action. Builds MumbleDJ.
+build: *.go  ## Builds MumbleDJ.
 	@env go build .
 
 .PHONY: test
@@ -27,8 +27,8 @@ dist: ## Performs cross-platform builds via gox for multiple Linux platforms.
 	@go get -u github.com/mitchellh/gox
 	@gox -cgo -osarch="linux/amd64 linux/386"
 
-.PHONY: asset
-asset: ## Regenerates assets which will be bundled with binary
+.PHONY: assets
+assets: ## Regenerates assets which will be bundled with binary
 	@go get github.com/gobuffalo/packr/v2/packr2
 	@packr2
 

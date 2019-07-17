@@ -8,7 +8,7 @@
 package commands
 
 import (
-	"go.reik.pl/mumbledj/asset"
+	"go.reik.pl/mumbledj/assets"
 	"go.reik.pl/mumbledj/bot"
 	"go.reik.pl/mumbledj/interfaces"
 )
@@ -17,7 +17,7 @@ import (
 var DJ *bot.MumbleDJ
 
 // Assets embedded in binary
-var Assets = asset.Assets
+var Assets = assets.Assets
 
 // Commands is a slice of all enabled commands.
 var Commands []interfaces.Command

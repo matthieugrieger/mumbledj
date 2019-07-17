@@ -14,10 +14,11 @@ import (
 	"os"
 	"path"
 	"regexp"
-	"go.reik.pl/mumbledj/asset"
 	"strconv"
 	"sync"
 	"time"
+
+	"go.reik.pl/mumbledj/assets"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -25,7 +26,7 @@ import (
 )
 
 // Assets embedded in binary
-var Assets = asset.Assets
+var Assets = assets.Assets
 
 // After init() samplesList contains folders name and number of files in folder
 var samplesList = map[string]int{}

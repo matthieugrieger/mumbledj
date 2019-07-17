@@ -55,7 +55,6 @@ var (
 	errAnotherSteamActive  = errors.New("Stream is playing already")
 	errSampleNotFound      = errors.New("Sample not found")
 	errInternalSampleError = errors.New("Internal sample error")
-	ohohohoPlayerInstance  *OhohohoPlayer
 	once                   sync.Once
 )
 

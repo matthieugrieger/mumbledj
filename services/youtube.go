@@ -14,18 +14,20 @@ import (
 	"io/ioutil"
 	"math"
 	"net/http"
+	neturl "net/url"
 	"regexp"
-	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
 
+	"unicode"
+
 	duration "github.com/ChannelMeter/iso8601duration"
 	"github.com/antonholmquist/jason"
 	"github.com/spf13/viper"
-	"layeh.com/gumble/gumble"
 	"go.reik.pl/mumbledj/bot"
 	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
 )
 
 // YouTube is a wrapper around the YouTube Data API.
@@ -43,7 +45,7 @@ func NewYouTubeService() *YouTube {
 			TrackRegex: []*regexp.Regexp{
 				regexp.MustCompile(`https?:\/\/www.youtube.com\/watch\?v=(?P<id>[\w-]+)(?P<timestamp>\&t=\d*m?\d*s?)?`),
 				regexp.MustCompile(`https?:\/\/youtube.com\/watch\?v=(?P<id>[\w-]+)(?P<timestamp>\&t=\d*m?\d*s?)?`),
-				regexp.MustCompile(`https?:\/\/youtu.be\/(?P<id>[\w-]+)(?P<timestamp>\?t=\d*m?\d*s?)?`),
+				regexp.MustCompile(`https?:\/\/youtu.be\/(?P<id>[\w-]+)(\?t=(?P<timestamp>\d*m?\d*s?))?`),
 				regexp.MustCompile(`https?:\/\/youtube.com\/v\/(?P<id>[\w-]+)(?P<timestamp>\?t=\d*m?\d*s?)?`),
 				regexp.MustCompile(`https?:\/\/www.youtube.com\/v\/(?P<id>[\w-]+)(?P<timestamp>\?t=\d*m?\d*s?)?`),
 			},
@@ -97,6 +99,7 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 		playlistURL      string
 		playlistItemsURL string
 		id               string
+		timestamp        string
 		err              error
 		resp             *http.Response
 		v                *jason.Object
@@ -105,11 +108,10 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 	)
 
 	dummyOffset, _ := time.ParseDuration("0s")
-	urlSplit := strings.Split(url, "?t=")
 
 	playlistURL = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s"
 	playlistItemsURL = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=%s&maxResults=%d&key=%s&pageToken=%s"
-	id, err = yt.getID(urlSplit[0])
+	id, err = yt.getID(url)
 	if err != nil {
 		return nil, err
 	}
@@ -192,9 +194,20 @@ func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.T
 	}
 
 	// Submitter added a track!
+
+	// Set correct offset of YouTube video
 	offset := dummyOffset
-	if len(urlSplit) == 2 {
-		offset, _ = time.ParseDuration(urlSplit[1])
+	u, _ := neturl.Parse(url)
+	q := u.Query()
+	timestamp = q.Get("t")
+
+	if timestamp != "" {
+		lastChar := len(timestamp) - 1
+		if unicode.IsDigit(rune(timestamp[lastChar])) {
+			timestamp += "s"
+		}
+		// time.ParseDuration returns offset 0 if err happen
+		offset, _ = time.ParseDuration(timestamp)
 	}
 
 	track, err = yt.getTrack(id, submitter, offset)

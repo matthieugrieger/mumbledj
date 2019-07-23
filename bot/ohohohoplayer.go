@@ -107,10 +107,10 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 		offset time.Duration
 	)
 
-	// needed for PlaySample method signalling
-	// if goroutine playing sample finished its work, nil is sent via done channel
-	// else if error occured work is interrupted and err is sent via done channel
-	// it isn't used if new sample or stop has been requested by uesr
+	// Needed for signalling between this and PlaySample method.
+	// If goroutine playing sample finish its work, nil is sent via done channel,
+	// else if error occured, work is interrupted and err is sent via done channel.
+	// It isn't used if new sample or stop has been requested by user.
 	done := make(chan error)
 
 	if DJ.AudioStream != nil {
@@ -149,6 +149,7 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 
 	c.ohohohoPlaying = true
 
+	// Sample player goroutine
 	go func() {
 		sampleName := sampleSetName
 		for i := 0; i < howMany; i++ {
@@ -166,6 +167,9 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 				done <- err
 				return
 			}
+			// Blocking call until whole sample is played.
+			// If. DJ.AudioStream.Stop() is called during playback, this loop proceeds to next interation
+			// and don't return error.
 			err = c.waitForRandomOhohoho(sample)
 			if err != nil {
 				done <- err
@@ -182,7 +186,7 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 
 }
 
-// PlaySample plays random file from folder given by user as argument, which is located in asset directory
+// PlaySample plays random file from folder given by user as argument, which is located in assets directory
 func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 	err := c.isSampleSetExisting(sampleName)
 	if err != nil {
@@ -190,7 +194,10 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 	}
 
 	source, offset, done := c.prepareSample(sampleName, howMany)
+	// Wait until sample player end its playing.
 	select {
+	// Oops, somebody requested another sample while previous is still playing.
+	// Cancel playing of previous sample.
 	case <-c.stopPlaying:
 		logrus.Debugln("Informing that samplePlayer should stop its work")
 		// we need non-blocking request prepared, because at start of every function go scheduler can make context switch
@@ -200,13 +207,15 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 		// block until sample Player goroutine receive signal
 		select {
 		case c.stopSamplePlayer <- struct{}{}:
-			// it hasn't blocked, so sample Player goroutine received message already
-			// so clear channel
+			// It's possible to send message in unblockable way,
+			// so sample player goroutine has received message already.
+			// Clear channel for next function execution.
 			<-c.stopSamplePlayer
 		default:
-			// it will block, so block
+			// We can't send message in unblockable way,
+			// Block until sample player proceeds its message.
 			c.stopSamplePlayer <- struct{}{}
-			// we need to consume what we produced
+			// We need to consume what we produced to prepare function for next execution.
 			<-c.stopSamplePlayer
 		}
 
@@ -215,6 +224,7 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 		logrus.Debugln("Informing about previous track for unblocking")
 		c.stopPlaying <- trackStreamInfo{source, offset}
 		return nil
+	// Sample has finished its playing. Check if error occured.
 	case err = <-done:
 		if err != nil {
 			switch err {

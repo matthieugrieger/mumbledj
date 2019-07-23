@@ -94,6 +94,11 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 	if len(args) == 2 {
 		/* uncomment for additional debug remote commands for channels communication
 		if args[0] == "s" {
+			if args[1] == "list" {
+				logrus.Debugln("Listing samples via cmd...")
+				f := strings.Join(Assets.List(), "<br/>")
+				return "Listing samples...<br/>" + f, true, nil
+			}
 			if args[1] == "stop" {
 				logrus.Debugln("Stopping via cmd...")
 				DJ.Ohohoho.Stop()

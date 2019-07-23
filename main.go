@@ -119,6 +119,9 @@ func main() {
 	app.Action = func(c *cli.Context) error {
 		if c.Bool("debug") {
 			logrus.SetLevel(logrus.DebugLevel)
+			//Uncomment to show debug messages from Packr2
+			//plog.Logger = logger.New(logger.DebugLevel)
+			//Uncomment to show file and line number of log call
 			//logrus.SetReportCaller(true)
 		}
 

@@ -22,8 +22,8 @@ import (
 
 	"unicode"
 
-	duration "github.com/ChannelMeter/iso8601duration"
 	"github.com/antonholmquist/jason"
+	duration "github.com/channelmeter/iso8601duration"
 	"github.com/spf13/viper"
 	"go.reik.pl/mumbledj/bot"
 	"go.reik.pl/mumbledj/interfaces"

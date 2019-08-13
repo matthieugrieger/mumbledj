@@ -14,7 +14,7 @@ require (
 	github.com/gobuffalo/logger v1.0.0
 	github.com/gobuffalo/mapi v1.1.0
 	github.com/gobuffalo/packd v0.3.0
-	github.com/gobuffalo/packr/v2 v2.5.1
+	github.com/gobuffalo/packr/v2 v2.5.2
 	github.com/golang/protobuf v1.3.1
 	github.com/hashicorp/hcl v1.0.0
 	github.com/layeh/gumble v0.0.0-20180508205105-1ea1159c4956
@@ -36,7 +36,7 @@ require (
 	github.com/urfave/cli v1.17.0
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
 	golang.org/x/sys v0.0.0-20190621203818-d432491b9138
-	golang.org/x/tools v0.0.0-20190624180213-70d37148ca0c
+	golang.org/x/tools v0.0.0-20190628153133-6cdbf07be9d0
 	gopkg.in/yaml.v2 v2.2.2
 	layeh.com/gopus v0.0.0-20161224163843-0ebf989153aa
 	layeh.com/gumble v0.0.0-20180508205105-1ea1159c4956

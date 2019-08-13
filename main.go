@@ -142,7 +142,12 @@ func main() {
 				"error": err.Error(),
 			}).Warnln("An error occurred while reading the configuration file. Using default configuration...")
 			if _, err := os.Stat(c.String("config")); os.IsNotExist(err) {
+				logrus.Warnln("Creating default configuration file")
 				createConfigWhenNotExists()
+				// If we fail to re-read embedded config, true defaults will be used,
+				// which are set in bot/config.go file. So we can safely ignore error here.
+				logrus.Warnln("Re-reading configuration file")
+				_ = viper.ReadInConfig()
 			}
 		} else {
 			if duplicateErr := bot.CheckForDuplicateAliases(); duplicateErr != nil {

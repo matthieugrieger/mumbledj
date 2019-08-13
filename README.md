@@ -13,6 +13,7 @@
   * [Pre-compiled Binaries](#pre-compiled-binaries-easiest)
   * [From Source](#from-source)
   * [Docker](#docker)
+* [Sample player](#sample-player)
 * [Usage](#usage)
 * [Commands](#commands)
 * [Contributing](#contributing)
@@ -24,6 +25,7 @@
 * Plays audio from many media websites, including YouTube, SoundCloud, and Mixcloud.
 * Supports playlists and individual videos/tracks.
 * Displays metadata in the text chat whenever a new track starts playing.
+* Plays audio samples embedded in binary and from filesystem [More Info](#sample-player)
 * Incredibly customizable. Nearly everything is able to be tweaked via configuration files (by default located at `$HOME/.config/mumbledj/config.yaml`).
 * A large array of [commands](#commands) that perform a wide variety of functions.
 * Built-in vote-skipping.
@@ -31,7 +33,7 @@
 * Built-in play/pause/volume control.
 
 ## Installation
-**IMPORTANT NOTE:** MumbleDJ is only tested and developed for Linux systems. Support will not be given for non-Linux systems if problems are encountered.
+**IMPORTANT NOTE:** MumbleDJ is only tested and developed for Linux systems. If something doesn't work in Windows and the others OS, create an issue please.
 
 ### Requirements
 **All MumbleDJ installations must also have the following installed:**
@@ -57,7 +59,7 @@ A YouTube API key must be present in your configuration file in order to use the
 
 **5)** Add the IP address of the machine MumbleDJ will run on in the box that appears (this is optional, but improves security). Click "Create".
 
-**6)** You should now see that an API key has been generated. Copy/paste this API key into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
+**6)** You should now see that an API key has been generated. Copy/paste this API key into the configuration file located at `$HOME/.config/mumbledj/config.yaml`.
 
 #### SoundCloud API Key
 A SoundCloud client ID must be present in your configuration file in order to use the SoundCloud service within the bot. Below is a guide for retrieving a client ID:
@@ -66,7 +68,7 @@ A SoundCloud client ID must be present in your configuration file in order to us
 
 **2)** Create a new app: https://soundcloud.com/you/apps/new.
 
-**3)** You should now see that a client ID has been generated. Copy/paste this ID (NOT the client secret) into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
+**3)** You should now see that a client ID has been generated. Copy/paste this ID (NOT the client secret) into the configuration file located at `$HOME/.config/mumbledj/config.yaml`.
 
 
 ### From Source (recommended)
@@ -114,6 +116,48 @@ In order to run the process as a daemon and restart it automatically on reboot y
 ```
 docker run -d --restart=unless-stopped --name=mumbledj mumbledj --server=SERVER --api_keys.youtube=YOUR_YOUTUBE_API_KEY --api_keys.soundcloud=YOUR_SOUNDCLOUD_API_KEY
 ```
+## Default config
+You can embed your config.yaml into binary if you plan to compile Mumbledj from source. Please note that everybody, who can open Mumbledj
+binary in text editor can also read your API secrets!
+To embed default config copy `assets/config.yaml.example` to `assets/assets/config.yaml` and customize as needed.
+
+## Sample player
+MumbleDJ allows to play random flac samples from given category embedded in binary and from filesystem.
+To embed samples:
+   * create `assets` directory in source code `assets` directory
+   * create category folder for samples, i.e. `wololo`
+   * put sample in that folder named in format `1.flac`, `2.flac` etc.
+
+To play samples from filesystem you need the same layout of files, but you need drop your assets directory in current working directory of
+MumbleDJ.
+
+Example of structure of files in MumbleDJ source code:
+```
+assets
+├── assets
+│   ├── config.yaml
+│   ├── nani
+│   │   ├── 1.flac
+│   └── wololo
+│       ├── 1.flac
+│       └── 2.flac
+├── assets.go
+└── config.yaml.example
+```
+
+Example of structure of files in filesystem. MumbleDJ has been started from `/home/mumbledj`
+```
+/home/mumbledj/assets
+               ├── nani
+               │   ├── 1.flac
+               └── wololo
+                  ├── 1.flac
+                  └── 2.flac
+```
+
+To play sample you need to use [ohohoho command](#ohohoho). 
+Please note that MumbleDJ needs to be restarted to discover new category created in filesystem.
+
 
 ## Usage
 MumbleDJ is a compiled program that is executed via a terminal.
@@ -128,7 +172,7 @@ USAGE:
    mumbledj [global options] command [command options] [arguments...]
 
 VERSION:
-   v3.3.1
+   v3.4.0
 
 COMMANDS:
 GLOBAL OPTIONS:
@@ -256,6 +300,17 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 * __Arguments__: None
 * __Admin-only by default__: No
 * __Example__: `!numtracks`
+
+### ohohoho
+* __Description__: "Sample player of ohohoho and the others samples"
+* __Default Aliases__: ohohoho, oh
+* __Arguments__:
+   * None to list categories
+   * category name
+   * (Optional) how many times to play random samples from given category
+* __Admin-only by default__: No
+* __Example__: `!oh wololo 10`
+
 
 ### pause
 * __Description__: Pauses audio playback.

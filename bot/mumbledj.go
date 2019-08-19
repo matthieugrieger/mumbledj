@@ -20,10 +20,10 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"go.reik.pl/mumbledj/interfaces"
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleffmpeg"
 	"layeh.com/gumble/gumbleutil"
-	"go.reik.pl/mumbledj/interfaces"
 )
 
 // MumbleDJ is a struct that keeps track of all aspects of the bot's state.
@@ -166,7 +166,7 @@ func (dj *MumbleDJ) OnUserChange(e *gumble.UserChangeEvent) {
 // to send the message.
 func (dj *MumbleDJ) SendPrivateMessage(user *gumble.User, message string) {
 	dj.Client.Do(func() {
-		if targetUser := dj.Client.Self.Channel.Users.Find(user.Name); targetUser != nil {
+		if targetUser := dj.Client.Users.Find(user.Name); targetUser != nil {
 			targetUser.Send(message)
 		}
 	})

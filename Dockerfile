@@ -22,7 +22,7 @@ RUN apk add --update ffmpeg openssl aria2 python3 && \
 COPY --from=builder /usr/local/bin/mumbledj /usr/local/bin/mumbledj
 
 # Drop to user level privileges
-RUN addgroup -S mumbledj && adduser -S mumbledj -G mumbledj
+RUN addgroup -S mumbledj && adduser -S mumbledj -G mumbledj && chmod 750 /home/mumbledj
 WORKDIR /home/mumbledj
 USER mumbledj
 RUN mkdir -p .config/mumbledj && \

@@ -14,6 +14,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"os"
+	"path"
 )
 
 // PerformStartupChecks executes the suite of startup checks that are run before the bot
@@ -62,6 +64,13 @@ func PerformStartupChecks() {
 	if err := checkOpenSSLInstallation(); err != nil {
 		logrus.Warnln("openssl is not installed or is not discoverable in $PATH. p12 certificate files will not work.")
 	}
+
+	if viper.GetBool("cache.enabled") {
+		if err := checkCacheFolder(); err != nil {
+			viper.Set("cache.enabled", false)
+			logrus.WithField("err", err).Warnln("Error occured during check of cache folder. Caching is disabled.")
+		}
+	}
 }
 
 func checkYouTubeDLInstallation() error {
@@ -106,5 +115,18 @@ func checkOpenSSLInstallation() error {
 	if err := command.Run(); err != nil {
 		return errors.New("openssl is not properly installed")
 	}
+	return nil
+}
+
+func checkCacheFolder() error {
+	logrus.Infoln("Checking if cache folder writable")
+	if _, err := os.Stat(os.ExpandEnv(viper.GetString("cache.directory"))); os.IsNotExist(err) || os.IsPermission(err) {
+		return err
+	}
+	cacheDir, err := os.Create(path.Join(os.ExpandEnv(viper.GetString("cache.directory")), "test_file"))
+	if err != nil {
+		return err
+	}
+	cacheDir.Close()
 	return nil
 }

@@ -216,9 +216,11 @@ func (dj *MumbleDJ) Connect() error {
 
 	// Add user p12 cert if needed.
 	if viper.GetString("connection.user_p12") != "" {
-		if _, err := os.Stat(viper.GetString("connection.user_p12")); os.IsNotExist(err) {
+		userP12, err := os.Open(viper.GetString("connection.user_p12"))
+		if os.IsNotExist(err) || os.IsPermission(err) {
 			return err
 		}
+		userP12.Close()
 
 		// Create temporary directory for converted p12 file.
 		dir, err := ioutil.TempDir("", "mumbledj")

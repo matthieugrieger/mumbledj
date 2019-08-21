@@ -95,6 +95,7 @@ func (dj *MumbleDJ) OnDisconnect(e *gumble.DisconnectEvent) {
 
 		success := false
 		for retries := 0; retries < viper.GetInt("connection.retry_attempts"); retries++ {
+			time.Sleep(time.Duration(viper.GetInt("connection.retry_interval")) * time.Second)
 			logrus.Infoln("Retrying connection...")
 			if client, err := gumble.DialWithDialer(new(net.Dialer), viper.GetString("connection.address")+":"+viper.GetString("connection.port"), dj.GumbleConfig, dj.TLSConfig); err == nil {
 				dj.Client = client
@@ -102,7 +103,6 @@ func (dj *MumbleDJ) OnDisconnect(e *gumble.DisconnectEvent) {
 				success = true
 				break
 			}
-			time.Sleep(time.Duration(viper.GetInt("connection.retry_interval")) * time.Second)
 		}
 		if !success {
 			dj.KeepAlive <- true

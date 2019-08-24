@@ -13,8 +13,8 @@ import (
 	"sync"
 
 	"github.com/spf13/viper"
-	"layeh.com/gumble/gumble"
 	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
 )
 
 // AddCommand is a command that adds an audio track associated with a supported
@@ -61,6 +61,7 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 		return "", true, errors.New(viper.GetString("commands.add.messages.no_url_error"))
 	}
 
+	c.mutex.Lock()
 	for _, arg := range args {
 		if service, err = DJ.GetService(arg); err == nil {
 			tracks, err = service.GetTracks(arg, user)
@@ -71,21 +72,21 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 	}
 
 	if len(allTracks) == 0 {
+		c.mutex.Unlock()
 		return "", true, errors.New(viper.GetString("commands.add.messages.no_valid_tracks_error"))
 	}
 
 	numTooLong := 0
 	numAdded := 0
 	for _, track := range allTracks {
-		c.mutex.Lock()
 		if err = DJ.Queue.AppendTrack(track); err != nil {
 			numTooLong++
 		} else {
 			numAdded++
 			lastTrackAdded = track
 		}
-		c.mutex.Unlock()
 	}
+	c.mutex.Unlock()
 
 	if numAdded == 0 {
 		return "", true, errors.New(viper.GetString("commands.add.messages.tracks_too_long_error"))

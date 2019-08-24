@@ -21,8 +21,8 @@ import (
 	"github.com/spf13/viper"
 	"layeh.com/gumble/gumbleffmpeg"
 	// needed for loading opus codes needed by gumble
-	_ "layeh.com/gumble/opus"
 	"go.reik.pl/mumbledj/interfaces"
+	_ "layeh.com/gumble/opus"
 )
 
 // Queue holds the audio queue itself along with useful methods for
@@ -68,8 +68,7 @@ func (q *Queue) AppendTrack(t interfaces.Track) error {
 	maxTrackDuration, _ := time.ParseDuration(fmt.Sprintf("%ds",
 		viper.GetInt("queue.max_track_duration")))
 
-	if viper.GetInt("queue.max_track_duration") == 0 ||
-		t.GetDuration() <= maxTrackDuration {
+	if viper.GetInt("queue.max_track_duration") == 0 || t.GetDuration() <= maxTrackDuration {
 		q.Queue = append(q.Queue, t)
 	} else {
 		q.mutex.Unlock()
@@ -104,8 +103,8 @@ func (q *Queue) InsertTrack(i int, t interfaces.Track) error {
 		return errors.New("The track is too long to add to the queue")
 	}
 	if len(q.Queue) == beforeLen+1 {
-		q.mutex.Unlock()
 		q.playIfNeeded()
+		q.mutex.Unlock()
 		return nil
 	}
 	q.mutex.Unlock()

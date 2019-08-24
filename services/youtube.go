@@ -34,12 +34,23 @@ import (
 // https://developers.google.com/youtube/v3/docs/
 type YouTube struct {
 	*GenericService
+	dummyOffset         time.Duration
+	playlistAPIURL      string
+	playlistItemsAPIURL string
+}
+
+type ytPlaylist struct {
+	id         string // id of url
+	pageToken  string
+	maxResults int // maxResults from YouTube playlist, max per request is 50
+	// How many items we want from playlist in total i.e. 150. It is read from key queue.max_tracks_per_playlist
+	maxItems int
 }
 
 // NewYouTubeService returns an initialized YouTube service object.
 func NewYouTubeService() *YouTube {
 	return &YouTube{
-		&GenericService{
+		GenericService: &GenericService{
 			ReadableName: "YouTube",
 			Format:       "bestaudio",
 			TrackRegex: []*regexp.Regexp{
@@ -53,6 +64,9 @@ func NewYouTubeService() *YouTube {
 				regexp.MustCompile(`https?:\/\/www\.youtube\.com\/playlist\?list=(?P<id>[\w-]+)`),
 			},
 		},
+		dummyOffset:         0,
+		playlistAPIURL:      "https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
+		playlistItemsAPIURL: "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=%s&maxResults=%d&key=%s&pageToken=%s",
 	}
 }
 
@@ -96,101 +110,22 @@ func (yt *YouTube) CheckAPIKey() error {
 // if any error occurs during the API call.
 func (yt *YouTube) GetTracks(url string, submitter *gumble.User) ([]interfaces.Track, error) {
 	var (
-		playlistURL      string
-		playlistItemsURL string
-		id               string
-		timestamp        string
-		err              error
-		resp             *http.Response
-		v                *jason.Object
-		track            bot.Track
-		tracks           []interfaces.Track
+		id        string
+		timestamp string
+		err       error
+		track     bot.Track
+		tracks    []interfaces.Track
 	)
 
 	dummyOffset, _ := time.ParseDuration("0s")
 
-	playlistURL = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s"
-	playlistItemsURL = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=%s&maxResults=%d&key=%s&pageToken=%s"
 	id, err = yt.getID(url)
 	if err != nil {
 		return nil, err
 	}
 
 	if yt.isPlaylist(url) {
-		resp, err = http.Get(fmt.Sprintf(playlistURL, id, viper.GetString("api_keys.youtube")))
-		if err != nil {
-			return nil, err
-		}
-		defer resp.Body.Close()
-
-		v, err = jason.NewObjectFromReader(resp.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		items, _ := v.GetObjectArray("items")
-		item := items[0]
-
-		title, _ := item.GetString("snippet", "title")
-
-		playlist := &bot.Playlist{
-			ID:        id,
-			Title:     title,
-			Submitter: submitter.Name,
-			Service:   yt.ReadableName,
-		}
-
-		maxItems := math.MaxInt32
-		if viper.GetInt("queue.max_tracks_per_playlist") > 0 {
-			maxItems = viper.GetInt("queue.max_tracks_per_playlist")
-		}
-
-		// YouTube playlist searches return a max of 50 results per page
-		maxResults := 50
-		if maxResults > maxItems {
-			maxResults = maxItems
-		}
-
-		pageToken := ""
-		for len(tracks) < maxItems {
-			curResp, curErr := http.Get(fmt.Sprintf(playlistItemsURL, id, maxResults, viper.GetString("api_keys.youtube"), pageToken))
-			if curErr != nil {
-				// An error occurred, simply skip this track.
-				continue
-			}
-			defer curResp.Body.Close()
-
-			v, err = jason.NewObjectFromReader(curResp.Body)
-			if err != nil {
-				// An error occurred, simply skip this track.
-				continue
-			}
-
-			curTracks, _ := v.GetObjectArray("items")
-			for _, track := range curTracks {
-				videoID, _ := track.GetString("snippet", "resourceId", "videoId")
-
-				// Unfortunately we have to execute another API call for each video as the YouTube API does not
-				// return video durations from the playlistItems endpoint...
-				newTrack, _ := yt.getTrack(videoID, submitter, dummyOffset)
-				newTrack.Playlist = playlist
-				tracks = append(tracks, newTrack)
-
-				if len(tracks) >= maxItems {
-					break
-				}
-			}
-
-			pageToken, _ = v.GetString("nextPageToken")
-			if pageToken == "" {
-				break
-			}
-		}
-
-		if len(tracks) == 0 {
-			return nil, errors.New("Invalid playlist. No tracks were added")
-		}
-		return tracks, nil
+		return yt.getPlaylist(id, submitter)
 	}
 
 	// Submitter added a track!
@@ -276,4 +211,107 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User, offset time.Durat
 		PlaybackOffset:  offset,
 		Playlist:        nil,
 	}, nil
+}
+
+func (yt *YouTube) getPlaylist(id string, submitter *gumble.User) ([]interfaces.Track, error) {
+	var (
+		resp   *http.Response
+		v      *jason.Object
+		err    error
+		tracks []interfaces.Track
+	)
+	resp, err = http.Get(fmt.Sprintf(yt.playlistAPIURL, id, viper.GetString("api_keys.youtube")))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	v, err = jason.NewObjectFromReader(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	items, _ := v.GetObjectArray("items")
+	item := items[0]
+
+	title, _ := item.GetString("snippet", "title")
+
+	playlist := &bot.Playlist{
+		ID:        id,
+		Title:     title,
+		Submitter: submitter.Name,
+		Service:   yt.ReadableName,
+	}
+
+	maxItems := math.MaxInt32
+	if viper.GetInt("queue.max_tracks_per_playlist") > 0 {
+		maxItems = viper.GetInt("queue.max_tracks_per_playlist")
+	}
+
+	// helper struct
+	ytp := &ytPlaylist{
+		id:         id,
+		pageToken:  "",
+		maxResults: 50,
+		maxItems:   maxItems,
+	}
+
+	// YouTube playlist searches return a max of 50 results per page
+	if ytp.maxResults > ytp.maxItems {
+		ytp.maxResults = ytp.maxItems
+	}
+
+	for len(tracks) < maxItems {
+		tracks, _ = yt.getTrackFromPlaylist(tracks, submitter, playlist, ytp)
+		if ytp.pageToken == "" {
+			break
+		}
+	}
+
+	if len(tracks) == 0 {
+		return nil, errors.New("Invalid playlist. No tracks were added")
+	}
+	return tracks, nil
+}
+
+func (yt *YouTube) getTrackFromPlaylist(
+	tracks []interfaces.Track,
+	submitter *gumble.User,
+	playlist interfaces.Playlist,
+	ytp *ytPlaylist) ([]interfaces.Track, error) {
+
+	var (
+		resp *http.Response
+		err  error
+		v    *jason.Object
+	)
+
+	resp, err = http.Get(fmt.Sprintf(yt.playlistItemsAPIURL, ytp.id, ytp.maxResults, viper.GetString("api_keys.youtube"), ytp.pageToken))
+	defer resp.Body.Close()
+	if err != nil {
+		return tracks, err
+	}
+
+	v, err = jason.NewObjectFromReader(resp.Body)
+	if err != nil {
+		return tracks, err
+	}
+
+	curTracks, _ := v.GetObjectArray("items")
+	for _, track := range curTracks {
+		videoID, _ := track.GetString("snippet", "resourceId", "videoId")
+
+		// Unfortunately we have to execute another API call for each video as the YouTube API does not
+		// return video durations from the playlistItems endpoint...
+		newTrack, _ := yt.getTrack(videoID, submitter, yt.dummyOffset)
+		newTrack.Playlist = playlist
+		tracks = append(tracks, newTrack)
+
+		if len(tracks) >= ytp.maxItems {
+			return tracks, nil
+		}
+	}
+
+	ytp.pageToken, _ = v.GetString("nextPageToken")
+	return tracks, nil
 }

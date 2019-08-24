@@ -51,7 +51,7 @@ func SetDefaultConfig() {
 
 	// Cache defaults.
 	viper.SetDefault("cache.enabled", false)
-	viper.SetDefault("cache.maximum_size", "512")
+	viper.SetDefault("cache.maximum_size", 512)
 	viper.SetDefault("cache.expire_time", 24)
 	viper.SetDefault("cache.check_interval", 5)
 	viper.SetDefault("cache.directory", "$HOME/.cache/mumbledj")

@@ -117,7 +117,7 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 		if c.ohohohoPlaying {
 			// we're currently playing our sample, but not track, so stop previous one
 			c.stopPlaying <- trackStreamInfo{}
-			// gather offset and source of track from previous goroutin
+			// gather offset and source of track from previous goroutine
 			// we're playing, so we need to gather offset and source from previous goroutine
 			logrus.Debugln("Waiting for offset and source from previous goroutine")
 			t := <-c.stopPlaying
@@ -126,10 +126,6 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 				source = t.source
 				offset = t.offset
 			}
-			// inform goroutine that it needs to end playing sample
-			//logrus.Debugln("Informing that samplePlayer should stop its work")
-			// needed to inform that previous loop iteration of samplePlayer ended, because user has stopped it externally
-			//c.stopSamplePlayer <- struct{}{}
 		} else {
 			// looks like track from queue is playing
 			lastTrack, err := DJ.Queue.CurrentTrack()
@@ -153,6 +149,22 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 	go func() {
 		sampleName := sampleSetName
 		for i := 0; i < howMany; i++ {
+			sample, err := c.openSample(sampleName)
+			if err != nil {
+				logrus.Debugln(err)
+				done <- err
+				return
+			}
+			// Blocking call until whole sample is played.
+			// If. DJ.AudioStream.Stop() is called during playback, this loop continues as normal and proceeds to next interation
+			// and don't return error.
+			err = c.waitForRandomOhohoho(sample)
+			if err != nil {
+				logrus.Debugln(err)
+				done <- err
+				return
+			}
+
 			select {
 			case <-c.stopSamplePlayer:
 				logrus.Debugln("Stopping sample player")
@@ -161,22 +173,7 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 				// there was no signal, continue normal work
 				logrus.Debugln("Continuing playing next sample")
 			}
-
-			sample, err := c.openSample(sampleName)
-			if err != nil {
-				done <- err
-				return
-			}
-			// Blocking call until whole sample is played.
-			// If. DJ.AudioStream.Stop() is called during playback, this loop proceeds to next interation
-			// and don't return error.
-			err = c.waitForRandomOhohoho(sample)
-			if err != nil {
-				done <- err
-				return
-			}
 		}
-
 		done <- nil
 	}()
 

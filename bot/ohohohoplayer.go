@@ -109,7 +109,7 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 
 	// Needed for signalling between this and PlaySample method.
 	// If goroutine playing sample finish its work, nil is sent via done channel,
-	// else if error occured, work is interrupted and err is sent via done channel.
+	// else if error occurred, work is interrupted and err is sent via done channel.
 	// It isn't used if new sample or stop has been requested by user.
 	done := make(chan error)
 
@@ -156,7 +156,7 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 				return
 			}
 			// Blocking call until whole sample is played.
-			// If. DJ.AudioStream.Stop() is called during playback, this loop continues as normal and proceeds to next interation
+			// If. DJ.AudioStream.Stop() is called during playback, this loop continues as normal
 			// and don't return error.
 			err = c.waitForRandomOhohoho(sample)
 			if err != nil {
@@ -221,7 +221,7 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 		logrus.Debugln("Informing about previous track for unblocking")
 		c.stopPlaying <- trackStreamInfo{source, offset}
 		return nil
-	// Sample has finished its playing. Check if error occured.
+	// Sample has finished its playing. Check if error occurred.
 	case err = <-done:
 		if err != nil {
 			switch err {
@@ -241,10 +241,6 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 		c.restorePreviousTrack(source, offset)
 	}
 
-	//if c.ohohohoPlaying && !c.restorePrevious {
-	//	DJ.AudioStream = nil
-	//}
-
 	c.ohohohoPlaying = false
 	return nil
 }
@@ -257,7 +253,7 @@ func (c *OhohohoPlayer) isSampleSetExisting(sampleName string) error {
 	return nil
 }
 
-// OpenSample try to open sample and returns opened file or nil, err if error occured
+// OpenSample try to open sample and returns opened file or nil, err if error occurred
 func (c *OhohohoPlayer) openSample(sampleName string) (http.File, error) {
 
 	noOfSamples := samplesList[sampleName]
@@ -292,9 +288,6 @@ func (c *OhohohoPlayer) playRandomOhohoho(assetFile http.File) {
 }
 
 func (c *OhohohoPlayer) restorePreviousTrack(source gumbleffmpeg.Source, offset time.Duration) {
-	// restore previous track
-	// c.mutex.Lock()
-	// defer c.mutex.Unlock()
 	logrus.Infoln("Restoring previous track")
 	DJ.AudioStream = gumbleffmpeg.New(DJ.Client, source)
 	DJ.AudioStream.Offset = offset

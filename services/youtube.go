@@ -231,7 +231,11 @@ func (yt *YouTube) getPlaylist(id string, submitter *gumble.User) ([]interfaces.
 		return nil, err
 	}
 
-	items, _ := v.GetObjectArray("items")
+	items, err := v.GetObjectArray("items")
+	if err != nil || len(items) == 0 {
+		return nil, errors.New("Can't access playlist title. Make sure it isn't private playlist")
+	}
+
 	item := items[0]
 
 	title, _ := item.GetString("snippet", "title")

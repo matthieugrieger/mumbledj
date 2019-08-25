@@ -73,7 +73,8 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 
 	if len(allTracks) == 0 {
 		c.mutex.Unlock()
-		return "", true, errors.New(viper.GetString("commands.add.messages.no_valid_tracks_error"))
+		//return "", true, errors.New(viper.GetString("commands.add.messages.no_valid_tracks_error"))
+		return "", true, err
 	}
 
 	numTooLong := 0

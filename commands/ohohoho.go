@@ -119,7 +119,7 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 				return "", true, err
 			}
 		} else if err != nil || howMany < 1 || howMany > 10 {
-			// second argument is number, restrict how many random playes can user request at once
+			// second argument is number, restrict how many random plays can user request at once
 			return "", true, errors.New(viper.GetString("commands.ohohoho.messages.how_many_times_error"))
 		} else {
 			// second argument is number and is in allowed range of how many random samples can be played

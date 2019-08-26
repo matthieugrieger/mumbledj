@@ -24,6 +24,9 @@ import (
 // DJ is a global variable that holds various details about the bot's state.
 var DJ = bot.NewMumbleDJ()
 
+// version is supplied by makefile
+var version string
+
 // Assets is global variable that allows access to config and sound assets
 var Assets = assets.Assets
 
@@ -36,7 +39,11 @@ func init() {
 	services.DJ = DJ
 	bot.DJ = DJ
 
-	DJ.Version = "v3.4.1"
+	if version != "" {
+		DJ.Version = version
+	} else {
+		DJ.Version = "v0.0.0"
+	}
 
 	logrus.SetLevel(logrus.WarnLevel)
 }

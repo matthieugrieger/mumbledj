@@ -30,16 +30,25 @@ import (
 	"layeh.com/gumble/gumble"
 )
 
+var (
+	// ErrNotFound is returned when search query return 0 results
+	ErrNotFound = errors.New("Found nothing for given query")
+	// ErrAPI is returned when API error occurs
+	ErrAPI = errors.New("API error occured")
+)
+
 // YouTube is a wrapper around the YouTube Data API.
 // https://developers.google.com/youtube/v3/docs/
 type YouTube struct {
 	*GenericService
+	searchURL string
 }
 
 // NewYouTubeService returns an initialized YouTube service object.
 func NewYouTubeService() *YouTube {
+
 	return &YouTube{
-		&GenericService{
+		GenericService: &GenericService{
 			ReadableName: "YouTube",
 			Format:       "bestaudio",
 			TrackRegex: []*regexp.Regexp{
@@ -53,6 +62,7 @@ func NewYouTubeService() *YouTube {
 				regexp.MustCompile(`https?:\/\/www\.youtube\.com\/playlist\?list=(?P<id>[\w-]+)`),
 			},
 		},
+		searchURL: "https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q=%s&key=%s",
 	}
 }
 
@@ -276,4 +286,34 @@ func (yt *YouTube) getTrack(id string, submitter *gumble.User, offset time.Durat
 		PlaybackOffset:  offset,
 		Playlist:        nil,
 	}, nil
+}
+
+// SearchTrack uses YouTube Data API v3 to find results for given query and takes first video from
+// results list and returns it. If nothing has been found or API call error occurred it should
+// return empty bot.Track and error. `bot.Track, nil` otherwise.
+func (yt *YouTube) SearchTrack(query string, submitter *gumble.User) (interfaces.Track, error) {
+	resp, err := http.Get(fmt.Sprintf(yt.searchURL, neturl.QueryEscape(query), viper.GetString("api_keys.youtube")))
+	if err != nil {
+		return bot.Track{}, ErrAPI
+	}
+	defer resp.Body.Close()
+
+	v, err := jason.NewObjectFromReader(resp.Body)
+	if err != nil {
+		return bot.Track{}, ErrAPI
+	}
+
+	items, err := v.GetObjectArray("items")
+	if err != nil {
+		return bot.Track{}, ErrAPI
+	}
+
+	if len(items) == 0 {
+		return bot.Track{}, ErrNotFound
+	}
+
+	videoID, _ := items[0].GetString("id", "videoId")
+
+	// TODO: replace last arg with dummyOffset
+	return yt.getTrack(videoID, submitter, 0)
 }

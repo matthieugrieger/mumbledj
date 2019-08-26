@@ -43,6 +43,7 @@ func init() {
 		new(ReloadCommand),
 		new(ResetCommand),
 		new(ResumeCommand),
+		new(SearchCommand),
 		new(SetCommentCommand),
 		new(ShuffleCommand),
 		new(SkipCommand),

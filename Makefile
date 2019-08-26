@@ -1,9 +1,11 @@
 dirs = ./interfaces/... ./commands/... ./services/... ./bot/... .
 
+VERSION != git describe --tags | sed 's/\([^-]*-g\)/r\1/'
+
 all: assets build ## Default action. Compile resources and builds MumbleDJ.
 
 build: *.go  ## Builds MumbleDJ.
-	@env go build .
+	@env go build -ldflags '-X "main.version=$(VERSION)"' .
 
 .PHONY: test
 test: ## Runs unit tests for MumbleDJ.

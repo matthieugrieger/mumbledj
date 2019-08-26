@@ -76,6 +76,7 @@ func NewYouTubeService() *YouTube {
 		dummyOffset:         0,
 		playlistAPIURL:      "https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=%s&key=%s",
 		playlistItemsAPIURL: "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=%s&maxResults=%d&key=%s&pageToken=%s",
+		videoAPIURL:         "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=%s&key=%s",
 		searchAPIURL:        "https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&q=%s&key=%s",
 	}
 }

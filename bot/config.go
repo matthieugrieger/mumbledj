@@ -35,6 +35,9 @@ func SetDefaultConfig() {
 	viper.SetDefault("queue.automatic_shuffle_on", false)
 	viper.SetDefault("queue.announce_new_tracks", true)
 
+	// Search defaults
+	viper.SetDefault("search.service", "YouTube")
+
 	// Connection defaults.
 	viper.SetDefault("connection.address", "127.0.0.1")
 	viper.SetDefault("connection.port", 64738)
@@ -178,6 +181,13 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.resume.description", "Resumes audio playback.")
 	viper.SetDefault("commands.resume.messages.audio_error", "Either the audio is already playing, or there are no tracks in the queue.")
 	viper.SetDefault("commands.resume.messages.resumed", "<b>%s</b> has resumed audio playback.")
+
+	viper.SetDefault("commands.search.aliases", []string{"search", "se"})
+	viper.SetDefault("commands.search.is_admin", false)
+	viper.SetDefault("commands.search.description", "Search for track and add it to the queue.")
+	viper.SetDefault("commands.search.messages.not_enough_arguments", "Please specify search query.")
+	viper.SetDefault("commands.search.messages.search_is_disabled",
+		"Search is disabled, because search engine hasn't been specified in config or specified service is disabled.")
 
 	viper.SetDefault("commands.setcomment.aliases", []string{"setcomment", "comment", "sc"})
 	viper.SetDefault("commands.setcomment.is_admin", true)

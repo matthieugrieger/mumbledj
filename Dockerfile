@@ -5,7 +5,7 @@ ARG branch=master
 ENV GO111MODULE=on
 
 RUN apk add --update ca-certificates make git build-base opus-dev
-RUN git clone -b $branch --depth 1 https://github.com/Reikion/mumbledj.git $GOPATH/src/go.reik.pl/mumbledj
+RUN git clone -b $branch --single-branch https://github.com/Reikion/mumbledj.git $GOPATH/src/go.reik.pl/mumbledj
 
 # add assets, which will be bundled with binary
 WORKDIR $GOPATH/src/go.reik.pl/mumbledj

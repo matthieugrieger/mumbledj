@@ -3,6 +3,7 @@
  * By Matthieu Grieger
  * bot/config.go
  * Copyright (c) 2016 Matthieu Grieger (MIT License)
+ * Copyright (c) 2019 Matthieu Grieger (MIT License)
  */
 
 package bot
@@ -194,6 +195,12 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.setcomment.description", "Sets the comment displayed next to MumbleDJ's username in Mumble.")
 	viper.SetDefault("commands.setcomment.messages.comment_removed", "The comment for the bot has been successfully removed.")
 	viper.SetDefault("commands.setcomment.messages.comment_changed", "The comment for the bot has been successfully changed to the following: %s")
+
+	viper.SetDefault("commands.repeat.aliases", []string{"repeat"})
+	viper.SetDefault("commands.repeat.is_admin", false)
+	viper.SetDefault("commands.repeat.description", "Add played tracks to the end of queue to create infinity loop.")
+	viper.SetDefault("commands.repeat.messages.enabled", "Repeat mode has been enabled.")
+	viper.SetDefault("commands.repeat.messages.disabled", "Repeat mode has been disabled.")
 
 	viper.SetDefault("commands.shuffle.aliases", []string{"shuffle", "shuf", "sh"})
 	viper.SetDefault("commands.shuffle.is_admin", true)

@@ -329,6 +329,15 @@ commands:
         messages:
             reloaded: "The configuration file has been successfully reloaded."
 
+    repeat:
+        aliases:
+            - "repeat"
+        is_admin: false
+        description: "Add played tracks to the end of queue to create infinity loop."
+        messages:
+            enabled: "Repeat mode has been enabled."
+            disabled: "Repeat mode has been disabled."
+
     reset:
         aliases:
             - "reset"

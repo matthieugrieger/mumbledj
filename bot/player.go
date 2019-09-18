@@ -294,3 +294,11 @@ func (p *Player) StopCurrent() error {
 	DJ.AudioStream.Stop()
 	return nil
 }
+
+// RepeatMode turns on special mode, so if track has been played, it will be added to the end of queue.
+func (p *Player) RepeatMode() bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	p.repeatModeFlag = !p.repeatModeFlag
+	return p.repeatModeFlag
+}

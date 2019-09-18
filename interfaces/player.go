@@ -22,4 +22,5 @@ type Player interface {
 	PauseCurrent() error
 	ResumeCurrent()
 	StopCurrent() error
+	RepeatMode() bool
 }

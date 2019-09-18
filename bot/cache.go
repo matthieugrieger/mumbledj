@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"context"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -105,6 +106,32 @@ func (c *Cache) CleanPeriodically(ctx context.Context) {
 						"expired_file": file.Name(),
 					}).Infoln("Removing expired cache entry.")
 					os.Remove(fmt.Sprintf("%s/%s", os.ExpandEnv(viper.GetString("cache.directory")), file.Name()))
+				}
+			}
+		}
+	}
+}
+
+// PrefetchPeriodically loops forever, prefetching next audio files in Queue
+func (c *Cache) PrefetchPeriodically(ctx context.Context) {
+	ticker := time.NewTicker(time.Duration(viper.GetInt("cache.prefetch_interval")) * time.Minute)
+	for {
+		select {
+		case <-ctx.Done():
+			logrus.Infoln("Stopping prefetching audio/video...")
+			ticker.Stop()
+			return
+		case <-ticker.C:
+			track, err := DJ.Queue.PeekNextTrack()
+			if err != nil {
+				continue
+			}
+			// Download track
+			filepath := os.ExpandEnv(viper.GetString("cache.directory") + "/" + track.GetFilename())
+			if _, err := os.Stat(filepath); os.IsNotExist(err) {
+				logrus.WithField("track", track.GetURL()).Infoln("Prefetching track")
+				if err := DJ.YouTubeDL.Download(track); err != nil {
+					continue
 				}
 			}
 		}

@@ -86,6 +86,7 @@ func (dj *MumbleDJ) OnConnect(e *gumble.ConnectEvent) {
 		ctx, dj.cancel = context.WithCancel(context.Background())
 
 		go dj.Cache.CleanPeriodically(ctx)
+		go dj.Cache.PrefetchPeriodically(ctx)
 		go dj.Player.PlayCurrentForeverLoop(ctx)
 	} else {
 		logrus.Infoln("Caching disabled.")

@@ -11,9 +11,9 @@ import (
 	"errors"
 	"fmt"
 
-	"layeh.com/gumble/gumble"
-	"go.reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
 )
 
 // ForceSkipPlaylistCommand is a command that immediately skips the current
@@ -51,7 +51,7 @@ func (c *ForceSkipPlaylistCommand) Execute(user *gumble.User, args ...string) (s
 		err          error
 	)
 
-	if currentTrack, err = DJ.Queue.CurrentTrack(); err != nil {
+	if currentTrack, err = DJ.Player.CurrentTrack(); err != nil {
 		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
@@ -59,7 +59,7 @@ func (c *ForceSkipPlaylistCommand) Execute(user *gumble.User, args ...string) (s
 		return "", true, errors.New(viper.GetString("commands.forceskipplaylist.messages.no_playlist_error"))
 	}
 
-	DJ.Queue.SkipPlaylist()
+	DJ.Player.SkipPlaylist()
 
 	return fmt.Sprintf(viper.GetString("commands.forceskipplaylist.messages.playlist_skipped"),
 		user.Name), false, nil

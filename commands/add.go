@@ -61,7 +61,6 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 		return "", true, errors.New(viper.GetString("commands.add.messages.no_url_error"))
 	}
 
-	c.mutex.Lock()
 	for _, arg := range args {
 		if service, err = DJ.GetService(arg); err == nil {
 			tracks, err = service.GetTracks(arg, user)
@@ -73,8 +72,7 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 
 	if len(allTracks) == 0 {
 		c.mutex.Unlock()
-		//return "", true, errors.New(viper.GetString("commands.add.messages.no_valid_tracks_error"))
-		return "", true, err
+		return "", true, errors.New(viper.GetString("commands.add.messages.no_valid_tracks_error"))
 	}
 
 	numTooLong := 0
@@ -87,7 +85,6 @@ func (c *AddCommand) Execute(user *gumble.User, args ...string) (string, bool, e
 			lastTrackAdded = track
 		}
 	}
-	c.mutex.Unlock()
 
 	if numAdded == 0 {
 		return "", true, errors.New(viper.GetString("commands.add.messages.tracks_too_long_error"))

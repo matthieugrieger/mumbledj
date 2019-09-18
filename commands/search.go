@@ -71,7 +71,7 @@ func (c *SearchCommand) Execute(user *gumble.User, args ...string) (string, bool
 	if err != nil {
 		return "", true, err
 	}
-	go DJ.Queue.AppendTrack(track)
+	DJ.Queue.AppendTrack(track)
 	if err != nil {
 		return "", true, err
 	}

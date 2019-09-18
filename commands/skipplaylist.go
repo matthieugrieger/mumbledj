@@ -11,9 +11,9 @@ import (
 	"errors"
 	"fmt"
 
-	"layeh.com/gumble/gumble"
-	"go.reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
 )
 
 // SkipPlaylistCommand is a command that places a vote to skip the current
@@ -51,7 +51,7 @@ func (c *SkipPlaylistCommand) Execute(user *gumble.User, args ...string) (string
 		err          error
 	)
 
-	if currentTrack, err = DJ.Queue.CurrentTrack(); err != nil {
+	if currentTrack, err = DJ.Player.CurrentTrack(); err != nil {
 		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
@@ -59,7 +59,7 @@ func (c *SkipPlaylistCommand) Execute(user *gumble.User, args ...string) (string
 		return "", true, errors.New(viper.GetString("commands.skipplaylist.messages.no_playlist_error"))
 	}
 	if currentTrack.GetPlaylist().GetSubmitter() == user.Name {
-		DJ.Queue.SkipPlaylist()
+		DJ.Player.SkipPlaylist()
 		return fmt.Sprintf(viper.GetString("commands.skipplaylist.messages.submitter_voted"), user.Name), false, nil
 	}
 	if err := DJ.Skips.AddPlaylistSkip(user); err != nil {

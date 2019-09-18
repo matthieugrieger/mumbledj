@@ -11,8 +11,8 @@ import (
 	"errors"
 	"fmt"
 
-	"layeh.com/gumble/gumble"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 )
 
 // PauseCommand is a command that pauses audio playback.
@@ -44,7 +44,7 @@ func (c *PauseCommand) IsAdminCommand() bool {
 // Example return statement:
 //    return "This is a private message!", true, nil
 func (c *PauseCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
-	err := DJ.Queue.PauseCurrent()
+	err := DJ.Player.PauseCurrent()
 	if err != nil {
 		return "", true, errors.New(viper.GetString("commands.pause.messages.no_audio_error"))
 	}

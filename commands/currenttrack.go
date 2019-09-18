@@ -11,9 +11,9 @@ import (
 	"errors"
 	"fmt"
 
-	"layeh.com/gumble/gumble"
-	"go.reik.pl/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
 )
 
 // CurrentTrackCommand is a command that outputs information related to
@@ -51,7 +51,7 @@ func (c *CurrentTrackCommand) Execute(user *gumble.User, args ...string) (string
 		err          error
 	)
 
-	if currentTrack, err = DJ.Queue.CurrentTrack(); err != nil {
+	if currentTrack, err = DJ.Player.CurrentTrack(); err != nil {
 		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 

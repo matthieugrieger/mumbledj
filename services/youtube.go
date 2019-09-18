@@ -301,10 +301,10 @@ func (yt *YouTube) getTrackFromPlaylist(
 	)
 
 	resp, err = http.Get(fmt.Sprintf(yt.playlistItemsAPIURL, ytp.id, ytp.maxResults, viper.GetString("api_keys.youtube"), ytp.pageToken))
-	defer resp.Body.Close()
 	if err != nil {
 		return tracks, err
 	}
+	defer resp.Body.Close()
 
 	v, err = jason.NewObjectFromReader(resp.Body)
 	if err != nil {
@@ -356,6 +356,5 @@ func (yt *YouTube) SearchTrack(query string, submitter *gumble.User) (interfaces
 
 	videoID, _ := items[0].GetString("id", "videoId")
 
-	// TODO: replace last arg with dummyOffset
 	return yt.getTrack(videoID, submitter, yt.dummyOffset)
 }

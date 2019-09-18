@@ -52,7 +52,7 @@ func (c *SkipCommand) Execute(user *gumble.User, args ...string) (string, bool, 
 	if DJ.Queue.GetTrack(0).GetSubmitter() == user.Name {
 		// The user who submitted the track is skipping, this means we skip this track immediately.
 		logrus.WithField("url", DJ.Queue.GetTrack(0).GetURL()).Info("Skipping")
-		DJ.Queue.StopCurrent()
+		DJ.Player.Skip()
 		return fmt.Sprintf(viper.GetString("commands.skip.messages.submitter_voted"), user.Name), false, nil
 	}
 	if err := DJ.Skips.AddTrackSkip(user); err != nil {

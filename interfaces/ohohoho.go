@@ -1,6 +1,6 @@
 /*
  * MumbleDJ
- * By Reikion
+ * By Matthieu Grieger
  * interfaces/command.go
  * Copyright (c) 2019 Reikion (MIT License)
  */

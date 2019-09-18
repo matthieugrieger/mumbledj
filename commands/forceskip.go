@@ -11,8 +11,8 @@ import (
 	"errors"
 	"fmt"
 
-	"layeh.com/gumble/gumble"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 )
 
 // ForceSkipCommand is a command that immediately skips the current track.
@@ -48,7 +48,7 @@ func (c *ForceSkipCommand) Execute(user *gumble.User, args ...string) (string, b
 		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
 	}
 
-	DJ.Queue.StopCurrent()
+	DJ.Player.Skip()
 
 	return fmt.Sprintf(viper.GetString("commands.forceskip.messages.track_skipped"),
 		user.Name), false, nil

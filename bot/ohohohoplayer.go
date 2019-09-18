@@ -11,9 +11,9 @@ import (
 	"errors"
 	"math/rand"
 	"net/http"
-	"os"
 	"path"
 	"regexp"
+	"sort"
 	"strconv"
 	"sync"
 	"time"
@@ -21,18 +21,20 @@ import (
 	"go.reik.pl/mumbledj/assets"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"layeh.com/gumble/gumbleffmpeg"
 )
 
 // Assets embedded in binary
 var Assets = assets.Assets
 
-// After init() samplesList contains folders name and number of files in folder
-var samplesList = map[string]int{}
+// samplesMap cAfter init() contains folders name and number of files in folder
+var samplesMap = map[string]int{}
+
+// samplesList after init() contains folders name and number of files in folder
+var samplesList = []string{}
 
 // GetSampleList returns map[string]int with folders name and number of files in folder
-func GetSampleList() map[string]int {
+func GetSampleList() []string {
 	return samplesList
 }
 
@@ -46,9 +48,15 @@ func init() {
 		matches := reg.FindAllStringSubmatch(el, -1)
 		if matches != nil && Assets.HasDir(matches[0][1]) {
 			// count files in folder by the way
-			samplesList[matches[0][1]]++
+			samplesMap[matches[0][1]]++
 		}
 	}
+
+	for k := range samplesMap {
+		samplesList = append(samplesList, k)
+	}
+	sort.Strings(samplesList)
+
 }
 
 var (
@@ -58,36 +66,30 @@ var (
 	once                   sync.Once
 )
 
-// trackStreamInfo is for boxing source and offset for channel usage
-type trackStreamInfo struct {
-	source gumbleffmpeg.Source
-	offset time.Duration
-}
-
 // OhohohoPlayer is a command that plays random Frieza laughs from Dragon Ball series
 type OhohohoPlayer struct {
 	mutex            sync.Mutex
 	restorePrevious  bool // informs OhohohoPlayer we should restore track from queue
 	ohohohoPlaying   bool // we are playing sample
-	stopPlaying      chan trackStreamInfo
+	stopPlaying      chan struct{}
 	stopSamplePlayer chan struct{}
 }
 
 // NewOhohohoPlayer returns new instance of OhohohoPlayer
 func NewOhohohoPlayer() *OhohohoPlayer {
 	return &OhohohoPlayer{
-		stopPlaying:      make(chan trackStreamInfo),
+		stopPlaying:      make(chan struct{}),
 		stopSamplePlayer: make(chan struct{}, 1),
 	}
 }
 
 func (c *OhohohoPlayer) Stop() error {
-	c.stopPlaying <- trackStreamInfo{}
+	c.stopPlaying <- struct{}{}
 	return nil
 }
 
 func (c *OhohohoPlayer) EmptyStop() error {
-	c.stopPlaying <- trackStreamInfo{}
+	c.stopPlaying <- struct{}{}
 	return nil
 }
 
@@ -98,9 +100,7 @@ func (c *OhohohoPlayer) IsInterrupting() bool {
 	return c.restorePrevious
 }
 
-func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumbleffmpeg.Source, time.Duration, chan error) {
-
-	c.mutex.Lock()
+func (c *OhohohoPlayer) prepareAndPlaySample(sampleSetName string, howMany int) (gumbleffmpeg.Source, time.Duration, chan error) {
 
 	var (
 		source gumbleffmpeg.Source
@@ -113,29 +113,19 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 	// It isn't used if new sample or stop has been requested by user.
 	done := make(chan error)
 
+	c.mutex.Lock()
 	if DJ.AudioStream != nil {
 		if c.ohohohoPlaying {
-			// we're currently playing our sample, but not track, so stop previous one
-			c.stopPlaying <- trackStreamInfo{}
-			// gather offset and source of track from previous goroutine
-			// we're playing, so we need to gather offset and source from previous goroutine
-			logrus.Debugln("Waiting for offset and source from previous goroutine")
-			t := <-c.stopPlaying
-			logrus.Debugln("Response obtained")
-			if c.restorePrevious == true {
-				source = t.source
-				offset = t.offset
-			}
+			c.stopPlaying <- struct{}{}
 		} else {
-			// looks like track from queue is playing
-			lastTrack, err := DJ.Queue.CurrentTrack()
-			if err == nil {
-				// it's playing track from queue, so it interrupts original playlist
-				// get information about track to resume it in the future
-				filepath := os.ExpandEnv(viper.GetString("cache.directory") + "/" + lastTrack.GetFilename())
-				source = gumbleffmpeg.SourceFile(filepath)
-				offset = DJ.AudioStream.Elapsed()
-				logrus.Infoln(offset, source)
+			// Looks like track from queue is playing.
+			lastTrack := DJ.Queue.GetTrackNoWait(0)
+			if lastTrack != nil {
+				// It's playing track from queue, so it interrupts original playlist.
+				// Originally it got information about track to resume it in the future.
+				// Now it uses dedicated method of DJ.Player
+
+				DJ.Player.HoldOnTrack()
 				c.restorePrevious = true
 			}
 		}
@@ -151,7 +141,6 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 		for i := 0; i < howMany; i++ {
 			sample, err := c.openSample(sampleName)
 			if err != nil {
-				logrus.Debugln(err)
 				done <- err
 				return
 			}
@@ -160,7 +149,6 @@ func (c *OhohohoPlayer) prepareSample(sampleSetName string, howMany int) (gumble
 			// and don't return error.
 			err = c.waitForRandomOhohoho(sample)
 			if err != nil {
-				logrus.Debugln(err)
 				done <- err
 				return
 			}
@@ -190,17 +178,16 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 		return err
 	}
 
-	source, offset, done := c.prepareSample(sampleName, howMany)
-	// Wait until sample player end its playing.
+	_, _, done := c.prepareAndPlaySample(sampleName, howMany)
 	select {
-	// Oops, somebody requested another sample while previous is still playing.
-	// Cancel playing of previous sample.
+	// Wait until sample player end its playing.
 	case <-c.stopPlaying:
+		// Oops, somebody requested another sample while previous is still playing.
+		// Cancel playing of previous sample.
 		logrus.Debugln("Informing that samplePlayer should stop its work")
 		// we need non-blocking request prepared, because at start of every function go scheduler can make context switch
 		c.stopSamplePlayer <- struct{}{}
 		logrus.Debugln("Stopping previous sample")
-		DJ.AudioStream.Stop()
 		// block until sample Player goroutine receive signal
 		select {
 		case c.stopSamplePlayer <- struct{}{}:
@@ -216,29 +203,24 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 			<-c.stopSamplePlayer
 		}
 
+		DJ.AudioStream = nil
 		logrus.Debugln("Stopped previous sample")
-		// ping prepareSample that stream is stopped and return needed data for restorePreviousTrack
-		logrus.Debugln("Informing about previous track for unblocking")
-		c.stopPlaying <- trackStreamInfo{source, offset}
 		return nil
-	// Sample has finished its playing. Check if error occurred.
 	case err = <-done:
+		// Sample has finished its playing. Check if error occurred.
 		if err != nil {
 			switch err {
 			case errInternalSampleError:
 				logrus.WithField("err", errInternalSampleError).Errorln("Critical error, check mumbledj source code")
 				return err
 			default:
-				logrus.Debug("Done_err", err)
+				logrus.Debug("OhohohoPlayer error: ", err)
 				return err
 			}
 		}
 		logrus.Debugln("Done, sample finished")
 		DJ.AudioStream = nil
-	}
-
-	if c.restorePrevious {
-		c.restorePreviousTrack(source, offset)
+		DJ.Player.ResumeCurrent()
 	}
 
 	c.ohohohoPlaying = false
@@ -247,7 +229,7 @@ func (c *OhohohoPlayer) PlaySample(sampleName string, howMany int) error {
 
 // IsSampleSetExisting checks if dir with samples exist in bundled assets
 func (c *OhohohoPlayer) isSampleSetExisting(sampleName string) error {
-	if _, ok := samplesList[sampleName]; !ok {
+	if _, ok := samplesMap[sampleName]; !ok {
 		return errSampleNotFound
 	}
 	return nil
@@ -256,7 +238,7 @@ func (c *OhohohoPlayer) isSampleSetExisting(sampleName string) error {
 // OpenSample try to open sample and returns opened file or nil, err if error occurred
 func (c *OhohohoPlayer) openSample(sampleName string) (http.File, error) {
 
-	noOfSamples := samplesList[sampleName]
+	noOfSamples := samplesMap[sampleName]
 	// rand rands from [0;n), so we need +1 to scale to [1;n]
 	chosenRandom := strconv.Itoa(rand.Intn(noOfSamples) + 1)
 	sample, err := Assets.Open(path.Join(sampleName, chosenRandom+".flac"))
@@ -270,7 +252,6 @@ func (c *OhohohoPlayer) openSample(sampleName string) (http.File, error) {
 func (c *OhohohoPlayer) waitForRandomOhohoho(sample http.File) error {
 	// ensure that Ohohoho hasn't started in the meantime
 	if DJ.AudioStream != nil && DJ.AudioStream.State() != gumbleffmpeg.StateStopped {
-		logrus.Debugln(errAnotherSteamActive)
 		return errAnotherSteamActive
 	}
 
@@ -285,21 +266,4 @@ func (c *OhohohoPlayer) playRandomOhohoho(assetFile http.File) {
 	DJ.AudioStream = gumbleffmpeg.New(DJ.Client, source)
 	DJ.AudioStream.Volume = DJ.Volume
 	DJ.AudioStream.Play()
-}
-
-func (c *OhohohoPlayer) restorePreviousTrack(source gumbleffmpeg.Source, offset time.Duration) {
-	logrus.Infoln("Restoring previous track")
-	DJ.AudioStream = gumbleffmpeg.New(DJ.Client, source)
-	DJ.AudioStream.Offset = offset
-	DJ.AudioStream.Volume = DJ.Volume
-	DJ.AudioStream.Play()
-	c.restorePrevious = false
-	go func() {
-		DJ.AudioStream.Wait()
-		if DJ.Ohohoho.IsInterrupting() {
-			// do not skip item from queue
-			return
-		}
-		DJ.Queue.Skip()
-	}()
 }

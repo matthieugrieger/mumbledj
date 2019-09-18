@@ -1,6 +1,6 @@
 dirs = ./interfaces/... ./commands/... ./services/... ./bot/... .
 
-VERSION != git describe --tags | sed 's/\([^-]*-g\)/r\1/'
+VERSION != git describe --tags | sed 's/\([^-]*-\)g/r\1/'
 
 all: assets build ## Default action. Compile resources and builds MumbleDJ.
 

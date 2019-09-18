@@ -160,6 +160,9 @@ func (p *Player) playCurrent() error {
 
 	// Blocking call if DJ.Queue is empty
 	currentTrack := DJ.Queue.GetTrack(0)
+	if currentTrack == nil {
+		return errors.New("Queue has been reset")
+	}
 
 	// Download track
 	filepath := os.ExpandEnv(viper.GetString("cache.directory") + "/" + currentTrack.GetFilename())

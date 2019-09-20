@@ -13,17 +13,14 @@ type Queue interface {
 	Length() int
 	Reset()
 	AppendTrack(Track) error
+	PrependTrack(Track) error
 	InsertTrack(int, Track) error
-	CurrentTrack() (Track, error)
 	GetTrack(int) Track
+	GetTrackNoWait(index int) Track
 	PeekNextTrack() (Track, error)
+	RemoveTrack(int) Track
+	RemoveTrackIf(func(int, Track) bool) int
 	Traverse(func(int, Track))
 	ShuffleTracks()
 	RandomNextTrack(bool)
-	Skip()
-	SkipPlaylist()
-	PlayCurrent() error
-	PauseCurrent() error
-	ResumeCurrent() error
-	StopCurrent() error
 }

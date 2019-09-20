@@ -8,11 +8,10 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 
-	"layeh.com/gumble/gumble"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 )
 
 // ResetCommand is a command that resets the queue and cache.
@@ -44,9 +43,10 @@ func (c *ResetCommand) IsAdminCommand() bool {
 // Example return statement:
 //    return "This is a private message!", true, nil
 func (c *ResetCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
-	if DJ.Queue.Length() == 0 {
-		return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
-	}
+	// Imo reset should always reset, i.e. to try to fix audio corruption bugs
+	//if DJ.Queue.Length() == 0 {
+	//	return "", true, errors.New(viper.GetString("commands.common_messages.no_tracks_error"))
+	//}
 
 	if DJ.AudioStream != nil {
 		DJ.AudioStream.Stop()

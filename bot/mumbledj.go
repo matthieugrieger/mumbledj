@@ -18,6 +18,8 @@ import (
 	"strings"
 	"time"
 
+	"context"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"go.reik.pl/mumbledj/interfaces"
@@ -36,12 +38,14 @@ type MumbleDJ struct {
 	Queue             interfaces.Queue
 	Cache             *Cache
 	Skips             interfaces.SkipTracker
+	Player            interfaces.Player
 	Ohohoho           interfaces.Ohohoho
 	Commands          []interfaces.Command
 	Version           string
 	Volume            float32
 	YouTubeDL         *YouTubeDL
 	KeepAlive         chan bool
+	cancel            func()
 }
 
 // DJ is a struct that keeps track of all aspects of MumbleDJ's environment.
@@ -51,17 +55,19 @@ var DJ *MumbleDJ
 func NewMumbleDJ() *MumbleDJ {
 	SetDefaultConfig()
 
-	return &MumbleDJ{
+	d := &MumbleDJ{
 		AvailableServices: make([]interfaces.Service, 0),
 		TLSConfig:         new(tls.Config),
 		Queue:             NewQueue(),
 		Cache:             NewCache(),
 		Skips:             NewSkipTracker(),
+		Player:            NewPlayer(),
 		Ohohoho:           NewOhohohoPlayer(),
 		Commands:          make([]interfaces.Command, 0),
 		YouTubeDL:         new(YouTubeDL),
 		KeepAlive:         make(chan bool),
 	}
+	return d
 }
 
 // OnConnect event. First moves MumbleDJ into the default channel if one exists.
@@ -76,7 +82,12 @@ func (dj *MumbleDJ) OnConnect(e *gumble.ConnectEvent) {
 	if viper.GetBool("cache.enabled") {
 		logrus.Infoln("Caching enabled.")
 		dj.Cache.UpdateStatistics()
-		go dj.Cache.CleanPeriodically()
+		ctx := context.Background()
+		ctx, dj.cancel = context.WithCancel(context.Background())
+
+		go dj.Cache.CleanPeriodically(ctx)
+		go dj.Cache.PrefetchPeriodically(ctx)
+		go dj.Player.PlayCurrentForeverLoop(ctx)
 	} else {
 		logrus.Infoln("Caching disabled.")
 	}
@@ -86,6 +97,11 @@ func (dj *MumbleDJ) OnConnect(e *gumble.ConnectEvent) {
 // automatic connection retries are enabled.
 func (dj *MumbleDJ) OnDisconnect(e *gumble.DisconnectEvent) {
 	dj.Queue.Reset()
+	dj.cancel()
+	if dj.AudioStream != nil {
+		dj.AudioStream.Stop()
+	}
+
 	if viper.GetBool("connection.retry_enabled") &&
 		(e.Type == gumble.DisconnectError || e.Type == gumble.DisconnectKicked) {
 		logrus.WithFields(logrus.Fields{

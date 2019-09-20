@@ -3,6 +3,7 @@
  * By Matthieu Grieger
  * bot/config.go
  * Copyright (c) 2016 Matthieu Grieger (MIT License)
+ * Copyright (c) 2019 Matthieu Grieger (MIT License)
  */
 
 package bot
@@ -35,6 +36,9 @@ func SetDefaultConfig() {
 	viper.SetDefault("queue.automatic_shuffle_on", false)
 	viper.SetDefault("queue.announce_new_tracks", true)
 
+	// Search defaults
+	viper.SetDefault("search.service", "YouTube")
+
 	// Connection defaults.
 	viper.SetDefault("connection.address", "127.0.0.1")
 	viper.SetDefault("connection.port", 64738)
@@ -51,9 +55,10 @@ func SetDefaultConfig() {
 
 	// Cache defaults.
 	viper.SetDefault("cache.enabled", false)
-	viper.SetDefault("cache.maximum_size", "512")
+	viper.SetDefault("cache.maximum_size", 512)
 	viper.SetDefault("cache.expire_time", 24)
 	viper.SetDefault("cache.check_interval", 5)
+	viper.SetDefault("cache.prefetch_interval", 1)
 	viper.SetDefault("cache.directory", "$HOME/.cache/mumbledj")
 
 	// Volume defaults.
@@ -179,11 +184,24 @@ func SetDefaultConfig() {
 	viper.SetDefault("commands.resume.messages.audio_error", "Either the audio is already playing, or there are no tracks in the queue.")
 	viper.SetDefault("commands.resume.messages.resumed", "<b>%s</b> has resumed audio playback.")
 
+	viper.SetDefault("commands.search.aliases", []string{"search", "se"})
+	viper.SetDefault("commands.search.is_admin", false)
+	viper.SetDefault("commands.search.description", "Search for track and add it to the queue.")
+	viper.SetDefault("commands.search.messages.not_enough_arguments", "Please specify search query.")
+	viper.SetDefault("commands.search.messages.search_is_disabled",
+		"Search is disabled, because search engine hasn't been specified in config or specified service is disabled.")
+
 	viper.SetDefault("commands.setcomment.aliases", []string{"setcomment", "comment", "sc"})
 	viper.SetDefault("commands.setcomment.is_admin", true)
 	viper.SetDefault("commands.setcomment.description", "Sets the comment displayed next to MumbleDJ's username in Mumble.")
 	viper.SetDefault("commands.setcomment.messages.comment_removed", "The comment for the bot has been successfully removed.")
 	viper.SetDefault("commands.setcomment.messages.comment_changed", "The comment for the bot has been successfully changed to the following: %s")
+
+	viper.SetDefault("commands.repeat.aliases", []string{"repeat"})
+	viper.SetDefault("commands.repeat.is_admin", false)
+	viper.SetDefault("commands.repeat.description", "Add played tracks to the end of queue to create infinity loop.")
+	viper.SetDefault("commands.repeat.messages.enabled", "Repeat mode has been enabled.")
+	viper.SetDefault("commands.repeat.messages.disabled", "Repeat mode has been disabled.")
 
 	viper.SetDefault("commands.shuffle.aliases", []string{"shuffle", "shuf", "sh"})
 	viper.SetDefault("commands.shuffle.is_admin", true)

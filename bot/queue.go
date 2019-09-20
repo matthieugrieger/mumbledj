@@ -10,26 +10,26 @@ package bot
 import (
 	"errors"
 	"fmt"
-	"net/url"
 
 	"math/rand"
-	"os"
 	"sync"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"layeh.com/gumble/gumbleffmpeg"
+	"go.reik.pl/mumbledj/interfaces"
+
 	// needed for loading opus codes needed by gumble
 	_ "layeh.com/gumble/opus"
-	"go.reik.pl/mumbledj/interfaces"
 )
 
-// Queue holds the audio queue itself along with useful methods for
-// performing actions on the queue.
+// Queue holds the audio tracks queue itself along with useful methods for
+// performing actions on the queue. It checks if track conform current
+// config values.
 type Queue struct {
-	Queue []interfaces.Track
+	queue []interfaces.Track
 	mutex sync.RWMutex
+	// used for blocking if queue is empty
+	notEmptyQueue chan struct{}
 }
 
 func init() {
@@ -38,56 +38,131 @@ func init() {
 
 // NewQueue initializes a new queue and returns it.
 func NewQueue() *Queue {
-	return &Queue{
-		Queue: make([]interfaces.Track, 0),
+	q := &Queue{
+		queue:         make([]interfaces.Track, 0),
+		notEmptyQueue: make(chan struct{}, 0),
 	}
+
+	return q
 }
 
 // Length returns the length of the queue.
 func (q *Queue) Length() int {
 	q.mutex.RLock()
-	length := len(q.Queue)
-	q.mutex.RUnlock()
+	defer q.mutex.RUnlock()
+	length := len(q.queue)
 	return length
 }
 
-// Reset removes all tracks from the queue.
+// Reset removes all tracks from the queue and reset state of queue.
 func (q *Queue) Reset() {
 	q.mutex.Lock()
-	q.Queue = q.Queue[:0]
+	select {
+	case q.notEmptyQueue <- struct{}{}:
+		// somebody's waiting for new item in queue, message sent already
+	default:
+		//do nothing, nobody's waiting for new item in queue
+	}
+	close(q.notEmptyQueue)
+
+	q.queue = make([]interfaces.Track, 0)
+	q.notEmptyQueue = make(chan struct{}, 0)
 	q.mutex.Unlock()
+	q.mutex = sync.RWMutex{}
 }
 
 // AppendTrack adds a track to the back of the queue.
 func (q *Queue) AppendTrack(t interfaces.Track) error {
 	q.mutex.Lock()
-	beforeLen := len(q.Queue)
+	defer q.mutex.Unlock()
+	return q.appendTrack(t)
+}
 
+// AppendTracks adds a tracks to the back of the queue.
+func (q *Queue) AppendTracks(ts []interfaces.Track) error {
+	q.mutex.Lock()
+	defer q.mutex.Unlock()
+	var nErr int
+	for _, t := range ts {
+		err := q.appendTrack(t)
+		if err != nil {
+			nErr++
+		}
+	}
+
+	if nErr == len(ts) {
+		return errors.New("Could not add tracks to queue")
+	}
+	if nErr != 0 && nErr < len(ts) {
+		return errors.New("Some tracks could not be added to queue")
+	}
+
+	return nil
+}
+
+func (q *Queue) appendTrack(t interfaces.Track) error {
+	beforeLen := len(q.queue)
 	// An error should never occur here since maxTrackDuration is restricted to
 	// ints. Any error in the configuration will be caught during yaml load.
 	maxTrackDuration, _ := time.ParseDuration(fmt.Sprintf("%ds",
 		viper.GetInt("queue.max_track_duration")))
 
-	if viper.GetInt("queue.max_track_duration") == 0 ||
-		t.GetDuration() <= maxTrackDuration {
-		q.Queue = append(q.Queue, t)
+	if viper.GetInt("queue.max_track_duration") == 0 || t.GetDuration() <= maxTrackDuration {
+		q.queue = append(q.queue, t)
 	} else {
-		q.mutex.Unlock()
 		return errors.New("The track is too long to add to the queue")
 	}
-	if len(q.Queue) == beforeLen+1 {
-		q.mutex.Unlock()
-		q.playIfNeeded()
-		return nil
+	if len(q.queue) != beforeLen+1 {
+		return errors.New("Could not add track to queue")
 	}
-	q.mutex.Unlock()
-	return errors.New("Could not add track to queue")
+	if beforeLen == 0 {
+		select {
+		case q.notEmptyQueue <- struct{}{}:
+			// somebody's waiting for new item in queue, message sent already
+		default:
+			//do nothing, nobody's waiting for new item in queue
+		}
+	}
+	return nil
 }
 
-// InsertTrack inserts track `t` at position `i` in the queue.
+// AppendTrack adds a track to the back of the queue.
+func (q *Queue) PrependTrack(t interfaces.Track) error {
+	q.mutex.Lock()
+	defer q.mutex.Unlock()
+	return q.prependTrack(t)
+}
+
+func (q *Queue) prependTrack(t interfaces.Track) error {
+	beforeLen := len(q.queue)
+	// An error should never occur here since maxTrackDuration is restricted to
+	// ints. Any error in the configuration will be caught during yaml load.
+	maxTrackDuration, _ := time.ParseDuration(fmt.Sprintf("%ds",
+		viper.GetInt("queue.max_track_duration")))
+
+	if viper.GetInt("queue.max_track_duration") == 0 || t.GetDuration() <= maxTrackDuration {
+		q.queue = append([]interfaces.Track{t}, q.queue...)
+	} else {
+		return errors.New("The track is too long to add to the queue")
+	}
+	if len(q.queue) != beforeLen+1 {
+		return errors.New("Could not add track to queue")
+	}
+	if beforeLen == 0 {
+		select {
+		case q.notEmptyQueue <- struct{}{}:
+			// somebody's waiting for new item in queue, message sent already
+		default:
+			//do nothing, nobody's waiting for new item in queue
+		}
+	}
+	return nil
+}
+
 func (q *Queue) InsertTrack(i int, t interfaces.Track) error {
 	q.mutex.Lock()
-	beforeLen := len(q.Queue)
+	defer q.mutex.Unlock()
+	beforeLen := len(q.queue)
 
 	// An error should never occur here since maxTrackDuration is restricted to
 	// ints. Any error in the configuration will be caught during yaml load.
@@ -96,60 +171,100 @@ func (q *Queue) InsertTrack(i int, t interfaces.Track) error {
 
 	if viper.GetInt("queue.max_track_duration") == 0 ||
 		t.GetDuration() <= maxTrackDuration {
-		q.Queue = append(q.Queue, Track{})
-		copy(q.Queue[i+1:], q.Queue[i:])
-		q.Queue[i] = t
+		q.queue = append(q.queue, Track{})
+		copy(q.queue[i+1:], q.queue[i:])
+		q.queue[i] = t
 	} else {
-		q.mutex.Unlock()
 		return errors.New("The track is too long to add to the queue")
 	}
-	if len(q.Queue) == beforeLen+1 {
-		q.mutex.Unlock()
-		q.playIfNeeded()
+	if len(q.queue) == beforeLen+1 {
 		return nil
 	}
-	q.mutex.Unlock()
 	return errors.New("Could not add track to queue")
-}
-
-// CurrentTrack returns the current Track.
-func (q *Queue) CurrentTrack() (interfaces.Track, error) {
-	q.mutex.RLock()
-	if len(q.Queue) != 0 {
-		current := q.Queue[0]
-		q.mutex.RUnlock()
-		return current, nil
-	}
-	q.mutex.RUnlock()
-	return nil, errors.New("There are no tracks currently in the queue")
 }
 
 // GetTrack takes an `index` argument to determine which track to return.
 // If the track in position `index` exists, it is returned. Otherwise,
-// nil is returned.
+// nil is returned. If queue is empty it will block calling goroutine until
+// track appear.
 func (q *Queue) GetTrack(index int) interfaces.Track {
 	q.mutex.RLock()
-	if index >= len(q.Queue) {
+
+	if len(q.queue) == 0 {
+		q.mutex.RUnlock()
+		<-q.notEmptyQueue
+		q.mutex.RLock()
+	}
+	if index >= len(q.queue) {
 		q.mutex.RUnlock()
 		return nil
 	}
-	track := q.Queue[index]
+
+	track := q.queue[index]
 	q.mutex.RUnlock()
 	return track
+}
+
+// GetTrackNoWait takes an `index` argument to determine which track to return.
+// If the track in position `index` exists, it is returned. Otherwise,
+// nil is returned.
+func (q *Queue) GetTrackNoWait(index int) interfaces.Track {
+	q.mutex.RLock()
+	defer q.mutex.RUnlock()
+	if index >= len(q.queue) {
+		return nil
+	}
+	track := q.queue[index]
+	return track
+}
+
+// RemoveTrack takes an `index` argument [0:q.Length(queue)) and removes track connected with that
+// index from the queue. If the track in position `index` exists, it is returned. Otherwise,
+// nil is returned. Note that it may not be the same track as in GetTrack, because other goroutine could
+// RemoveTrack earlier.
+func (q *Queue) RemoveTrack(index int) interfaces.Track {
+	q.mutex.Lock()
+	defer q.mutex.Unlock()
+	if index >= len(q.queue) {
+		return nil
+	}
+	track := q.queue[index]
+	q.queue = append(q.queue[:index], q.queue[index+1:]...)
+	return track
+}
+
+// RemoveTrackIf removes item if given function returns true.
+// Function returns number of removed elements
+// TODO: Improve implementation to reuse memory instead creating new slice
+func (q *Queue) RemoveTrackIf(fun func(int, interfaces.Track) bool) int {
+	q.mutex.Lock()
+	defer q.mutex.Unlock()
+	newQueue := []interfaces.Track{}
+	var removed int
+
+	for i, track := range q.queue {
+		if fun(i, track) {
+			removed++
+		} else {
+			newQueue = append(newQueue, track)
+		}
+	}
+	q.queue = newQueue
+
+	return removed
 }
 
 // PeekNextTrack peeks at the next track and returns it.
 func (q *Queue) PeekNextTrack() (interfaces.Track, error) {
 	q.mutex.RLock()
-	if len(q.Queue) > 1 {
+	defer q.mutex.RUnlock()
+	if len(q.queue) > 1 {
 		if viper.GetBool("queue.automatic_shuffle_on") {
 			q.RandomNextTrack(false)
 		}
-		next := q.Queue[1]
-		q.mutex.RUnlock()
+		next := q.queue[1]
 		return next, nil
 	}
-	q.mutex.RUnlock()
 	return nil, errors.New("There is no track coming up next")
 }
 
@@ -157,220 +272,41 @@ func (q *Queue) PeekNextTrack() (interfaces.Track, error) {
 // be passed in which performs the specified action on each queue item.
 func (q *Queue) Traverse(visit func(i int, t interfaces.Track)) {
 	q.mutex.RLock()
-	if len(q.Queue) > 0 {
-		for queueIndex, queueTrack := range q.Queue {
+	defer q.mutex.RUnlock()
+	if len(q.queue) > 0 {
+		for queueIndex, queueTrack := range q.queue {
 			visit(queueIndex, queueTrack)
 		}
 	}
-	q.mutex.RUnlock()
 }
 
 // ShuffleTracks shuffles the queue using an inside-out algorithm.
 func (q *Queue) ShuffleTracks() {
 	q.mutex.Lock()
-	// Skip the first track, as it is likely playing.
-	for i := range q.Queue[1:] {
-		j := rand.Intn(i + 1)
-		q.Queue[i+1], q.Queue[j+1] = q.Queue[j+1], q.Queue[i+1]
+	defer q.mutex.Unlock()
+	if len(q.queue) >= 3 {
+		// Skip the first track, as it is likely playing.
+		for i := range q.queue[1:] {
+			j := rand.Intn(i + 1)
+			q.queue[i+1], q.queue[j+1] = q.queue[j+1], q.queue[i+1]
+		}
 	}
-	q.mutex.Unlock()
 }
 
 // RandomNextTrack sets a random track as the next track to be played.
 func (q *Queue) RandomNextTrack(queueWasEmpty bool) {
 	q.mutex.Lock()
-	if len(q.Queue) > 1 {
+	defer q.mutex.Unlock()
+	if len(q.queue) > 1 {
 		nextTrackIndex := 1
 		if queueWasEmpty {
 			nextTrackIndex = 0
 		}
-		swapIndex := nextTrackIndex + rand.Intn(len(q.Queue)-1)
-		q.Queue[nextTrackIndex], q.Queue[swapIndex] = q.Queue[swapIndex], q.Queue[nextTrackIndex]
-	}
-	q.mutex.Unlock()
-}
-
-// Skip performs the necessary actions that take place when a track is skipped
-// via a command.
-func (q *Queue) Skip() {
-	// Set AudioStream to nil if it isn't already.
-	if DJ.AudioStream != nil {
-		DJ.AudioStream = nil
-	}
-
-	// Remove all track skips.
-	DJ.Skips.ResetTrackSkips()
-
-	q.mutex.Lock()
-	// If caching is disabled, delete the track from disk.
-	if len(q.Queue) != 0 && !viper.GetBool("cache.enabled") {
-		DJ.YouTubeDL.Delete(q.Queue[0])
-	}
-
-	// If automatic track shuffling is enabled, assign a random track in the queue to be the next track.
-	if viper.GetBool("queue.automatic_shuffle_on") {
-		q.mutex.Unlock()
-		q.RandomNextTrack(false)
-		q.mutex.Lock()
-	}
-
-	// Remove all playlist skips if this is the last track of the playlist still in the queue.
-	if len(q.Queue) > 0 {
-		playlist := q.Queue[0].GetPlaylist()
-		// make sure that it's playlist
-		if playlist != nil {
-			id := playlist.GetID()
-			playlistIsFinished := true
-
-			q.mutex.Unlock()
-			q.Traverse(func(i int, t interfaces.Track) {
-				if i != 0 && t.GetPlaylist() != nil {
-					if t.GetPlaylist().GetID() == id {
-						playlistIsFinished = false
-					}
-				}
-			})
-			q.mutex.Lock()
-			if playlistIsFinished {
-				DJ.Skips.ResetPlaylistSkips()
-			}
-		}
-	}
-
-	// Skip the track.
-	length := len(q.Queue)
-	if length > 1 {
-		q.Queue = q.Queue[1:]
-	} else {
-		q.Queue = make([]interfaces.Track, 0)
-	}
-	q.mutex.Unlock()
-
-	if err := q.playIfNeeded(); err != nil {
-		q.Skip()
+		swapIndex := nextTrackIndex + rand.Intn(len(q.queue)-1)
+		q.queue[nextTrackIndex], q.queue[swapIndex] = q.queue[swapIndex], q.queue[nextTrackIndex]
 	}
 }
 
-// SkipPlaylist performs the necessary actions that take place when a playlist
-// is skipped via a command.
-func (q *Queue) SkipPlaylist() {
-	q.mutex.Lock()
-	if playlist := q.Queue[0].GetPlaylist(); playlist != nil {
-		currentPlaylistID := playlist.GetID()
-
-		// We must loop backwards to prevent missing any elements after deletion.
-		// NOTE: We do not remove the first track of the playlist quite yet as that
-		// is removed properly with the following Skip() call.
-		for i := len(q.Queue) - 1; i >= 1; i-- {
-			if otherTrackPlaylist := q.Queue[i].GetPlaylist(); otherTrackPlaylist != nil {
-				if otherTrackPlaylist.GetID() == currentPlaylistID {
-					q.Queue = append(q.Queue[:i], q.Queue[i+1:]...)
-				}
-			}
-		}
-	}
-	q.mutex.Unlock()
-	q.StopCurrent()
-}
-
-// PlayCurrent creates a new audio stream and begins playing the current track.
-func (q *Queue) PlayCurrent() error {
-	currentTrack := q.GetTrack(0)
-	filepath := os.ExpandEnv(viper.GetString("cache.directory") + "/" + currentTrack.GetFilename())
-	if _, err := os.Stat(filepath); os.IsNotExist(err) {
-		if err := DJ.YouTubeDL.Download(q.GetTrack(0)); err != nil {
-			return err
-		}
-	}
-	source := gumbleffmpeg.SourceFile(filepath)
-	DJ.AudioStream = gumbleffmpeg.New(DJ.Client, source)
-	DJ.AudioStream.Offset = currentTrack.GetPlaybackOffset()
-	DJ.AudioStream.Volume = DJ.Volume
-
-	if viper.GetString("defaults.player_command") == "avconv" {
-		DJ.AudioStream.Command = "avconv"
-	}
-
-	if viper.GetBool("queue.announce_new_tracks") {
-		message :=
-			`<table>
-			 	<tr>
-					<td align="center"><img src="data:image/JPEG;base64,%s" width=150 /></td>
-				</tr>
-				<tr>
-					<td align="center"><b><a href="%s">%s</a> (%s)</b></td>
-				</tr>
-				<tr>
-					<td align="center">Added by %s</td>
-				</tr>
-			`
-		message = fmt.Sprintf(message, url.QueryEscape(currentTrack.GetThumbnailBase64()), currentTrack.GetURL(),
-			currentTrack.GetTitle(), currentTrack.GetDuration().String(), currentTrack.GetSubmitter())
-		if currentTrack.GetPlaylist() != nil {
-			message = message + fmt.Sprintf(`<tr><td align="center">From playlist "%s"</td></tr>`, currentTrack.GetPlaylist().GetTitle())
-		}
-		message += `</table>`
-		DJ.Client.Self.Channel.Send(message, false)
-	}
-
-	DJ.AudioStream.Play()
-	go func() {
-		DJ.AudioStream.Wait()
-		if DJ.Ohohoho.IsInterrupting() {
-			// do not skip item from queue
-			return
-		}
-		q.Skip()
-	}()
-
-	return nil
-}
-
-// PauseCurrent pauses the current audio stream if it exists and is not already paused.
-func (q *Queue) PauseCurrent() error {
-	if DJ.AudioStream == nil {
-		return errors.New("There is no track to pause")
-	}
-	if DJ.AudioStream.State() == gumbleffmpeg.StatePaused {
-		return errors.New("The track is already paused")
-	}
-	DJ.AudioStream.Pause()
-	return nil
-}
-
-// ResumeCurrent resumes playback of the current audio stream if it exists and is paused.
-func (q *Queue) ResumeCurrent() error {
-	logrus.WithField("djaudio", DJ.AudioStream).Debug("Djaudio state")
-	if DJ.AudioStream == nil {
-		return errors.New("There is no track to resume")
-	}
-	if DJ.AudioStream.State() == gumbleffmpeg.StatePlaying {
-		return errors.New("The track is already playing")
-	}
-	DJ.AudioStream.Play()
-	return nil
-}
-
-// StopCurrent stops the playback of the current audio stream if it exists.
-func (q *Queue) StopCurrent() error {
-	if DJ.AudioStream == nil {
-		return errors.New("The audio stream is nil")
-	}
-	DJ.AudioStream.Stop()
-	logrus.WithField("djaudio", DJ.AudioStream).Debug("Djaudio state")
-	DJ.AudioStream = nil
-
-	return nil
-}
-
-func (q *Queue) playIfNeeded() error {
-	if DJ.AudioStream == nil && q.Length() > 0 {
-		if err := DJ.YouTubeDL.Download(q.GetTrack(0)); err != nil {
-			return err
-		}
-		if err := q.PlayCurrent(); err != nil {
-			return err
-		}
-	}
-	return nil
+func (q *Queue) notify() {
+    // TODO: code deduplication and using sync.Cond
 }

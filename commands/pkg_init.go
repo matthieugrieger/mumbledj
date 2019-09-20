@@ -3,6 +3,7 @@
  * By Matthieu Grieger
  * commands/pkg_init.go
  * Copyright (c) 2016 Matthieu Grieger (MIT License)
+ * Copyright (c) 2019 Reikion (MIT License)
  */
 
 package commands
@@ -41,8 +42,10 @@ func init() {
 		new(PauseCommand),
 		new(RegisterCommand),
 		new(ReloadCommand),
+		new(RepeatCommand),
 		new(ResetCommand),
 		new(ResumeCommand),
+		new(SearchCommand),
 		new(SetCommentCommand),
 		new(ShuffleCommand),
 		new(SkipCommand),

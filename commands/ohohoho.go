@@ -10,11 +10,12 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"go.reik.pl/mumbledj/bot"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
+
+	"go.reik.pl/mumbledj/bot"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -75,10 +76,10 @@ func (c *OhohohoCommand) IsAdminCommand() bool {
 func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
 	if len(args) == 0 {
 		var sb strings.Builder
-		for k := range bot.GetSampleList() {
+		for _, v := range bot.GetSampleList() {
 			sb.WriteString("<br>")
 			sb.WriteString(" - ")
-			sb.WriteString(k)
+			sb.WriteString(v)
 		}
 		logrus.Println(fmt.Sprintf(viper.GetString("commands.ohohoho.messages.available_samples"), sb.String()))
 		return fmt.Sprintf(viper.GetString("commands.ohohoho.messages.available_samples"), sb.String()), true, nil
@@ -119,7 +120,7 @@ func (c *OhohohoCommand) Execute(user *gumble.User, args ...string) (string, boo
 				return "", true, err
 			}
 		} else if err != nil || howMany < 1 || howMany > 10 {
-			// second argument is number, restrict how many random playes can user request at once
+			// second argument is number, restrict how many random plays can user request at once
 			return "", true, errors.New(viper.GetString("commands.ohohoho.messages.how_many_times_error"))
 		} else {
 			// second argument is number and is in allowed range of how many random samples can be played

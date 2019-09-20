@@ -47,6 +47,10 @@ queue:
     # Announce track information at the beginning of audio playback?
     announce_new_tracks: true
 
+search:
+
+    # Service for searching new Tracks. Only "YouTube" and "" is allowed.
+    service: "YouTube"
 
 connection:
 
@@ -325,6 +329,15 @@ commands:
         messages:
             reloaded: "The configuration file has been successfully reloaded."
 
+    repeat:
+        aliases:
+            - "repeat"
+        is_admin: false
+        description: "Add played tracks to the end of queue to create infinity loop."
+        messages:
+            enabled: "Repeat mode has been enabled."
+            disabled: "Repeat mode has been disabled."
+
     reset:
         aliases:
             - "reset"
@@ -342,6 +355,16 @@ commands:
         messages:
             audio_error: "Either the audio is already playing, or there are no tracks in the queue."
             resumed: "<b>%s</b> has resumed audio playback."
+
+    search:
+        aliases:
+            - "search"
+            - "se"
+        is_admin: false
+        description, "Search for track and add it to the queue."
+        messages:
+            not_enough_arguments: "Please specify search query."
+            search_is_disabled: "Search is disabled, because search engine hasn't been specified in config or specified service is disabled."
 
     setcomment:
         aliases:

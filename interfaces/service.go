@@ -16,5 +16,8 @@ type Service interface {
 	GetFormat() string
 	CheckAPIKey() error
 	CheckURL(string) bool
+	// GetTracks should for given url return list of tracks, nil or nil, error message
 	GetTracks(string, *gumble.User) ([]Track, error)
+	// SearchTracks should for given search query return `track, nil` or `empty track, error message`
+	SearchTrack(string, *gumble.User) (Track, error)
 }

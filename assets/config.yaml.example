@@ -361,7 +361,7 @@ commands:
             - "search"
             - "se"
         is_admin: false
-        description, "Search for track and add it to the queue."
+        description: "Search for track and add it to the queue."
         messages:
             not_enough_arguments: "Please specify search query."
             search_is_disabled: "Search is disabled, because search engine hasn't been specified in config or specified service is disabled."

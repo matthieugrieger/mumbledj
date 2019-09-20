@@ -79,18 +79,19 @@ func (dj *MumbleDJ) OnConnect(e *gumble.ConnectEvent) {
 	}).Infoln("Setting default volume...")
 	dj.Volume = float32(viper.GetFloat64("volume.default"))
 
+	var ctx context.Context
+	ctx, dj.cancel = context.WithCancel(context.Background())
+
 	if viper.GetBool("cache.enabled") {
 		logrus.Infoln("Caching enabled.")
 		dj.Cache.UpdateStatistics()
-		ctx := context.Background()
-		ctx, dj.cancel = context.WithCancel(context.Background())
 
 		go dj.Cache.CleanPeriodically(ctx)
 		go dj.Cache.PrefetchPeriodically(ctx)
-		go dj.Player.PlayCurrentForeverLoop(ctx)
 	} else {
 		logrus.Infoln("Caching disabled.")
 	}
+	go dj.Player.PlayCurrentForeverLoop(ctx)
 }
 
 // OnDisconnect event. Terminates MumbleDJ process or retries connection if

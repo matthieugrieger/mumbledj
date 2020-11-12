@@ -13,10 +13,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/layeh/gumble/gumbleffmpeg"
-	"github.com/matthieugrieger/mumbledj/interfaces"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
+	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumbleffmpeg"
 )
 
 type QueueTestSuite struct {
@@ -35,9 +35,9 @@ func (suite *QueueTestSuite) SetupSuite() {
 
 	viper.Set("queue.automatic_shuffle_on", false)
 
-	suite.FirstTrack = &Track{ID: "first"}
-	suite.SecondTrack = &Track{ID: "second"}
-	suite.ThirdTrack = &Track{ID: "third"}
+	suite.FirstTrack = &Track{ID: "first", Playlist: &Playlist{ID: "abcd"}}
+	suite.SecondTrack = &Track{ID: "second", Playlist: &Playlist{ID: "defg"}}
+	suite.ThirdTrack = &Track{ID: "third", Playlist: &Playlist{ID: "abcd"}}
 }
 
 func (suite *QueueTestSuite) SetupTest() {
@@ -68,7 +68,6 @@ func (suite *QueueTestSuite) TestAppendTrackWhenTrackIsTooLong() {
 	duration, _ := time.ParseDuration("6s")
 
 	longTrack := &Track{}
-
 	longTrack.Duration = duration
 
 	suite.Zero(DJ.Queue.Length(), "The queue should be empty.")
@@ -78,46 +77,55 @@ func (suite *QueueTestSuite) TestAppendTrackWhenTrackIsTooLong() {
 	suite.NotNil(err, "An error should be returned due to the track being too long.")
 }
 
-func (suite *QueueTestSuite) TestCurrentTrackWhenOneExists() {
-	DJ.Queue.AppendTrack(suite.FirstTrack)
+func (suite *QueueTestSuite) TestGetTrackBlockingOnEmptyQueue() {
+	time.AfterFunc(time.Duration(100*time.Millisecond), func() {
+		err := DJ.Queue.AppendTrack(suite.FirstTrack)
+		if err != nil {
+			fmt.Println(err)
+		}
+	})
 
-	track, err := DJ.Queue.CurrentTrack()
+	track := DJ.Queue.GetTrack(0)
 
 	suite.NotNil(track, "The returned track should be non-nil.")
 	suite.Equal("first", track.GetID(), "The returned track should be the one just added to the queue.")
-	suite.Nil(err, "No error should be returned.")
 }
 
-func (suite *QueueTestSuite) TestCurrentTrackWhenOneDoesNotExist() {
-	track, err := DJ.Queue.CurrentTrack()
+func (suite *QueueTestSuite) TestGetTrackWhenOneExists() {
+	DJ.Queue.AppendTrack(suite.FirstTrack)
 
+	track := DJ.Queue.GetTrack(0)
+
+	suite.NotNil(track, "The returned track should be non-nil.")
+	suite.Equal("first", track.GetID(), "The returned track should be the one just added to the queue.")
+}
+
+func (suite *QueueTestSuite) TestGetTrackNoWaitWhenEmpty() {
+	track := DJ.Queue.GetTrackNoWait(0)
 	suite.Nil(track, "The returned track should be nil.")
-	suite.NotNil(err, "An error should be returned because there are no tracks in the queue.")
+
+	track = DJ.Queue.GetTrackNoWait(1234)
+	suite.Nil(track, "The returned track should be nil.")
 }
 
-func (suite *QueueTestSuite) TestPeekNextTrackWhenOneExists() {
+func (suite *QueueTestSuite) TestGetTrackNoWaitWhenOneExists() {
 	DJ.Queue.AppendTrack(suite.FirstTrack)
 	DJ.Queue.AppendTrack(suite.SecondTrack)
-
-	track, err := DJ.Queue.PeekNextTrack()
+	track := DJ.Queue.GetTrackNoWait(1)
 
 	suite.NotNil(track, "The returned track should be non-nil.")
 	suite.Equal("second", track.GetID(), "The returned track should be the second one added to the queue.")
-	suite.Nil(err, "No error should be returned.")
 }
 
-func (suite *QueueTestSuite) TestPeekNextTrackWhenOneDoesNotExist() {
-	track, err := DJ.Queue.PeekNextTrack()
-
-	suite.Nil(track, "The returned track should be nil.")
-	suite.NotNil(err, "An error should be returned because there are no tracks in the queue.")
+func (suite *QueueTestSuite) TestGetTrackNoWaitWhenOneDoesNotExist() {
+	track := DJ.Queue.GetTrackNoWait(0)
+	suite.Nil(track)
 
 	DJ.Queue.AppendTrack(suite.FirstTrack)
-
-	track, err = DJ.Queue.PeekNextTrack()
-
-	suite.Nil(track, "The returned track should be nil.")
-	suite.NotNil(err, "An error should be returned because there is only one track in the queue.")
+	track = DJ.Queue.GetTrackNoWait(0)
+	suite.Equal(track, suite.FirstTrack)
+	track = DJ.Queue.GetTrackNoWait(1)
+	suite.Nil(track)
 }
 
 func (suite *QueueTestSuite) TestTraverseWhenNoTracksExist() {
@@ -204,6 +212,26 @@ func (suite *QueueTestSuite) TestRandomNextTrackWhenQueueWasNotEmpty() {
 
 	suite.Equal(suite.FirstTrack, DJ.Queue.GetTrack(0), "Since the queue was not previously empty the first track should not be touched.")
 	suite.NotEqual(suite.SecondTrack, DJ.Queue.GetTrack(1), "The next track should be randomized.")
+}
+
+func (suite *QueueTestSuite) TestRemoveTrackIf() {
+	DJ.Queue.AppendTrack(suite.FirstTrack)
+	DJ.Queue.AppendTrack(suite.SecondTrack)
+	DJ.Queue.AppendTrack(suite.ThirdTrack)
+
+	removedCount := DJ.Queue.RemoveTrackIf(func(i int, t interfaces.Track) bool { return false })
+
+	suite.Equal(0, removedCount, "Queue should be left intact")
+
+	removedCount = DJ.Queue.RemoveTrackIf(func(i int, t interfaces.Track) bool { return t.GetPlaylist().GetID() == "abcd" })
+
+	suite.Equal(2, removedCount, "Queue should have removed first and third track")
+
+	track := DJ.Queue.GetTrack(0)
+
+	suite.Equal("second", track.GetID(), "Queue should have track ID: second")
+	suite.Equal(1, DJ.Queue.Length(), "Queue should have one item.")
+
 }
 
 // TODO: Fix these tests.

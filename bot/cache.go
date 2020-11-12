@@ -16,7 +16,9 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	"context"
+
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -81,21 +83,56 @@ func (c *Cache) UpdateStatistics() {
 }
 
 // CleanPeriodically loops forever, deleting expired cached audio files as necessary.
-func (c *Cache) CleanPeriodically() {
-	for range time.Tick(time.Duration(viper.GetInt("cache.check_interval")) * time.Minute) {
-		logrus.Infoln("Checking cache for expired files...")
-		files, _ := ioutil.ReadDir(os.ExpandEnv(viper.GetString("cache.directory")))
-		for _, file := range files {
-			// It is safe to check the modification time because when audio files are
-			// played their modification time is updated. This ensures that audio
-			// files will not get deleted while they are playing, assuming a reasonable
-			// expiry time is set in the configuration.
-			hours := time.Since(file.ModTime()).Hours()
-			if hours >= viper.GetFloat64("cache.expire_time") {
-				logrus.WithFields(logrus.Fields{
-					"expired_file": file.Name(),
-				}).Infoln("Removing expired cache entry.")
-				os.Remove(fmt.Sprintf("%s/%s", os.ExpandEnv(viper.GetString("cache.directory")), file.Name()))
+func (c *Cache) CleanPeriodically(ctx context.Context) {
+
+	ticker := time.NewTicker(time.Duration(viper.GetInt("cache.check_interval")) * time.Minute)
+	for {
+		select {
+		case <-ctx.Done():
+			logrus.Infoln("Stopping checking cache for expired files...")
+			ticker.Stop()
+			return
+		case <-ticker.C:
+			logrus.Infoln("Checking cache for expired files...")
+			files, _ := ioutil.ReadDir(os.ExpandEnv(viper.GetString("cache.directory")))
+			for _, file := range files {
+				// It is safe to check the modification time because when audio files are
+				// played their modification time is updated. This ensures that audio
+				// files will not get deleted while they are playing, assuming a reasonable
+				// expiry time is set in the configuration.
+				hours := time.Since(file.ModTime()).Hours()
+				if hours >= viper.GetFloat64("cache.expire_time") {
+					logrus.WithFields(logrus.Fields{
+						"expired_file": file.Name(),
+					}).Infoln("Removing expired cache entry.")
+					os.Remove(fmt.Sprintf("%s/%s", os.ExpandEnv(viper.GetString("cache.directory")), file.Name()))
+				}
+			}
+		}
+	}
+}
+
+// PrefetchPeriodically loops forever, prefetching next audio files in Queue
+func (c *Cache) PrefetchPeriodically(ctx context.Context) {
+	ticker := time.NewTicker(time.Duration(viper.GetInt("cache.prefetch_interval")) * time.Minute)
+	for {
+		select {
+		case <-ctx.Done():
+			logrus.Infoln("Stopping prefetching audio/video...")
+			ticker.Stop()
+			return
+		case <-ticker.C:
+			track, err := DJ.Queue.PeekNextTrack()
+			if err != nil {
+				continue
+			}
+			// Download track
+			filepath := os.ExpandEnv(viper.GetString("cache.directory") + "/" + track.GetFilename())
+			if _, err := os.Stat(filepath); os.IsNotExist(err) {
+				logrus.WithField("track", track.GetURL()).Infoln("Prefetching track")
+				if err := DJ.YouTubeDL.Download(track); err != nil {
+					continue
+				}
 			}
 		}
 	}

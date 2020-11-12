@@ -3,17 +3,22 @@
  * By Matthieu Grieger
  * commands/pkg_init.go
  * Copyright (c) 2016 Matthieu Grieger (MIT License)
+ * Copyright (c) 2019 Reikion (MIT License)
  */
 
 package commands
 
 import (
-	"github.com/matthieugrieger/mumbledj/bot"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/assets"
+	"go.reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // DJ is an injected MumbleDJ struct.
 var DJ *bot.MumbleDJ
+
+// Assets embedded in binary
+var Assets = assets.Assets
 
 // Commands is a slice of all enabled commands.
 var Commands []interfaces.Command
@@ -37,8 +42,10 @@ func init() {
 		new(PauseCommand),
 		new(RegisterCommand),
 		new(ReloadCommand),
+		new(RepeatCommand),
 		new(ResetCommand),
 		new(ResumeCommand),
+		new(SearchCommand),
 		new(SetCommentCommand),
 		new(ShuffleCommand),
 		new(SkipCommand),
@@ -46,5 +53,7 @@ func init() {
 		new(ToggleShuffleCommand),
 		new(VersionCommand),
 		new(VolumeCommand),
+		// mine
+		new(OhohohoCommand),
 	}
 }

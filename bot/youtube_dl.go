@@ -12,19 +12,25 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"go.reik.pl/mumbledj/interfaces"
+	"sync"
 )
 
 // YouTubeDL is a struct that gathers all methods related to the youtube-dl
 // software.
 // youtube-dl: https://rg3.github.io/youtube-dl/
-type YouTubeDL struct{}
+type YouTubeDL struct {
+	mutex sync.Mutex
+}
 
 // Download downloads the audio associated with the incoming `track` object
 // and stores it `track.Filename`.
 func (yt *YouTubeDL) Download(t interfaces.Track) error {
+	yt.mutex.Lock()
+	defer yt.mutex.Unlock()
+
 	player := "--prefer-ffmpeg"
 	if viper.GetString("defaults.player_command") == "avconv" {
 		player = "--prefer-avconv"

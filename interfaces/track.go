@@ -20,6 +20,7 @@ type Track interface {
 	GetService() string
 	GetFilename() string
 	GetThumbnailURL() string
+	GetThumbnailBase64() string
 	GetDuration() time.Duration
 	GetPlaybackOffset() time.Duration
 	GetPlaylist() Playlist

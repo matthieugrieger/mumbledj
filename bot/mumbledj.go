@@ -18,12 +18,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/layeh/gumble/gumble"
-	"github.com/layeh/gumble/gumbleffmpeg"
-	"github.com/layeh/gumble/gumbleutil"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"context"
+
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
+	"layeh.com/gumble/gumbleffmpeg"
+	"layeh.com/gumble/gumbleutil"
 )
 
 // MumbleDJ is a struct that keeps track of all aspects of the bot's state.
@@ -36,11 +38,14 @@ type MumbleDJ struct {
 	Queue             interfaces.Queue
 	Cache             *Cache
 	Skips             interfaces.SkipTracker
+	Player            interfaces.Player
+	Ohohoho           interfaces.Ohohoho
 	Commands          []interfaces.Command
 	Version           string
 	Volume            float32
 	YouTubeDL         *YouTubeDL
 	KeepAlive         chan bool
+	cancel            func()
 }
 
 // DJ is a struct that keeps track of all aspects of MumbleDJ's environment.
@@ -50,16 +55,19 @@ var DJ *MumbleDJ
 func NewMumbleDJ() *MumbleDJ {
 	SetDefaultConfig()
 
-	return &MumbleDJ{
+	d := &MumbleDJ{
 		AvailableServices: make([]interfaces.Service, 0),
 		TLSConfig:         new(tls.Config),
 		Queue:             NewQueue(),
 		Cache:             NewCache(),
 		Skips:             NewSkipTracker(),
+		Player:            NewPlayer(),
+		Ohohoho:           NewOhohohoPlayer(),
 		Commands:          make([]interfaces.Command, 0),
 		YouTubeDL:         new(YouTubeDL),
 		KeepAlive:         make(chan bool),
 	}
+	return d
 }
 
 // OnConnect event. First moves MumbleDJ into the default channel if one exists.
@@ -71,19 +79,30 @@ func (dj *MumbleDJ) OnConnect(e *gumble.ConnectEvent) {
 	}).Infoln("Setting default volume...")
 	dj.Volume = float32(viper.GetFloat64("volume.default"))
 
+	var ctx context.Context
+	ctx, dj.cancel = context.WithCancel(context.Background())
+
 	if viper.GetBool("cache.enabled") {
 		logrus.Infoln("Caching enabled.")
 		dj.Cache.UpdateStatistics()
-		go dj.Cache.CleanPeriodically()
+
+		go dj.Cache.CleanPeriodically(ctx)
+		go dj.Cache.PrefetchPeriodically(ctx)
 	} else {
 		logrus.Infoln("Caching disabled.")
 	}
+	go dj.Player.PlayCurrentForeverLoop(ctx)
 }
 
 // OnDisconnect event. Terminates MumbleDJ process or retries connection if
 // automatic connection retries are enabled.
 func (dj *MumbleDJ) OnDisconnect(e *gumble.DisconnectEvent) {
 	dj.Queue.Reset()
+	dj.cancel()
+	if dj.AudioStream != nil {
+		dj.AudioStream.Stop()
+	}
+
 	if viper.GetBool("connection.retry_enabled") &&
 		(e.Type == gumble.DisconnectError || e.Type == gumble.DisconnectKicked) {
 		logrus.WithFields(logrus.Fields{
@@ -93,6 +112,7 @@ func (dj *MumbleDJ) OnDisconnect(e *gumble.DisconnectEvent) {
 
 		success := false
 		for retries := 0; retries < viper.GetInt("connection.retry_attempts"); retries++ {
+			time.Sleep(time.Duration(viper.GetInt("connection.retry_interval")) * time.Second)
 			logrus.Infoln("Retrying connection...")
 			if client, err := gumble.DialWithDialer(new(net.Dialer), viper.GetString("connection.address")+":"+viper.GetString("connection.port"), dj.GumbleConfig, dj.TLSConfig); err == nil {
 				dj.Client = client
@@ -100,7 +120,6 @@ func (dj *MumbleDJ) OnDisconnect(e *gumble.DisconnectEvent) {
 				success = true
 				break
 			}
-			time.Sleep(time.Duration(viper.GetInt("connection.retry_interval")) * time.Second)
 		}
 		if !success {
 			dj.KeepAlive <- true
@@ -164,7 +183,7 @@ func (dj *MumbleDJ) OnUserChange(e *gumble.UserChangeEvent) {
 // to send the message.
 func (dj *MumbleDJ) SendPrivateMessage(user *gumble.User, message string) {
 	dj.Client.Do(func() {
-		if targetUser := dj.Client.Self.Channel.Users.Find(user.Name); targetUser != nil {
+		if targetUser := dj.Client.Users.Find(user.Name); targetUser != nil {
 			targetUser.Send(message)
 		}
 	})
@@ -214,9 +233,11 @@ func (dj *MumbleDJ) Connect() error {
 
 	// Add user p12 cert if needed.
 	if viper.GetString("connection.user_p12") != "" {
-		if _, err := os.Stat(viper.GetString("connection.user_p12")); os.IsNotExist(err) {
+		userP12, err := os.Open(viper.GetString("connection.user_p12"))
+		if os.IsNotExist(err) || os.IsPermission(err) {
 			return err
 		}
+		userP12.Close()
 
 		// Create temporary directory for converted p12 file.
 		dir, err := ioutil.TempDir("", "mumbledj")

@@ -8,11 +8,10 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 
-	"github.com/layeh/gumble/gumble"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 )
 
 // ResumeCommand is a command that resumes audio playback.
@@ -44,9 +43,6 @@ func (c *ResumeCommand) IsAdminCommand() bool {
 // Example return statement:
 //    return "This is a private message!", true, nil
 func (c *ResumeCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
-	err := DJ.Queue.ResumeCurrent()
-	if err != nil {
-		return "", true, errors.New(viper.GetString("commands.resume.messages.audio_error"))
-	}
+	DJ.Player.ResumeCurrent()
 	return fmt.Sprintf(viper.GetString("commands.resume.messages.resumed"), user.Name), false, nil
 }

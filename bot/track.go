@@ -10,23 +10,24 @@ package bot
 import (
 	"time"
 
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // Track stores all metadata related to an audio track.
 type Track struct {
-	ID             string
-	URL            string
-	Title          string
-	Author         string
-	AuthorURL      string
-	Submitter      string
-	Service        string
-	Filename       string
-	ThumbnailURL   string
-	Duration       time.Duration
-	PlaybackOffset time.Duration
-	Playlist       interfaces.Playlist
+	ID              string
+	URL             string
+	Title           string
+	Author          string
+	AuthorURL       string
+	Submitter       string
+	Service         string
+	Filename        string
+	ThumbnailURL    string
+	ThumbnailBase64 string
+	Duration        time.Duration
+	PlaybackOffset  time.Duration
+	Playlist        interfaces.Playlist
 }
 
 // GetID returns the ID of the track.
@@ -74,6 +75,12 @@ func (t Track) GetFilename() string {
 // exists an empty string and error are returned.
 func (t Track) GetThumbnailURL() string {
 	return t.ThumbnailURL
+}
+
+// GetThumbnailBase64 returns the base64 encoded JPEG of the thumbnail for the track. If no thumbnail
+// exists an empty string and error are returned.
+func (t Track) GetThumbnailBase64() string {
+	return t.ThumbnailBase64
 }
 
 // GetDuration returns the duration of the track.

@@ -10,6 +10,11 @@ package services
 import (
 	"errors"
 	"regexp"
+
+	"fmt"
+	"go.reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
 )
 
 // GenericService is a generic struct that should be embedded
@@ -40,6 +45,11 @@ func (gs *GenericService) CheckURL(url string) bool {
 		return true
 	}
 	return false
+}
+
+// SearchTrack default implementation informing about not implemented feature
+func (gs *GenericService) SearchTrack(string, *gumble.User) (interfaces.Track, error) {
+	return bot.Track{}, fmt.Errorf("Search not implemented for %s service", gs.ReadableName)
 }
 
 func (gs *GenericService) isTrack(url string) bool {

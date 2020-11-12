@@ -1,36 +1,35 @@
 /*
  * MumbleDJ
  * By Matthieu Grieger
- * commands/reload.go
+ * commands/currenttrack.go
  * Copyright (c) 2016 Matthieu Grieger (MIT License)
+ * Copyright (c) 2019 Reikion (MIT License)
  */
 
 package commands
 
 import (
-	"layeh.com/gumble/gumble"
-	"go.reik.pl/mumbledj/bot"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 )
 
-// ReloadCommand is a command that reloads the configuration values for the bot
-// from a config file.
-type ReloadCommand struct{}
+// RepeatCommand is a command that safely kills the bot.
+type RepeatCommand struct{}
 
 // Aliases returns the current aliases for the command.
-func (c *ReloadCommand) Aliases() []string {
-	return viper.GetStringSlice("commands.reload.aliases")
+func (c *RepeatCommand) Aliases() []string {
+	return viper.GetStringSlice("commands.repeat.aliases")
 }
 
 // Description returns the description for the command.
-func (c *ReloadCommand) Description() string {
-	return viper.GetString("commands.reload.description")
+func (c *RepeatCommand) Description() string {
+	return viper.GetString("commands.repeat.description")
 }
 
 // IsAdminCommand returns true if the command is only for admin use, and
 // returns false otherwise.
-func (c *ReloadCommand) IsAdminCommand() bool {
-	return viper.GetBool("commands.reload.is_admin")
+func (c *RepeatCommand) IsAdminCommand() bool {
+	return viper.GetBool("commands.repeat.is_admin")
 }
 
 // Execute executes the command with the given user and arguments.
@@ -42,11 +41,10 @@ func (c *ReloadCommand) IsAdminCommand() bool {
 //            If no error has occurred, pass nil instead.
 // Example return statement:
 //    return "This is a private message!", true, nil
-func (c *ReloadCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
-	if err := bot.ReadConfigFile(); err != nil {
-		return "", true, err
+func (c *RepeatCommand) Execute(user *gumble.User, args ...string) (string, bool, error) {
+	flag := DJ.Player.RepeatMode()
+	if flag {
+		return viper.GetString("commands.repeat.messages.enabled"), false, nil
 	}
-
-	return viper.GetString("commands.reload.messages.reloaded"),
-		true, nil
+	return viper.GetString("commands.repeat.messages.disabled"), false, nil
 }

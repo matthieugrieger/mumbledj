@@ -1,9 +1,6 @@
 
 <h1 align="center">MumbleDJ</h1>
 <p align="center"><b>A Mumble bot that plays audio fetched from various media websites.</b></p>
-<p align="center"><a href="https://travis-ci.org/matthieugrieger/mumbledj"><img src="https://travis-ci.org/matthieugrieger/mumbledj.svg?branch=master"/></a> <a href="https://raw.githubusercontent.com/matthieugrieger/mumbledj/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"/></a> <a href="https://github.com/matthieugrieger/mumbledj/releases"><img src="https://img.shields.io/github/release/matthieugrieger/mumbledj.svg"/></a> <a href="https://goreportcard.com/report/github.com/matthieugrieger/mumbledj"><img src="https://goreportcard.com/badge/github.com/matthieugrieger/mumbledj"/></a> <a href="https://codecov.io/gh/matthieugrieger/mumbledj"><img src="https://img.shields.io/codecov/c/github/matthieugrieger/mumbledj.svg"/></a> <a href="https://gitter.im/matthieugrieger/mumbledj"><img src="https://img.shields.io/gitter/room/matthieugrieger/mumbledj.svg" /></a></p>
-
-<p align="center"><b>Unfortunately, this project is no longer maintained. Don't expect any responses on bug reports, feature requests, etc. Forks are welcome!</b></p>
 
 ## Table of Contents
 
@@ -16,6 +13,7 @@
   * [Pre-compiled Binaries](#pre-compiled-binaries-easiest)
   * [From Source](#from-source)
   * [Docker](#docker)
+* [Sample player](#sample-player)
 * [Usage](#usage)
 * [Commands](#commands)
 * [Contributing](#contributing)
@@ -27,6 +25,7 @@
 * Plays audio from many media websites, including YouTube, SoundCloud, and Mixcloud.
 * Supports playlists and individual videos/tracks.
 * Displays metadata in the text chat whenever a new track starts playing.
+* Plays audio samples embedded in binary and from filesystem [More Info](#sample-player)
 * Incredibly customizable. Nearly everything is able to be tweaked via configuration files (by default located at `$HOME/.config/mumbledj/config.yaml`).
 * A large array of [commands](#commands) that perform a wide variety of functions.
 * Built-in vote-skipping.
@@ -34,18 +33,18 @@
 * Built-in play/pause/volume control.
 
 ## Installation
-**IMPORTANT NOTE:** MumbleDJ is only tested and developed for Linux systems. Support will not be given for non-Linux systems if problems are encountered.
+**IMPORTANT NOTE:** MumbleDJ is only tested and developed for Linux systems. If something doesn't work in Windows and the others OS, create an issue please.
 
 ### Requirements
 **All MumbleDJ installations must also have the following installed:**
 * [`youtube-dl`](https://rg3.github.io/youtube-dl/download.html)
 * [`ffmpeg`](https://ffmpeg.org) OR [`avconv`](https://libav.org)
 * [`aria2`](https://aria2.github.io/) if you plan on using services that throttle download speeds (like Mixcloud)
+* [`openssl`](https://www.openssl.org/) if you plan using p12 certificates for authentication
 
 **If installing via `go install` or from source, the following must be installed:**
-* [Go 1.5+](https://golang.org)
-  * __NOTE__: Extra installation steps are required for a working Go installation. Once Go is installed, type `go help gopath` for more information.
-  * If the repositories for your distro contain a version of Go older than 1.5, try using [`gvm`](https://github.com/moovweb/gvm) to install Go 1.5 or newer.
+* [Go 1.11+](https://golang.org)
+  * If the repositories for your distro contain a version of Go older than 1.11, try using [`gvm`](https://github.com/moovweb/gvm) to install Go 1.11 or newer.
 
 #### YouTube API Key
 A YouTube API key must be present in your configuration file in order to use the YouTube service within the bot. Below is a guide for retrieving an API key:
@@ -60,7 +59,7 @@ A YouTube API key must be present in your configuration file in order to use the
 
 **5)** Add the IP address of the machine MumbleDJ will run on in the box that appears (this is optional, but improves security). Click "Create".
 
-**6)** You should now see that an API key has been generated. Copy/paste this API key into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
+**6)** You should now see that an API key has been generated. Copy/paste this API key into the configuration file located at `$HOME/.config/mumbledj/config.yaml`.
 
 #### SoundCloud API Key
 A SoundCloud client ID must be present in your configuration file in order to use the SoundCloud service within the bot. Below is a guide for retrieving a client ID:
@@ -69,31 +68,13 @@ A SoundCloud client ID must be present in your configuration file in order to us
 
 **2)** Create a new app: https://soundcloud.com/you/apps/new.
 
-**3)** You should now see that a client ID has been generated. Copy/paste this ID (NOT the client secret) into the configuration file located at `$HOME/.config/mumbledj/mumbledj.yaml`.
+**3)** You should now see that a client ID has been generated. Copy/paste this ID (NOT the client secret) into the configuration file located at `$HOME/.config/mumbledj/config.yaml`.
 
 
-### Via `go get` (recommended)
-After verifying that the [requirements](#requirements) are installed, simply issue the following command:
-```
-go get -u github.com/matthieugrieger/mumbledj
-```
-
-This should place a binary in `$GOPATH/bin` that can be used to start the bot.
-
-**NOTE:** If using Go 1.5, you MUST execute the following for `go get` to work:
-```
-export GO15VENDOREXPERIMENT=1
-```
-
-### Pre-compiled Binaries (easiest)
-Pre-compiled binaries are provided for convenience. Overall, I do not recommend using these unless you cannot get `go install` to work properly. Binaries compiled on your own machine are likely more efficient as these binaries are cross-compiled from a 64-bit Linux system.
-
-After verifying that the [requirements](#requirements) are installed, simply visit the [releases page](https://github.com/matthieugrieger/mumbledj/releases) and download the appropriate binary for your platform.
-
-### From Source
+### From Source (recommended)
 First, clone the MumbleDJ repository to your machine:
 ```
-git clone https://github.com/matthieugrieger/mumbledj.git
+git clone https://github.com/reikion/mumbledj
 ```
 
 Install the required software as described in the [requirements section](#requirements), and execute the following:
@@ -106,13 +87,19 @@ This will place a compiled `mumbledj` binary in the cloned directory if successf
 sudo make install
 ```
 
+### Pre-compiled Binaries (easiest)
+Pre-compiled binaries are provided for convenience. Overall, I do not recommend using these unless you cannot get `go install` to work properly. Binaries compiled on your own machine are likely more efficient as these binaries are cross-compiled from a 64-bit Linux system.
+
+After verifying that the [requirements](#requirements) are installed, simply visit the [releases page](https://github.com/reikion/mumbledj/releases) and download the appropriate binary for your platform.
+
+
 ### Docker
 
 You can also use [Docker](https://www.docker.com) to run MumbleDJ.
 
 First you need to clone the MumbleDJ repository to your machine:
 ```
-git clone https://github.com/matthieugrieger/mumbledj.git
+git clone https://github.com/reikion/mumbledj
 ```
 
 Assuming you have [Docker installed](https://www.docker.com/products/docker), you will have to build the image:
@@ -129,11 +116,48 @@ In order to run the process as a daemon and restart it automatically on reboot y
 ```
 docker run -d --restart=unless-stopped --name=mumbledj mumbledj --server=SERVER --api_keys.youtube=YOUR_YOUTUBE_API_KEY --api_keys.soundcloud=YOUR_SOUNDCLOUD_API_KEY
 ```
+## Default config
+You can embed your config.yaml into binary if you plan to compile Mumbledj from source. Please note that everybody, who can open Mumbledj
+binary in text editor can also read your API secrets!
+To embed default config copy `assets/config.yaml.example` to `assets/assets/config.yaml` and customize as needed.
 
-You can also install Docker on a [Raspberry Pi](https://www.raspberrypi.org/) for instance with [hypriot](http://blog.hypriot.com/getting-started-with-docker-on-your-arm-device/) or with [archlinux](https://archlinuxarm.org/packages/arm/docker). You just need to build the ARM image:
+## Sample player
+MumbleDJ allows to play random flac samples from given category embedded in binary and from filesystem.
+To embed samples:
+   * create `assets` directory in source code `assets` directory
+   * create category folder for samples, i.e. `wololo`
+   * put sample in that folder named in format `1.flac`, `2.flac` etc.
+
+To play samples from filesystem you need the same layout of files, but you need drop your assets directory in current working directory of
+MumbleDJ.
+
+Example of structure of files in MumbleDJ source code:
 ```
-docker build -f raspberry.Dockerfile -t mumbledj .
+assets
+├── assets
+│   ├── config.yaml
+│   ├── nani
+│   │   ├── 1.flac
+│   └── wololo
+│       ├── 1.flac
+│       └── 2.flac
+├── assets.go
+└── config.yaml.example
 ```
+
+Example of structure of files in filesystem. MumbleDJ has been started from `/home/mumbledj`
+```
+/home/mumbledj/assets
+               ├── nani
+               │   ├── 1.flac
+               └── wololo
+                  ├── 1.flac
+                  └── 2.flac
+```
+
+To play sample you need to use [ohohoho command](#ohohoho). 
+Please note that MumbleDJ needs to be restarted to discover new category created in filesystem.
+
 
 ## Usage
 MumbleDJ is a compiled program that is executed via a terminal.
@@ -148,11 +172,11 @@ USAGE:
    mumbledj [global options] command [command options] [arguments...]
 
 VERSION:
-   v3.1.0
+   v3.4.1
 
 COMMANDS:
 GLOBAL OPTIONS:
-   --config value, -c value		location of MumbleDJ configuration file (default: "/home/matthieu/.config/mumbledj/config.yaml")
+   --config value, -c value		location of MumbleDJ configuration file (default: "$HOME/.config/mumbledj/config.yaml")
    --server value, -s value		address of Mumble server to connect to (default: "127.0.0.1")
    --port value, -o value		port of Mumble server to connect to (default: "64738")
    --username value, -u value		username for the bot (default: "MumbleDJ")
@@ -277,6 +301,17 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 * __Admin-only by default__: No
 * __Example__: `!numtracks`
 
+### ohohoho
+* __Description__: "Sample player of ohohoho and the others samples"
+* __Default Aliases__: ohohoho, oh
+* __Arguments__:
+   * None to list categories
+   * category name
+   * (Optional) how many times to play random samples from given category
+* __Admin-only by default__: No
+* __Example__: `!oh wololo 10`
+
+
 ### pause
 * __Description__: Pauses audio playback.
 * __Default Aliases__: pause
@@ -310,7 +345,7 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 * __Default Aliases__: resume
 * __Arguments__: None
 * __Admin-only by default__: No
-* __Example__: `!pause`
+* __Example__: `!resume`
 
 ### setcomment
 * __Description__: Sets the comment displayed next to MumbleDJ's username in Mumble. If the argument is left empty, the current comment is removed.
@@ -363,10 +398,13 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 
 ## Contributing
 
-Contributions to MumbleDJ are always welcome! Please see the [contribution guidelines](https://github.com/matthieugrieger/mumbledj/blob/master/CONTRIBUTING.md) for instructions and suggestions!
+Contributions to MumbleDJ are always welcome! 
 
 ## Author
 [Matthieu Grieger](https://github.com/matthieugrieger)
+
+## Maintainer
+[Reikion](https://github.com/Reikion)
 
 ## License
 ```
@@ -395,12 +433,12 @@ THE SOFTWARE.
 
 ## Thanks
 * [All those who contribute to Mumble](https://github.com/mumble-voip/mumble/graphs/contributors)
-* [Tim Cooper](https://github.com/bontibon) for [gumble, gumbleffmpeg, and gumbleutil](https://github.com/layeh/gumble)
+* [Tim Cooper](https://github.com/bontibon) for [gumble, gumbleffmpeg, and gumbleutil](https://layeh.com/gumble)
 * [Jeremy Saenz](https://github.com/codegangsta) for [cli](https://github.com/urfave/cli)
 * [Anton Holmquist](https://github.com/antonholmquist) for [jason](https://github.com/antonholmquist/jason)
 * [Stretchr, Inc.](https://github.com/stretchr) for [testify](https://github.com/stretchr/testify)
 * [ChannelMeter](https://github.com/ChannelMeter) for [iso8601duration](https://github.com/ChannelMeter/iso8601duration)
 * [Steve Francia](https://github.com/spf13) for [viper](https://github.com/spf13/viper)
-* [Simon Eskildsen](https://github.com/Sirupsen) for [logrus](https://github.com/Sirupsen/logrus)
+* [Simon Eskildsen](https://github.com/sirupsen) for [logrus](https://github.com/sirupsen/logrus)
 * [Mitchell Hashimoto](https://github.com/mitchellh) for [gox](https://github.com/mitchellh/gox)
 * [Jim Teeuwen](https://github.com/jteeuwen) for [go-bindata](https://github.com/jteeuwen/go-bindata)

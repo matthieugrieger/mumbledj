@@ -12,16 +12,23 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/matthieugrieger/mumbledj/bot"
-	"github.com/matthieugrieger/mumbledj/commands"
-	"github.com/matthieugrieger/mumbledj/services"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
+	"go.reik.pl/mumbledj/assets"
+	"go.reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/commands"
+	"go.reik.pl/mumbledj/services"
 )
 
 // DJ is a global variable that holds various details about the bot's state.
 var DJ = bot.NewMumbleDJ()
+
+// version is supplied by makefile
+var version string
+
+// Assets is global variable that allows access to config and sound assets
+var Assets = assets.Assets
 
 func init() {
 	DJ.Commands = commands.Commands
@@ -32,7 +39,11 @@ func init() {
 	services.DJ = DJ
 	bot.DJ = DJ
 
-	DJ.Version = "v3.2.1"
+	if version != "" {
+		DJ.Version = version
+	} else {
+		DJ.Version = "v0.0.0"
+	}
 
 	logrus.SetLevel(logrus.WarnLevel)
 }
@@ -114,7 +125,11 @@ func main() {
 
 	app.Action = func(c *cli.Context) error {
 		if c.Bool("debug") {
-			logrus.SetLevel(logrus.InfoLevel)
+			logrus.SetLevel(logrus.DebugLevel)
+			//Uncomment to show debug messages from Packr2
+			//plog.Logger = logger.New(logger.DebugLevel)
+			//Uncomment to show file and line number of log call
+			//logrus.SetReportCaller(true)
 		}
 
 		for _, configValue := range viper.AllKeys() {
@@ -132,9 +147,12 @@ func main() {
 			logrus.WithFields(logrus.Fields{
 				"file":  c.String("config"),
 				"error": err.Error(),
-			}).Warnln("An error occurred while reading the configuration file. Using default configuration...")
+			}).Warnln("An error occurred while reading the configuration file. Creating default configuration file...")
 			if _, err := os.Stat(c.String("config")); os.IsNotExist(err) {
 				createConfigWhenNotExists()
+				// If we fail to re-read embedded config, true defaults will be used,
+				// which are set in bot/config.go file. So we can safely ignore error here.
+				_ = viper.ReadInConfig()
 			}
 		} else {
 			if duplicateErr := bot.CheckForDuplicateAliases(); duplicateErr != nil {
@@ -202,12 +220,12 @@ func main() {
 }
 
 func createConfigWhenNotExists() {
-	configFile, err := Asset("config.yaml")
+	configFile, err := Assets.Find("config.yaml")
 	if err != nil {
 		logrus.Warnln("An error occurred while accessing config binary data. A new config file will not be written.")
 	} else {
 		filePath := os.ExpandEnv("$HOME/.config/mumbledj/config.yaml")
-		os.MkdirAll(os.ExpandEnv("$HOME/.config/mumbledj"), 0777)
+		os.MkdirAll(os.ExpandEnv("$HOME/.config/mumbledj"), 0755)
 		writeErr := ioutil.WriteFile(filePath, configFile, 0644)
 		if writeErr == nil {
 			logrus.WithFields(logrus.Fields{
@@ -225,8 +243,11 @@ func createNewConfigIfNeeded() {
 	newConfigPath := os.ExpandEnv("$HOME/.config/mumbledj/config.yaml.new")
 
 	// Check if we should write an updated config file to config.yaml.new.
-	if assetInfo, err := AssetInfo("config.yaml"); err == nil {
-		asset, _ := Asset("config.yaml")
+	if asset, err := Assets.Find("config.yaml"); err == nil {
+
+		assetF, _ := Assets.Open("config.yaml")
+		defer assetF.Close()
+		assetInfo, _ := assetF.Stat()
 		if configFile, err := os.Open(os.ExpandEnv("$HOME/.config/mumbledj/config.yaml")); err == nil {
 			configInfo, _ := configFile.Stat()
 			defer configFile.Close()

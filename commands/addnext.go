@@ -11,9 +11,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/layeh/gumble/gumble"
-	"github.com/matthieugrieger/mumbledj/interfaces"
 	"github.com/spf13/viper"
+	"go.reik.pl/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
 )
 
 // AddNextCommand is a command that adds an audio track associated with a supported

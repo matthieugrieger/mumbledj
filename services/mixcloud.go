@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"github.com/antonholmquist/jason"
-	"github.com/layeh/gumble/gumble"
-	"github.com/matthieugrieger/mumbledj/bot"
-	"github.com/matthieugrieger/mumbledj/interfaces"
+	"layeh.com/gumble/gumble"
+	"go.reik.pl/mumbledj/bot"
+	"go.reik.pl/mumbledj/interfaces"
 )
 
 // Mixcloud is a wrapper around the Mixcloud API.
@@ -70,10 +70,10 @@ func (mc *Mixcloud) GetTracks(url string, submitter *gumble.User) ([]interfaces.
 	offset, _ := time.ParseDuration("0s")
 
 	resp, err = http.Get(apiURL)
-	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	v, err = jason.NewObjectFromReader(resp.Body)
 	if err != nil {

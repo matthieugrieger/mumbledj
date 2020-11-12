@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/layeh/gumble/gumble"
 	"github.com/spf13/viper"
+	"layeh.com/gumble/gumble"
 )
 
 // SkipTracker keeps track of the list of users who have skipped the current
@@ -126,7 +126,7 @@ func (s *SkipTracker) evaluateTrackSkips() {
 	DJ.Client.Do(func() {
 		if float64(len(s.TrackSkips))/float64(len(DJ.Client.Self.Channel.Users)) >= skipRatio {
 			// Stopping an audio stream triggers a skip.
-			DJ.Queue.StopCurrent()
+			//TODO:		DJ.Queue.StopCurrent()
 		}
 	})
 	s.trackMutex.RUnlock()
@@ -137,7 +137,7 @@ func (s *SkipTracker) evaluatePlaylistSkips() {
 	skipRatio := viper.GetFloat64("queue.playlist_skip_ratio")
 	DJ.Client.Do(func() {
 		if float64(len(s.PlaylistSkips))/float64(len(DJ.Client.Self.Channel.Users)) >= skipRatio {
-			DJ.Queue.SkipPlaylist()
+			//TODO:			DJ.Queue.SkipPlaylist()
 		}
 	})
 	s.playlistMutex.RUnlock()

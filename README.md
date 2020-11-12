@@ -345,7 +345,7 @@ Keep in mind that values that contain commas (such as `"SuperUser,Matt"`) will b
 * __Default Aliases__: resume
 * __Arguments__: None
 * __Admin-only by default__: No
-* __Example__: `!pause`
+* __Example__: `!resume`
 
 ### setcomment
 * __Description__: Sets the comment displayed next to MumbleDJ's username in Mumble. If the argument is left empty, the current comment is removed.
